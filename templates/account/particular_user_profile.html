@@ -1,0 +1,106 @@
+{% comment %} {% extends 'base.html' %}
+
+{% block content %}
+
+
+{% load static %}
+<div class="min-h-screen p-4 sm:p-6 lg:p-8">
+    <div class="max-w-4xl mx-auto">
+
+        <div class="bg-white shadow-xl rounded-2xl overflow-hidden mb-8 p-6 sm:p-8 border-t-4 border-blue-600">
+            <div class="flex flex-col sm:flex-row items-center sm:space-x-8">
+                
+                <div class="mb-4 sm:mb-0 relative">
+                    <img src="https://via.placeholder.com/150/4F46E5/FFFFFF?text=P" alt="Profile Picture" class="w-32 h-32 object-cover rounded-full border-4 border-white ring-4 ring-blue-400 shadow-lg">
+                    </div>
+
+                <div class="text-center sm:text-left">
+                    <h1 class="text-3xl font-extrabold text-gray-900">
+                        {{ user.first_name }} {{ user.last_name }} </h1>
+                    <p class="text-lg text-blue-600 font-medium">@{{ user.username }}</p>
+                    <p class="mt-2 text-gray-500 max-w-md">
+                        A passionate blogger, developer, and writer. Focused on technology, travel, and lifestyle.
+                        </p>
+
+                    <div class="mt-4 flex justify-center sm:justify-start space-x-6">
+                        <div class="text-center">
+                            <span class="block text-xl font-bold text-gray-800">1.2K</span>
+                            <span class="text-sm text-gray-500">Followers</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-xl font-bold text-gray-800">45</span>
+                            <span class="text-sm text-gray-500">Posts</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-xl font-bold text-gray-800">5K</span>
+                            <span class="text-sm text-gray-500">Views</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300 shadow-md">
+                            Follow
+                        </button>
+                        </div>
+                </div>
+
+            </div>
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">
+            Published Posts (45)
+        </h2>
+        
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+            
+            <a href="#" class="block bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-500 ease-in-out transform hover:-translate-y-1 overflow-hidden group">
+                <img class="w-full h-48 object-cover object-center" src="https://via.placeholder.com/600x400/93C5FD/FFFFFF?text=Post+Image+1" alt="Post Image">
+                <div class="p-5">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">Technology</span>
+                    <h3 class="mt-1 text-xl font-bold text-gray-900 group-hover:text-blue-700 transition duration-300 line-clamp-2">
+                        How to Master Tailwind CSS for Modern Web Development
+                    </h3>
+                    <p class="mt-2 text-gray-600 text-sm line-clamp-3">
+                        A deep dive into utility-first CSS framework and its benefits in building scalable and beautiful UIs quickly.
+                    </p>
+                    <div class="mt-4 flex items-center text-sm text-gray-500">
+                        <i class="fa-regular fa-calendar-days mr-2"></i>
+                        <span>Oct 25, 2025</span>
+                        <span class="mx-3">•</span>
+                        <i class="fa-regular fa-eye mr-2"></i>
+                        <span>1.5K Views</span>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="block bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-500 ease-in-out transform hover:-translate-y-1 overflow-hidden group">
+                <img class="w-full h-48 object-cover object-center" src="https://via.placeholder.com/600x400/D1D5DB/FFFFFF?text=Post+Image+2" alt="Post Image">
+                <div class="p-5">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-green-600">Travel</span>
+                    <h3 class="mt-1 text-xl font-bold text-gray-900 group-hover:text-green-700 transition duration-300 line-clamp-2">
+                        Top 5 Hidden Gems to Visit in Southeast Asia
+                    </h3>
+                    <p class="mt-2 text-gray-600 text-sm line-clamp-3">
+                        Explore the less-traveled paths and discover the true beauty of Asia, far from the madding crowd.
+                    </p>
+                    <div class="mt-4 flex items-center text-sm text-gray-500">
+                        <i class="fa-regular fa-calendar-days mr-2"></i>
+                        <span>Sep 10, 2025</span>
+                        <span class="mx-3">•</span>
+                        <i class="fa-regular fa-eye mr-2"></i>
+                        <span>800 Views</span>
+                    </div>
+                </div>
+            </a>
+            </div>
+
+        <div class="text-center mt-10">
+            <button class="px-8 py-3 border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition duration-300">
+                Load More Posts
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock content %} {% endcomment %}

@@ -267,30 +267,34 @@
       </div>
       <hr class="text-gray-200 mb-2" />
 
-      <ul class="space-y-1" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
-        {% for user in top_users|slice:"3" %}
-        <li
-          class="flex items-center justify-between rounded-xl px-1 hover: transition duration-300 hover:scale-102 group cursor-pointer"
-          data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
-          {% if not user.profile_picture %}
-          <div class="size-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-800 font-semibold">
+<ul class="space-y-1" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+    {% for user in top_users|slice:"3" %}
+    
+    <a href="#"
+        class="flex items-center justify-between rounded-xl px-1 hover: transition duration-300 hover:scale-102 group cursor-pointer"
+        data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+        
+        {% if not user.profile_picture %}
+        <div class="size-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-800 font-semibold">
             {{ user.first_name|slice:":1" }}
-          </div>
-          {% else %}
-          <img src="{{ user.profile_picture.url }}"
+        </div>
+        {% else %}
+        <img src="{{ user.profile_picture.url }}"
             class="w-10 h-10 rounded-full object-cover border border-blue-400" />
-          {% endif %}
-          <div class="flex-1 px-2">
+        {% endif %}
+        
+        <div class="flex-1 px-2">
             <h3 class="font-semibold text-gray-700 group-hover:text-blue-600 text-sm">
-              {{ user.first_name }} {{ user.last_name }}
+                {{ user.first_name }} {{ user.last_name }}
             </h3>
             <p class="text-xs text-gray-600 truncate">{{ user.email }}</p>
-          </div>
-        </li>
-        <hr class="text-gray-200" />
+        </div>
+        
+    </a>
+    <hr class="text-gray-200" />
 
-        {% endfor %}
-      </ul>
+    {% endfor %}
+</ul>
     </div>
 
     <!-- Tags Filter -->

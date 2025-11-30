@@ -1,6 +1,6 @@
 # accounts/views.py
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
@@ -15,7 +15,8 @@ from earnings.models import EarningSetting  # replace 'your_app_name' with the a
 from django.utils import timezone
 from datetime import timedelta
 from accounts.utils import send_verification_code_email
-
+from blog_post.models import BlogPost
+from accounts.models import CustomUserModel
 
 # views.py - signup_view (CORRECTED)
 def signup_view(request):
@@ -274,6 +275,22 @@ def user_dashboard_view(request):
 
     # return render(request, "account/user_dashboard.html", context)
     return render(request, "account/demo/user_dashboard.html", context)
+
+
+# def particular_user_view(request, id):
+  
+#     user_to_show = get_object_or_404(CustomUserModel, id=id)
+
+#     user_posts = BlogPost.objects.filter(author=user_to_show)
+    
+
+#     context = {
+#         'user_to_show': user_to_show,
+#         'user_posts': user_posts,
+#         'total_posts': user_posts.count(),
+#     }
+    
+#     return render(request, 'account/particular_user_profile.html', context)
 
 
 
