@@ -8,29 +8,34 @@
     <div class="flex flex-col sm:flex-row justify-between border-b border-gray-300" data-aos="fade-up"
         data-aos-anchor-placement="top-bottom" data-aos-duration="500">
         <div class="flex flex-col sm:flex-row w-full sm:w-3/4">
-            <div 
-                class="w-full sm:w-1/3 py-3 text-center font-bold text-base md:text-lg text-gray-800 border-b-2 border-transparent hover:border-blue-600 transition duration-150 cursor-pointer min-w-0">
-                <a href="{% url 'category_post' 'news' %}">
-                    NEWS
-                </a>
-            </div>
-            <div href="{% url 'category_post' 'technology' %}"
-                class="w-full sm:w-1/3 py-3 text-center font-bold text-base md:text-lg text-gray-800 border-b-2 border-transparent hover:border-blue-600 transition duration-150 cursor-pointer min-w-0">
-                <a href="{% url 'category_post' 'technology' %}">
-                TECHNOLOGY
-                </a>
-            </div>
-            <div href="{% url 'category_post' 'programming' %}"
-                class="w-full sm:w-1/3 py-3 text-center font-bold text-base md:text-lg text-gray-800 border-b-2 border-transparent hover:border-blue-600 transition duration-150 cursor-pointer min-w-0">
-                <a href="{% url 'category_post' 'programming' %}">
-                PROGRAMMING
-                </a>
-            </div>
-        </div>
-        <div
+
+    <a href="{% url 'category_post' 'news' %}" 
+       class="w-full sm:w-1/3 py-3 text-center font-bold text-base md:text-lg 
+              text-gray-800 border-b-2 border-transparent hover:border-blue-600 
+              transition duration-150 cursor-pointer min-w-0 block">
+        NEWS
+    </a>
+
+    <a href="{% url 'category_post' 'technology' %}" 
+       class="w-full sm:w-1/3 py-3 text-center font-bold text-base md:text-lg 
+              text-gray-800 border-b-2 border-transparent hover:border-blue-600 
+              transition duration-150 cursor-pointer min-w-0 block">
+        TECHNOLOGY
+    </a>
+
+    <a href="{% url 'category_post' 'programming' %}" 
+       class="w-full sm:w-1/3 py-3 text-center font-bold text-base md:text-lg 
+              text-gray-800 border-b-2 border-transparent hover:border-blue-600 
+              transition duration-150 cursor-pointer min-w-0 block">
+        PROGRAMMING
+    </a>
+
+</div>
+
+        <a href="{% url 'popular_blogs' %}"
             class="hidden sm:block w-full sm:w-1/4 py-3 text-center font-bold text-base md:text-lg text-white bg-blue-400 cursor-pointer mt-2 sm:mt-0">
             Popular
-        </div>
+        </a>
     </div>
 
     <div class="flex flex-col lg:flex-row gap-6 pt-6" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
@@ -83,13 +88,11 @@
                 </div>
 
                 
-                <button
-                    class="mt-4 py-2 border border-blue-600 text-blue-600 font-bold hover:bg-blue-500 hover:text-white transition duration-150"
+                <a href="{% url 'category_post' 'news' %}"
+                    class="text-center mt-4 py-2 border border-blue-600 text-blue-600 font-bold hover:bg-blue-500 hover:text-white transition duration-150"
                     data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
-                    <a href="{% url 'category_post' 'news' %}">
                         More
-                    </a>
-                </button>
+                </a>
                 
             </div>
 
@@ -138,13 +141,11 @@
             
                 </div>
 
-                <button
-                    class="mt-4 py-2 border border-blue-600 text-blue-600 font-bold hover:bg-blue-500 hover:text-white transition duration-150"
+                <a href="{% url 'category_post' 'technology' %}"
+                    class="text-center mt-4 py-2 border border-blue-600 text-blue-600 font-bold hover:bg-blue-500 hover:text-white transition duration-150"
                     data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
-                    <a href="{% url 'category_post' 'technology' %}">
                         More
-                    </a>
-                </button>
+                </a>
             </div>
 
             <div class="flex flex-col gap-4 w-full lg:w-1/3 " data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
@@ -191,13 +192,11 @@
                 
                 </div>
 
-                <button
-                    class="mt-4 py-2 border border-blue-600 text-blue-600 font-bold hover:bg-blue-500 hover:text-white transition duration-150"
-                   data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
-                    <a href="{% url 'category_post' 'programming' %}">
+                <a href="{% url 'category_post' 'programming' %}"
+                    class="text-center mt-4 py-2 border border-blue-600 text-blue-600 font-bold hover:bg-blue-500 hover:text-white transition duration-150"
+                    data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                         More
-                    </a>
-                </button>
+                </a>
             </div>
 
         </div>

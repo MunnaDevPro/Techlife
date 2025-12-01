@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "interactions",
     "notification",
     "earnings",
+    
+    'rest_framework',
 
     
     "contact",
@@ -55,6 +57,19 @@ INSTALLED_APPS = [
     'django_tailwind_cli',
     
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5
+}
 
 
 

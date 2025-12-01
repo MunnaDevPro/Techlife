@@ -712,25 +712,27 @@ def add_reply(request, comment_id):
 
 @login_required
 def user_like_toggle(request, like_slug):
-   
-    blog_post = get_object_or_404(BlogPost, slug=like_slug)
-    user = request.user
     
-    if request.headers.get("HX-Request"):
-    
-        try:
-            like_instance = Like.objects.get(post=blog_post, user=user)
-            like_instance.delete()
-            
-        except Like.DoesNotExist:
+    if request.user.is_verified:
+
+        blog_post = get_object_or_404(BlogPost, slug=like_slug)
+        user = request.user
+        
+        if request.headers.get("HX-Request"):
+        
             try:
-                Like.objects.create(post=blog_post, user=user)
-               
-            except IntegrityError:
-            
-                logout(request)
-                return redirect('login')
-    
+                like_instance = Like.objects.get(post=blog_post, user=user)
+                like_instance.delete()
+                
+            except Like.DoesNotExist:
+                try:
+                    Like.objects.create(post=blog_post, user=user)
+                
+                except IntegrityError:
+                
+                    logout(request)
+                    return redirect('login')
+        
     return redirect('blog_details', slug=like_slug)
 
 

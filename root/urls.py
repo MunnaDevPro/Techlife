@@ -13,6 +13,9 @@ urlpatterns = [
     # path("comment/", include("comments.urls")),
     path("forum/", include("forum.urls")),
     # path("comments/", include("comments.urls")),
+    
+    path('api-auth/', include('rest_framework.urls')),
+    path('api/blog/', include('blog_post.api_urls')),
 
     path("__reload__/", include("django_browser_reload.urls")),
 
