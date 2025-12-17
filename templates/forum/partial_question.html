@@ -18,34 +18,29 @@
                     <img src="{% static 'image/munna.jpeg' %}" class="w-10 h-10 rounded-full" />
 
                     <div class="flex flex-col leading-tight">
-                        <div
-                            x-data="{ 
-              hoverCardHovered: false,
-              hoverCardDelay: 200,
-              hoverCardLeaveDelay: 200,
-              hoverCardTimout: null,
-              hoverCardLeaveTimeout: null,
-              hoverCardEnter () {
-                  clearTimeout(this.hoverCardLeaveTimeout);
-                  if(this.hoverCardHovered) return;
-                  clearTimeout(this.hoverCardTimout);
-                  this.hoverCardTimout = setTimeout(() => {
-                      this.hoverCardHovered = true;
-                  }, this.hoverCardDelay);
-              },
-              hoverCardLeave () {
-                  clearTimeout(this.hoverCardTimout);
-                  if(!this.hoverCardHovered) return;
-                  clearTimeout(this.hoverCardLeaveTimeout);
-                  this.hoverCardLeaveTimeout = setTimeout(() => {
-                      this.hoverCardHovered = false;
-                  }, this.hoverCardLeaveDelay);
-              }
-          }"
-                            class="relative"
-                            @mouseover="hoverCardEnter()"
-                            @mouseleave="hoverCardLeave()"
-                            x-cloak>
+                        <div x-data="{ 
+                                    hoverCardHovered: false,
+                                    hoverCardDelay: 200,
+                                    hoverCardLeaveDelay: 200,
+                                    hoverCardTimout: null,
+                                    hoverCardLeaveTimeout: null,
+                                    hoverCardEnter () {
+                                        clearTimeout(this.hoverCardLeaveTimeout);
+                                        if(this.hoverCardHovered) return;
+                                        clearTimeout(this.hoverCardTimout);
+                                        this.hoverCardTimout = setTimeout(() => {
+                                            this.hoverCardHovered = true;
+                                        }, this.hoverCardDelay);
+                                    },
+                                    hoverCardLeave () {
+                                        clearTimeout(this.hoverCardTimout);
+                                        if(!this.hoverCardHovered) return;
+                                        clearTimeout(this.hoverCardLeaveTimeout);
+                                        this.hoverCardLeaveTimeout = setTimeout(() => {
+                                            this.hoverCardHovered = false;
+                                        }, this.hoverCardLeaveDelay);
+                                    }
+                                }" class="relative" @mouseover="hoverCardEnter()" @mouseleave="hoverCardLeave()" x-cloak>
                             <!-- Name + Time (Top Line) -->
                             <div class="flex flex-wrap sm:flex-nowrap items-center gap-1 w-auto group cursor-pointer">
                                 <span class="font-inter text-2xl font-semibold text-gray-800 group-hover:text-blue-500 cursor-pointer">Md Munna</span>
@@ -168,22 +163,24 @@
             <h1 class="text-xl font-bold mb-1 mt-3 break-words leading-tight">Software dev who wants to settle abroad directly via work visa (without masters studies)</h1>
 
             <!-- Post Content -->
-            <p class="mt-2 border-gray-100 break-words leading-0 text-gray-600 text-sm">I am a backend software dev (27M) with 3 years of work experience. I started working in 2021. For the last 1 year, I had been solely pursuing MSCS in US hoping to settle there ultimately. However, my visa was rejected. I have heard about software devs applying to Japan. I am more interested in European countries like Germany, UK, Netherland. I see lots of Indian software devs (3 to 5+ work experience ) following the similar route. I just wanted to know if there are Nepalese software devs who also did the same.</p>
+            <div class="w-full h-20 overflow-hidden">
+                <p class="mt-2 w-full h-full border-gray-100 break-words leading-0 text-gray-600 text-sm">I am a backend software dev (27M) with 3 years of work experience. I started working in 2021. For the last 1 year, I had been solely pursuing MSCS in US hoping to settle there ultimately. However, my visa was rejected. I have heard about
+                    software devs applying to Japan. I am more interested in European countries like Germany, UK, Netherland. I see lots of Indian software devs (3 to 5+ work experience ) following the similar route. I just wanted to know if there are
+                    Nepalese software devs who also did the same.</p>
+            </div>
+
 
             <!-- Interaction Bar -->
             <div class="flex items-center justify-between mt-5 text-gray-600">
                 <div class="flex items-center gap-3 flex-wrap">
                     <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1 cursor-pointer">
-                        <i class="fa-regular fa-thumbs-up"></i>
-                        Like
+                        <i class="fa-regular fa-thumbs-up"></i> Like
                     </a>
                     <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1 cursor-pointer">
-                        <i class="fa-regular fa-comment"></i>
-                        Comment
+                        <i class="fa-regular fa-comment"></i> Comment
                     </a>
                     <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1">
-                        <i class="fa-regular fa-eye"></i>
-                        View
+                        <i class="fa-regular fa-eye"></i> View
                     </a>
                     <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1 cursor-pointer">
                         <svg rpl="" aria-hidden="true" class="icon-share rpl-rtl-icon" fill="currentColor" height="16" icon-name="share-new-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
@@ -191,8 +188,7 @@
                             <!--?lit$20054865694$-->
                             <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002zm-.994-1.548V12h-.9c-3.969 0-6.162 2.1-8.001 4.161.514-4.011 2.823-8.16 8-8.16h.9V4.024L17.784 10l-5.977 5.976z"></path>
                             <!--?-->
-                        </svg>
-                        Share
+                        </svg> Share
                     </a>
                 </div>
             </div>
@@ -222,4 +218,3 @@
 
     {% comment %} Answer section {% endcomment %} {% include "forum/forum_answer.html" %}
 </div>
-

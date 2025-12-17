@@ -12,6 +12,7 @@ class AnswerInline(admin.TabularInline):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('title',)}
     list_display = ('title', 'author', 'created_at')
     search_fields = ('title', 'content', 'author__username')
     list_filter = ('created_at', 'author')
@@ -23,7 +24,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Question Info', {
-            'fields': ('title', 'content')
+            'fields': ('title', 'slug', 'content', 'image')
         }),
         ('Author & Meta', {
             'fields': ('author', 'created_at', )

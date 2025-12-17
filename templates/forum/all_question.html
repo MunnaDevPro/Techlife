@@ -3,121 +3,121 @@
     [x-cloak] {
         display: none !important;
     }
-
+    
     .flip-horizontal {
-        transform: scaleX(-1); /* Icon horizontally flip korbe */
+        transform: scaleX(-1);
+        /* Icon horizontally flip korbe */
     }
 </style>
 
 <div class="mx-auto px-1 font-inter -mt-8">
     <!-- Flex container for main content -->
-        <div class="flex flex-col lg:flex-row gap-4 mx-auto">
-            <!-- LEFT all question  (Post) -->
+    <div class="flex flex-col lg:flex-row gap-4 mx-auto">
+        <!-- LEFT all question  (Post) -->
 
-            <div class="w-full lg:w-2/3 max-w-2xl flex-shrink-0 mx-auto" id="question-container">
-                <div class="flex items-center gap-4 mb-3 relative ml-5 w-full mt-4 mx-auto">
-                    {% comment %} Dropdown menu {% endcomment %}
-                    <div x-data="{ open: false }" class="relative" @click.away="open = false">
-                        <!-- Sort By Dropdown (best,top,etc)-->
-                        <div class="relative" @click.away="open = false">
-                            <div class="flex items-center gap-1">
-                                {% comment %}
-                                <span class="font-inter text-sm text-gray-600 ml-4">Sort by:</span>
-                                {% endcomment %}
+        <div class="w-full lg:w-2/3 max-w-2xl flex-shrink-0 mx-auto" id="question-container">
+            <div class="flex items-center gap-4 mb-3 relative ml-5 w-full mt-4 mx-auto">
+                {% comment %} Dropdown menu {% endcomment %}
+                <div x-data="{ open: false }" class="relative" @click.away="open = false">
+                    <!-- Sort By Dropdown (best,top,etc)-->
+                    <div class="relative" @click.away="open = false">
+                        <div class="flex items-center gap-1">
+                            {% comment %}
+                            <span class="font-inter text-sm text-gray-600 ml-4">Sort by:</span> {% endcomment %}
 
-                                <!-- Dropdown trigger -->
-                                <button @click="open = !open" :class="{'bg-gray-200': open}" class="font-semibold font-inter text-sm text-gray-600 ml-2 py-2 px-2 flex items-center gap-1 rounded-2xl hover:bg-gray-200 transition-colors">
+                            <!-- Dropdown trigger -->
+                            <button @click="open = !open" :class="{'bg-gray-200': open}" class="font-semibold font-inter text-sm text-gray-600 ml-2 py-2 px-2 flex items-center gap-1 rounded-2xl hover:bg-gray-200 transition-colors">
                                     Latest
                                     <svg rpl="" fill="currentColor" height="16" icon-name="caret-down-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
                                     </svg>
                                 </button>
-                            </div>
+                        </div>
 
-                            <!-- Dropdown menu -->
-                            <div x-show="open" x-transition class="absolute mt-2 ml-3 w-36 bg-white border rounded-2xl shadow-lg z-10" x-cloak>
-                                <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 bg-gray-100 rounded">
-                                    <svg rpl="" fill="currentColor" height="20" icon-name="best-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Dropdown menu -->
+                        <div x-show="open" x-transition class="absolute mt-2 ml-3 w-36 bg-white border rounded-2xl shadow-lg z-10" x-cloak>
+                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 bg-gray-100 rounded">
+                                <svg rpl="" fill="currentColor" height="20" icon-name="best-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M15.22 8.6c-.6-3.51-2.68-6.21-4.76-7.47a.912.912 0 00-.93 0C7.59 2.3 5.37 4.89 4.76 8.61c-2.77 2.65-4.02 4.46-3.57 7.32.17 1.08 1.14 1.9 2.27 1.9h3.18c.61.72 1.53 1.17 2.51 1.17h1.71c.98 0 1.9-.44 2.51-1.17h3.18c1.12 0 2.1-.82 2.27-1.9.45-2.87-.8-4.67-3.59-7.33h-.01zM2.97 15.65c-.24-1.53.15-2.65 1.66-4.33.1 1.83.55 3.45 1.06 4.71H3.46c-.24 0-.45-.17-.49-.38zm6.18 1.55c-.57 0-1.09-.32-1.33-.81-.64-1.31-1.41-3.37-1.41-5.78 0-3.71 1.84-6.34 3.6-7.63 1.81 1.35 3.6 4.16 3.6 7.63 0 2.41-.77 4.47-1.41 5.78-.24.49-.77.81-1.33.81H9.15zm7.88-1.55c-.03.21-.25.38-.49.38h-2.23c.51-1.26.96-2.88 1.06-4.71 1.51 1.69 1.9 2.8 1.66 4.33z"></path>
                                         <path d="M10 8.35c-.91 0-1.65.74-1.65 1.65 0 .91.74 1.65 1.65 1.65.91 0 1.65-.74 1.65-1.65 0-.91-.74-1.65-1.65-1.65z"></path>
                                     </svg>
-                                    <span>Latest</span>
-                                </div>
+                                <span>Latest</span>
+                            </div>
 
-                                <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-                                    <svg rpl="" fill="currentColor" height="20" icon-name="new-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+                                <svg rpl="" fill="currentColor" height="20" icon-name="new-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M10 10.9H4.68V9.1H9.1V4.68h1.8V10c0 .5-.4.9-.9.9z"></path>
                                         <path d="M13.3 16.39c-.99.51-2.11.81-3.3.81-3.97 0-7.2-3.23-7.2-7.2S6.03 2.8 10 2.8c3.22 0 5.96 2.13 6.87 5.06.05.02.11.03.16.05.33.14.63.33.88.58l1.07 1.07C18.75 4.8 14.82 1 10 1s-9 4.03-9 9a9 9 0 009 9c1.17 0 2.28-.23 3.3-.63v-1.98z"></path>
                                         <path d="M19.64 12.76l-3-3a.915.915 0 00-1.27 0l-3 3a.9.9 0 000 1.27.9.9 0 001.27 0l1.46-1.46v6.03c0 .5.4.9.9.9s.9-.4.9-.9v-6.03l1.46 1.46c.18.18.41.26.64.26.23 0 .46-.09.64-.26a.9.9 0 000-1.27z"></path>
                                     </svg>
-                                    <span>New</span>
-                                </div>
-                                <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-                                    <svg rpl="" fill="currentColor" height="20" icon-name="top-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                <span>New</span>
+                            </div>
+                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+                                <svg rpl="" fill="currentColor" height="20" icon-name="top-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M17.1 11.03h-3.3V8.98h1.17a1.328 1.328 0 00.94-2.27l-5.27-5.28c-.34-.34-.94-.34-1.27 0L4.09 6.71c-.38.38-.49.95-.29 1.45.21.5.69.82 1.23.82H6.2v2.05H2.9a1.9 1.9 0 00-1.9 1.9v2.6c0 1.82 1.48 3.3 3.3 3.3h11.4c1.82 0 3.3-1.48 3.3-3.3v-2.6a1.9 1.9 0 00-1.9-1.9zM10 3.34l3.83 3.84H12v7.85c0 1.1-.9 2-2 2s-2-.9-2-2V7.18H6.17L10 3.34zM2.8 15.52v-2.6c0-.06.04-.1.1-.1h3.3v2.2c0 .74.22 1.42.58 2H4.3c-.83 0-1.5-.67-1.5-1.5zm14.4 0c0 .83-.67 1.5-1.5 1.5h-2.48c.36-.58.58-1.26.58-2v-2.2h3.3c.05 0 .1.04.1.1v2.6z"></path>
                                     </svg>
-                                    <span>Top</span>
-                                </div>
-                                <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-                                    <svg rpl="" fill="currentColor" height="20" icon-name="author" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                <span>Top</span>
+                            </div>
+                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+                                <svg rpl="" fill="currentColor" height="20" icon-name="author" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M17.536 2.465a5.006 5.006 0 00-7.072 0 4.98 4.98 0 00-1.458 3.503 1.934 1.934 0 00-.437-.023 1.903 1.903 0 00-1.388.759l-5.457 7.319c-.925 1.24-.806 2.87.288 3.965a3.015 3.015 0 002.14.908c.631 0 1.268-.205 1.826-.621l7.317-5.457a1.9 1.9 0 00.761-1.386 1.892 1.892 0 00-.022-.44 4.982 4.982 0 003.502-1.458 5.006 5.006 0 000-7.07zm-5.316 8.91l-7.318 5.457c-.633.474-1.249.25-1.617-.117-.366-.366-.589-.983-.117-1.616l5.457-7.32.15-.01L9.867 8.86l-2.162 2.162 1.273 1.272 2.162-2.162 1.091 1.09-.01.152zm4.043-3.112c-1.209 1.209-3.316 1.209-4.525 0a3.204 3.204 0 010-4.525 3.18 3.18 0 012.263-.938c.855 0 1.658.333 2.263.938a3.204 3.204 0 010 4.525z"></path>
                                     </svg>
-                                    <span>best</span>
-                                </div>
-
-                                <!-- Add other items like New, Top, Recently here similarly -->
+                                <span>best</span>
                             </div>
+
+                            <!-- Add other items like New, Top, Recently here similarly -->
                         </div>
                     </div>
+                </div>
 
-                    {% comment %} Everywhere {% endcomment %}
-                    <div x-data="{ open: false }" class="relative" @click.away="open = false" x-cloak>
-                        <div class="relative" @click.away="open = false">
-                            <div class="flex items-center gap-1">
-                                <!-- Dropdown trigger -->
-                                <button @click="open = !open" :class="{'bg-gray-200': open}" class="font-semibold font-inter text-sm text-gray-600 ml-2 py-2 px-2 flex items-center gap-1 rounded-2xl hover:bg-gray-200 transition-colors">
+                {% comment %} Everywhere {% endcomment %}
+                <div x-data="{ open: false }" class="relative" @click.away="open = false" x-cloak>
+                    <div class="relative" @click.away="open = false">
+                        <div class="flex items-center gap-1">
+                            <!-- Dropdown trigger -->
+                            <button @click="open = !open" :class="{'bg-gray-200': open}" class="font-semibold font-inter text-sm text-gray-600 ml-2 py-2 px-2 flex items-center gap-1 rounded-2xl hover:bg-gray-200 transition-colors">
                                     Everywhere
                                     <svg rpl="" fill="currentColor" height="16" icon-name="caret-down-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
                                     </svg>
                                 </button>
+                        </div>
+
+                        <!-- Dropdown menu -->
+                        <div x-show="open" x-transition class="absolute mt-2 ml-3 w-55 bg-white border rounded-2xl shadow-lg z-10" x-cloak>
+                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 bg-gray-100 rounded">
+                                <span class="font-bold">Countries</span>
                             </div>
 
-                            <!-- Dropdown menu -->
-                            <div x-show="open" x-transition class="absolute mt-2 ml-3 w-55 bg-white border rounded-2xl shadow-lg z-10" x-cloak>
-                                <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 bg-gray-100 rounded">
-                                    <span class="font-bold">Countries</span>
-                                </div>
-
-                                <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-gray-900" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-900" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
     </svg>
-                                    <span>Australia</span>
-                                </div>
-                                <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-    </svg>
-                                    <span>Bangladesh</span>
-                                </div>
-                                <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-    </svg>
-                                    <span>India</span>
-                                </div>
-
-                                <!-- Add other items like New, Top, Recently here similarly -->
+                                <span>Australia</span>
                             </div>
+                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+    </svg>
+                                <span>Bangladesh</span>
+                            </div>
+                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+    </svg>
+                                <span>India</span>
+                            </div>
+
+                            <!-- Add other items like New, Top, Recently here similarly -->
                         </div>
                     </div>
+                </div>
 
-                    {% comment %} search bar {% endcomment %}
-                    <!-- Search Bar -->
-                    <div class="flex-1">
-                        <div class="relative w-full max-w-sm">
-                            <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                {% comment %} search bar {% endcomment %}
+                <!-- Search Bar -->
+                <div class="flex-1">
+                    <div class="relative w-full max-w-sm">
+                        <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                                 <!-- Search Icon (Heroicons or SVG) -->
                                 <svg rpl="" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg" class="text-gray-500 ml-2">
                                     <!--?lit$20054865694$-->
@@ -126,343 +126,141 @@
                                     <!--?-->
                                 </svg>
                             </span>
-                            <input type="search" placeholder="Search question" class="w-[70%] pl-10 pr-4 py-1.5 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-transparent shadow-sm" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-4 mx-auto">
-                    <!-- Card 1 -->
-                    <div class="bg-white pl-5 pt-5 pb-4 pr-4 mt-5 border rounded-xl hover:shadow-sm flex flex-col md:flex-row items-start justify-between">
-                        <!-- Left Section -->
-                        <div class="flex flex-col md:flex-row items-start gap-3 flex-1">
-                            <img src="https://i.pravatar.cc/50" class="w-12 h-12 rounded-full" alt="avatar" />
-                            <div class="flex-1">
-                                <a hx-get="{% url 'questions' %}" hx-target="#question-container" hx-swap="outerHTML" hx-push-url="true" hx-disable-history="false" class="text-lg font-semibold text-gray-800 hover:text-blue-500 cursor-pointer">Storybook with absolute paths</a>
-                                <p class="text-sm text-gray-500 flex items-center gap-1">
-                                    <svg aria-hidden="true" class="icon-share flip-horizontal" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002zm-.994-1.548V12h-.9c-3.969 0-6.162 2.1-8.001 4.161.514-4.011 2.823-8.16 8-8.16h.9V4.024L17.784 10l-5.977 5.976z"></path>
-                                    </svg>
-                                    Latest reply from
-                                    <span class="font-medium">@harrywolson</span>
-                                    <span class="text-green-500 font-bold text-2xl ml-2">·</span>
-                                    5 minutes ago
-                                </p>
-                                <p class="text-gray-600 mt-2 text-sm line-clamp-2">In our app we use absolute paths for importing. As an ex if we have a path which is relative to the src folder, we can just write import module from "components/myComponent". The issue is that ...</p>
-                            </div>
-                        </div>
-
-                        <!-- Right Section -->
-                        <div class="flex flex-col items-end mt-4 md:mt-0 w-full md:w-[20%]">
-                            <div class="flex -space-x-3 mt-5 mr-2 flex-wrap justify-end">
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=3" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=2" class="w-8 h-8 rounded-full border border-white" />
-                                <div class="w-8 h-8 flex items-center justify-center bg-gray-300 text-gray-700 rounded-full border border-white text-sm font-semibold">+22</div>
-                            </div>
-
-                            <div class="flex items-center text-gray-600 text-sm font-inter font-semibold mt-2">
-                                <svg aria-hidden="true" class="icon-comment font-semibold" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 1a9 9 0 00-9 9c0 1.947.79 3.58 1.935 4.957L.231 17.661A.784.784 0 00.785 19H10a9 9 0 009-9 9 9 0 00-9-9zm0 16.2H6.162c-.994.004-1.907.053-3.045.144l-.076-.188a36.981 36.981 0 002.328-2.087l-1.05-1.263C3.297 12.576 2.8 11.331 2.8 10c0-3.97 3.23-7.2 7.2-7.2s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2z"></path>
-                                </svg>
-                                <span class="ml-2">25 Comments</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% comment %} card 2 {% endcomment %}
-                    <div class="bg-white pl-5 pt-5 pb-4 pr-4 mt-5 border rounded-xl hover:shadow-sm flex flex-col md:flex-row items-start justify-between">
-                        <!-- Left Section -->
-                        <div class="flex flex-col md:flex-row items-start gap-3 flex-1">
-                            <img src="https://i.pravatar.cc/50" class="w-12 h-12 rounded-full" alt="avatar" />
-                            <div class="flex-1">
-                                <a href="http://10.17.90.94:8002/forum/questions" class="text-lg font-semibold text-gray-800 hover:text-blue-500 cursor-pointer">Understanding React Context</a>
-                                <p class="text-sm text-gray-500 flex items-center gap-1">
-                                    <svg aria-hidden="true" class="icon-share flip-horizontal" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002zm-.994-1.548V12h-.9c-3.969 0-6.162 2.1-8.001 4.161.514-4.011 2.823-8.16 8-8.16h.9V4.024L17.784 10l-5.977 5.976z"></path>
-                                    </svg>
-                                    Latest reply from
-                                    <span class="font-medium">@janedoe</span>
-                                    <span class="text-green-500 font-bold text-2xl ml-2">·</span>
-                                    12 minutes ago
-                                </p>
-                                <p class="text-gray-600 mt-2 text-sm line-clamp-2">React Context allows us to share state across the entire app without passing props manually at every level. For example, we can create a context for theme or user authentication and access it anywhere in the component tree…</p>
-                            </div>
-                        </div>
-
-                        <!-- Right Section -->
-                        <div class="flex flex-col items-end mt-4 md:mt-0 w-full md:w-[20%]">
-                            <div class="flex -space-x-3 mt-5 mr-2 flex-wrap justify-end">
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=3" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=2" class="w-8 h-8 rounded-full border border-white" />
-                                <div class="w-8 h-8 flex items-center justify-center bg-gray-300 text-gray-700 rounded-full border border-white text-sm font-semibold">+8</div>
-                            </div>
-
-                            <div class="flex items-center text-gray-600 text-sm font-inter font-semibold mt-2">
-                                <svg aria-hidden="true" class="icon-comment font-semibold" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 1a9 9 0 00-9 9c0 1.947.79 3.58 1.935 4.957L.231 17.661A.784.784 0 00.785 19H10a9 9 0 009-9 9 9 0 00-9-9zm0 16.2H6.162c-.994.004-1.907.053-3.045.144l-.076-.188a36.981 36.981 0 002.328-2.087l-1.05-1.263C3.297 12.576 2.8 11.331 2.8 10c0-3.97 3.23-7.2 7.2-7.2s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2z"></path>
-                                </svg>
-                                <span class="ml-2">12 Comments</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% comment %} card3 {% endcomment %}
-                    <div class="bg-white pl-5 pt-5 pb-4 pr-4 mt-5 border rounded-xl hover:shadow-sm flex flex-col md:flex-row items-start justify-between">
-                        <!-- Left Section -->
-                        <div class="flex flex-col md:flex-row items-start gap-3 flex-1">
-                            <img src="https://i.pravatar.cc/50" class="w-12 h-12 rounded-full" alt="avatar" />
-                            <div class="flex-1">
-                                <a href="http://127.0.0.1:8000/forum/questions" class="text-lg font-semibold text-gray-800 hover:text-blue-500 cursor-pointer">Tailwind CSS Grid Tricks</a>
-                                <p class="text-sm text-gray-500 flex items-center gap-1">
-                                    <svg aria-hidden="true" class="icon-share flip-horizontal" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002zm-.994-1.548V12h-.9c-3.969 0-6.162 2.1-8.001 4.161.514-4.011 2.823-8.16 8-8.16h.9V4.024L17.784 10l-5.977 5.976z"></path>
-                                    </svg>
-                                    Latest reply from
-                                    <span class="font-medium">@mike87</span>
-                                    <span class="text-green-500 font-bold text-2xl ml-2">·</span>
-                                    5 minutes ago
-                                </p>
-                                <p class="text-gray-600 mt-2 text-sm line-clamp-2">Grids in Tailwind CSS are very flexible. You can easily create responsive layouts using grid-cols and gap utilities. For instance, a 3-column layout on desktop can collapse into a single column on mobile screens…</p>
-                            </div>
-                        </div>
-
-                        <!-- Right Section -->
-                        <div class="flex flex-col items-end mt-4 md:mt-0 w-full md:w-[20%]">
-                            <div class="flex -space-x-3 mt-5 mr-2 flex-wrap justify-end">
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=3" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=2" class="w-8 h-8 rounded-full border border-white" />
-                                <div class="w-8 h-8 flex items-center justify-center bg-gray-300 text-gray-700 rounded-full border border-white text-sm font-semibold">+37</div>
-                            </div>
-
-                            <div class="flex items-center text-gray-600 text-sm font-inter font-semibold mt-2">
-                                <svg aria-hidden="true" class="icon-comment font-semibold" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 1a9 9 0 00-9 9c0 1.947.79 3.58 1.935 4.957L.231 17.661A.784.784 0 00.785 19H10a9 9 0 009-9 9 9 0 00-9-9zm0 16.2H6.162c-.994.004-1.907.053-3.045.144l-.076-.188a36.981 36.981 0 002.328-2.087l-1.05-1.263C3.297 12.576 2.8 11.331 2.8 10c0-3.97 3.23-7.2 7.2-7.2s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2z"></path>
-                                </svg>
-                                <span class="ml-2">41 Comments</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% comment %} card 4 {% endcomment %}
-                    <div class="bg-white pl-5 pt-5 pb-4 pr-4 mt-5 border rounded-xl hover:shadow-sm flex flex-col md:flex-row items-start justify-between">
-                        <!-- Left Section -->
-                        <div class="flex flex-col md:flex-row items-start gap-3 flex-1">
-                            <img src="https://i.pravatar.cc/50" class="w-12 h-12 rounded-full" alt="avatar" />
-                            <div class="flex-1">
-                                <a href="http://127.0.0.1:8000/forum/questions" class="text-lg font-semibold text-gray-800 hover:text-blue-500 cursor-pointer">Django ORM Queries Optimization</a>
-                                <p class="text-sm text-gray-500 flex items-center gap-1">
-                                    <svg aria-hidden="true" class="icon-share flip-horizontal" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002zm-.994-1.548V12h-.9c-3.969 0-6.162 2.1-8.001 4.161.514-4.011 2.823-8.16 8-8.16h.9V4.024L17.784 10l-5.977 5.976z"></path>
-                                    </svg>
-                                    Latest reply from
-                                    <span class="font-medium">@alex99</span>
-                                    <span class="text-green-500 font-bold text-2xl ml-2">·</span>
-                                    5 minutes ago
-                                </p>
-                                <p class="text-gray-600 mt-2 text-sm line-clamp-2">TypeScript adds type safety to JavaScript, which helps catch errors at compile time rather than runtime. Using interfaces and type annotations makes your code more predictable and easier to maintain…</p>
-                            </div>
-                        </div>
-
-                        <!-- Right Section -->
-                        <div class="flex flex-col items-end mt-4 md:mt-0 w-full md:w-[20%]">
-                            <div class="flex -space-x-3 mt-5 mr-2 flex-wrap justify-end">
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=3" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=2" class="w-8 h-8 rounded-full border border-white" />
-                                <div class="w-8 h-8 flex items-center justify-center bg-gray-300 text-gray-700 rounded-full border border-white text-sm font-semibold">+13</div>
-                            </div>
-
-                            <div class="flex items-center text-gray-600 text-sm font-inter font-semibold mt-2">
-                                <svg aria-hidden="true" class="icon-comment font-semibold" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 1a9 9 0 00-9 9c0 1.947.79 3.58 1.935 4.957L.231 17.661A.784.784 0 00.785 19H10a9 9 0 009-9 9 9 0 00-9-9zm0 16.2H6.162c-.994.004-1.907.053-3.045.144l-.076-.188a36.981 36.981 0 002.328-2.087l-1.05-1.263C3.297 12.576 2.8 11.331 2.8 10c0-3.97 3.23-7.2 7.2-7.2s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2z"></path>
-                                </svg>
-                                <span class="ml-2">17 Comments</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% comment %} card 5 {% endcomment %}
-                    <div class="bg-white pl-5 pt-5 pb-4 pr-4 mt-5 border rounded-xl hover:shadow-sm flex flex-col md:flex-row items-start justify-between">
-                        <!-- Left Section -->
-                        <div class="flex flex-col md:flex-row items-start gap-3 flex-1">
-                            <img src="https://i.pravatar.cc/50" class="w-12 h-12 rounded-full" alt="avatar" />
-                            <div class="flex-1">
-                                <a href="http://127.0.0.1:8000/forum/questions" class="text-lg font-semibold text-gray-800 hover:text-blue-500 cursor-pointer">Storybook with absolute paths</a>
-                                <p class="text-sm text-gray-500 flex items-center gap-1">
-                                    <svg aria-hidden="true" class="icon-share flip-horizontal" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002zm-.994-1.548V12h-.9c-3.969 0-6.162 2.1-8.001 4.161.514-4.011 2.823-8.16 8-8.16h.9V4.024L17.784 10l-5.977 5.976z"></path>
-                                    </svg>
-                                    Latest reply from
-                                    <span class="font-medium">@harrywolson</span>
-                                    <span class="text-green-500 font-bold text-2xl ml-2">·</span>
-                                    5 minutes ago
-                                </p>
-                                <p class="text-gray-600 mt-2 text-sm line-clamp-2">In our app we use absolute paths for importing. As an ex if we have a path which is relative to the src folder, we can just write import module from "components/myComponent". The issue is that ...</p>
-                            </div>
-                        </div>
-
-                        <!-- Right Section -->
-                        <div class="flex flex-col items-end mt-4 md:mt-0 w-full md:w-[20%]">
-                            <div class="flex -space-x-3 mt-5 mr-2 flex-wrap justify-end">
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=3" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=2" class="w-8 h-8 rounded-full border border-white" />
-                                <div class="w-8 h-8 flex items-center justify-center bg-gray-300 text-gray-700 rounded-full border border-white text-sm font-semibold">+22</div>
-                            </div>
-
-                            <div class="flex items-center text-gray-600 text-sm font-inter font-semibold mt-2">
-                                <svg aria-hidden="true" class="icon-comment font-semibold" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 1a9 9 0 00-9 9c0 1.947.79 3.58 1.935 4.957L.231 17.661A.784.784 0 00.785 19H10a9 9 0 009-9 9 9 0 00-9-9zm0 16.2H6.162c-.994.004-1.907.053-3.045.144l-.076-.188a36.981 36.981 0 002.328-2.087l-1.05-1.263C3.297 12.576 2.8 11.331 2.8 10c0-3.97 3.23-7.2 7.2-7.2s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2z"></path>
-                                </svg>
-                                <span class="ml-2">25 Comments</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% comment %} card 6 {% endcomment %}
-                    <div class="bg-white pl-5 pt-5 pb-4 pr-4 mt-5 border rounded-xl hover:shadow-sm flex flex-col md:flex-row items-start justify-between">
-                        <!-- Left Section -->
-                        <div class="flex flex-col md:flex-row items-start gap-3 flex-1">
-                            <img src="https://i.pravatar.cc/50" class="w-12 h-12 rounded-full" alt="avatar" />
-                            <div class="flex-1">
-                                <h3 class="text-lg font-semibold text-gray-800 hover:text-blue-500 cursor-pointer">Storybook with absolute paths</h3>
-                                <p class="text-sm text-gray-500 flex items-center gap-1">
-                                    <svg aria-hidden="true" class="icon-share flip-horizontal" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002zm-.994-1.548V12h-.9c-3.969 0-6.162 2.1-8.001 4.161.514-4.011 2.823-8.16 8-8.16h.9V4.024L17.784 10l-5.977 5.976z"></path>
-                                    </svg>
-                                    Latest reply from
-                                    <span class="font-medium">@harrywolson</span>
-                                    <span class="text-green-500 font-bold text-2xl ml-2">·</span>
-                                    5 minutes ago
-                                </p>
-                                <p class="text-gray-600 mt-2 text-sm line-clamp-2">In our app we use absolute paths for importing. As an ex if we have a path which is relative to the src folder, we can just write import module from "components/myComponent". The issue is that ...</p>
-                            </div>
-                        </div>
-
-                        <!-- Right Section -->
-                        <div class="flex flex-col items-end mt-4 md:mt-0 w-full md:w-[20%]">
-                            <div class="flex -space-x-3 mt-5 mr-2 flex-wrap justify-end">
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=3" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=1" class="w-8 h-8 rounded-full border border-white" />
-                                <img src="https://i.pravatar.cc/32?img=2" class="w-8 h-8 rounded-full border border-white" />
-                                <div class="w-8 h-8 flex items-center justify-center bg-gray-300 text-gray-700 rounded-full border border-white text-sm font-semibold">+22</div>
-                            </div>
-
-                            <div class="flex items-center text-gray-600 text-sm font-inter font-semibold mt-2">
-                                <svg aria-hidden="true" class="icon-comment font-semibold" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 1a9 9 0 00-9 9c0 1.947.79 3.58 1.935 4.957L.231 17.661A.784.784 0 00.785 19H10a9 9 0 009-9 9 9 0 00-9-9zm0 16.2H6.162c-.994.004-1.907.053-3.045.144l-.076-.188a36.981 36.981 0 002.328-2.087l-1.05-1.263C3.297 12.576 2.8 11.331 2.8 10c0-3.97 3.23-7.2 7.2-7.2s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2z"></path>
-                                </svg>
-                                <span class="ml-2">25 Comments</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% comment %} pagination {% endcomment %}
-                    <div class="flex items-center justify-center w-full h-16 px-3 border-neutral-200">
-                        <nav>
-                            <ul class="flex items-center text-sm leading-tight bg-white border border-neutral-200/70 rounded h-[34px] text-neutral-500">
-                                <li class="h-full">
-                                    <a href="#" class="relative inline-flex items-center h-full px-3 rounded-l group hover:bg-blue-600 hover:text-white">
-                                        <span>Previous</span>
-                                    </a>
-                                </li>
-                                <li class="hidden h-full md:block">
-                                    <a href="#" class="relative inline-flex items-center h-full px-3 text-white bg-blue-600 group">
-                                        <span>1</span>
-                                    </a>
-                                </li>
-                                <li class="hidden h-full md:block">
-                                    <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                        <span>2</span>
-                                    </a>
-                                </li>
-                                <li class="hidden h-full md:block">
-                                    <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                        <span>3</span>
-                                    </a>
-                                </li>
-
-                                <li class="hidden h-full md:block">
-                                    <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                        <span>6</span>
-                                    </a>
-                                </li>
-                                <li class="hidden h-full md:block">
-                                    <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                        <span>7</span>
-                                    </a>
-                                </li>
-                                <li class="hidden h-full md:block">
-                                    <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                        <span>8</span>
-                                    </a>
-                                </li>
-                                <li class="hidden h-full md:block">
-                                    <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                        <span>. . .</span>
-                                    </a>
-                                </li>
-                                <li class="h-full">
-                                    <a href="#" class="relative inline-flex items-center h-full px-3 rounded-r group hover:bg-blue-600 hover:text-white">
-                                        <span>Next</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <input type="search" placeholder="Search question" class="w-[70%] pl-10 pr-4 py-1.5 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-transparent shadow-sm" />
                     </div>
                 </div>
             </div>
-        
-            <!-- MIDDLE GAP -->
-            <div class="w-1 bg-gray-100 flex-shrink-0 mx-auto"></div>
 
-            <!-- RIGHT SIDEBAR -->
-            <div class="w-full lg:w-1/3 flex-shrink-0 mx-auto">
-                <div class="bg-white rounded-lg mt-1 lg:mt-0 p-3 sticky top-4 max-h-[90vh] overflow-y-auto scrollbar-hide mx-auto">
-                    <h3 class="text-lg font-inter text-gray-700 font-sm pb-3">Recent Posts</h3>
-                    <ul class="flex flex-col gap-y-2">
-                        {% for blog in blogs|slice:"8" %}
-                        <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="flex flex-col cursor-pointer">
-                            <li class="flex items-center gap-x-3 p-1 mb-2 border-gray-300 rounded-lg hover:scale-104 transition-transform duration-300 group">
-                                <div class="w-24 h-20 flex-shrink-0 overflow-hidden rounded-md group">
-                                    {% if blog.featured_image %}
-                                    <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110" />
-                                    {% elif blog.featured_image_url %}
-                                    <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110" />
-                                    {% else %}
-                                    <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110" />
-                                    {% endif %}
-                                </div>
+            <div class="space-y-4 mx-auto">
+                {% for question in questions %}
+                <!-- Card 1 -->
+                <div class="bg-white pl-5 pt-5 pb-4 pr-4 mt-5 border rounded-xl hover:shadow-sm flex flex-col md:flex-row items-start justify-between">
+                    <!-- Left Section -->
+                    <div class="flex flex-col md:flex-row items-start gap-3 flex-1">
+                        <img src="{{ question.author.profile_picture.url }}" class="w-12 h-12 rounded-full" alt="avatar" />
+                        <div class="flex-1">
+                            <a href="{% url 'questions' slug=question.slug %}" class="text-lg font-semibold text-gray-800 line-clamp-2 hover:text-blue-500 cursor-pointer">{{ question.title }}</a>
+                            <p class="text-sm text-gray-500 flex items-center gap-1">
+                                <svg aria-hidden="true" class="icon-share flip-horizontal" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002zm-.994-1.548V12h-.9c-3.969 0-6.162 2.1-8.001 4.161.514-4.011 2.823-8.16 8-8.16h.9V4.024L17.784 10l-5.977 5.976z"></path>
+                                    </svg> Latest reply from {% with last_answer=question.answers.first %} {% if last_answer %}
+                                <span class="font-medium">
+                @ {{ last_answer.author.last_name }}
+            </span>
+                                <span class="text-green-500 font-bold text-2xl ml-2">·</span> {{ question.created_at|timesince|slice:":20" }} ago {% else %}
+                                <span class="font-medium italic">No replies yet</span> {% endif %} {% endwith %}
+                            </p>
+                            <p class="text-gray-500 mt-2 text-sm line-clamp-3">{{ question.content }}</p>
+                        </div>
+                    </div>
 
-                                <div class="flex flex-col gap-y-1">
-                                    <h1 class="text-[12px] font-bold group-hover:text-blue-600 line-clamp-1">{{ blog.title }}</h1>
-                                    <p class="text-xs text-gray-600 line-clamp-2">{{ blog.description|truncatewords:10 }}</p>
-                                </div>
-                            </li>
-                            <hr />
-                        </a>
-                        {% endfor %}
-                    </ul>
+                    <!-- Right Section -->
+                    <div class="flex flex-col items-end mt-4 md:mt-0 w-full md:w-[20%]">
+                        <div class="flex -space-x-3 mt-5 mr-2 flex-wrap justify-end">
+                            {% for answer in question.answers.all|slice:"4" %}
+                            <img src="{{ answer.author.profile_picture.url }}" class="w-8 h-8 rounded-full border border-gray-300" /> {% endfor %} {% if question.answers.all %}
+                            <div class="w-8 h-8 flex items-center justify-center bg-gray-300 text-gray-700 rounded-full border border-white text-sm font-semibold">+{{ question.answers.count|add:"-4" }}</div>
+                            {% endif %}
+                        </div>
 
-                    <div class="flex justify-center mt-5">
-                        <button type="button" class="px-5 py-2 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-blue-300 transition">More Blogs ></button>
+                        <div class="flex items-center text-gray-600 text-sm font-inter font-semibold mt-2">
+                            <svg aria-hidden="true" class="icon-comment font-semibold" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 1a9 9 0 00-9 9c0 1.947.79 3.58 1.935 4.957L.231 17.661A.784.784 0 00.785 19H10a9 9 0 009-9 9 9 0 00-9-9zm0 16.2H6.162c-.994.004-1.907.053-3.045.144l-.076-.188a36.981 36.981 0 002.328-2.087l-1.05-1.263C3.297 12.576 2.8 11.331 2.8 10c0-3.97 3.23-7.2 7.2-7.2s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2z"></path>
+                                </svg>
+                            <span class="ml-2">{{ question.answers.count }} Comments</span>
+                        </div>
                     </div>
                 </div>
+
+                {% endfor %} {% comment %} pagination {% endcomment %}
+                <!-- <div class="flex items-center justify-center w-full h-16 px-3 border-neutral-200">
+                    <nav>
+                        <ul class="flex items-center text-sm leading-tight bg-white border border-neutral-200/70 rounded h-[34px] text-neutral-500">
+                            <li class="h-full">
+                                <a href="#" class="relative inline-flex items-center h-full px-3 rounded-l group hover:bg-blue-600 hover:text-white">
+                                    <span>Previous</span>
+                                </a>
+                            </li>
+                            <li class="hidden h-full md:block">
+                                <a href="#" class="relative inline-flex items-center h-full px-3 text-white bg-blue-600 group">
+                                    <span>1</span>
+                                </a>
+                            </li>
+                            <li class="hidden h-full md:block">
+                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
+                                    <span>2</span>
+                                </a>
+                            </li>
+                            <li class="hidden h-full md:block">
+                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
+                                    <span>3</span>
+                                </a>
+                            </li>
+
+                            <li class="hidden h-full md:block">
+                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
+                                    <span>6</span>
+                                </a>
+                            </li>
+                            <li class="hidden h-full md:block">
+                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
+                                    <span>7</span>
+                                </a>
+                            </li>
+                            <li class="hidden h-full md:block">
+                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
+                                    <span>8</span>
+                                </a>
+                            </li>
+                            <li class="hidden h-full md:block">
+                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
+                                    <span>. . .</span>
+                                </a>
+                            </li>
+                            <li class="h-full">
+                                <a href="#" class="relative inline-flex items-center h-full px-3 rounded-r group hover:bg-blue-600 hover:text-white">
+                                    <span>Next</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div> -->
             </div>
         </div>
-    {% comment %} </div> {% endcomment %}
 
-    {% endblock content %}
+        <!-- MIDDLE GAP -->
+        <div class="w-1 bg-gray-100 flex-shrink-0 mx-auto"></div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="w-full lg:w-1/3 flex-shrink-0 mx-auto">
+            <div class="bg-white rounded-lg mt-1 lg:mt-0 p-3 sticky top-4 max-h-[90vh] overflow-y-auto scrollbar-hide mx-auto">
+                <h3 class="text-lg font-inter text-gray-700 font-sm pb-3">Recent Posts</h3>
+                <ul class="flex flex-col gap-y-2">
+                    {% for blog in blogs|slice:"8" %}
+                    <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="flex flex-col cursor-pointer">
+                        <li class="flex items-center gap-x-3 p-1 mb-2 border-gray-300 rounded-lg hover:scale-104 transition-transform duration-300 group">
+                            <div class="w-24 h-20 flex-shrink-0 overflow-hidden rounded-md group">
+                                {% if blog.featured_image %}
+                                <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110" /> {% elif blog.featured_image_url %}
+                                <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110" /> {% else %}
+                                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110" /> {% endif %}
+                            </div>
+
+                            <div class="flex flex-col gap-y-1">
+                                <h1 class="text-[12px] font-bold group-hover:text-blue-600 line-clamp-1">{{ blog.title }}</h1>
+                                <p class="text-xs text-gray-600 line-clamp-2">{{ blog.description|truncatewords:10 }}</p>
+                            </div>
+                        </li>
+                        <hr />
+                    </a>
+                    {% endfor %}
+                </ul>
+                <!-- 
+                <div class="flex justify-center mt-5">
+                    <button type="button" class="px-5 py-2 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-blue-300 transition">More Blogs ></button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    {% comment %} </div> {% endcomment %} {% endblock content %}
 </div>
-
-
-

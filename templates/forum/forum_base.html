@@ -4,10 +4,10 @@
 <html lang="en" data-theme="light">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 
+    <!-- 
       ================================================================================
       SEO & DYNAMIC METADATA
       - These blocks can be overridden in child templates to provide page-specific SEO.
@@ -15,41 +15,32 @@
       ================================================================================
     -->
 
-  <!-- Primary Meta Tags -->
-  <title>
-    {% block title %}
-    TechLife || Know The Current Situation
-    {% endblock title %}
-  </title>
-  {% comment %} {% tailwind_css %} {% endcomment %}
-  <meta name="description"
-    content="{% block meta_description %}Discover a wide range of high-quality products at unbeatable prices. Your one-stop shop for electronics, fashion, and more.{% endblock meta_description %}" />
+    <!-- Primary Meta Tags -->
+    <title>
+        {% block title %} TechLife || Know The Current Situation {% endblock title %}
+    </title>
+    {% comment %} {% tailwind_css %} {% endcomment %}
+    <meta name="description" content="{% block meta_description %}Discover a wide range of high-quality products at unbeatable prices. Your one-stop shop for electronics, fashion, and more.{% endblock meta_description %}" />
 
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-  <meta property="og:title"
-    content="{% block og_title %}{% block title_for_socials %}{{ self.title }}{% endblock %}{% endblock %}" />
-  <meta property="og:description"
-    content="{% block og_description %}{% block description_for_socials %}{{ self.meta_description }}{% endblock %}{% endblock %}" />
-  <meta property="og:image"
-    content="{% block og_image %}{% static 'images/default_og_image.png' %}{% endblock og_image %}" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:title" content="{% block og_title %}{% block title_for_socials %}{{ self.title }}{% endblock %}{% endblock %}" />
+    <meta property="og:description" content="{% block og_description %}{% block description_for_socials %}{{ self.meta_description }}{% endblock %}{% endblock %}" />
+    <meta property="og:image" content="{% block og_image %}{% static 'images/default_og_image.png' %}{% endblock og_image %}" />
 
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="{{ request.build_absolute_uri }}" />
-  <meta property="twitter:title"
-    content="{% block twitter_title %}{% block title_for_socials_twitter %}{{ self.og_title }}{% endblock %}{% endblock %}" />
-  <meta property="twitter:description"
-    content="{% block twitter_description %}{% block description_for_socials_twitter %}{{ self.og_description }}{% endblock %}{% endblock %}" />
-  <meta property="twitter:image"
-    content="{% block twitter_image %}{% block og_image_twitter %}{{ self.og_image }}{% endblock %}{% endblock %}" />
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="twitter:title" content="{% block twitter_title %}{% block title_for_socials_twitter %}{{ self.og_title }}{% endblock %}{% endblock %}" />
+    <meta property="twitter:description" content="{% block twitter_description %}{% block description_for_socials_twitter %}{{ self.og_description }}{% endblock %}{% endblock %}" />
+    <meta property="twitter:image" content="{% block twitter_image %}{% block og_image_twitter %}{{ self.og_image }}{% endblock %}{% endblock %}" />
 
-  <!-- HTMX CSRF -->
-  {% csrf_token %}
-  <meta name="csrf-token" content="{{ csrf_token }}" />
+    <!-- HTMX CSRF -->
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}" />
 
-  <!-- 
+    <!-- 
       ================================================================================
       STYLESHEETS & LIBRARIES
       ================================================================================
@@ -57,24 +48,21 @@
 
 
 
-    
-  <!-- Tailwind CSS -->
-  <link rel="stylesheet" href="{% static 'css/output.css' %}" />
 
-  <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-    integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
 
-    {% comment %} use for markdown editor {% endcomment %}
-      {% comment %} <!-- SimpleMDE CSS -->
-      <link rel="stylesheet" h  ref="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" /> {% comment %} use for markdown editor {% endcomment %} {% comment %}
+    <!-- SimpleMDE CSS -->
+    <link rel="stylesheet" h ref="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 
-      <!-- SimpleMDE JS -->
-      <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script> {% endcomment %}
+    <!-- SimpleMDE JS -->
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script> {% endcomment %}
 
     <!-- CKEditor 5 Classic Build -->
     <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
@@ -82,165 +70,139 @@
 
 
 
- 
+
 
 
 
 
 
     <!-- HTMX & Alpine.js -->
-    <script src="https://unpkg.com/htmx.org@1.9.12"
-      xintegrity="sha384-qbtR4rS9adLkqseSremUcbR/vgFA2A6XPKYoHCi8S4EbMLjI/RJjVqEX+qtYLaqd"
-      crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12" xintegrity="sha384-qbtR4rS9adLkqseSremUcbR/vgFA2A6XPKYoHCi8S4EbMLjI/RJjVqEX+qtYLaqd" crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.0/dist/cdn.min.js" defer></script>
 
 
     <!-- Tailwind CSS CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
 
 
     <!-- Font Awesome Free CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Google Fonts Preconnect -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-
-  {% block extra_head %} {% endblock extra_head %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> {% block extra_head %} {% endblock extra_head %}
 </head>
 
 <body class="font-inter leading-normal tracking-normal bg-gray-100">
-  {% include 'forum/forum_navbar.html' %}
+    {% include 'forum/forum_navbar.html' %}
 
 
 
-  <div class="flex">
-    <!-- Sidebar -->
-    <aside class="h-screen absolute md:sticky z-10 top-16">
-      {% include 'forum/forum_sidebar.html' %}
-    </aside>
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="h-screen absolute md:sticky z-10 top-16">
+            {% include 'forum/forum_sidebar.html' %}
+        </aside>
 
-    <!-- Main Content -->
-    <main id="blog_post_form" class="container mx-auto flex-grow min-h-[calc(100vh-128px)] px-3 py-6 bg-white" >
-      {% block content %}
-      <!-- Page content here -->
-        {% include 'forum/partial_create_blog_content.html' %}
-
-      {% endblock content %}
-    </main>
-  </div>
+        <!-- Main Content -->
+        <main id="blog_post_form" class="container mx-auto flex-grow min-h-[calc(100vh-128px)] px-3 py-6 bg-white">
+            {% block content %} {% endblock content %}
+        </main>
+    </div>
 
 
 
 
-  <footer class="p-4 text-center shadow-md bg-gray-200">
-    {% include 'include/footer.html' %}
-    <p>&copy; {% now "Y" %} TechLife | All Rights Reserved</p>
-  </footer>
+    {% include 'forum/forum_footer.html' %}
 
-  <!-- =========== LUCIDE ICONS SCRIPT (এই দুটি লাইন যোগ করুন) =========== -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    lucide.createIcons();
-  </script>
 
-  <!-- DaisyUI Play CDN -->
-  {% comment %} <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> {% endcomment %}
+    <script src="https://unpkg.com/lucide@latest "></script>
+    <script>
+        lucide.createIcons();
+    </script>
 
-  <!-- tailwind -->
-  {% comment %} <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> {% endcomment %}
+    <!-- DaisyUI Play CDN -->
+    {% comment %}
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4 "></script> {% endcomment %}
 
-  <!-- HTMX -->
-  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <!-- tailwind -->
+    {% comment %}
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4 "></script> {% endcomment %}
 
-  <!-- HTMX Configuration & Loading States -->
-  <script>
-    // HTMX: Update sidebar content when navigating via HTMX
-    {% comment %} document.body.addEventListener('htmx:afterSettle', function(evt) {
-      // Always update sidebar when content changes via HTMX
-      if (evt.detail.target && evt.detail.target.id === 'content') {
-        // Update sidebar content asynchronously with a slight delay
-        setTimeout(function() {
-          htmx.ajax('GET', '{% url "sidebar_partial" %}', {
-            target: '#sidebar-content',
-            swap: 'innerHTML'
-          });
-        }, 100);
-      }
-    }); {% endcomment %}
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.12 "></script>
 
-    // HTMX Loading indicator
-    document.body.addEventListener('htmx:beforeRequest', function(evt) {
-      // Add loading class to content area
-      const content = document.getElementById('content');
-      if (content) {
-        content.style.opacity = '0.6';
-        content.style.transition = 'opacity 0.2s ease';
-      }
-    });
+    <!-- HTMX Configuration & Loading States -->
+    <script>
+        // HTMX Loading indicator
+        document.body.addEventListener('htmx:beforeRequest', function(evt) {
+            // Add loading class to content area
+            const content = document.getElementById('content');
+            if (content) {
+                content.style.opacity = '0.6';
+                content.style.transition = 'opacity 0.2s ease';
+            }
+        });
 
-    document.body.addEventListener('htmx:afterRequest', function(evt) {
-      // Remove loading state
-      const content = document.getElementById('content');
-      if (content) {
-        content.style.opacity = '1';
-      }
-    });
+        document.body.addEventListener('htmx:afterRequest', function(evt) {
+            // Remove loading state
+            const content = document.getElementById('content');
+            if (content) {
+                content.style.opacity = '1';
+            }
+        });
 
-    // Handle errors gracefully
-    document.body.addEventListener('htmx:responseError', function(evt) {
-      console.error('HTMX Error:', evt.detail);
-      const content = document.getElementById('content');
-      if (content) {
-        content.innerHTML = `
-          <div class="flex flex-col items-center justify-center min-h-[400px] text-center">
-            <h2 class="text-xl font-bold text-red-600 mb-4">Something went wrong</h2>
-            <p class="text-gray-600 mb-6">Unable to load the content. Please try again.</p>
-            <button onclick="window.location.reload()" 
-                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        // Handle errors gracefully
+        document.body.addEventListener('htmx:responseError', function(evt) {
+            console.error('HTMX Error:', evt.detail);
+            const content = document.getElementById('content');
+            if (content) {
+                content.innerHTML = `
+          <div class="flex flex-col items-center justify-center min-h-[400px] text-center ">
+            <h2 class="text-xl font-bold text-red-600 mb-4 ">Something went wrong</h2>
+            <p class="text-gray-600 mb-6 ">Unable to load the content. Please try again.</p>
+            <button onclick="window.location.reload() " 
+                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors ">
               Refresh Page
             </button>
           </div>
         `;
-        content.style.opacity = '1';
-      }
-    });
+                content.style.opacity = '1';
+            }
+        });
 
-     document.body.addEventListener('htmx:afterSettle', function(evt) {
-    const titleElement = evt.detail.target.querySelector('title, [data-title]');
-    if (titleElement) {
-      document.title = titleElement.textContent || titleElement.getAttribute('data-title');
-    }
-  });
+        document.body.addEventListener('htmx:afterSettle', function(evt) {
+            const titleElement = evt.detail.target.querySelector('title, [data-title]');
+            if (titleElement) {
+                document.title = titleElement.textContent || titleElement.getAttribute('data-title');
+            }
+        });
 
-  // ✅ HTMX Back/Forward Blur Fix
-  document.body.addEventListener('htmx:historyRestore', function(evt) {
-    const content = document.getElementById('content');
-    if (content) {
-      content.style.opacity = '1';
-    }
-  });
+        document.body.addEventListener('htmx:historyRestore', function(evt) {
+            const content = document.getElementById('content');
+            if (content) {
+                content.style.opacity = '1';
+            }
+        });
 
-  document.body.addEventListener('htmx:beforeHistorySave', function(evt) {
-    const content = document.getElementById('content');
-    if (content) {
-      content.style.opacity = '1';
-    }
-  });
-    
-  </script>
+        document.body.addEventListener('htmx:beforeHistorySave', function(evt) {
+            const content = document.getElementById('content');
+            if (content) {
+                content.style.opacity = '1';
+            }
+        });
+    </script>
 
 
 
 
 
 
-  <!-- Script js -->
-  <script src="{% static 'js/script.js' %}"></script>
+    <!-- Script js -->
+    <script src="{% static 'js/script.js' %} "></script>
 </body>
 
 </html>
