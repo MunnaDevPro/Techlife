@@ -100,11 +100,58 @@
         }
     </style>
 
+    <!-- loader -->
+    <style>
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            /* Background color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            /* Sob kichur upore thakbe */
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            /* Loader er color */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        /* Page load hoye gele loader hide korar class */
+        
+        .loader-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+    </style>
+
 </head>
 
 <body id="user_dashboard" class="font-inter leading-normal tracking-normal bg-white">
 
-
+    <!-- loader -->
+    <div id="loader-wrapper">
+        <div class="loader"></div>
+    </div>
 
     {% include 'include/navbar.html' %} {% include 'include/notification.html' %}
 
@@ -158,32 +205,23 @@
     </script>
 
     <script>
-        // =================================================================================
-        // =================================================================================
         function initializeDynamicContent() {
-            // --------------------------------------------------------------------------------
-            // --------------------------------------------------------------------------------
-            // Modal Elements 
             const shareBtn = document.getElementById('shareBtn');
             const shareModal = document.getElementById('shareModal');
             const closeModal = document.getElementById('closeModal');
             const shareLinks = document.querySelectorAll('.share-link');
-            // Data Container 
             const dataContainer = document.getElementById('share-data-container');
-            // Modal Open/Close Logic 
-            // Open modal
+
             if (shareBtn && shareModal) {
                 shareBtn.onclick = () => {
                     shareModal.classList.remove('hidden');
                 };
             }
-            // Close modal on X button
             if (closeModal && shareModal) {
                 closeModal.onclick = () => {
                     shareModal.classList.add('hidden');
                 };
             }
-            // Close modal if click outside modal box
             if (shareModal) {
                 shareModal.onclick = (e) => {
                     if (e.target === shareModal) {
@@ -191,7 +229,6 @@
                     }
                 };
             }
-            // Social Share & AJAX Recording Logic 
             if (dataContainer) {
                 const postId = dataContainer.dataset.postId;
                 const shareUrl = dataContainer.dataset.shareUrl;
@@ -203,7 +240,7 @@
                         e.preventDefault();
                         const platform = link.dataset.platform;
                         let url = '';
-                        //  Open social share popup 
+
                         switch (platform) {
                             case 'facebook':
                                 url = `https://www.facebook.com/sharer/sharer.php?u=${postUrl}`;
@@ -219,7 +256,7 @@
                                 break;
                         }
                         window.open(url, '_blank', 'width=600,height=400');
-                        // Record share in backend (AJAX)
+
                         fetch(shareUrl, {
                                 method: 'POST',
                                 headers: {
@@ -240,8 +277,7 @@
                     };
                 });
             }
-            // --------------------------------------------------------------------------------
-            // --------------------------------------------------------------------------------
+
             let speech = null;
             const titleElement = document.getElementById('blog-title');
             const descriptionElement = document.getElementById('blog-description');
@@ -318,7 +354,7 @@
                     }
                 };
             });
-        } // initializeDynamicContent 
+        }
         document.addEventListener('DOMContentLoaded', initializeDynamicContent);
         document.body.addEventListener('htmx:afterSwap', function(evt) {
             if (evt.detail.target && evt.detail.target.id === 'container') {
@@ -345,7 +381,7 @@
                 content.style.opacity = '1';
             }
         });
-        // Handle errors gracefully
+
         document.body.addEventListener('htmx:responseError', function(evt) {
             console.error('HTMX Error:', evt.detail);
             const content = document.getElementById('content');
@@ -363,7 +399,7 @@
                 content.style.opacity = '1';
             }
         });
-        // SEO: Update page title for HTMX requests
+
         document.body.addEventListener('htmx:afterSettle', function(evt) {
             const titleElement = evt.detail.target.querySelector('title, [data-title]');
             if (titleElement) {
@@ -373,7 +409,7 @@
     </script>
 
 
-
+    <!-- o -->
 
 
     <!-- Script js -->
@@ -382,6 +418,29 @@
     <script>
         AOS.init();
     </script>
+
+
+
+    <!-- loader -->
+    <script>
+        window.addEventListener("load", function() {
+            const loader = document.getElementById("loader-wrapper");
+            loader.classList.add("loader-hidden");
+        });
+    </script>
+</body>
+
+
+
+
+
+
+<!-- Script js -->
+<script src="{% static 'js/script.js' %}"></script>
+
+<script>
+    AOS.init();
+</script>
 </body>
 
 </html>

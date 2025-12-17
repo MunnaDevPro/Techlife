@@ -32,6 +32,7 @@ urlpatterns = [
     
 
     path('category/<slug:slug>/', category_post, name='category_post'),
+    
     path(
         "update/<slug:slug>/<str:stat_type>/",
         update_blog_stat,
@@ -48,15 +49,11 @@ urlpatterns = [
     path('post/<slug:post_slug>/share/', record_share, name='record_share'),    
 
     
-    # add commnets
     path('post/<slug:post_slug>/comment/', add_comment, name='add_comment'),
 
     path('comment/<int:comment_id>/reply/', add_reply, name='add_reply'),
     
-    # like section
     path('like/<slug:like_slug>/', user_like_toggle, name='user_like_toggle'),
-    
-    
     
     path('search/', redirect_search_results, name='redirect_search_results'),
     

@@ -59,11 +59,9 @@ def blog_details_view(request, slug):
 
     
     
-    # most_viewed blog
     most_viewed_blogs = BlogPost.objects.filter(status="published").order_by("-views")
 
 
-    # all comment section
     all_comments = (
         Comment.objects
         .filter(post=blog_detail) 
@@ -77,7 +75,7 @@ def blog_details_view(request, slug):
     reply_count = sum(comment.replies.count() for comment in all_comments)
     total_comments = comment_count + reply_count
     
-    paginator = Paginator(all_comments, 5) 
+    paginator = Paginator(all_comments, 3) 
     page_number = request.GET.get('page', 1) 
     try:
         page_obj = paginator.page(page_number)
@@ -85,12 +83,11 @@ def blog_details_view(request, slug):
         page_obj = paginator.page(paginator.num_pages)
     
     
-    # sort by comment
     sort_by = request.GET.get('sort_by', 'newest')
     comment_order = '-created_at'
 
     if sort_by == 'oldest':
-        comment_order = 'created_at'
+           comment_order = 'created_at'
     elif sort_by == 'recent':
         comment_order = '-updated_at'
 
@@ -563,10 +560,10 @@ def create_blog(request):
             for file in additional_image_files:
                 BlogAdditionalImage.objects.create(
                     blog=new_blog, 
-                    additional_image=file  # model field er shathe match korbe
+                    additional_image=file  
                 )
-            
-            # handle Additional Image URLs
+
+
             if additional_image_url_list:
                 urls = [url.strip() for url in additional_image_url_list.split(',') if url.strip()]
                 for url in urls:

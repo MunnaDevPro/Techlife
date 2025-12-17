@@ -1,130 +1,127 @@
-{% load static %} {% block content %}
-<footer class="bg-white text-gray-800 font-sans border-t border-gray-200">
-    <div class="container flex flex-col lg:flex-row gap-8 px-4 py-8 mx-auto max-w-7xl">
+{% load static %}
+<footer class="mx-auto w-full text-gray-800 overflow-hidden shadow-2xl">
 
-        <!-- Links Section - Now First on Mobile -->
-        <div class="w-full lg:w-3/5 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-6 order-1 lg:order-2">
-            <!-- Quick Links -->
-            <div class="flex flex-col gap-3 text-center sm:text-left">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Quick Links</h3>
-                <ul class="flex flex-col gap-3 text-gray-600 text-sm">
-                    <li><a href="#" class="hover:text-blue-600 transition-colors duration-200 py-1 block hover:translate-x-1 transform transition-transform">Tech News</a></li>
-                    <li><a href="#" class="hover:text-blue-600 transition-colors duration-200 py-1 block hover:translate-x-1 transform transition-transform">Career Guides</a></li>
-                    <li><a href="#" class="hover:text-blue-600 transition-colors duration-200 py-1 block hover:translate-x-1 transform transition-transform">Our Authors</a></li>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
+
+            <div class="sm:col-span-2 lg:col-span-5">
+                <img src="{% static 'image/logo-front.png' %}" alt="Techlife-bd Logo" class="h-10 w-auto mb-5 rounded-md">
+                <p class="text-sm leading-relaxed text-gray-600 mb-6 font-light">
+                    Techlife is a curated newsletter that delivers the most engaging and important stories, connections, and summaries from the world of technology every day. We are dedicated to tech enthusiasts.
+                </p>
+
+                <div class="flex space-x-4">
+                    <div class="flex space-x-4">
+                        <a href="" class="w-10 h-10 rounded-full bg-black/5 backdrop-blur-sm hover:bg-blue-600 border border-black/10 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:border-blue-500 text-gray-700 hover:text-white" aria-label="Facebook">
+                            <i class="fa-brands fa-facebook-f text-lg"></i>
+                        </a>
+                        <a href="#" class="-ml-5 w-10 h-10 rounded-full bg-black/5 backdrop-blur-sm hover:bg-black border border-black/10 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:border-gray-700 text-gray-700 hover:text-white" aria-label="Twitter">
+                            <i class="fa-brands fa-x-twitter text-lg"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-black/5 backdrop-blur-sm hover:bg-blue-500 border border-black/10 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:border-blue-400 text-gray-700 hover:text-white" aria-label="LinkedIn">
+                            <i class="fa-brands fa-linkedin-in text-lg"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-black/5 backdrop-blur-sm hover:bg-green-600 border border-black/10 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:border-green-500 text-gray-700 hover:text-white" aria-label="WhatsApp">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <h3 class="text-gray-900 font-semibold text-lg mb-5 relative inline-block">
+                    Quick Links
+                    <span class="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-blue-500 to-cyan-400"></span>
+                </h3>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 hover:translate-x-1 inline-flex items-center gap-2 transition-all duration-200"><i class="fa-solid fa-chevron-right text-xs text-blue-500"></i> Home</a></li>
+                    <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 hover:translate-x-1 inline-flex items-center gap-2 transition-all duration-200"><i class="fa-solid fa-chevron-right text-xs text-blue-500"></i> About Us</a></li>
+                    <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 hover:translate-x-1 inline-flex items-center gap-2 transition-all duration-200"><i class="fa-solid fa-chevron-right text-xs text-blue-500"></i> Our Authors</a></li>
+                    <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 hover:translate-x-1 inline-flex items-center gap-2 transition-all duration-200"><i class="fa-solid fa-chevron-right text-xs text-blue-500"></i> Advertise</a></li>
+                    <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 hover:translate-x-1 inline-flex items-center gap-2 transition-all duration-200"><i class="fa-solid fa-chevron-right text-xs text-blue-500"></i> Careers</a></li>
                 </ul>
             </div>
 
-            <!-- Legal -->
-            <div class="flex flex-col gap-3 text-center sm:text-left">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Legal</h3>
-                <ul class="flex flex-col gap-3 text-gray-600 text-sm">
-                    <li><a href="#" class="hover:text-blue-600 transition-colors duration-200 py-1 block hover:translate-x-1 transform transition-transform">Privacy Policy</a></li>
-                    <li><a href="#" class="hover:text-blue-600 transition-colors duration-200 py-1 block hover:translate-x-1 transform transition-transform">Terms of Service</a></li>
-                    <li><a href="#" class="hover:text-blue-600 transition-colors duration-200 py-1 block hover:translate-x-1 transform transition-transform">Contact Us</a></li>
+            <div class="lg:col-span-2">
+                <h3 class="text-gray-900 font-semibold text-lg mb-5 relative inline-block">
+                    Categories
+                    <span class="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-blue-500 to-cyan-400"></span>
+                </h3>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 hover:translate-x-1 inline-flex items-center gap-2 transition-all duration-200"><i class="fa-solid fa-tag text-xs text-blue-500"></i> Tech News</a></li>
+                    <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 hover:translate-x-1 inline-flex items-center gap-2 transition-all duration-200"><i class="fa-solid fa-tag text-xs text-blue-500"></i> Career Guides</a></li>
+                    <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 hover:translate-x-1 inline-flex items-center gap-2 transition-all duration-200"><i class="fa-solid fa-tag text-xs text-blue-500"></i> Gadgets</a></li>
+                    <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 hover:translate-x-1 inline-flex items-center gap-2 transition-all duration-200"><i class="fa-solid fa-tag text-xs text-blue-500"></i> Software</a></li>
+                    <li><a href="#" class="text-sm text-gray-600 hover:text-gray-900 hover:translate-x-1 inline-flex items-center gap-2 transition-all duration-200"><i class="fa-solid fa-tag text-xs text-blue-500"></i> AI & ML</a></li>
                 </ul>
             </div>
 
-            <!-- Company -->
-            <div class="flex flex-col gap-3 text-center sm:text-left">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Company</h3>
-                <ul class="flex flex-col gap-3 text-gray-600 text-sm">
-                    <li><a href="#" class="hover:text-blue-600 transition-colors duration-200 py-1 block hover:translate-x-1 transform transition-transform">About Us</a></li>
-                    <li><a href="#" class="hover:text-blue-600 transition-colors duration-200 py-1 block hover:translate-x-1 transform transition-transform">Advertise</a></li>
-                    <li><a href="#" class="hover:text-blue-600 transition-colors duration-200 py-1 block hover:translate-x-1 transform transition-transform">Careers</a></li>
+            <div class="lg:col-span-3">
+                <h3 class="text-gray-900 font-semibold text-lg relative inline-block">
+                    Contact
+                    <span class="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-blue-500 to-cyan-400"></span>
+                </h3>
+
+
+                <ul class="space-y-4 mt-6">
+                    <li class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fa-solid fa-envelope text-blue-500 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1 font-medium">Email</p>
+                            <a href="mailto:contact@techlife.com" class="text-sm text-gray-700 hover:text-gray-900 transition-colors break-all">
+                contact@techlife.com
+            </a>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fa-solid fa-phone text-blue-500 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1 font-medium">Phone</p>
+                            <a href="tel:+8801700895489" class="text-sm text-gray-700 hover:text-gray-900 transition-colors break-all">
+                +8801700895489
+            </a>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fa-solid fa-location-dot text-blue-500 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1 font-medium">Office Address</p>
+                            <p class="text-sm text-gray-700 leading-relaxed">
+                                Green Road, Dhaka
+                            </p>
+                        </div>
+                    </li>
                 </ul>
-            </div>
-        </div>
-
-        <!-- Logo and Description Section - Now Second on Mobile -->
-        <div class="w-full lg:w-2/5 flex flex-col gap-6 order-2 lg:order-1 items-center sm:items-start text-center sm:text-left">
-            <!-- Logo -->
-            <div class="flex justify-center sm:justify-start">
-                <img src="{% static 'image/logo-front.png' %}" alt="Techlife-bd Logo" class="h-9 sm:h-9 rounded-md" />
-            </div>
-
-            <!-- Description -->
-            <p class="text-sm sm:text-base text-gray-600 leading-relaxed max-w-md">
-                Techlife is a curated newsletter that delivers the most engaging and important stories, connections, and summaries from the world of technology every day. We are dedicated to tech enthusiasts.
-            </p>
-
-            <!-- Social Icons - Centered on Mobile -->
-            <div class="flex flex-wrap justify-center sm:justify-start items-center gap-4 mt-2">
-                <div class="flex w-10 h-10 border-2 rounded-xl border-[#1877F2] justify-center items-center hover:bg-[#1877F2] hover:text-white transition-all duration-300 ">
-                    <a href="https://www.facebook.com/techlife.com.bd" class="text-[#1877F2] hover:text-white text-base">
-                        <i class="fa-brands fa-facebook-f"></i>
-                    </a>
-                </div>
-
-                <div class="flex w-10 h-10 border-2 rounded-xl border-[#1DA1F2] justify-center items-center hover:bg-[#1DA1F2] hover:text-white transition-all duration-300">
-                    <a href="#" class="text-[#1DA1F2] hover:text-white text-base">
-                        <i class="fa-brands fa-x-twitter"></i>
-                    </a>
-                </div>
-
-                <div class="flex w-10 h-10 border-2 rounded-xl border-[#0A66C2] justify-center items-center hover:bg-[#0A66C2] hover:text-white transition-all duration-300">
-                    <a href="#" class="text-[#0A66C2] hover:text-white text-base">
-                        <i class="fa-brands fa-linkedin-in"></i>
-                    </a>
-                </div>
-
-                <div class="flex w-10 h-10 border-2 rounded-xl border-[#25D366] justify-center items-center hover:bg-[#25D366] hover:text-white transition-all duration-300 ">
-                    <a href="#" target="_blank" class="text-[#25D366] hover:text-white text-base">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </a>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Back to Top Button - Mobile Optimized -->
-    <div class="pt-1 pb-1">
-        <div class="container flex justify-center items-center px-4 mx-auto max-w-7xl">
-            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" class="flex items-center gap-3 group text-base font-medium text-gray-700 hover:text-blue-600 transition duration-300 focus:outline-none py-3 px-6 rounded-xl hover:bg-gray-50 border border-gray-200 hover:border-blue-200">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-arrow-up-circle group-hover:scale-110 transform transition">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="m16 12-4-4-4 4" />
-                    <path d="M12 16V8" />
-                </svg>
-                Back to Top
-            </button>
-        </div>
-    </div>
+    <div class="relative z-10 border-t border-black/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+                <p class="text-xs text-gray-500 text-center sm:text-left">
+                    &copy; {% now "Y" %} <span class="text-gray-800 font-medium">TechLife Blog</span>. All Rights Reserved.
+                </p>
 
-    <!-- Copyright Section - Mobile Optimized -->
-    <div class="bg-gray-50 py-5">
-        <div class="container flex justify-center items-center px-4 mx-auto max-w-7xl">
-            <p class="text-sm sm:text-base text-gray-500 text-center font-medium">
-                &copy; {% now "Y" %} TechLife | All Rights Reserved
-            </p>
+                <div>
+                    <p class="text-xs text-gray-500 text-center">Deploped by <a href="#" class="text-blue-600 font-bold">Intelligent Systems & Solution Limited</a></p>
+                </div>
+
+                <div class="flex space-x-6 text-xs">
+                    <a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">Privacy Policy</a>
+                    <span class="text-gray-500">•</span>
+                    <a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">Terms of Service</a>
+                </div>
+            </div>
         </div>
     </div>
 </footer>
-
-<style>
-    /* Additional mobile-specific optimizations */
-    
-    @media (max-width: 640px) {
-        footer {
-            font-size: 14px;
-        }
-        .container {
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-        /* Smooth animations */
-        .hover\\:translate-x-1:hover {
-            transform: translateX(4px);
-        }
-    }
-    
-    @media (min-width: 641px) and (max-width: 1024px) {
-        .container {
-            padding-left: 2rem;
-            padding-right: 2rem;
-        }
-    }
-</style>
-
-{% endblock content %}
