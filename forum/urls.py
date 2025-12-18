@@ -1,9 +1,10 @@
 from django.urls import path
-from forum.views import questions_list, questions
+from forum.views import questions_list, questions, post_answer
 
 
 urlpatterns = [
     path("all_question/",questions_list, name="questions_list"),
-    path("questions/<slug:slug>/",questions, name="questions")
+    path("questions/<slug:slug>/",questions, name="questions"),
+    path("question/<slug:slug>/answer/",post_answer,name="post_answer")
 
 ]
