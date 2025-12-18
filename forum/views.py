@@ -71,7 +71,7 @@ def questions_list(request):
         questions = questions.order_by("-created_at")
   
 
-    paginator = Paginator(questions, 2) 
+    paginator = Paginator(questions, 5) 
     page_number = request.GET.get('page')
     questions = paginator.get_page(page_number)
 
