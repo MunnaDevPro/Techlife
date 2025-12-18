@@ -1522,10 +1522,6 @@
     border-top-style: var(--tw-border-style);
     border-top-width: 1px;
   }
-  .border-r {
-    border-right-style: var(--tw-border-style);
-    border-right-width: 1px;
-  }
   .border-b {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
@@ -1856,9 +1852,6 @@
   .p-1 {
     padding: calc(var(--spacing) * 1);
   }
-  .p-1\.5 {
-    padding: calc(var(--spacing) * 1.5);
-  }
   .p-2 {
     padding: calc(var(--spacing) * 2);
   }
@@ -2119,6 +2112,9 @@
   .text-\[13px\] {
     font-size: 13px;
   }
+  .text-\[15px\] {
+    font-size: 15px;
+  }
   .text-\[16px\] {
     font-size: 16px;
   }
@@ -2228,6 +2224,9 @@
   }
   .text-\[\#1877F2\] {
     color: #1877F2;
+  }
+  .text-\[sm\] {
+    color: sm;
   }
   .text-blue-100 {
     color: var(--color-blue-100);
@@ -2570,14 +2569,6 @@
       }
     }
   }
-  .group-hover\:-translate-x-1 {
-    &:is(:where(.group):hover *) {
-      @media (hover: hover) {
-        --tw-translate-x: calc(var(--spacing) * -1);
-        translate: var(--tw-translate-x) var(--tw-translate-y);
-      }
-    }
-  }
   .group-hover\:translate-x-1 {
     &:is(:where(.group):hover *) {
       @media (hover: hover) {
@@ -2685,13 +2676,6 @@
     &:is(:where(.group):hover *) {
       @media (hover: hover) {
         color: var(--color-blue-700);
-      }
-    }
-  }
-  .group-hover\:text-gray-600 {
-    &:is(:where(.group):hover *) {
-      @media (hover: hover) {
-        color: var(--color-gray-600);
       }
     }
   }
