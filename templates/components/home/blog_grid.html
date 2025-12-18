@@ -1,13 +1,10 @@
 {% load static %}
 
 <!-- Blog Posts Grid -->
-<div class="px-3 flex flex-col md:flex-row justify-between gap-3 mt-8 mb-16" data-aos="fade-up"
-    data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+<div class="mx-auto max-w-7xl px-3 flex flex-col md:flex-row justify-between gap-3 mt-8 mb-16" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
     <div class="w-full md:w-1/3" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
-        <div class="flex items-center justify-between px-2 mb-1" data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom" data-aos-duration="500">
-            <div class="flex items-center flex-grow border-l-4 border-red-500 pl-3" data-aos="fade-up"
-                data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+        <div class="flex items-center justify-between px-2 mb-1" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+            <div class="flex items-center flex-grow border-l-4 border-red-500 pl-3" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                 <h3 class="font-inter font-bold text-lg text-gray-800 pr-3 pb-1">TECHNOLOGY</h3>
 
                 <div class="flex-grow border-b border-gray-400 h-px"></div>
@@ -16,61 +13,41 @@
             <a href="{% url 'category_post' 'technology' %}" class="text-gray-600 hover:text-red-600 font-semibold text-sm pl-3 whitespace-nowrap">more ></a>
         </div>
         {% for blog in technology_posts|slice:"1" %}
-        <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true"
-            class="bg-white rounded-lg overflow-hidden duration-200 pb-2 mb-6 cursor-pointer" data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+        <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="bg-white rounded-lg overflow-hidden duration-200 pb-2 mb-6 cursor-pointer" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
             <!-- Image section -->
-            <div class="relative overflow-hidden group p-2 pt-3 rounded-t-l" data-aos="fade-up"
-                data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+            <div class="relative overflow-hidden group p-2 pt-3 rounded-t-l" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                 {% if blog.featured_image %}
                 <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]" />
-                {% elif blog.featured_image_url %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" /> {% elif blog.featured_image_url %}
                 <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]" />
-                {% else %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" /> {% else %}
                 <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]" />
-                {% endif %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" /> {% endif %}
             </div>
 
             <!-- Title & Description -->
             {% for blog in technology_posts|slice:"1" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
-                    
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+
                     > {{ blog.title }}</h3>
                 <hr class="text-gray-200 mt-3" />
             </div>
             {% endfor %} {% for blog in technology_posts|slice:"1:2" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
                     > {{ blog.title }}</h3>
                 <hr class="text-gray-200 mt-3" />
             </div>
-            {% endfor %}
-            {% for blog in technology_posts|slice:"2:3" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+            {% endfor %} {% for blog in technology_posts|slice:"2:3" %}
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
                     > {{ blog.title }}</h3>
                 <hr class="text-gray-200 mt-3" />
             </div>
-            {% endfor %}
-            {% for blog in technology_posts|slice:"3:4" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+            {% endfor %} {% for blog in technology_posts|slice:"3:4" %}
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
                     > {{ blog.title }}</h3>
             </div>
             {% endfor %}
@@ -79,10 +56,8 @@
     </div>
 
     <div class="w-full md:w-1/3" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-        <div class="flex items-center justify-between px-2 mb-1" data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom" data-aos-duration="500">
-            <div class="flex items-center flex-grow border-l-4 border-red-500 pl-3" data-aos="fade-up"
-                data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+        <div class="flex items-center justify-between px-2 mb-1" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+            <div class="flex items-center flex-grow border-l-4 border-red-500 pl-3" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                 <h3 class="font-bold text-lg text-gray-800 pr-3 pb-1">TIPS & TRICKS</h3>
 
                 <div class="flex-grow border-b border-gray-400 h-px"></div>
@@ -91,60 +66,41 @@
             <a href="{% url 'category_post' 'tips-tricks' %}" class="text-gray-600 hover:text-red-600 font-semibold text-sm pl-3 whitespace-nowrap">more ></a>
         </div>
         {% for blog in tips_posts|slice:"1" %}
-        <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-            class="bg-white rounded-lg overflow-hidden duration-200 pb-2 mb-6 cursor-pointer" data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+        <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="bg-white rounded-lg overflow-hidden duration-200 pb-2 mb-6 cursor-pointer" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
             <!-- Image section -->
-            <div class="overflow-hidden relative group p-2 pt-3 rounded-t-lg" data-aos="fade-up"
-                data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+            <div class="overflow-hidden relative group p-2 pt-3 rounded-t-lg" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                 {% if blog.featured_image %}
                 <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]" />
-                {% elif blog.featured_image_url %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" /> {% elif blog.featured_image_url %}
                 <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]" />
-                {% else %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" /> {% else %}
                 <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]" />
-                {% endif %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" /> {% endif %}
             </div>
 
             <!-- Title & Description -->
             {% for blog in tips_posts|slice:"1" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
                     > {{ blog.title }}</h3>
                 <hr class="text-gray-200 mt-3" />
             </div>
             {% endfor %} {% for blog in tips_posts|slice:"1:2" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
                     > {{ blog.title }}</h3>
                 <hr class="text-gray-200 mt-3" />
             </div>
             {% endfor %} {% for blog in tips_posts|slice:"2:3" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
                     > {{ blog.title }}</h3>
                 <hr class="text-gray-200 mt-3" />
             </div>
-            {% endfor %}
-            {% for blog in tips_posts|slice:"2:3" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+            {% endfor %} {% for blog in tips_posts|slice:"2:3" %}
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
                     > {{ blog.title }}</h3>
             </div>
             {% endfor %}
@@ -152,12 +108,9 @@
         {% endfor %}
     </div>
 
-    <div class="w-full md:w-1/3" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos="fade-up"
-        data-aos-anchor-placement="top-bottom" data-aos-duration="500">
-        <div class="flex items-center justify-between px-2 mb-1" data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom">
-            <div class="flex items-center flex-grow border-l-4 border-red-500 pl-3" data-aos="fade-up"
-                data-aos-anchor-placement="top-bottom">
+    <div class="w-full md:w-1/3" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+        <div class="flex items-center justify-between px-2 mb-1" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+            <div class="flex items-center flex-grow border-l-4 border-red-500 pl-3" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
                 <h3 class="font-bold text-lg text-gray-800 pr-3 pb-1">NEWS</h3>
 
                 <div class="flex-grow border-b border-gray-400 h-px"></div>
@@ -166,62 +119,40 @@
             <a href="{% url 'category_post' 'news' %}" class="text-gray-600 hover:text-red-600 font-semibold text-sm pl-3 whitespace-nowrap">more ></a>
         </div>
         {% for blog in news_posts|slice:"1" %}
-        <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-            class="bg-white rounded-lg overflow-hidden duration-200 pb-2 mb-6 cursor-pointer" data-aos="fade-up"
-            data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+        <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="bg-white rounded-lg overflow-hidden duration-200 pb-2 mb-6 cursor-pointer" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
             <!-- Image section -->
-            <div class="group overflow-hidden relative p-2 pt-3 rounded-t-lg" data-aos="fade-up"
-                data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+            <div class="group overflow-hidden relative p-2 pt-3 rounded-t-lg" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                 {% if blog.featured_image %}
                 <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]" />
-                {% elif blog.featured_image_url %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" /> {% elif blog.featured_image_url %}
                 <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]" />
-                {% else %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" /> {% else %}
                 <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]" />
-                {% endif %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" /> {% endif %}
             </div>
 
             <!-- Title & Description -->
             {% for blog in news_posts|slice:"1" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
                     > {{ blog.title }}</h3>
                 <hr class="text-gray-200 mt-3" />
             </div>
-            {% endfor %}
-
-
-            {% for blog in news_posts|slice:"1:2" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+            {% endfor %} {% for blog in news_posts|slice:"1:2" %}
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
                     > {{ blog.title }}</h3>
                 <hr class="text-gray-200 mt-3" />
             </div>
             {% endfor %} {% for blog in news_posts|slice:"2:3" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
                     > {{ blog.title }}</h3>
                 <hr class="text-gray-200 mt-3" />
             </div>
-            {% endfor %}
-            {% for blog in news_posts|slice:"2:3" %}
-            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
-                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true"
-                    hx-swap="innerHTML"
-                    class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
+            {% endfor %} {% for blog in news_posts|slice:"2:3" %}
+            <div class="mb-3 px-3 group:" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+                <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="font-semibold group-hover:scale-105 text-gray-800 text-md line-clamp-1 hover:text-blue-500 duration-300 font-inter">
                     > {{ blog.title }}</h3>
             </div>
             {% endfor %}

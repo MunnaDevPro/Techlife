@@ -6,7 +6,7 @@
 </style>
 
 
-<div class="mx-auto px-1 font-inter -mt-10">
+<div class="max-w-7xl mx-auto px-1 font-inter -mt-10">
     <!-- Flex container for main content -->
     <div class="flex flex-col lg:flex-row gap-4 mx-auto">
         <!-- LEFT CONTENT (Post) -->
@@ -206,8 +206,7 @@
                         <li class="flex items-center gap-x-3 p-1 mb-2 border-gray-300 rounded-lg hover:scale-104 transition-transform duration-300 group ">
                             <div class="w-24 h-20 flex-shrink-0 overflow-hidden rounded-md group ">
                                 {% if blog.featured_image %}
-                                <img src="{{ blog.featured_image.url }} " alt="{{ blog.title }} " class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110 " /> {% elif blog.featured_image_url
-                                %}
+                                <img src="{{ blog.featured_image.url }} " alt="{{ blog.title }} " class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110 " /> {% elif blog.featured_image_url%}
                                 <img src="{{ blog.featured_image_url }} " alt="{{ blog.title }} " class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110 " /> {% else %}
                                 <img src="{% static 'image/placeholder-5.png' %} " alt="{{ blog.title }} " class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110 " /> {% endif %}
                             </div>
@@ -239,5 +238,8 @@
         });
     </script>
 
-    {% endblock content %}
+
 </div>
+
+
+{% endblock content %}

@@ -24,7 +24,7 @@
 
 
 {% comment %} Dropdown menu {% endcomment %}
-<div x-data="{ open: false }" class="flex items-center gap-4 mb-5 relative ml-5 mx-auto" x-cloak>
+<div x-data="{ open: false }" class="flex items-center gap-4 mb-5 relative ml-5 max-w-7xl mx-auto" x-cloak>
 
     <!-- Sort By Dropdown -->
     <div class="relative mx-auto" @click.away="open = false">
@@ -119,9 +119,9 @@
 {% comment %} answer section {% endcomment %}
 <div class="relative pl-3 ml-5">
     <!-- Full Vertical Line  -->
+    {% if paginator_answer %}
     <div class="absolute top-0 bottom-0 left-5 w-0.5 bg-gray-300"></div>
-
-    {% for answer in paginator_answer %}
+    {% endif %} {% for answer in paginator_answer %}
     <!-- Step 1 -->
     <div class="mb-8 relative flex items-start space-x-4 ">
         <!-- Circle -->
@@ -133,7 +133,7 @@
                 <img src="{{ answer.author.profile_picture.url }}" class="w-7 h-7 rounded-full object-cover border" />
                 <div class="flex flex-col leading-tight w-full">
                     <div class="flex items-center justify-between w-full">
-                        <span class="font-inter text-lg font-semibold text-gray-800 hover:text-blue-500 cursor-pointer">
+                        <span class="font-inter text-md font-semibold text-gray-600 hover:text-blue-500 cursor-pointer">
                             {{ answer.author.first_name }} {{ answer.author.last_name }}
                         </span>
 
@@ -164,7 +164,8 @@
         </div>
     </div>
     {% endfor %}
-
+    <!-- paginator section -->
+    {% if paginator_answer %}
     <div class="mt-16 mb-10 flex justify-center">
         <nav class="flex items-center gap-1 p-1 bg-white/80 backdrop-blur-md border border-gray-200/60 rounded-2xl shadow-sm ring-1 ring-black/5" aria-label="Pagination">
 
@@ -197,6 +198,7 @@
 
         </nav>
     </div>
+    {% endif %}
 
 
 

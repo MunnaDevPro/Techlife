@@ -94,9 +94,133 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> {% block extra_head %} {% endblock extra_head %}
+
+
+    <!-- for question modal -->
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-overlay {
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        .modal-content {
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        .modal-overlay.closing {
+            animation: fadeIn 0.3s ease-out reverse;
+        }
+        
+        .modal-content.closing {
+            animation: slideUp 0.4s ease-out reverse;
+        }
+    </style>
+
+    <style>
+        html::-webkit-scrollbar {
+            display: none;
+        }
+        
+        html {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
 </head>
 
-<body class="font-inter leading-normal tracking-normal bg-gray-100">
+<body class=" leading-normal tracking-normal">
+
+
+
+    <!-- modal  -->
+    <!-- Modal Overlay -->
+    <div id="modalOverlay" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <!-- Modal Content -->
+        <div class="modal-content bg-white rounded-lg shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-800">Create New Question</h2>
+                <button id="closeBtn" class="text-gray-400 hover:text-gray-600 transition-colors duration-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <form id="questionForm" class="p-6 space-y-6">
+                <!-- Title Input -->
+                <div>
+                    <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Question Title <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="title" name="title" required maxlength="200" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 outline-none" placeholder="Enter your question title...">
+                </div>
+
+                <!-- Content Textarea -->
+                <div>
+                    <label for="content" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Question Details <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="content" name="content" required rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 outline-none resize-none" placeholder="Describe your question in detail..."></textarea>
+                </div>
+
+                <!-- Image Upload -->
+                <div>
+                    <label for="image" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Upload Image (Optional)
+                    </label>
+                    <div class="relative">
+                        <input type="file" id="image" name="image" accept="image/*" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer">
+                    </div>
+                    <p id="imagePreview" class="mt-2 text-sm text-gray-500"></p>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex items-center justify-end gap-4 pt-4">
+                    <button type="button" id="cancelBtn" class="px-6 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all duration-300 font-medium">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl">
+                        Create Question
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Success Message -->
+    <div id="successMessage" class="hidden fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-50">
+        <div class="flex items-center gap-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span class="font-medium">Question created successfully!</span>
+        </div>
+    </div>
+
+
+
     {% include 'forum/forum_navbar.html' %}
 
 
@@ -108,7 +232,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main id="blog_post_form" class="container mx-auto flex-grow min-h-[calc(100vh-128px)] px-3 py-6 bg-white">
+        <main id="blog_post_form" class="container mx-auto flex-grow min-h-[calc(100vh-128px)] px-4 py-6 bg-white">
             {% block content %} {% endblock content %}
         </main>
     </div>
@@ -198,7 +322,108 @@
 
 
 
+    <!-- modal section -->
 
+
+    <script>
+        const createBtn = document.getElementById('createBtn');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalContent = document.querySelector('.modal-content');
+        const closeBtn = document.getElementById('closeBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const questionForm = document.getElementById('questionForm');
+        const successMessage = document.getElementById('successMessage');
+        const imageInput = document.getElementById('image');
+        const imagePreview = document.getElementById('imagePreview');
+
+        // Open modal
+        createBtn.addEventListener('click', () => {
+            modalOverlay.classList.remove('hidden');
+            modalOverlay.classList.add('flex');
+            modalContent.classList.remove('closing');
+        });
+
+        // Close modal function with animation
+        function closeModal() {
+            modalOverlay.classList.add('closing');
+            modalContent.classList.add('closing');
+
+            setTimeout(() => {
+                modalOverlay.classList.add('hidden');
+                modalOverlay.classList.remove('flex', 'closing');
+                modalContent.classList.remove('closing');
+                questionForm.reset();
+                imagePreview.textContent = '';
+            }, 400);
+        }
+
+        // Close button
+        closeBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Close on overlay click
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modalOverlay.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        // Image preview
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                imagePreview.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+            } else {
+                imagePreview.textContent = '';
+            }
+        });
+
+        // Form submission
+        questionForm.addEventListener('submit', async(e) => {
+            e.preventDefault();
+
+            const formData = new FormData(questionForm);
+
+            try {
+                // Django CSRF token থাকলে add করুন
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]') ? .value;
+
+                const response = await fetch('/your-django-url-endpoint/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': csrfToken || '',
+                    }
+                });
+
+                if (response.ok) {
+                    // Show success message
+                    successMessage.classList.remove('hidden');
+                    setTimeout(() => {
+                        successMessage.classList.add('hidden');
+                    }, 3000);
+
+                    // Close modal
+                    closeModal();
+
+                    // Optionally reload or redirect
+                    // window.location.reload();
+                } else {
+                    alert('Error creating question. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error creating question. Please try again.');
+            }
+        });
+    </script>
 
 
     <!-- Script js -->

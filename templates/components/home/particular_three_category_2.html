@@ -1,26 +1,21 @@
 <!-- online news and related news section -->
-<div class="p-4 mb-4 rounded-lg max-w-7xl mx-auto" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-    data-aos-duration="500">
+<div class="mx-auto max-w-7xl p-4 mb-4 rounded-lg " data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
 
     <!-- Tabs Section - Mobile Optimized -->
-    <div class="flex flex-col sm:flex-row justify-between border-b border-gray-300 mb-4" data-aos="fade-up"
-        data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+    <div class="flex flex-col sm:flex-row justify-between border-b border-gray-300 mb-4" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
         <!-- Main Tabs -->
         <div class="flex flex-col sm:flex-row w-full sm:w-3/4 mb-2 sm:mb-0">
-            <div
-                class="w-full sm:w-1/3 py-3 text-center font-bold text-base text-gray-800 border-b-2 border-blue-600 transition duration-150 cursor-pointer">
+            <div class="w-full sm:w-1/3 py-3 text-center font-bold text-base text-gray-800 border-b-2 border-blue-600 transition duration-150 cursor-pointer">
                 <a href="{% url 'category_post' 'news' %}" class="block">
                     NEWS
                 </a>
             </div>
-            <div
-                class="w-full sm:w-1/3 py-3 text-center font-bold text-base text-gray-800 border-b-2 border-transparent hover:border-blue-600 transition duration-150 cursor-pointer">
+            <div class="w-full sm:w-1/3 py-3 text-center font-bold text-base text-gray-800 border-b-2 border-transparent hover:border-blue-600 transition duration-150 cursor-pointer">
                 <a href="{% url 'category_post' 'technology' %}" class="block">
                     TECHNOLOGY
                 </a>
             </div>
-            <div
-                class="w-full sm:w-1/3 py-3 text-center font-bold text-base text-gray-800 border-b-2 border-transparent hover:border-blue-600 transition duration-150 cursor-pointer">
+            <div class="w-full sm:w-1/3 py-3 text-center font-bold text-base text-gray-800 border-b-2 border-transparent hover:border-blue-600 transition duration-150 cursor-pointer">
                 <a href="{% url 'category_post' 'programming' %}" class="block">
                     PROGRAMMING
                 </a>
@@ -28,38 +23,31 @@
         </div>
 
         <!-- Popular Button - Hidden on mobile, shown on sm and up -->
-        <div
-            class="hidden sm:block w-full sm:w-1/4 py-3 text-center font-bold text-base text-white bg-blue-500 rounded-lg cursor-pointer">
+        <div class="hidden sm:block w-full sm:w-1/4 py-3 text-center font-bold text-base text-white bg-blue-500 rounded-lg cursor-pointer">
             Popular
         </div>
     </div>
 
     <!-- Content Section -->
-    <div class="flex flex-col lg:flex-row gap-6 pt-4" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-        data-aos-duration="500">
+    <div class="flex flex-col lg:flex-row gap-6 pt-4" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
 
         <!-- Main Content - Stack vertically on mobile -->
         <div class="flex flex-col w-full lg:w-3/4 gap-8">
 
             <!-- News Section -->
-            <div class="flex flex-col gap-4 w-full" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
+            <div class="flex flex-col gap-4 w-full" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                 {% for post in news__related_posts|slice:"1" %}
                 <div class="flex flex-col gap-3">
                     <!-- Featured Image -->
                     <div class="w-full h-48 sm:h-56 bg-gray-200 overflow-hidden relative group cursor-pointer rounded-lg">
                         {% if post.featured_image %}
-                        <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:50 }}"
-                            class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105">
-                        {% elif post.featured_image_url %}
-                        <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:50 }}"
-                            class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105">
-                        {% endif %}
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:50 }}" class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105"> {% elif post.featured_image_url
+                        %}
+                        <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:50 }}" class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105"> {% endif %}
                     </div>
 
                     <!-- Title -->
-                    <a href="{% url 'blog_details' post.slug %}"
-                        class="font-bold text-lg sm:text-xl leading-tight text-gray-900 hover:text-blue-500 cursor-pointer line-clamp-3">
+                    <a href="{% url 'blog_details' post.slug %}" class="font-bold text-lg sm:text-xl leading-tight text-gray-900 hover:text-blue-500 cursor-pointer line-clamp-3">
                         {{ post.title }}
                     </a>
                 </div>
@@ -71,15 +59,10 @@
                     <div class="flex gap-4 items-start cursor-pointer group">
                         <div class="w-20 h-16 sm:w-24 sm:h-20 flex-shrink-0 rounded-lg bg-gray-200 overflow-hidden">
                             {% if post.featured_image %}
-                            <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:30 }}"
-                                class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300">
-                            {% elif post.featured_image_url %}
-                            <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:30 }}"
-                                class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300">
-                            {% endif %}
+                            <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:30 }}" class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"> {% elif post.featured_image_url %}
+                            <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:30 }}" class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"> {% endif %}
                         </div>
-                        <a href="{% url 'blog_details' slug=post.slug %}"
-                            class="font-medium text-sm sm:text-base leading-tight text-gray-700 group-hover:text-blue-600 line-clamp-2 flex-1">
+                        <a href="{% url 'blog_details' slug=post.slug %}" class="font-medium text-sm sm:text-base leading-tight text-gray-700 group-hover:text-blue-600 line-clamp-2 flex-1">
                             {{ post.title }}
                         </a>
                     </div>
@@ -87,28 +70,22 @@
                 </div>
 
                 <!-- More Button -->
-                <a href="{% url 'category_post' 'news' %}"
-                    class="mt-4 py-3 px-6 border border-blue-600 text-blue-600 font-bold text-center rounded-lg hover:bg-blue-500 hover:text-white transition duration-300 block text-sm sm:text-base">
+                <a href="{% url 'category_post' 'news' %}" class="mt-4 py-3 px-6 border border-blue-600 text-blue-600 font-bold text-center rounded-lg hover:bg-blue-500 hover:text-white transition duration-300 block text-sm sm:text-base">
                     More News
                 </a>
             </div>
 
             <!-- Technology Section -->
-            <div class="flex flex-col gap-4 w-full" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
+            <div class="flex flex-col gap-4 w-full" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                 {% for post in Teacnology_related_posts|slice:"1" %}
                 <div class="flex flex-col gap-3">
                     <div class="w-full h-48 sm:h-56 bg-gray-200 overflow-hidden relative group cursor-pointer rounded-lg">
                         {% if post.featured_image %}
-                        <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:50 }}"
-                            class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105">
-                        {% elif post.featured_image_url %}
-                        <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:50 }}"
-                            class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105">
-                        {% endif %}
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:50 }}" class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105"> {% elif post.featured_image_url
+                        %}
+                        <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:50 }}" class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105"> {% endif %}
                     </div>
-                    <a href="{% url 'blog_details' post.slug %}"
-                        class="font-bold text-lg sm:text-xl leading-tight text-gray-900 hover:text-blue-500 cursor-pointer line-clamp-3">
+                    <a href="{% url 'blog_details' post.slug %}" class="font-bold text-lg sm:text-xl leading-tight text-gray-900 hover:text-blue-500 cursor-pointer line-clamp-3">
                         {{ post.title }}
                     </a>
                 </div>
@@ -119,43 +96,32 @@
                     <div class="flex gap-4 items-start cursor-pointer group">
                         <div class="w-20 h-16 sm:w-24 sm:h-20 flex-shrink-0 rounded-lg bg-gray-200 overflow-hidden">
                             {% if post.featured_image %}
-                            <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:30 }}"
-                                class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300">
-                            {% elif post.featured_image_url %}
-                            <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:30 }}"
-                                class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300">
-                            {% endif %}
+                            <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:30 }}" class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"> {% elif post.featured_image_url %}
+                            <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:30 }}" class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"> {% endif %}
                         </div>
-                        <a href="{% url 'blog_details' slug=post.slug %}"
-                            class="font-medium text-sm sm:text-base leading-tight text-gray-700 group-hover:text-blue-600 line-clamp-2 flex-1">
+                        <a href="{% url 'blog_details' slug=post.slug %}" class="font-medium text-sm sm:text-base leading-tight text-gray-700 group-hover:text-blue-600 line-clamp-2 flex-1">
                             {{ post.title }}
                         </a>
                     </div>
                     {% endfor %}
                 </div>
 
-                <a href="{% url 'category_post' 'technology' %}"
-                    class="mt-4 py-3 px-6 border border-blue-600 text-blue-600 font-bold text-center rounded-lg hover:bg-blue-500 hover:text-white transition duration-300 block text-sm sm:text-base">
+                <a href="{% url 'category_post' 'technology' %}" class="mt-4 py-3 px-6 border border-blue-600 text-blue-600 font-bold text-center rounded-lg hover:bg-blue-500 hover:text-white transition duration-300 block text-sm sm:text-base">
                     More Technology
                 </a>
             </div>
 
             <!-- Programming Section -->
-            <div class="flex flex-col gap-4 w-full" data-aos="fade-up" data-aos-anchor-placement="top-bottom"
-                data-aos-duration="500">
+            <div class="flex flex-col gap-4 w-full" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                 {% for post in programming_related_posts|slice:"1" %}
                 <div class="flex flex-col gap-3">
                     <div class="w-full h-48 sm:h-56 bg-gray-200 overflow-hidden relative group cursor-pointer rounded-lg">
                         {% if post.featured_image %}
-                        <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:50 }}"
-                            class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105">
-                        {% elif post.featured_image_url %}
-                        <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:50 }}"
-                            class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105">
-                        {% endif %}
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:50 }}" class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105"> {% elif post.featured_image_url
+                        %}
+                        <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:50 }}" class="w-full h-full object-cover rounded-lg transform transition-transform duration-300 ease-out group-hover:scale-105"> {% endif %}
                     </div>
-                    <a href="{% url 'blog_details' post.slug %}"
-                        class="font-bold text-lg sm:text-xl leading-tight text-gray-900 hover:text-blue-500 cursor-pointer line-clamp-3">
+                    <a href="{% url 'blog_details' post.slug %}" class="font-bold text-lg sm:text-xl leading-tight text-gray-900 hover:text-blue-500 cursor-pointer line-clamp-3">
                         {{ post.title }}
                     </a>
                 </div>
@@ -166,23 +132,17 @@
                     <div class="flex gap-4 items-start cursor-pointer group">
                         <div class="w-20 h-16 sm:w-24 sm:h-20 flex-shrink-0 rounded-lg bg-gray-200 overflow-hidden">
                             {% if post.featured_image %}
-                            <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:30 }}"
-                                class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300">
-                            {% elif post.featured_image_url %}
-                            <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:30 }}"
-                                class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300">
-                            {% endif %}
+                            <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:30 }}" class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"> {% elif post.featured_image_url %}
+                            <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:30 }}" class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"> {% endif %}
                         </div>
-                        <a href="{% url 'blog_details' slug=post.slug %}"
-                            class="font-medium text-sm sm:text-base leading-tight text-gray-700 group-hover:text-blue-600 line-clamp-2 flex-1">
+                        <a href="{% url 'blog_details' slug=post.slug %}" class="font-medium text-sm sm:text-base leading-tight text-gray-700 group-hover:text-blue-600 line-clamp-2 flex-1">
                             {{ post.title }}
                         </a>
                     </div>
                     {% endfor %}
                 </div>
 
-                <a href="{% url 'category_post' 'programming' %}"
-                    class="mt-4 py-3 px-6 border border-blue-600 text-blue-600 font-bold text-center rounded-lg hover:bg-blue-500 hover:text-white transition duration-300 block text-sm sm:text-base">
+                <a href="{% url 'category_post' 'programming' %}" class="mt-4 py-3 px-6 border border-blue-600 text-blue-600 font-bold text-center rounded-lg hover:bg-blue-500 hover:text-white transition duration-300 block text-sm sm:text-base">
                     More Programming
                 </a>
             </div>
@@ -200,8 +160,7 @@
                 <li class="flex items-start cursor-pointer group p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
                     <span class="text-xl font-bold text-blue-600 mr-4 flex-shrink-0 min-w-6 text-center">{{ forloop.counter }}</span>
                     <div class="flex flex-col flex-1 min-w-0">
-                        <a href="{% url 'blog_details' post.slug %}" 
-                           class="font-medium text-base leading-tight text-gray-800 group-hover:text-blue-600 line-clamp-2 mb-1">
+                        <a href="{% url 'blog_details' post.slug %}" class="font-medium text-base leading-tight text-gray-800 group-hover:text-blue-600 line-clamp-2 mb-1">
                             {{ post.title }}
                         </a>
                         <span class="text-xs text-gray-500">{{ post.category.name }}</span>
@@ -222,8 +181,7 @@
                 <li class="flex items-start cursor-pointer group">
                     <span class="text-xl font-bold text-blue-600 mr-3 flex-shrink-0 mt-1">{{ forloop.counter }}</span>
                     <div class="flex flex-col">
-                        <a href="{% url 'blog_details' post.slug %}" 
-                           class="font-medium text-sm leading-tight text-gray-700 group-hover:text-blue-600 line-clamp-2">
+                        <a href="{% url 'blog_details' post.slug %}" class="font-medium text-sm leading-tight text-gray-700 group-hover:text-blue-600 line-clamp-2">
                             {{ post.title }}
                         </a>
                         <span class="text-xs text-gray-500 mt-1">{{ post.category.name }}</span>

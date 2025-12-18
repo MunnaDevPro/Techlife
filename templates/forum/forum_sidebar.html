@@ -1,4 +1,8 @@
 {% load static %}
+
+
+
+
 <style>
     .custom-scroll::-webkit-scrollbar {
         width: 5px;
@@ -19,7 +23,7 @@
     }
 </style>
 
-<div class="flex  h-screen mx-auto">
+<div class="flex mx-auto h-screen">
 
     <!-- Sidebar -->
     <div id="sidebar" id="blog_post_form" class="top-0 left-0 w-60 h-full bg-white shadow-sm border-b-3 rounded-sm transform -translate-x-full md:translate-x-0 transition-transform duration-300 mx-auto">
@@ -83,121 +87,135 @@
         </button>
 
                 <div x-show="open" class="mt-2 space-y-1">
-                    <a class="flex items-center gap-2 pt-2 p-2 rounded hover:bg-gray-200 cursor-pointer">
-                        <!-- Icon -->
-                        <svg fill="currentColor" height="20" width="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M17.1 9.1h-6.2V2.9c0-.5-.4-.9-.9-.9s-.9.4-.9.9v6.2H2.9c-.5 0-.9.4-.9.9s.4.9.9.9h6.2v6.2c0 .5.4.9.9.9s.9-.4.9-.9v-6.2h6.2c.5 0 .9-.4.9-.9s-.4-.9-.9-.9z">
-              </path>
-            </svg>
+                    <a href="#create-question" class="open-modal-trigger flex items-center gap-2 pt-2 p-2 rounded hover:bg-gray-200 cursor-pointer ">
+                        <!-- Icon  -->
+                        <svg fill="currentColor " height="20 " width="20 " viewBox="0 0 20 20 " xmlns="http://www.w3.org/2000/svg ">
+                          <path
+                            d="M17.1 9.1h-6.2V2.9c0-.5-.4-.9-.9-.9s-.9.4-.9.9v6.2H2.9c-.5 0-.9.4-.9.9s.4.9.9.9h6.2v6.2c0 .5.4.9.9.9s.9-.4.9-.9v-6.2h6.2c.5 0 .9-.4.9-.9s-.4-.9-.9-.9z ">
+                          </path>
+                        </svg>
                         <!-- Text -->
-                        <span class="text-md">Create</span>
+                        <span class="text-md ">Create</span>
                     </a>
                 </div>
             </div>
 
-            <hr class="my-4" />
+            <hr class="my-4 " />
 
             <!-- Accordion Section -->
-            <div x-data="{ open: false }" class="pl-5">
-                <button @click="open = !open" class="w-full flex justify-between items-center p-2 rounded hover:bg-gray-100">
-          <span class="text-lg font-medium text-gray-400">Resources</span>
-          <svg :class="{'rotate-180': open}" class="h-4 w-4 text-gray-400 transition-transform"
-            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <div x-data="{ open: false } " class="pl-5 ">
+                <button @click="open=! open " class="w-full flex justify-between items-center p-2 rounded hover:bg-gray-100 ">
+          <span class="text-lg font-medium text-gray-400 ">Resources</span>
+          <svg :class="{ 'rotate-180': open} " class="h-4 w-4 text-gray-400 transition-transform "
+            xmlns="http://www.w3.org/2000/svg " fill="none " viewBox="0 0 24 24 " stroke="currentColor ">
+            <path stroke-linecap="round " stroke-linejoin="round " stroke-width="2 " d="M19 9l-7 7-7-7 " />
           </svg>
         </button>
 
-                <div x-show="open" class="mt-2 space-y-1">
-                    <a href="#" class="flex items-center gap-2 pt-2 p-2 ml-1 rounded hover:bg-gray-200">
+                <div x-show="open " class="mt-2 space-y-1 ">
+                    <a href="# " class="flex items-center gap-2 pt-2 p-2 ml-1 rounded hover:bg-gray-200 ">
                         <!-- Icon -->
-                        <svg rpl="" class="rpl-rtl-icon" fill="currentColor" height="20" icon-name="topic-reading-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                        <svg rpl=" " class="rpl-rtl-icon " fill="currentColor " height="20 " icon-name="topic-reading-outline " viewBox="0 0 20 20 " width="20 " xmlns="http://www.w3.org/2000/svg ">
               <path
-                d="M18.278 2.632a2.265 2.265 0 00-1.698-.627c-2.95.165-4.67.827-6.58 1.987-1.91-1.16-3.63-1.822-6.581-1.987a2.273 2.273 0 00-1.697.627A2.327 2.327 0 001 4.312v9.428c0 1.23.966 2.241 2.198 2.302 2.724.136 4.175.715 5.761 1.67a2.019 2.019 0 002.082 0c1.586-.955 3.037-1.534 5.761-1.67a2.308 2.308 0 002.199-2.302V4.312c0-.632-.264-1.244-.723-1.68zM3.288 14.238a.507.507 0 01-.488-.498V4.312c0-.189.1-.312.16-.368a.487.487 0 01.333-.136h.027c2.625.147 4.043.692 5.78 1.752v10.158c-1.535-.819-3.177-1.348-5.813-1.48h.001zM17.2 13.74a.505.505 0 01-.488.498c-2.635.132-4.277.661-5.812 1.48V5.56c1.736-1.06 3.155-1.606 5.779-1.752a.47.47 0 01.361.136c.06.056.16.18.16.368v9.427zM12 6.95c1.131-.469 2.385-.765 4-.9v1.794c-1.678.152-2.842.5-4 1.081V6.95zm0 4.064c1.131-.469 2.385-.765 4-.9v1.794c-1.678.152-2.842.5-4 1.081v-1.975z">
+                d="M18.278 2.632a2.265 2.265 0 00-1.698-.627c-2.95.165-4.67.827-6.58 1.987-1.91-1.16-3.63-1.822-6.581-1.987a2.273 2.273 0 00-1.697.627A2.327 2.327 0 001 4.312v9.428c0 1.23.966 2.241 2.198 2.302 2.724.136 4.175.715 5.761 1.67a2.019 2.019
+                        0 002.082 0c1.586-.955 3.037-1.534 5.761-1.67a2.308 2.308 0 002.199-2.302V4.312c0-.632-.264-1.244-.723-1.68zM3.288 14.238a.507.507 0 01-.488-.498V4.312c0-.189.1-.312.16-.368a.487.487 0 01.333-.136h.027c2.625.147 4.043.692 5.78 1.752v10.158c-1.535-.819-3.177-1.348-5.813-1.48h.001zM17.2
+                        13.74a.505.505 0 01-.488.498c-2.635.132-4.277.661-5.812 1.48V5.56c1.736-1.06 3.155-1.606 5.779-1.752a.47.47 0 01.361.136c.06.056.16.18.16.368v9.427zM12 6.95c1.131-.469 2.385-.765 4-.9v1.794c-1.678.152-2.842.5-4 1.081V6.95zm0 4.064c1.131-.469
+                        2.385-.765 4-.9v1.794c-1.678.152-2.842.5-4 1.081v-1.975z ">
               </path>
             </svg>
                         <!-- Text -->
-                        <span class="text-md">Blogs</span>
+                        <span class="text-md ">Blogs</span>
                     </a>
 
-                    <a href="#" class="flex items-center gap-2 pt-2 p-2 ml-1 rounded hover:bg-gray-200">
+                    <a href="# " class="flex items-center gap-2 pt-2 p-2 ml-1 rounded hover:bg-gray-200 ">
                         <!-- Icon -->
-                        <svg rpl="" class="rpl-rtl-icon" fill="currentColor" height="20" icon-name="help-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                        <svg rpl=" " class="rpl-rtl-icon " fill="currentColor " height="20 " icon-name="help-outline " viewBox="0 0 20 20 " width="20 " xmlns="http://www.w3.org/2000/svg ">
               <path
-                d="M10 2.8c3.97 0 7.2 3.23 7.2 7.2s-3.23 7.2-7.2 7.2-7.2-3.23-7.2-7.2S6.03 2.8 10 2.8zM10 1a9 9 0 10.001 18.001A9 9 0 0010 1zm-.57 13.8c-.17-.1-.31-.24-.41-.41-.1-.17-.15-.36-.15-.57 0-.21.05-.4.15-.57.1-.17.24-.31.41-.41.17-.1.36-.15.57-.15.21 0 .4.05.57.15.17.1.31.24.41.41.1.17.15.36.15.57 0 .21-.05.4-.15.57-.1.17-.24.31-.41.41-.17.1-.36.15-.57.15-.21 0-.4-.05-.57-.15zm2.99-8.28a2.3 2.3 0 00-.97-.82c-.41-.19-.87-.29-1.37-.29-.55 0-1.04.11-1.47.34-.43.23-.77.54-1.02.94-.25.4-.37.85-.38 1.35v.1h1.85v-.1c0-.16.05-.31.14-.44.09-.13.2-.24.35-.31.29-.15.65-.15.93-.01.14.07.24.15.32.27.08.11.11.24.11.38 0 .12-.03.24-.08.34-.06.11-.13.21-.22.3-.1.1-.23.22-.39.36-.24.21-.44.4-.59.56A2.192 2.192 0 009.06 11v.6h1.79v-.61c0-.18.03-.34.1-.49.07-.15.16-.28.27-.4.11-.12.26-.27.46-.44.23-.2.42-.39.56-.55.15-.16.27-.36.37-.59.1-.23.16-.5.16-.8 0-.45-.12-.85-.35-1.21v.01z">
+                d="M10 2.8c3.97 0 7.2 3.23 7.2 7.2s-3.23 7.2-7.2 7.2-7.2-3.23-7.2-7.2S6.03 2.8 10 2.8zM10 1a9 9 0 10.001 18.001A9 9 0 0010 1zm-.57 13.8c-.17-.1-.31-.24-.41-.41-.1-.17-.15-.36-.15-.57 0-.21.05-.4.15-.57.1-.17.24-.31.41-.41.17-.1.36-.15.57-.15.21
+                        0 .4.05.57.15.17.1.31.24.41.41.1.17.15.36.15.57 0 .21-.05.4-.15.57-.1.17-.24.31-.41.41-.17.1-.36.15-.57.15-.21 0-.4-.05-.57-.15zm2.99-8.28a2.3 2.3 0 00-.97-.82c-.41-.19-.87-.29-1.37-.29-.55 0-1.04.11-1.47.34-.43.23-.77.54-1.02.94-.25.4-.37.85-.38
+                        1.35v.1h1.85v-.1c0-.16.05-.31.14-.44.09-.13.2-.24.35-.31.29-.15.65-.15.93-.01.14.07.24.15.32.27.08.11.11.24.11.38 0 .12-.03.24-.08.34-.06.11-.13.21-.22.3-.1.1-.23.22-.39.36-.24.21-.44.4-.59.56A2.192 2.192 0 009.06 11v.6h1.79v-.61c0-.18.03-.34.1-.49.07-.15.16-.28.27-.4.11-.12.26-.27.46-.44.23-.2.42-.39.56-.55.15-.16.27-.36.37-.59.1-.23.16-.5.16-.8
+                        0-.45-.12-.85-.35-1.21v.01z ">
               </path>
             </svg>
                         <!-- Text -->
-                        <span class="text-md">Help</span>
+                        <span class="text-md ">Help</span>
                     </a>
-                    <a href="#" class="flex items-center gap-2 pt-2 p-2 ml-1 rounded hover:bg-gray-200">
+                    <a href="# " class="flex items-center gap-2 pt-2 p-2 ml-1 rounded hover:bg-gray-200 ">
                         <!-- Icon -->
-                        <svg aria-hidden="true" class="svg-icon iconTags" width="18" height="18" viewBox="0 0 18 18">
+                        <svg aria-hidden="true " class="svg-icon iconTags " width="18 " height="18 " viewBox="0 0 18 18 ">
               <path
-                d="M9.24 1a3 3 0 0 0-2.12.88l-5.7 5.7a2 2 0 0 0-.38 2.31 3 3 0 0 1 .67-1.01l6-6A3 3 0 0 1 9.83 2H14a3 3 0 0 1 .79.1A2 2 0 0 0 13 1z"
-                opacity=".4"></path>
+                d="M9.24 1a3 3 0 0 0-2.12.88l-5.7 5.7a2 2 0 0 0-.38 2.31 3 3 0 0 1 .67-1.01l6-6A3 3 0 0 1 9.83 2H14a3 3 0 0 1 .79.1A2 2 0 0 0 13 1z "
+                opacity=".4 "></path>
               <path
-                d="M9.83 3a2 2 0 0 0-1.42.59l-6 6a2 2 0 0 0 0 2.82L6.6 16.6a2 2 0 0 0 2.82 0l6-6A2 2 0 0 0 16 9.17V5a2 2 0 0 0-2-2zM12 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4">
+                d="M9.83 3a2 2 0 0 0-1.42.59l-6 6a2 2 0 0 0 0 2.82L6.6 16.6a2 2 0 0 0 2.82 0l6-6A2 2 0 0 0 16 9.17V5a2 2 0 0 0-2-2zM12 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4 ">
               </path>
             </svg>
                         <!-- Text -->
-                        <span class="text-md">Tags</span>
+                        <span class="text-md ">Tags</span>
                     </a>
-                    <a href="#" class="flex items-center gap-2 pt-2 p-2 ml-1 rounded hover:bg-gray-200">
+                    <a href="# " class="flex items-center gap-2 pt-2 p-2 ml-1 rounded hover:bg-gray-200 ">
                         <!-- Icon -->
-                        <svg rpl="" class="rpl-rtl-icon" fill="currentColor" height="20" icon-name="open-book" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                        <svg rpl=" " class="rpl-rtl-icon " fill="currentColor " height="20 " icon-name="open-book " viewBox="0 0 20 20 " width="20 " xmlns="http://www.w3.org/2000/svg ">
               <path
-                d="M18.278 2.632a2.265 2.265 0 00-1.698-.627c-2.95.165-4.67.827-6.58 1.987-1.91-1.16-3.63-1.822-6.581-1.987a2.273 2.273 0 00-1.697.627A2.327 2.327 0 001 4.312v9.428c0 1.23.966 2.241 2.198 2.302 2.724.136 4.175.715 5.761 1.67a2.019 2.019 0 002.082 0c1.586-.955 3.037-1.534 5.761-1.67a2.308 2.308 0 002.199-2.302V4.312c0-.632-.264-1.244-.723-1.68zM3.288 14.238a.507.507 0 01-.488-.498V4.312c0-.189.1-.312.16-.368a.487.487 0 01.333-.136h.027c2.625.147 4.043.692 5.78 1.752v10.158c-1.535-.819-3.177-1.348-5.813-1.48h.001zM17.2 13.74a.505.505 0 01-.488.498c-2.635.132-4.277.661-5.812 1.48V5.56c1.736-1.06 3.155-1.606 5.779-1.752a.47.47 0 01.361.136c.06.056.16.18.16.368v9.427zM12 6.95c1.131-.469 2.385-.765 4-.9v1.794c-1.678.152-2.842.5-4 1.081V6.95zm0 4.064c1.131-.469 2.385-.765 4-.9v1.794c-1.678.152-2.842.5-4 1.081v-1.975z">
+                d="M18.278 2.632a2.265 2.265 0 00-1.698-.627c-2.95.165-4.67.827-6.58 1.987-1.91-1.16-3.63-1.822-6.581-1.987a2.273 2.273 0 00-1.697.627A2.327 2.327 0 001 4.312v9.428c0 1.23.966 2.241 2.198 2.302 2.724.136 4.175.715 5.761 1.67a2.019 2.019
+                        0 002.082 0c1.586-.955 3.037-1.534 5.761-1.67a2.308 2.308 0 002.199-2.302V4.312c0-.632-.264-1.244-.723-1.68zM3.288 14.238a.507.507 0 01-.488-.498V4.312c0-.189.1-.312.16-.368a.487.487 0 01.333-.136h.027c2.625.147 4.043.692 5.78 1.752v10.158c-1.535-.819-3.177-1.348-5.813-1.48h.001zM17.2
+                        13.74a.505.505 0 01-.488.498c-2.635.132-4.277.661-5.812 1.48V5.56c1.736-1.06 3.155-1.606 5.779-1.752a.47.47 0 01.361.136c.06.056.16.18.16.368v9.427zM12 6.95c1.131-.469 2.385-.765 4-.9v1.794c-1.678.152-2.842.5-4 1.081V6.95zm0 4.064c1.131-.469
+                        2.385-.765 4-.9v1.794c-1.678.152-2.842.5-4 1.081v-1.975z ">
               </path>
             </svg>
                         <!-- Text -->
-                        <span class="text-md">Careers</span>
+                        <span class="text-md ">Careers</span>
                     </a>
                 </div>
             </div>
 
             <!-- bottom Links -->
 
-            <hr class="my-4" />
-            <div class="">
-                <a href="{% url 'homepage' %}" class="flex items-center gap-3 mb-1 ml-6 pt-4 p-2 rounded hover:bg-gray-200">
-                    <svg rpl="" class="rpl-rtl-icon" fill="currentColor" height="20" icon-name="open-book" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+            <hr class="my-4 " />
+            <div class=" ">
+                <a href="{% url 'homepage' %} " class="flex items-center gap-3 mb-1 ml-6 pt-4 p-2 rounded hover:bg-gray-200 ">
+                    <svg rpl=" " class="rpl-rtl-icon " fill="currentColor " height="20 " icon-name="open-book " viewBox="0 0 20 20 " width="20 " xmlns="http://www.w3.org/2000/svg ">
                       <path
-                        d="M18.278 2.632a2.265 2.265 0 00-1.698-.627c-2.95.165-4.67.827-6.58 1.987-1.91-1.16-3.63-1.822-6.581-1.987a2.273 2.273 0 00-1.697.627A2.327 2.327 0 001 4.312v9.428c0 1.23.966 2.241 2.198 2.302 2.724.136 4.175.715 5.761 1.67a2.019 2.019 0 002.082 0c1.586-.955 3.037-1.534 5.761-1.67a2.308 2.308 0 002.199-2.302V4.312c0-.632-.264-1.244-.723-1.68zM3.288 14.238a.507.507 0 01-.488-.498V4.312c0-.189.1-.312.16-.368a.487.487 0 01.333-.136h.027c2.625.147 4.043.692 5.78 1.752v10.158c-1.535-.819-3.177-1.348-5.813-1.48h.001zM17.2 13.74a.505.505 0 01-.488.498c-2.635.132-4.277.661-5.812 1.48V5.56c1.736-1.06 3.155-1.606 5.779-1.752a.47.47 0 01.361.136c.06.056.16.18.16.368v9.427zM12 6.95c1.131-.469 2.385-.765 4-.9v1.794c-1.678.152-2.842.5-4 1.081V6.95zm0 4.064c1.131-.469 2.385-.765 4-.9v1.794c-1.678.152-2.842.5-4 1.081v-1.975z">
+                        d="M18.278 2.632a2.265 2.265 0 00-1.698-.627c-2.95.165-4.67.827-6.58 1.987-1.91-1.16-3.63-1.822-6.581-1.987a2.273 2.273 0 00-1.697.627A2.327 2.327 0 001 4.312v9.428c0 1.23.966 2.241 2.198 2.302 2.724.136 4.175.715 5.761 1.67a2.019
+                        2.019 0 002.082 0c1.586-.955 3.037-1.534 5.761-1.67a2.308 2.308 0 002.199-2.302V4.312c0-.632-.264-1.244-.723-1.68zM3.288 14.238a.507.507 0 01-.488-.498V4.312c0-.189.1-.312.16-.368a.487.487 0 01.333-.136h.027c2.625.147 4.043.692 5.78
+                        1.752v10.158c-1.535-.819-3.177-1.348-5.813-1.48h.001zM17.2 13.74a.505.505 0 01-.488.498c-2.635.132-4.277.661-5.812 1.48V5.56c1.736-1.06 3.155-1.606 5.779-1.752a.47.47 0 01.361.136c.06.056.16.18.16.368v9.427zM12 6.95c1.131-.469 2.385-.765
+                        4-.9v1.794c-1.678.152-2.842.5-4 1.081V6.95zm0 4.064c1.131-.469 2.385-.765 4-.9v1.794c-1.678.152-2.842.5-4 1.081v-1.975z ">
                       </path>
                     </svg>
-                    <span class="text-md">Teachlife Rules</span>
+                    <span class="text-md ">Teachlife Rules</span>
                 </a>
 
-                <a href="{% url 'homepage' %}" class="flex items-center gap-3 mb-1 ml-6 pt-4 p-2 rounded hover:bg-gray-200 transition-colors">
-                    <svg class="text-gray-600" fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
-        <path d="M18.278 2.632a2.265 2.265 0 00-1.698-.627c-2.95.165-4.67.827-6.58 1.987-1.91-1.16-3.63-1.822-6.581-1.987a2.273 2.273 0 00-1.697.627A2.327 2.327 0 001 4.312v9.428c0 1.23.966 2.241 2.198 2.302 2.724.136 4.175.715 5.761 1.67a2.019 2.019 0 002.082 0c1.586-.955 3.037-1.534 5.761-1.67a2.308 2.308 0 002.199-2.302V4.312c0-.632-.264-1.244-.723-1.68zM3.288 14.238a.507.507 0 01-.488-.498V4.312c0-.189.1-.312.16-.368a.487.487 0 01.333-.136h.027c2.625.147 4.043.692 5.78 1.752v10.158c-1.535-.819-3.177-1.348-5.813-1.48h.001zM17.2 13.74a.505.505 0 01-.488.498c-2.635.132-4.277.661-5.812 1.48V5.56c1.736-1.06 3.155-1.606 5.779-1.752a.47.47 0 01.361.136c.06.056.16.18.16.368v9.427z"></path>
+                <a href="{% url 'homepage' %} " class="flex items-center gap-3 mb-1 ml-6 pt-4 p-2 rounded hover:bg-gray-200 transition-colors ">
+                    <svg class="text-gray-600 " fill="currentColor " height="20 " viewBox="0 0 20 20 " width="20 " xmlns="http://www.w3.org/2000/svg ">
+        <path d="M18.278 2.632a2.265 2.265 0 00-1.698-.627c-2.95.165-4.67.827-6.58 1.987-1.91-1.16-3.63-1.822-6.581-1.987a2.273 2.273 0 00-1.697.627A2.327 2.327 0 001 4.312v9.428c0 1.23.966 2.241 2.198 2.302 2.724.136 4.175.715 5.761 1.67a2.019 2.019
+                        0 002.082 0c1.586-.955 3.037-1.534 5.761-1.67a2.308 2.308 0 002.199-2.302V4.312c0-.632-.264-1.244-.723-1.68zM3.288 14.238a.507.507 0 01-.488-.498V4.312c0-.189.1-.312.16-.368a.487.487 0 01.333-.136h.027c2.625.147 4.043.692 5.78 1.752v10.158c-1.535-.819-3.177-1.348-5.813-1.48h.001zM17.2
+                        13.74a.505.505 0 01-.488.498c-2.635.132-4.277.661-5.812 1.48V5.56c1.736-1.06 3.155-1.606 5.779-1.752a.47.47 0 01.361.136c.06.056.16.18.16.368v9.427z "></path>
     </svg>
-                    <span class="text-md font-medium">Teachlife Rules</span>
+                    <span class="text-md font-medium ">Teachlife Rules</span>
                 </a>
 
-                <a href="#" class="flex items-center gap-3 mb-1 ml-6 pt-4 p-2 rounded hover:bg-gray-200 transition-colors">
-                    <svg class="text-gray-600" fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
-        <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
+                <a href="# " class="flex items-center gap-3 mb-1 ml-6 pt-4 p-2 rounded hover:bg-gray-200 transition-colors ">
+                    <svg class="text-gray-600 " fill="currentColor " height="20 " viewBox="0 0 20 20 " width="20 " xmlns="http://www.w3.org/2000/svg ">
+        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z "></path>
+        <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z "></path>
     </svg>
-                    <span class="text-md font-medium">Community Chat</span>
+                    <span class="text-md font-medium ">Community Chat</span>
                 </a>
 
-                <a href="#" class="flex items-center gap-3 mb-1 ml-6 pt-4 p-2 rounded hover:bg-gray-200 transition-colors">
-                    <svg class="text-gray-500" fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9 4.804A7.993 7.993 0 0110 4c.334 0 .66.021.98.061l.12.019a7.971 7.971 0 013.19 1.224l.01.01a7.971 7.971 0 013.2 6.186v.5a.5.5 0 01-.5.5h-13a.5.5 0 01-.5-.5v-.5a7.971 7.971 0 013.2-6.186zM10 12a1 1 0 100-2 1 1 0 000 2z"></path>
-        <path fill-rule="evenodd" d="M4 8a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                <a href="# " class="flex items-center gap-3 mb-1 ml-6 pt-4 p-2 rounded hover:bg-gray-200 transition-colors ">
+                    <svg class="text-gray-500 " fill="currentColor " height="20 " viewBox="0 0 20 20 " width="20 " xmlns="http://www.w3.org/2000/svg ">
+        <path d="M9 4.804A7.993 7.993 0 0110 4c.334 0 .66.021.98.061l.12.019a7.971 7.971 0 013.19 1.224l.01.01a7.971 7.971 0 013.2 6.186v.5a.5.5 0 01-.5.5h-13a.5.5 0 01-.5-.5v-.5a7.971 7.971 0 013.2-6.186zM10 12a1 1 0 100-2 1 1 0 000 2z "></path>
+        <path fill-rule="evenodd " d="M4 8a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1z " clip-rule="evenodd "></path>
     </svg>
-                    <span class="text-md font-medium">Help Center</span>
+                    <span class="text-md font-medium ">Help Center</span>
                 </a>
 
 
 
-                <a href="{% url 'contact_us' %}" class="flex items-center gap-3 mb-5 p-2 ml-6 text-md">
-                    <span class="text-xs text-gray-400 font-inter">
+                <a href="{% url 'contact_us' %} " class="flex items-center gap-3 mb-5 p-2 ml-6 text-md ">
+                    <span class="text-xs text-gray-400 font-inter ">
                   Techlife @2025.
-                  <span class="text-gray-950 font-inter hover:underline">All right</span>
+                  <span class="text-gray-950 font-inter hover:underline ">All right</span>
                     </span>
                 </a>
             </div>
@@ -206,3 +224,226 @@
 
 
 </div>
+
+
+
+
+
+
+
+
+
+<!-- Question Create Modal -->
+<style>
+    .question-modal-container::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .question-modal-container {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    
+    .question-modal-overlay {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    
+    .question-modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .question-modal-container {
+        transform: scale(0.7) translateY(-50px);
+        opacity: 0;
+        transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+    
+    .question-modal-overlay.active .question-modal-container {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+    
+    .question-close-btn {
+        transition: all 0.3s ease;
+    }
+    
+    .question-close-btn:hover {
+        transform: rotate(90deg);
+    }
+</style>
+
+<section class="relative">
+    <!-- Question Modal Overlay -->
+    <div id="questionModalOverlay" class="mt-5 question-modal-overlay fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 pt-24 pb-8" style="z-index: 9999;">
+        <div class="question-modal-container bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl">
+
+            <!-- Close Button -->
+            <button type="button" id="closeQuestionModalBtn" class="question-close-btn absolute top-5 right-5 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center z-10">
+                <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <!-- Modal Header -->
+            <!-- <div class="text-center px-8 py-6 rounded-t-2xl pr-16">
+                <h2 class="text-3xl font-bold mb-2 text-gray-500">Ask a Question</h2>
+                <p class="opacity-90 text-gray-500">Share your question with the community</p>
+            </div> -->
+
+            <div class="relative text-center px-8 py-10 rounded-t-2xl overflow-hidden bg-gray-900">
+
+                <div class="absolute inset-0 z-0">
+                    <img src="{% static 'image/forum/form_header.jfif' %}" alt="header background" class="w-full h-full object-cover opacity-40">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/60"></div>
+                </div>
+
+                <div class="relative z-10 pr-0 sm:pr-8">
+                    <h2 class="text-3xl font-bold mb-2 text-white tracking-tight">
+                        Ask a Question
+                    </h2>
+                    <p class="text-blue-100 text-sm opacity-90 font-light">
+                        Share your question with the community
+                    </p>
+
+                </div>
+                {% if not request.user.is_authenticated %}
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/20 rounded-full backdrop-blur-sm">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                    </span>
+                    <p class="text-red-400 text-xs font-semibold uppercase tracking-wider">
+                        Authentication Required: <a href="{% url 'login' %}" class="underline hover:text-red-300 transition-colors">Login Now</a>
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-8">
+                <form id="questionForm" method="post" action="{% url 'create_question' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Title Input -->
+                    <div class="mb-6">
+                        <label for="questionTitle" class="block text-gray-700 font-medium mb-2">
+                            Question Title <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="title" id="questionTitle" required maxlength="200" placeholder="What's your question? Be specific..." class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all">
+                    </div>
+
+                    <!-- Content Textarea -->
+                    <div class="mb-6">
+                        <label for="questionContent" class="block text-gray-700 font-medium mb-2">
+                            Question Details <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="questionContent" name="content" required rows="6" placeholder="Provide more details about your question. Include any relevant context, what you've tried, or specific areas where you need help..." class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-vertical"></textarea>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="mb-6">
+                        <label for="questionImage" class="block text-gray-700 font-medium mb-2">
+                            Upload Image (Optional)
+                        </label>
+                        <input type="file" id="questionImage" name="image" accept="image/*" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer">
+                        <p id="imagePreviewText" class="mt-2 text-sm text-gray-500"></p>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <!-- Submit Button -->
+                    <div class="flex justify-end gap-3">
+                        <button type="button" id="cancelQuestionBtn" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all duration-200">
+        Cancel
+    </button>
+                        <button type="submit" class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-sm hover:shadow-md transition-all duration-200">
+        Post Question
+    </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+    // Question Modal Logic
+    const questionModalOverlay = document.getElementById('questionModalOverlay');
+    const closeQuestionModalBtn = document.getElementById('closeQuestionModalBtn');
+    const cancelQuestionBtn = document.getElementById('cancelQuestionBtn');
+    const questionForm = document.getElementById('questionForm');
+    const questionImageInput = document.getElementById('questionImage');
+    const imagePreviewText = document.getElementById('imagePreviewText');
+
+    // Event delegation - সবসময় কাজ করবে
+    document.addEventListener('click', function(e) {
+        const trigger = e.target.closest('.open-modal-trigger[href="#create-question"]');
+        if (trigger) {
+            e.preventDefault();
+            console.log('Create button clicked!'); // Debug করার জন্য
+            openQuestionModal();
+        }
+    });
+
+    function openQuestionModal() {
+        console.log('Opening modal...'); // Debug করার জন্য
+        if (questionModalOverlay) {
+            questionModalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeQuestionModal() {
+        if (questionModalOverlay) {
+            questionModalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+            if (questionForm) {
+                questionForm.reset();
+            }
+            if (imagePreviewText) {
+                imagePreviewText.textContent = '';
+            }
+        }
+    }
+
+    // Close button
+    if (closeQuestionModalBtn) {
+        closeQuestionModalBtn.addEventListener('click', closeQuestionModal);
+    }
+
+    // Cancel button
+    if (cancelQuestionBtn) {
+        cancelQuestionBtn.addEventListener('click', closeQuestionModal);
+    }
+
+    // Close when clicking outside
+    if (questionModalOverlay) {
+        questionModalOverlay.addEventListener('click', (e) => {
+            if (e.target === questionModalOverlay) {
+                closeQuestionModal();
+            }
+        });
+    }
+
+    // Close with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && questionModalOverlay && questionModalOverlay.classList.contains('active')) {
+            closeQuestionModal();
+        }
+    });
+
+    // Image preview
+    if (questionImageInput) {
+        questionImageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                imagePreviewText.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+            } else {
+                imagePreviewText.textContent = '';
+            }
+        });
+    }
+</script>

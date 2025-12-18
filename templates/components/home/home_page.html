@@ -1,70 +1,32 @@
 {% load static %}
 
 <!-- Main Content -->
-<div
-  class="hero_section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4 lg:gap-6 w-full px-3 pt-1 lg:pt-4 mx-auto"
->
-  <!-- Left Section Carousel and Blogs and Add -->
-  <div
-    class="w-full md:col-span-3 flex flex-col gap-y-4 lg:gap-y-6"
-    data-aos="fade-up"
-    data-aos-anchor-placement="top-bottom"
-  >
-    <!-- Enhanced Blog Carousel -->
-    <div
-      class="blog-carousel relative rounded-2xl shadow-sm overflow-hidden group mb-4"
-      x-data="blogCarousel()"
-    >
-      <div
-        class="carousel-container relative h-48 sm:h-64 md:h-80 lg:h-96"
-        data-aos="fade-up"
-        data-aos-anchor-placement="top-bottom"
-      >
-        {% for blog in carousel_blogs %}
-        <div
-          class="carousel-slide absolute inset-0 transition-all duration-500 ease-in-out"
-          :class="currentSlide === {{ forloop.counter0 }} ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'"
-          x-show="currentSlide === {{ forloop.counter0 }}"
-        >
-          <!-- Background Image -->
-          <div class="absolute inset-0">
-            {% if blog.featured_image %}
-            <img
-              src="{{ blog.featured_image.url }}"
-              class="w-full h-full object-cover"
-              alt="{{ blog.title }}"
-            />
-            {% elif blog.featured_image_url %}
-            <img
-              src="{{ blog.featured_image_url }}"
-              class="w-full h-full object-cover"
-              alt="{{ blog.title }}"
-            />
-            {% else %}
-            <img
-              src="{% static 'image/placeholder-5.png' %}"
-              class="w-full h-full object-cover"
-              alt="Placeholder"
-            />
-            {% endif %}
+<div class="max-w-7xl mx-auto hero_section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4 lg:gap-6 w-full px-3 pt-1 lg:pt-4 ">
+    <!-- Left Section Carousel and Blogs and Add -->
+    <div class="w-full md:col-span-3 flex flex-col gap-y-4 lg:gap-y-6" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+        <!-- Enhanced Blog Carousel -->
+        <div class="blog-carousel relative rounded-2xl shadow-sm overflow-hidden group mb-4" x-data="blogCarousel()">
+            <div class="carousel-container relative h-48 sm:h-64 md:h-80 lg:h-96" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+                {% for blog in carousel_blogs %}
+                <div class="carousel-slide absolute inset-0 transition-all duration-500 ease-in-out" :class="currentSlide === {{ forloop.counter0 }} ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'" x-show="currentSlide === {{ forloop.counter0 }}">
+                    <!-- Background Image -->
+                    <div class="absolute inset-0">
+                        {% if blog.featured_image %}
+                        <img src="{{ blog.featured_image.url }}" class="w-full h-full object-cover" alt="{{ blog.title }}" /> {% elif blog.featured_image_url %}
+                        <img src="{{ blog.featured_image_url }}" class="w-full h-full object-cover" alt="{{ blog.title }}" /> {% else %}
+                        <img src="{% static 'image/placeholder-5.png' %}" class="w-full h-full object-cover" alt="Placeholder" /> {% endif %}
 
-            <!-- Dark overlay for text readability -->
-            <div class="absolute inset-0 bg-black/40"></div>
-          </div>
+                        <!-- Dark overlay for text readability -->
+                        <div class="absolute inset-0 bg-black/40"></div>
+                    </div>
 
-          <!-- Content Overlay -->
-          <div
-            class="absolute inset-0 flex flex-col justify-end p-4 sm:p-6 md:p-8"
-          >
-            <div
-              class="text-white space-y-2 sm:space-y-3 md:space-y-4 max-w-4xl"
-            >
-              <!-- Category Badge -->
-              {% if blog.category %}
-              <div class="inline-block">
-                <span
-                  class="px-2 py-1 bg-blue-500/80 rounded-full text-xs sm:text-sm font-medium backdrop-blur-sm"
-                  >{{ blog.category.name }}</span
+                    <!-- Content Overlay -->
+                    <div class="absolute inset-0 flex flex-col justify-end p-4 sm:p-6 md:p-8">
+                        <div class="text-white space-y-2 sm:space-y-3 md:space-y-4 max-w-4xl">
+                            <!-- Category Badge -->
+                            {% if blog.category %}
+                            <div class="inline-block">
+                                <span class="px-2 py-1 bg-blue-500/80 rounded-full text-xs sm:text-sm font-medium backdrop-blur-sm">{{ blog.category.name }}</span
                 >
               </div>
               {% endif %}
@@ -95,193 +57,102 @@
                     }}</span
                   >
                   <span>•</span>
-                  <span>{{ blog.created_at|date:"M d, Y" }}</span>
+                                <span>{{ blog.created_at|date:"M d, Y" }}</span>
+                            </div>
+
+                            <!-- See More Button -->
+                            <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="inline-flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg text-white text-sm font-medium transition-all duration-300 hover:scale-105 group/btn w-fit">
+                                <span>See More</span>
+                                <i class="fas fa-arrow-right text-xs group-hover/btn:translate-x-1 transition-transform duration-300"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- See More Button -->
-                <a
-                  hx-get="{% url 'blog_details' blog.slug %}"
-                  hx-target="#container"
-                  hx-push-url="true"
-                  hx-swap="innerHTML"
-                  class="inline-flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg text-white text-sm font-medium transition-all duration-300 hover:scale-105 group/btn w-fit"
-                >
-                  <span>See More</span>
-                  <i
-                    class="fas fa-arrow-right text-xs group-hover/btn:translate-x-1 transition-transform duration-300"
-                  ></i>
-                </a>
-              </div>
             </div>
-          </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
 
-        <!-- Fallback for no blogs -->
-        {% if not carousel_blogs %}
-        <div class="carousel-slide absolute inset-0">
-          <div class="absolute inset-0">
-            <img
-              src="{% static 'image/placeholder-5.png' %}"
-              class="w-full h-full object-cover"
-              alt="No blogs available"
-            />
-            <div class="absolute inset-0 bg-black/40"></div>
-          </div>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <div class="text-center text-white">
-              <h2 class="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
-                Welcome to Our Blog
-              </h2>
-              <p class="text-gray-200">Stay tuned for amazing content!</p>
+            <!-- Fallback for no blogs -->
+            {% if not carousel_blogs %}
+            <div class="carousel-slide absolute inset-0">
+                <div class="absolute inset-0">
+                    <img src="{% static 'image/placeholder-5.png' %}" class="w-full h-full object-cover" alt="No blogs available" />
+                    <div class="absolute inset-0 bg-black/40"></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-white">
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
+                            Welcome to Our Blog
+                        </h2>
+                        <p class="text-gray-200">Stay tuned for amazing content!</p>
+                    </div>
+                </div>
             </div>
-          </div>
+            {% endif %}
         </div>
-        {% endif %}
-      </div>
 
-      <!-- Navigation Arrows -->
-      {% if carousel_blogs|length > 1 %}
-      <button
-        @click="prevSlide()"
-        class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10"
-      >
+        <!-- Navigation Arrows -->
+        {% if carousel_blogs|length > 1 %}
+        <button @click="prevSlide()" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10">
         <i class="fas fa-chevron-left text-sm"></i>
       </button>
-      <button
-        @click="nextSlide()"
-        class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10"
-      >
+        <button @click="nextSlide()" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10">
         <i class="fas fa-chevron-right text-sm"></i>
       </button>
 
-      <!-- Slide Indicators -->
-      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-        {% for blog in carousel_blogs %}
-        <button
-          @click="currentSlide = {{ forloop.counter0 }}"
-          class="w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300"
-          :class="currentSlide === {{ forloop.counter0 }} ? 'bg-white' : 'bg-white/50 hover:bg-white/70'"
-        ></button>
-        {% endfor %}
-      </div>
-      {% endif %}
+        <!-- Slide Indicators -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            {% for blog in carousel_blogs %}
+            <button @click="currentSlide = {{ forloop.counter0 }}" class="w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300" :class="currentSlide === {{ forloop.counter0 }} ? 'bg-white' : 'bg-white/50 hover:bg-white/70'"></button> {% endfor
+            %}
+        </div>
+        {% endif %}
     </div>
 
     <!-- Display blogs -->
-    <ul
-      class="rounded-lg grid grid-cols-1 md:grid-cols-2 gap-4 py-3 px-4"
-      data-aos="fade-up"
-      data-aos-anchor-placement="top-bottom"
-    >
-      {% for blog in blogs|slice:"4" %} {% comment %}
-      <a
-        hx-get="{% url 'demo_blog_details_view' blog.slug %}"
-        hx-target="#container"
-        hx-push-url="true"
-        hx-swap="innerHTML"
-        {%
-        endcomment
-        %}
-        <a
-        hx-get="{% url 'blog_details' blog.slug %}"
-        hx-target="#container"
-        hx-swap="innerHTML"
-        hx-push-url="true"
-        class="cursor-pointer"
-      >
-        <li
-          class="flex flex-col w-full group gap-y-1 mb-3"
-          data-aos="fade-up"
-          data-aos-anchor-placement="top-bottom"
-        >
-          <div class="w-full h-[160px] sm:h-32 relative overflow-hidden">
-            {% if blog.featured_image %}
-            <img
-              class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]"
-              src="{{ blog.featured_image.url }}"
-              alt="{{ blog.title }}"
-            />
-            {% elif blog.featured_image_url %}
-            <img
-              class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]"
-              src="{{ blog.featured_image_url }}"
-              alt="{{ blog.title }}"
-            />
-            {% else %}
-            <img
-              class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]"
-              src="{% static 'image/placeholder-5.png' %}"
-              alt="{{ blog.title }}"
-            />
-            {% endif %}
-          </div>
-          <h1
-            class="text-sm font-semibold text-gray-700 line-clamp-2 hover:text-blue-500"
-          >
-            {{ blog.title }}
-          </h1>
-        </li>
-      </a>
-      {% endfor %}
+    <ul class="rounded-lg grid grid-cols-1 md:grid-cols-2 gap-4 py-3 px-4" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+        {% for blog in blogs|slice:"4" %} {% comment %}
+        <a hx-get="{% url 'demo_blog_details_view' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" {% endcomment %} <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="cursor-pointer">
+            <li class="flex flex-col w-full group gap-y-1 mb-3" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+                <div class="w-full h-[160px] sm:h-32 relative overflow-hidden">
+                    {% if blog.featured_image %}
+                    <img class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" /> {% elif
+                    blog.featured_image_url %}
+                    <img class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" /> {% else
+                    %}
+                    <img class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" />                    {% endif %}
+                </div>
+                <h1 class="text-sm font-semibold text-gray-700 line-clamp-2 hover:text-blue-500">
+                    {{ blog.title }}
+                </h1>
+            </li>
+        </a>
+        {% endfor %}
     </ul>
-  </div>
+</div>
 
-  <!-- Middle Section -->
-  <div
-    class="w-full md:col-span-1 xl:col-span-2 px-3 py-2 border border-gray-200 rounded-lg flex flex-col gap-y-4 lg:gap-y-6"
-    data-aos="fade-up"
-    data-aos-anchor-placement="top-bottom"
-  >
+<!-- Middle Section -->
+<div class="w-full md:col-span-1 xl:col-span-2 px-3 py-2 border border-gray-200 rounded-lg flex flex-col gap-y-4 lg:gap-y-6" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
     {% if latest_blog %}
-    <a
-      hx-get="{% url 'blog_details' latest_blog.slug %}"
-      hx-target="#container"
-      hx-push-url="true"
-      hx-swap="innerHTML"
-      class="flex flex-col cursor-pointer"
-    >
-      <div class="flex flex-col gap-1 group relative overflow-hidden">
-        {% if latest_blog.featured_image %}
-        <img
-          class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]"
-          src="{{ latest_blog.featured_image.url }}"
-          alt="{{ latest_blog.title }}"
-        />
-        {% elif latest_blog.featured_image_url %}
-        <img
-          class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]"
-          src="{{ latest_blog.featured_image_url }}"
-          alt="{{ latest_blog.title }}"
-        />
-        {% else %}
-        <img
-          class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]"
-          src="{% static 'image/placeholder-5.png' %}"
-          alt="{{ latest_blog.title }}"
-        />
-        {% endif %}
-        <h1
-          class="text-sm md:text-base font-semibold pl-1 group-hover:text-blue-600 line-clamp-2"
-        >
-          {{ latest_blog.title|truncatewords:9 }}
-        </h1>
-      </div>
+    <a hx-get="{% url 'blog_details' latest_blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="flex flex-col cursor-pointer">
+        <div class="flex flex-col gap-1 group relative overflow-hidden">
+            {% if latest_blog.featured_image %}
+            <img class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ latest_blog.featured_image.url }}" alt="{{ latest_blog.title }}" /> {% elif latest_blog.featured_image_url
+            %}
+            <img class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ latest_blog.featured_image_url }}" alt="{{ latest_blog.title }}" /> {% else %}
+            <img class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{% static 'image/placeholder-5.png' %}" alt="{{ latest_blog.title }}" /> {% endif %}
+            <h1 class="text-sm md:text-base font-semibold pl-1 group-hover:text-blue-600 line-clamp-2">
+                {{ latest_blog.title|truncatewords:9 }}
+            </h1>
+        </div>
     </a>
     {% endif %} {% comment %}
-    <hr class="text-gray-200 mb-2" />
-    {% endcomment %}
+    <hr class="text-gray-200 mb-2" /> {% endcomment %}
 
     <!-- Small blogs list -->
-    <ul
-      class="flex flex-col gap-y-2 mt-2"
-      data-aos="fade-up"
-      data-aos-anchor-placement="top-bottom"
-    >
-      <div class="" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
-        <i class="fa-solid fa-square-plus"></i>
-        <span class="text-lg font-bold text-center text-gray-950"
-          >Recent Post</span
+    <ul class="flex flex-col gap-y-2 mt-2" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+        <div class="" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+            <i class="fa-solid fa-square-plus"></i>
+            <span class="text-lg font-bold text-center text-gray-950">Recent Post</span
         >
       </div>
       <hr class="text-gray-200 mb-2" />
@@ -468,26 +339,17 @@
       >
         <i class="fa-solid fa-tag"></i>
         <span class="text-lg font-bold mb-2 text-gray-950">Popular Tags</span>
-      </div>
-      <hr class="text-gray-200 mb-2" />
-      {% comment %}
-      <h1
-        class="text-lg sm:text-xl font-bold mb-4 text-gray-800 flex items-center justify-center gap-2"
-      >
-        Popular Tags
-      </h1>
-      {% endcomment %}
+        </div>
+        <hr class="text-gray-200 mb-2" /> {% comment %}
+        <h1 class="text-lg sm:text-xl font-bold mb-4 text-gray-800 flex items-center justify-center gap-2">
+            Popular Tags
+        </h1>
+        {% endcomment %}
 
-      <ul
-        class="flex flex-wrap gap-1"
-        data-aos="fade-up"
-        data-aos-anchor-placement="top-bottom"
-      >
-        {% for tag in tags|slice:"12" %}
-        <li>
-          <span
-            class="text-[10px] badge badge-md border border-blue-200 bg-blue-50 text-blue-500 font-medium rounded-full hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 cursor-pointer px-3 py-1"
-            >{{ tag.name|slice:'20' }}</span
+        <ul class="flex flex-wrap gap-1" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+            {% for tag in tags|slice:"12" %}
+            <li>
+                <span class="text-[10px] badge badge-md border border-blue-200 bg-blue-50 text-blue-500 font-medium rounded-full hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 cursor-pointer px-3 py-1">{{ tag.name|slice:'20' }}</span
           >
         </li>
         {% endfor %}
@@ -501,21 +363,16 @@
             ></i>
             All Tags
           </span>
-        </li>
-      </ul>
-    </div>
-  </div>
+            </li>
+        </ul>
+</div>
+</div>
 </div>
 
 <!-- Advertisement Section -->
-<div
-  class="w-full max-w-[728px] h-24 flex justify-center items-center mt-5 mx-auto px-4 sm:px-0"
->
-  <div
-    class="w-full h-full rounded-lg overflow-hidden flex justify-center items-center text-sm text-center text-gray-400 border border-gray-300"
-  >
-    <span class="hidden sm:inline p-4 text-base"
-      >Google AdSense 728x90 Code Here (Desktop/Tablet)</span
+<div class="w-full max-w-[728px] h-24 flex justify-center items-center mt-5 mx-auto px-4 sm:px-0">
+    <div class="w-full h-full rounded-lg overflow-hidden flex justify-center items-center text-sm text-center text-gray-400 border border-gray-300">
+        <span class="hidden sm:inline p-4 text-base">Google AdSense 728x90 Code Here (Desktop/Tablet)</span
     >
     <span class="sm:hidden p-4 text-sm"
       >Google AdSense 300x50/320x50 Code Here (Mobile)</span
@@ -525,7 +382,7 @@
 
 <!-- Blog Posts Grid -->
 <div
-  class="flex flex-col md:flex-row justify-between gap-3 mt-8 mb-16"
+  class="mx-auto max-w-7xl flex flex-col md:flex-row justify-between gap-3 mt-8 mb-16"
   data-aos="fade-up"
   data-aos-anchor-placement="top-bottom"
 >
@@ -943,7 +800,7 @@
 
 <!-- Add Section -->
 <div
-  class="w-full flex justify-center items-center rounded-lg mt-16 mb-4 mx-auto"
+  class="mx-auto max-w-7xl w-full flex justify-center items-center rounded-lg mt-16 mb-4 mx-auto"
 >
   <img
     class="w-full max-w-[980px] h-[120px] object-cover rounded-xl flex justify-center items-center text-sm text-gray-400 border border-gray-300"

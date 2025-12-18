@@ -1,42 +1,37 @@
 {% comment %} {% load static %}
 
-<div class="mx-auto">
+<div class="max-w-7xl mx-auto">
 
-  <div class="category-list">
-    <div class="collapse collapse-arrow rounded-box mb-3">
-      <div class="relative w-full">
+    <div class="category-list">
+        <div class="collapse collapse-arrow rounded-box mb-3">
+            <div class="relative w-full">
 
-        <!-- Left Scroll Button -->
-        <button id="leftBtn"
-          class="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-100 hover:bg-gray-200 p-2 rounded-full shadow-md z-10">
+                <!-- Left Scroll Button -->
+                <button id="leftBtn" class="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-100 hover:bg-gray-200 p-2 rounded-full shadow-md z-10">
           &#10094;
         </button>
 
-        <!-- Scrollable container -->
-        <ul x-data="{ active: 'all' }" id="catScroll"
-          class="flex flex-nowrap space-x-3 overflow-x-auto scrollbar-hide px-10 py-2 scroll-smooth whitespace-nowrap">
+                <!-- Scrollable container -->
+                <ul x-data="{ active: 'all' }" id="catScroll" class="flex flex-nowrap space-x-3 overflow-x-auto scrollbar-hide px-10 py-2 scroll-smooth whitespace-nowrap">
 
-          {% for cat in categories %}
-          <li @click="active = '{{ cat.name }}'" :class="active === '{{ cat.name }}' 
+                    {% for cat in categories %}
+                    <li @click="active = '{{ cat.name }}'" :class="active === '{{ cat.name }}' 
             ? 'bg-blue-400 text-white border-blue-500 shadow-md' 
-            : 'bg-white text-gray-700 border-gray-300 shadow-md'"
-            class="rounded-lg px-3 py-1 cursor-pointer border inline-flex items-center gap-2 transition-all duration-200 hover:bg-gray-200">
-            <a hx-get="{% url 'category_post' cat.slug %}" hx-target="#container" hx-push-url="true"
-              hx-swap="innerHTML"><span class="text-md">{{ cat.name }}</span></a>
-          </li>
-          {% endfor %}
-        </ul>
+            : 'bg-white text-gray-700 border-gray-300 shadow-md'" class="rounded-lg px-3 py-1 cursor-pointer border inline-flex items-center gap-2 transition-all duration-200 hover:bg-gray-200">
+                        <a hx-get="{% url 'category_post' cat.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"><span class="text-md">{{ cat.name }}</span></a>
+                    </li>
+                    {% endfor %}
+                </ul>
 
-        <!-- Right Scroll Button -->
-        <button id="rightBtn"
-          class="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-100 hover:bg-gray-200 p-2 rounded-full shadow-md z-10">
+                <!-- Right Scroll Button -->
+                <button id="rightBtn" class="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-100 hover:bg-gray-200 p-2 rounded-full shadow-md z-10">
           &#10095;
         </button>
-      </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  {% include "components/blogs/blog_post_page.html" %}
+    {% include "components/blogs/blog_post_page.html" %}
 
 
 </div> {% endcomment %}
