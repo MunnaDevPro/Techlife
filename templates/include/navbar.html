@@ -76,7 +76,7 @@
                     <a href="{% url 'popular_blogs' %}" class="text-gray-600 font-medium hover:text-blue-600 transition-colors cursor-pointer px-3 py-2 rounded-md hover:bg-blue-50 whitespace-nowrap">
                         Popular</a>
 
-                    <button onclick="showForumWarningModal()" class="text-gray-600 font-medium hover:text-blue-600 transition-colors cursor-pointer px-3 py-2 rounded-md hover:bg-blue-50 whitespace-nowrap">Question</button>
+                    <a href="{% url 'questions_list' %}" class="text-gray-600 font-medium hover:text-blue-600 transition-colors cursor-pointer px-3 py-2 rounded-md hover:bg-blue-50 whitespace-nowrap">Question</a>
 
                     <a hx-get="{% url 'create_blog' %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="text-gray-600 font-medium hover:text-blue-600 transition-colors cursor-pointer px-3 py-2 rounded-md hover:bg-blue-50 whitespace-nowrap">Create
                         Blog</a>

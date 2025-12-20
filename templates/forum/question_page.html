@@ -142,21 +142,27 @@
                     <!-- Post Title -->
                     <h1 class="text-xl font-bold mb-1 mt-3 break-words leading-tight">{{ particular_question.title }}
                     </h1>
+                    <!-- photo -->
+                    {% if particular_question.image %}
+                    <div class="W-[100%] rounded-md mt-2 mb-2">
+                        <img src="{{ particular_question.image.url }}" alt=" " width="100%" height="100%" class="rounded-md">
+                    </div>
+                    {% endif %}
 
                     <!-- Post Content -->
-                    <p class="mt-2 break-words leading-0 text-gray-500 text-sm">{{ particular_question.content }}</p>
+                    <p class="mt-2 break-words leading-0 text-gray-500 text-sm ">{{ particular_question.content }}</p>
 
                     <!-- Interaction Bar -->
-                    <!-- <div class="flex items-center justify-between mt-5 text-gray-600">
-                        <div class="flex items-center gap-3 flex-wrap">
-                            <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1 cursor-pointer">
-                                <i class="fa-regular fa-thumbs-up"></i> Like
+                    <!-- <div class="flex items-center justify-between mt-5 text-gray-600 ">
+                        <div class="flex items-center gap-3 flex-wrap ">
+                            <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1 cursor-pointer ">
+                                <i class="fa-regular fa-thumbs-up "></i> Like
                             </a>
-                            <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1 cursor-pointer">
-                                <i class="fa-regular fa-comment"></i> Comment
+                            <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1 cursor-pointer ">
+                                <i class="fa-regular fa-comment "></i> Comment
                             </a>
-                            <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1">
-                                <i class="fa-regular fa-eye"></i> View
+                            <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1 ">
+                                <i class="fa-regular fa-eye "></i> View
                             </a>
 
                         </div>
@@ -164,26 +170,22 @@
 
                 </div>
 
-                <div x-data="{ showSearch: true }" class="mt-2" x-cloak>
-                    <!-- Search Bar -->
+
+                <div x-data="{ showSearch: true } " class="mt-2" x-cloak>
                     <div x-show="showSearch" class="text-center w-full" x-cloak>
                         <div class="relative w-full ml-0.5">
                             <input type="search" placeholder="Add your answer" class="w-[95%] pl-5 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm" @focus="showSearch = false" />
                         </div>
                     </div>
 
-                    <!-- Answer Box -->
                     <div x-show="!showSearch" class="bg-white p-4 rounded-lg -mb-6" x-cloak>
                         <form action="{% url 'post_answer' slug=particular_question.slug %}" method="POST">
                             {% csrf_token %}
-                            <textarea name="content" id="editor" class="required w-full rounded-lg p-2 resize-none text-sm text-gray-500 " placeholder="Write your answer... "></textarea>
-                            <div class="flex justify-end mt-2 gap-2 ">
-                                <!-- Cancel Button -->
-                                <button @click="showSearch=t rue " class="px-5 py-1 border border-gray-300 text-gray-600 rounded-full hover:bg-gray-100 transition ">Cancel</button>
+                            <textarea name="content" id="editor" class="required w-full rounded-lg p-2 resize-none text-sm text-gray-500" placeholder="Write your answer..."></textarea>
+                            <div class="flex justify-end mt-2 gap-2">
+                                <button type="button" @click="showSearch = true" class="px-5 py-1 border border-gray-300 text-gray-600 rounded-full hover:bg-gray-100 transition">Cancel</button>
 
-                                <!-- Post Button -->
-                                <button type="submit" class="px-4 bg-gray-400 text-[15px] text-white rounded-full hover:bg-gray-500 shadow-sm transition ">Add
-                                Post</button>
+                                <button type="submit" class="px-4 bg-gray-400 text-[15px] text-white rounded-full hover:bg-gray-500 shadow-sm transition">Add Post</button>
                             </div>
                         </form>
                     </div>
@@ -197,45 +199,21 @@
         <div class="w-1 bg-gray-100 flex-shrink-0 mx-auto "></div>
 
         <!-- RIGHT SIDEBAR -->
-        <div class="w-full lg:w-1/3 flex-shrink-0 mx-auto ">
-            <div class="bg-white rounded-lg mt-1 lg:mt-0 p-3 sticky top-4 max-h-[90vh] overflow-y-auto scrollbar-hide ">
-                <h3 class="text-lg font-inter text-gray-700 font-sm pb-3 ">Recent Posts</h3>
-                <ul class="flex flex-col gap-y-2 ">
-                    {% for blog in blogs|slice:"1:8 " %}
-                    <a href="{% url 'blog_details' blog.slug %} " class="flex flex-col ">
-                        <li class="flex items-center gap-x-3 p-1 mb-2 border-gray-300 rounded-lg hover:scale-104 transition-transform duration-300 group ">
-                            <div class="w-24 h-20 flex-shrink-0 overflow-hidden rounded-md group ">
-                                {% if blog.featured_image %}
-                                <img src="{{ blog.featured_image.url }} " alt="{{ blog.title }} " class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110 " /> {% elif blog.featured_image_url%}
-                                <img src="{{ blog.featured_image_url }} " alt="{{ blog.title }} " class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110 " /> {% else %}
-                                <img src="{% static 'image/placeholder-5.png' %} " alt="{{ blog.title }} " class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110 " /> {% endif %}
-                            </div>
-
-                            <div class="flex flex-col gap-y-1 ">
-                                <h1 class="text-[12px] font-bold group-hover:text-blue-600 line-clamp-1 ">{{ blog.title }}
-                                </h1>
-                                <p class="text-xs text-gray-600 line-clamp-2 ">{{ blog.description|truncatewords:10 }}
-                                </p>
-                            </div>
-                        </li>
-                        <hr />
-                    </a>
-                    {% endfor %}
-                </ul>
-
-                <div class="flex justify-center mt-5 ">
-                    <button type="button " class="px-5 py-2 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-blue-300 transition ">More
-                        Blogs ></button>
-                </div>
-            </div>
-        </div>
+        {% include 'forum/right_sidebar.html' %}
     </div>
 
     <script>
-        // CKEditor 5 initialization
-        ClassicEditor.create(document.querySelector('#editor')).catch((error) => {
-            console.error(error);
-        });
+        // CKEditor initialization logic
+        let editorInstance;
+
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .then(editor => {
+                editorInstance = editor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
     </script>
 
 

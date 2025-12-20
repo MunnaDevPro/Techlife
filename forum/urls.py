@@ -1,5 +1,5 @@
 from django.urls import path
-from forum.views import questions_list, questions, post_answer, create_question
+from forum.views import popular_question, questions_list, questions, post_answer, create_question
 
 
 urlpatterns = [
@@ -7,6 +7,8 @@ urlpatterns = [
     path("questions/<slug:slug>/",questions, name="questions"),
     path("question/<slug:slug>/answer/",post_answer,name="post_answer"),
 
-    path("ask-question/",create_question, name="create_question")
+    path("ask-question/",create_question, name="create_question"),
+
+    path("popular-question/",popular_question, name="popular_question")
 
 ]

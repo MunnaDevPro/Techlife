@@ -10,13 +10,16 @@ def questions(request, slug):
     blogs = BlogPost.objects.all().order_by('-created_at')
     particular_question = Question.objects.select_related('author').prefetch_related('answers__author').get(slug=slug)
 
+    right_side_questions = Question.objects.select_related('author').prefetch_related('answers').all() 
+
+
 
     # search filter
     answers = particular_question.answers.all()
 
     query = request.GET.get('q')    
     if query:
-        answers = Answer.objects.filter(
+        answers = particular_question.answers.filter(
             Q(content__icontains=query)
         ).distinct()
        
@@ -44,7 +47,9 @@ def questions(request, slug):
         "answers":answers,
         "particular_question":particular_question,
         'current_sort': sort_by.capitalize(),
-        "paginator_answer":paginator_answer
+        "paginator_answer":paginator_answer,
+
+        "right_side_questions" : right_side_questions,
     }
 
     return render(request, "forum/question_page.html",context)
@@ -52,7 +57,11 @@ def questions(request, slug):
 
 def questions_list(request):
     blogs = BlogPost.objects.all().order_by("-created_at")
-    questions = Question.objects.select_related('author').prefetch_related('answers').all()    
+    questions = Question.objects.select_related('author').prefetch_related('answers').all() 
+
+    right_side_questions = Question.objects.select_related('author').prefetch_related('answers').order_by('-created_at').all()
+
+    
 
 
     query = request.GET.get('q')
@@ -78,6 +87,8 @@ def questions_list(request):
     context = {
         "blogs":blogs,
         "questions" :questions,
+
+        "right_side_questions":right_side_questions
     
     }
     return render(request, "forum/all_question.html", context)
@@ -98,6 +109,7 @@ def post_answer(request, slug):
         
     return redirect('questions', slug=slug)
 
+
 def create_question(request):
 
     if not request.user.is_authenticated:
@@ -109,7 +121,7 @@ def create_question(request):
         image = request.FILES.get('image')
 
     
-        if title and content:
+        if title or content:
             Question.objects.create(
                 author=request.user,
                 title=title,
@@ -118,3 +130,39 @@ def create_question(request):
             )
             return redirect('questions_list')
     return redirect('questions_list')
+
+
+def popular_question(request):
+    
+    
+    blogs = BlogPost.objects.all().order_by("-created_at")
+
+    right_side_questions = Question.objects.select_related('author').prefetch_related('answers').order_by('-created_at').all()
+
+    
+    popular_question = Question.objects.annotate(
+        num_answers=Count('answers')
+    ).order_by('-num_answers', '-created_at')   
+    
+
+    query = request.GET.get('q')
+    if query:
+        popular_question = popular_question.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)
+        )
+
+
+
+    paginator = Paginator(popular_question, 5) 
+    page_number = request.GET.get('page')
+    popular_question = paginator.get_page(page_number)
+
+    context = {
+        "blogs":blogs,
+        "popular_question" :popular_question,
+
+        "right_side_questions":right_side_questions
+    
+    }
+
+    return render(request, 'forum/popular_question.html', context)

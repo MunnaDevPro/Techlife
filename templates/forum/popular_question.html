@@ -122,7 +122,7 @@
             </div>
 
             <div class="space-y-4 mx-auto">
-                {% for question in questions %}
+                {% for question in popular_question %}
                 <!-- Card 1 -->
                 <div class="bg-white pl-5 pt-5 pb-4 pr-4 mt-5 border rounded-xl hover:shadow-sm flex flex-col md:flex-row items-start justify-between">
                     <!-- Left Section -->
@@ -162,69 +162,19 @@
                     </div>
                 </div>
 
-                {% endfor %} {% comment %} pagination {% endcomment %}
-                <!-- <div class="flex items-center justify-center w-full h-16 px-3 border-neutral-200">
-                    <nav>
-                        <ul class="flex items-center text-sm leading-tight bg-white border border-neutral-200/70 rounded h-[34px] text-neutral-500">
-                            <li class="h-full">
-                                <a href="#" class="relative inline-flex items-center h-full px-3 rounded-l group hover:bg-blue-600 hover:text-white">
-                                    <span>Previous</span>
-                                </a>
-                            </li>
-                            <li class="hidden h-full md:block">
-                                <a href="#" class="relative inline-flex items-center h-full px-3 text-white bg-blue-600 group">
-                                    <span>1</span>
-                                </a>
-                            </li>
-                            <li class="hidden h-full md:block">
-                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                    <span>2</span>
-                                </a>
-                            </li>
-                            <li class="hidden h-full md:block">
-                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                    <span>3</span>
-                                </a>
-                            </li>
+                {% endfor %}
 
-                            <li class="hidden h-full md:block">
-                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                    <span>6</span>
-                                </a>
-                            </li>
-                            <li class="hidden h-full md:block">
-                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                    <span>7</span>
-                                </a>
-                            </li>
-                            <li class="hidden h-full md:block">
-                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                    <span>8</span>
-                                </a>
-                            </li>
-                            <li class="hidden h-full md:block">
-                                <a href="#" class="relative inline-flex items-center h-full px-3 group hover:bg-blue-600 hover:text-white">
-                                    <span>. . .</span>
-                                </a>
-                            </li>
-                            <li class="h-full">
-                                <a href="#" class="relative inline-flex items-center h-full px-3 rounded-r group hover:bg-blue-600 hover:text-white">
-                                    <span>Next</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div> -->
+
             </div>
 
 
 
 
-            {% if questions %}
+            {% if popular_question %}
             <div class="mt-16 mb-10 flex justify-center">
                 <nav class="flex items-center gap-1 p-1 bg-white/80 backdrop-blur-md border border-gray-200/60 rounded-2xl shadow-sm ring-1 ring-black/5" aria-label="Pagination">
 
-                    {% if questions.has_previous %}
+                    {% if popular_question.has_previous %}
                     <a href="?page={{ questions.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="flex items-center justify-center w-10 h-10 rounded-xl text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200" title="Previous">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 19l-7-7 7-7"/></svg>
                     </a>
@@ -235,12 +185,12 @@
 
                     <div class="flex items-center px-4 h-10 bg-gray-50/50 rounded-xl border border-gray-100 mx-1">
                         <span class="text-xs font-bold uppercase tracking-widest text-gray-400 mr-2">Page</span>
-                        <span class="text-sm font-semibold text-blue-600">{{ questions.number }}</span>
+                        <span class="text-sm font-semibold text-blue-600">{{ popular_question.number }}</span>
                         <span class="text-sm font-medium text-gray-300 mx-2">of</span>
-                        <span class="text-sm font-semibold text-gray-600">{{ questions.paginator.num_pages }}</span>
+                        <span class="text-sm font-semibold text-gray-600">{{ popular_question.paginator.num_pages }}</span>
                     </div>
 
-                    {% if questions.has_next %}
+                    {% if popular_question.has_next %}
                     <a href="?page={{ questions.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="flex items-center justify-center w-10 h-10 rounded-xl text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200" title="Next">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 5l7 7-7 7"/></svg>
                     </a>

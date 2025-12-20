@@ -7,7 +7,7 @@ class Question(models.Model):
     author = models.ForeignKey(CustomUserModel, on_delete=models.CASCADE, related_name='questions',default=1)
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=500,blank=True,null=True,unique=True,db_index=True,)
-    content = models.TextField()
+    content = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='question_images/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
