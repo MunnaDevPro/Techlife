@@ -5,7 +5,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.db.models import Q, Count
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-
+from accounts.models import CustomUserModel
 def questions(request, slug):
     blogs = BlogPost.objects.all().order_by('-created_at')
     particular_question = Question.objects.select_related('author').prefetch_related('answers__author').get(slug=slug)
@@ -166,3 +166,58 @@ def popular_question(request):
     }
 
     return render(request, 'forum/popular_question.html', context)
+
+
+
+def forum_all_user_list(request):
+
+    all_users = CustomUserModel.objects.prefetch_related('authored_posts','questions').order_by('created_at').all()
+
+    paginator = Paginator(all_users, 8)
+    page_number = request.GET.get('page')
+    all_users = paginator.get_page(page_number)
+
+    context = {
+        'all_users': all_users
+    }
+    
+    return render(request, "forum/forum_user.html", context)
+
+
+
+def forum_user_profile_details(request, pk):
+
+
+    user_profile = get_object_or_404(CustomUserModel, pk=pk)
+
+
+    all_blogs = BlogPost.objects.filter(author=user_profile).order_by("-created_at")
+    all_questions = user_profile.questions.all().order_by("-created_at")
+
+
+
+    user_blogs = BlogPost.objects.filter(author=user_profile).order_by("-created_at")
+    user_questions = user_profile.questions.all().order_by("-created_at")
+
+    # paginator for blogs
+    paginator = Paginator(user_blogs, 4)
+    page_number = request.GET.get('page')
+    user_blogs = paginator.get_page(page_number)
+
+
+    # paginator for question
+    paginator = Paginator(user_questions, 4)
+    page_number = request.GET.get('page')
+    user_questions = paginator.get_page(page_number)
+
+
+    context = {
+        'user_blogs': user_blogs,
+        'user_questions' : user_questions,
+        'user_profile':user_profile,
+        'all_blogs':all_blogs,
+        'all_questions':all_questions
+
+    }
+
+    return render(request, "forum/forum_user_profile.html", context)

@@ -53,8 +53,7 @@
                   class="flex items-center gap-2 text-xs sm:text-sm text-gray-300"
                 >
                   <span
-                    >By {{ blog.author.first_name }} {{ blog.author.last_name
-                    }}</span
+                    >By {{ blog.author.first_name }} {{ blog.author.last_name }}</span
                   >
                   <span>•</span>
                                 <span>{{ blog.created_at|date:"M d, Y" }}</span>
@@ -136,8 +135,7 @@
     <a hx-get="{% url 'blog_details' latest_blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="flex flex-col cursor-pointer">
         <div class="flex flex-col gap-1 group relative overflow-hidden">
             {% if latest_blog.featured_image %}
-            <img class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ latest_blog.featured_image.url }}" alt="{{ latest_blog.title }}" /> {% elif latest_blog.featured_image_url
-            %}
+            <img class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ latest_blog.featured_image.url }}" alt="{{ latest_blog.title }}" /> {% elif latest_blog.featured_image_url%}
             <img class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ latest_blog.featured_image_url }}" alt="{{ latest_blog.title }}" /> {% else %}
             <img class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{% static 'image/placeholder-5.png' %}" alt="{{ latest_blog.title }}" /> {% endif %}
             <h1 class="text-sm md:text-base font-semibold pl-1 group-hover:text-blue-600 line-clamp-2">
