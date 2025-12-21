@@ -234,13 +234,9 @@
         <!-- Main Content -->
         <main id="blog_post_form" class="container mx-auto flex-grow min-h-[calc(100vh-128px)] px-4 py-6 bg-white">
             {% block content %} {% if action == 'question_list' %} {% include 'forum/partial_all_question.html' %} {% elif action == 'popular_questions' %} {% include 'forum/partial_popular_question.html' %} {% elif action == 'all_user' %} {% include 'forum/partial_forum_user.html'
-            %} {% elif action == 'user_profile_details' %} {% include 'forum/partial_forum_user_profile.html' %}{% endif %}{% endblock content %}
+            %} {% elif action == 'user_profile_details' %} {% include 'forum/partial_forum_user_profile.html' %}{% elif action == 'question_details' %}{% include 'forum/partial_question_page.html' %}{% endif %}{% endblock content %}
         </main>
     </div>
-
-
-
-
     {% include 'forum/forum_footer.html' %}
 
 

@@ -6,7 +6,7 @@
         <h3 class="text-lg font-inter text-gray-700 font-sm pb-3 "><span class="w-2 h-full bg-blue-600 text-blue-600 mr-2">.</span>Recent Question</h3>
         <ul class="flex flex-col gap-y-2 ">
             {% for question in right_side_questions|slice:"4" %}
-            <a href="{% url 'questions' slug=question.slug %} " class="flex flex-col ">
+            <a hx-get="{% url 'questions' slug=question.slug %}" hx-target="#blog_post_form" hx-swap="innerHTML" hx-push-url="true" class="flex flex-col ">
                 <li class="flex items-center gap-x-3 p-1 mb-2 border-gray-300 rounded-lg hover:scale-104 transition-transform duration-300 group ">
                     <div class="w-24 h-20 flex-shrink-0 overflow-hidden rounded-md group ">
                         {% if question.image %}
@@ -16,7 +16,7 @@
                     </div>
 
                     <div class="flex flex-col gap-y-1 ">
-                        <h1 class="text-[12px] font-bold group-hover:text-blue-600 line-clamp-2 ">{{ question.title }}
+                        <h1 class="text-[12px] font-bold group-hover:text-blue-600 line-clamp-2 cursor-pointer">{{ question.title }}
                         </h1>
                         <p class="text-xs text-gray-600 line-clamp-2 ">{{ question.content|truncatewords:20 }}
                         </p>

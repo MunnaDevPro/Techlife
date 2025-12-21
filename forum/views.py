@@ -65,8 +65,6 @@ def questions_list(request):
 
     right_side_questions = Question.objects.select_related('author').prefetch_related('answers').order_by('-created_at').all()
 
-    
-
 
     query = request.GET.get('q')
     if query:

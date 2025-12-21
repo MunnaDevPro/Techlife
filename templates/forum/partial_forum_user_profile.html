@@ -38,10 +38,10 @@
         <div class="bg-white rounded-lg shadow-sm mb-4 ">
             <div class="border-b border-gray-200 ">
                 <nav class="flex -mb-px">
-                    <button onclick="showTab('posts') " id="tab-posts" class="tab-button active py-4 px-8 font-semibold text-blue-600 border-b-2 border-blue-600 transition-colors ">
+                    <button onclick="showTab('posts')" id="tab-posts" class="tab-button active py-4 px-8 font-semibold text-blue-600 border-b-2 border-blue-600 transition-colors ">
                         Blog Posts
                     </button>
-                    <button onclick="showTab('forum') " id="tab-forum" class="tab-button py-4 px-8 font-semibold text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 transition-colors ">
+                    <button onclick="showTab('forum')" id="tab-forum" class="tab-button py-4 px-8 font-semibold text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 transition-colors ">
                         Forum Questions
                     </button>
                 </nav>
@@ -54,13 +54,13 @@
             <div class=" mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
 
                 {% for blog in user_blogs %}
-                <a href="{% url 'blog_details' blog.slug %}" class="bg-white rounded-md overflow-hidden hover:drop-shadow-lg duration-200 pb-2 mb-6 cursor-pointer border border-gray-200 hover:border-gray-300 ">
+                <a href="{% url 'blog_details' blog.slug %}" class="bg-white rounded-md overflow-hidden hover:drop-shadow-md duration-200 pb-2 mb-6 cursor-pointer border border-gray-200 hover:border-gray-300 ">
                     <!-- Image section -->
                     <div class="relative p-3 pt-3 ">
                         {% if blog.featured_image %}
-                        <img src="{{ blog.featured_image.url }} " alt="{{ blog.title }} " class="w-full h-44 object-cover rounded-md " /> {% elif blog.featured_image_url %}
-                        <img src="{{ blog.featured_image_url }} " alt="{{ blog.title }} " class="w-full h-44 object-cover rounded-md " /> {% else %}
-                        <img src="{% static 'image/placeholder-5.png' %} " alt="{{ blog.title }} " class="w-full h-44 object-cover rounded-md " /> {% endif %}
+                        <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md " /> {% elif blog.featured_image_url %}
+                        <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md " /> {% else %}
+                        <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }} " class="w-full h-44 object-cover rounded-md " /> {% endif %}
                     </div>
 
                     <!-- Category name and date -->
@@ -132,7 +132,7 @@
                         It looks like there are no blog posts available at the moment.
                     </p>
 
-                    <a href="{% url 'create_blog' %} " class="inline-flex items-center px-6 py-3 bg-blue-700 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 transition-all shadow-md hover:shadow-lg active:scale-95 ">
+                    <a href="{% url 'create_blog' %}" class="inline-flex items-center px-6 py-3 bg-blue-700 text-white text-sm font-semibold rounded-xl hover:bg-blue-800 transition-all shadow-md hover:shadow-lg active:scale-95 ">
         
         Write Post
     </a>
@@ -213,7 +213,7 @@
                         </div>
 
                         <div class="flex-1 ">
-                            <a href="{% url 'questions ' slug=question.slug %} " class="font-inter text-[18px] font-semibold text-gray-900 mb-2 hover:text-blue-800 cursor-pointer line-clamp-2 ">
+                            <a href="{% url 'questions' slug=question.slug %} " class="font-inter text-[18px] font-semibold text-gray-900 mb-2 hover:text-blue-800 cursor-pointer line-clamp-2 ">
                                 {{ question.title }}
                             </a>
                             <p class="font-inter text-gray-600 mb-4 text-[12px] line-clamp-3 ">
@@ -318,26 +318,29 @@
 
     </div>
 
-    <script>
-        function showTab(tabName) {
-            // Hide all tab contents
-            const contents = document.querySelectorAll('.tab-content ');
-            contents.forEach(content => content.classList.add('hidden '));
 
-            // Remove active class from all tabs
-            const tabs = document.querySelectorAll('.tab-button ');
-            tabs.forEach(tab => {
-                tab.classList.remove('active ', 'text-blue-600 ', 'border-blue-600 ');
-                tab.classList.add('text-gray-500 ', 'border-transparent ');
-            });
-
-            // Show selected tab content
-            document.getElementById('content- ' + tabName).classList.remove('hidden ');
-
-            // Add active class to selected tab
-            const activeTab = document.getElementById('tab- ' + tabName);
-            activeTab.classList.add('active ', 'text-blue-600 ', 'border-blue-600 ');
-            activeTab.classList.remove('text-gray-500 ', 'border-transparent ');
-        }
-    </script>
 </section>
+
+
+<script>
+    function showTab(tabName) {
+        // Hide all tab contents
+        const contents = document.querySelectorAll('.tab-content');
+        contents.forEach(content => content.classList.add('hidden'));
+
+        // Remove active class from all tabs
+        const tabs = document.querySelectorAll('.tab-button');
+        tabs.forEach(tab => {
+            tab.classList.remove('active', 'text-blue-600', 'border-blue-600');
+            tab.classList.add('text-gray-500', 'border-transparent');
+        });
+
+        // Show selected tab content
+        document.getElementById('content-' + tabName).classList.remove('hidden');
+
+        // Add active class to selected tab
+        const activeTab = document.getElementById('tab-' + tabName);
+        activeTab.classList.add('active', 'text-blue-600', 'border-blue-600');
+        activeTab.classList.remove('text-gray-500', 'border-transparent');
+    }
+</script>
