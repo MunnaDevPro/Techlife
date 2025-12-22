@@ -72,7 +72,9 @@
                     <span class="text-xs text-green-600">{{ post.views }} views</span>
                 </div>
             </div>
-            {% endfor %} {% comment %} question section {% endcomment %}
+            {% endfor %}
+            <!--question section-->
+            {% for question in user_questions|slice:"1" %}
             <div class="flex justify-between items-center border-b border-gray-200 pb-3">
                 <div class="flex items-start space-x-4">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-green-600 text-white flex-shrink-0">
@@ -80,16 +82,17 @@
                     </div>
                     <div>
                         <p class="font-medium text-gray-800">Forum: New Question Posted</p>
-                        <p class="text-sm text-gray-500">User: "How to optimize Django DB?"</p>
+                        <p class="text-sm text-gray-500 line-clamp-1">User: "{{ question.title|truncatechars:"60" }}?"</p>
                     </div>
                 </div>
                 <div class="text-right text-sm text-gray-500">
-                    <p>1 hour ago</p>
-                    <span class="text-xs text-yellow-600">3 answers</span>
+                    <p>{{ question.created_at|timesince }}</p>
+                    <span class="text-xs text-yellow-600">{{ question.answers.count }} answers</span>
                 </div>
             </div>
-
-            {% comment %} comment section {% endcomment %} {% if latest_comment %}
+            {% endfor %}
+            <!--comment section-->
+            {% if latest_comment %}
             <div class="flex justify-between items-center border-b border-gray-200 pb-3">
                 <div class="flex items-start space-x-4">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-indigo-600 text-white flex-shrink-0">
@@ -97,15 +100,11 @@
                     </div>
                     <div>
                         <p class="font-medium text-gray-800">
-                            New Comment on your post: {% comment %} <a href="{% url 'blog_detail' slug=latest_comment.post.slug %}" class="text-indigo-600 hover:underline">"{{ latest_comment.post.title|truncatechars:25
-                                }}"</a> {% endcomment %} {% comment %} <a href="" class="text-indigo-600 hover:underline">"{{
-                                latest_comment.post.title|truncatechars:25 }}"</a> {% endcomment %}
-
+                            New Comment on your post:
                         </p>
                         <p class="text-sm text-gray-500">
                             Comment:
-                            <span class="text-gray-800 font-normal">"{{ latest_comment.content|truncatechars:40
-                                }}"</span>
+                            <span class="text-gray-800 font-normal">"{{ latest_comment.content|truncatechars:40}}"</span>
                         </p>
                     </div>
                 </div>
@@ -168,12 +167,12 @@
         </div>
         <i class="fas fa-eye text-4xl text-gray-300"></i>
     </div>
-
+    <!-- Total forum answer count  -->
     <div class="bg-white p-6 rounded-xl shadow-md border border-gray-300 flex justify-between items-center">
         <div>
             <h3 class="text-lg font-semibold mb-2 text-gray-800">Total Forum Answers</h3>
-            <div class="text-3xl font-bold text-gray-900">105</div>
-            <div class="text-green-600 text-sm font-medium mt-1">+25 (Last 7 Days)</div>
+            <div class="text-3xl font-bold text-gray-900">{{ answers_count }}</div>
+            <div class="text-green-600 text-sm font-medium mt-1">+{{ recent_answers_7_days }} (Last 7 Days)</div>
         </div>
         <i class="fas fa-comments text-4xl text-gray-300"></i>
     </div>

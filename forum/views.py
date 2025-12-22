@@ -235,3 +235,20 @@ def forum_user_profile_details(request, pk):
     if request.headers.get("HX-Request"):
             return render(request, "forum/partial_forum_user_profile.html", context)
     return render(request, "forum/forum_user_profile.html", context)
+
+
+
+
+@login_required
+def toggle_follow(request, user_id):
+    target_user = get_object_or_404(CustomUserModel, id=user_id)
+    profile = request.user.follow_section 
+    if target_user == request.user:
+        return redirect('forum_all_user_list') 
+
+    if target_user in profile.following.all():
+        profile.following.remove(target_user)
+    else:
+        profile.following.add(target_user)
+    
+    return redirect(request.META.get('HTTP_REFERER', 'forum_all_user_list'))

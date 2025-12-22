@@ -258,3 +258,21 @@ class compnay_logo(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+
+
+
+class Follow_section(models.Model):
+    user = models.OneToOneField(CustomUserModel, on_delete=models.CASCADE)
+    
+    following = models.ManyToManyField(CustomUserModel, related_name='followers', blank=True)
+
+    def followers_count(self):
+        return self.user.followers.count()
+
+    def following_count(self):
+        return self.following.count()
+    
+    def __str__(self):
+        return f"follow user"

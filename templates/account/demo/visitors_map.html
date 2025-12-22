@@ -20,7 +20,7 @@
                             Answers
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Comments
+                            Saves
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Status
@@ -28,86 +28,39 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                    <tr class="hover:bg-gray-50 cursor-pointer transition-colors duration-150">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">
-                            <div class="flex items-center space-x-2">
+                    {% for question in user_questions %}
+                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                        <td class="cursor-pointer px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">
+                            <a href="{% url 'questions' question.slug %}" class="flex items-center space-x-2">
                                 <i class="fas fa-question-circle text-indigo-600"></i>
-                                <span>How to optimize dashboard load time?</span>
-                            </div>
+                                <span>{{ question.title|truncatechars:"40" }}?</span>
+                            </a>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                            2 hours ago
+                            {{ question.created_at|timesince }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">
-                            15
+                            0
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">
-                            3
+                            {{ question.answers.count }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">
-                            4
+                            0
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                Resolved
+                            <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-600 text-gray-50">
+                               Published
                             </span>
                         </td>
                     </tr>
-                    <tr class="hover:bg-gray-50 cursor-pointer transition-colors duration-150">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-question-circle text-indigo-600"></i>
-                                <span>API rate limit documentation needed</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                            5 hours ago
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">
-                            8
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">
-                            10
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">
-                            12
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                Open
-                            </span>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 cursor-pointer transition-colors duration-150">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-question-circle text-indigo-600"></i>
-                                <span>Bug: Mobile view spacing issue</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                            1 day ago
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">
-                            22
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">
-                            6
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">
-                            7
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                Critical
-                            </span>
-                        </td>
-                    </tr>
+
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
 
-        <!-- Enhanced Mobile Card View -->
+        <!-- Enhanced Mobile Card  -->
         <div class="md:hidden space-y-3">
             <!-- Card 1 -->
             <div class="bg-white rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-md cursor-pointer transition-all duration-200 overflow-hidden">

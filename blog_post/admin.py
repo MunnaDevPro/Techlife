@@ -9,6 +9,7 @@ from blog_post.models import (
     Like,
     SubCategory,
     compnay_logo,
+    Follow_section
 )
 from django.utils.html import format_html
 
@@ -165,3 +166,7 @@ class PostViewIpAdmin(ModelAdmin):
     search_fields = ("post__title", "user__email", "ip_address")
     list_filter = ("viewed_at",)
     ordering = ("-viewed_at",)
+
+
+
+admin.site.register(Follow_section)

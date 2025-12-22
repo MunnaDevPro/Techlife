@@ -18,7 +18,8 @@ from accounts.utils import send_verification_code_email
 from blog_post.models import BlogPost
 from accounts.models import CustomUserModel
 from forum.models import Question, Answer
-
+from django.utils import timezone
+from datetime import timedelta
 
 def signup_view(request):
     if request.method == "POST":
@@ -189,11 +190,20 @@ def user_dashboard_view(request):
     questions_count = user_questions.count()
     answers_count = user_answers.count()
 
+    
+
+
+    seven_days_ago = timezone.now() - timedelta(days=7)
+    recent_answers_7_days = Answer.objects.filter(
+    author=user, 
+    created_at__gte=seven_days_ago
+        ).count()
+
 
     total_reaction = BlogPost.objects.filter(author=request.user).annotate(
-    like_count=Count('likes')
-    ).aggregate(total_likes=Sum('like_count'))['total_likes'] or 0
-    
+        like_count=Count('likes')
+        ).aggregate(total_likes=Sum('like_count'))['total_likes'] or 0
+        
     total_views = user_blog_posts.aggregate(total=Sum('views'))['total'] or 0
     total_quality = user_blog_posts.aggregate(total=Sum('content_quality'))['total'] or 0
     
@@ -241,6 +251,8 @@ def user_dashboard_view(request):
         'user_answers': user_answers,
         'questions_count': questions_count,
         'answers_count': answers_count,
+
+        'recent_7_days': recent_answers_7_days,
        
     }
 

@@ -611,9 +611,6 @@
   .mt-36 {
     margin-top: calc(var(--spacing) * 36);
   }
-  .mt-auto {
-    margin-top: auto;
-  }
   .-mr-3 {
     margin-right: calc(var(--spacing) * -3);
   }
@@ -1977,6 +1974,9 @@
   .px-\[5px\] {
     padding-inline: 5px;
   }
+  .py-0\.5 {
+    padding-block: calc(var(--spacing) * 0.5);
+  }
   .py-1 {
     padding-block: calc(var(--spacing) * 1);
   }
@@ -3283,13 +3283,6 @@
     &:hover {
       @media (hover: hover) {
         color: var(--color-green-800);
-      }
-    }
-  }
-  .hover\:text-indigo-700 {
-    &:hover {
-      @media (hover: hover) {
-        color: var(--color-indigo-700);
       }
     }
   }
