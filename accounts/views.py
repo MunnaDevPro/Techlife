@@ -191,6 +191,8 @@ def user_dashboard_view(request):
     answers_count = user_answers.count()
 
     
+    user_profile = user
+    last_follower = user.followers.all().order_by('-id').first()
 
 
     seven_days_ago = timezone.now() - timedelta(days=7)
@@ -253,6 +255,8 @@ def user_dashboard_view(request):
         'answers_count': answers_count,
 
         'recent_7_days': recent_answers_7_days,
+
+        'last_follower':last_follower
        
     }
 

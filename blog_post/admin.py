@@ -9,12 +9,12 @@ from blog_post.models import (
     Like,
     SubCategory,
     compnay_logo,
-    Follow_section
 )
 from django.utils.html import format_html
 
 
 admin.site.register(compnay_logo)
+
 
 
 class SubCategoryInline(admin.TabularInline):
@@ -169,4 +169,3 @@ class PostViewIpAdmin(ModelAdmin):
 
 
 
-admin.site.register(Follow_section)

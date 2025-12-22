@@ -6,6 +6,8 @@ from django.db.models import Q, Count
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from accounts.models import CustomUserModel
+from forum.models import Follow_section
+
 def questions(request, slug):
     blogs = BlogPost.objects.all().order_by('-created_at')
     particular_question = Question.objects.select_related('author').prefetch_related('answers__author').get(slug=slug)
@@ -242,13 +244,18 @@ def forum_user_profile_details(request, pk):
 @login_required
 def toggle_follow(request, user_id):
     target_user = get_object_or_404(CustomUserModel, id=user_id)
-    profile = request.user.follow_section 
-    if target_user == request.user:
-        return redirect('forum_all_user_list') 
-
-    if target_user in profile.following.all():
-        profile.following.remove(target_user)
-    else:
-        profile.following.add(target_user)
     
+    profile, created = Follow_section.objects.get_or_create(user=request.user)
+
+    if request.headers.get("HX-Request"):
+
+        if target_user == request.user:
+            return redirect('forum_all_user_list') 
+
+        if target_user in profile.following.all():
+            profile.following.remove(target_user)
+        else:
+            profile.following.add(target_user)
+            
+        return redirect(request.META.get('HTTP_REFERER', 'forum_all_user_list'))
     return redirect(request.META.get('HTTP_REFERER', 'forum_all_user_list'))

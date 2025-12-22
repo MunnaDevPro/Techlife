@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Question, Answer
+from .models import Question, Answer, Follow_section
 
 
 class AnswerInline(admin.TabularInline):
@@ -40,3 +40,4 @@ class AnswerAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at',)
     ordering = ('-created_at',)
 
+admin.site.register(Follow_section)

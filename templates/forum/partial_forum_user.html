@@ -30,17 +30,15 @@
                     </div>
 
                     <div class="flex flex-col gap-2 mt-2">
-                        {% if user != request.user %}
-                        <form action="{% url 'toggle_follow' user.pk %}" method="POST" class="w-full">
-                            {% csrf_token %} {% if user in request.user.profile.following.all %}
+                        <form hx-post="{% url 'toggle_follow' user.pk %}" hx-target="#blog_post_form" hx-swap="innerHTML" class="w-full">
+                            {% csrf_token %} {% if user in request.user.follow_section.following.all %}
                             <button type="submit" class="w-full text-[14px] py-1.5 px-4 bg-gray-100 text-gray-800 border border-gray-300 rounded-full font-semibold hover:bg-gray-200 transition-colors duration-200">
-                                Following
-                            </button> {% else %}
+            Following
+        </button> {% else %}
                             <button type="submit" class="w-full text-[14px] py-1.5 px-4 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200">
-                                Follow
-                            </button> {% endif %}
+            Follow
+        </button> {% endif %}
                         </form>
-                        {% endif %}
 
                         <a hx-get="{% url 'forum_user_profile_details' user.pk %}" hx-target="#blog_post_form" hx-swap="innerHTML" hx-push-url="true" class="w-full text-center text-[14px] py-1.5 px-4 border border-blue-700 text-blue-700 rounded-full font-semibold hover:bg-blue-50 transition-colors duration-200 cursor-pointer">
                     View Profile

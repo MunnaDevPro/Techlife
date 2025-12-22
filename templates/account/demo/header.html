@@ -55,11 +55,11 @@
                 <!-- Stats -->
                 <div class="flex gap-4 sm:gap-8 text-center justify-center sm:justify-start lg:justify-end w-full">
                     <div>
-                        <div class="text-lg sm:text-2xl font-bold text-green-600">{{ user.profile.followers_count|default:"1.2K" }}</div>
+                        <div class="text-lg sm:text-2xl font-bold text-green-600">{{ user_follow_stats.followers_count|default:"0" }}</div>
                         <div class="text-xs sm:text-sm text-gray-600 mt-1">Followers</div>
                     </div>
                     <div>
-                        <div class="text-lg sm:text-2xl font-bold text-green-600">{{ user.profile.following_count|default:"350" }}</div>
+                        <div class="text-lg sm:text-2xl font-bold text-green-600">{{ user_follow_stats.following_count|default:"0" }}</div>
                         <div class="text-xs sm:text-sm text-gray-600 mt-1">Following</div>
                     </div>
                     <div>
