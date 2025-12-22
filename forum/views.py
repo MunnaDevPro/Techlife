@@ -256,6 +256,10 @@ def toggle_follow(request, user_id):
             profile.following.remove(target_user)
         else:
             profile.following.add(target_user)
-            
+
         return redirect(request.META.get('HTTP_REFERER', 'forum_all_user_list'))
     return redirect(request.META.get('HTTP_REFERER', 'forum_all_user_list'))
+
+
+
+

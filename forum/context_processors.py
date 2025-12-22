@@ -1,6 +1,5 @@
-from django.shortcuts import render , redirect , get_object_or_404
 from django.db.models import Count
-from forum.models import Question
+from forum.models import Question,Follow_section
 
 def popular_questions(request):
     popular_question = Question.objects.annotate(
@@ -12,3 +11,18 @@ def popular_questions(request):
     }
     return(context) 
 
+
+
+
+def global_follow_list(request):
+    if request.user.is_authenticated:
+        follow_obj, _ = Follow_section.objects.get_or_create(user=request.user)
+        
+        return {
+            'global_followers': [f.user for f in request.user.followers.all()],
+            'global_following': follow_obj.following.all(),
+        }
+    return {
+        'global_followers': [],
+        'global_following': [],
+    }

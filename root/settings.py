@@ -114,6 +114,9 @@ TEMPLATES = [
                 "blog_post.context_processors.timezone_info",
                 "forum.context_processors.popular_questions",
                 'blog_post.context_processors.follow_stats',
+                "forum.context_processors.global_follow_list",
+
+
             ],
         },
     },
