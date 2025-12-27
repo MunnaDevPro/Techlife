@@ -15,156 +15,129 @@
     <div class="flex flex-col lg:flex-row gap-4 mx-auto">
         <!-- LEFT all question  (Post) -->
 
-        <div class="w-full lg:w-2/3 max-w-2xl flex-shrink-0 mx-auto" id="question-container">
-            <div class="flex items-center gap-4 mb-3 relative ml-5 w-full mt-4 mx-auto">
-                {% comment %} Dropdown menu {% endcomment %}
-                <div x-data="{ open: false }" class="relative" @click.away="open = false">
-                    <!-- Sort By Dropdown (best,top,etc)-->
-                    <div class="relative" @click.away="open = false">
-                        <div class="flex items-center gap-1">
-                            {% comment %}
-                            <span class="font-inter text-sm text-gray-600 ml-4">Sort by:</span> {% endcomment %}
+        <div class="w-full lg:w-2/3 max-w-2xl mt-6 flex-shrink-0 mx-auto" id="question-container">
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 mb-3 relative ml-2 md:ml-5 w-full mt-4 mx-auto pr-2 md:pr-0">
 
-                            <!-- Dropdown trigger -->
-                            <button @click="open = !open" :class="{'bg-gray-200': open}" class="font-semibold font-inter text-sm text-gray-600 ml-2 py-2 px-2 flex items-center gap-1 rounded-2xl hover:bg-gray-200 transition-colors">
-                                    Latest
-                                    <svg rpl="" fill="currentColor" height="16" icon-name="caret-down-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
-                                    </svg>
-                                </button>
-                        </div>
+                <div class="flex items-center gap-2 md:gap-4 w-full md:w-auto">
 
-                        <!-- Dropdown menu -->
-                        <div x-show="open" x-transition class="absolute mt-2 ml-3 w-36 bg-white border rounded-2xl shadow-lg z-10" x-cloak @click.away="open = false">
-
-                            <a href="?sort=latest{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 {% if request.GET.sort == 'latest' or not request.GET.sort %}bg-gray-100 rounded{% endif %}">
-                                <svg fill="currentColor" height="20" viewBox="0 0 20 20" width="20"><path d="M15.22 8.6c-.6-3.51-2.68-6.21-4.76-7.47a.912.912 0 00-.93 0C7.59 2.3 5.37 4.89 4.76 8.61c-2.77 2.65-4.02 4.46-3.57 7.32.17 1.08 1.14 1.9 2.27 1.9h3.18c.61.72 1.53 1.17 2.51 1.17h1.71c.98 0 1.9-.44 2.51-1.17h3.18c1.12 0 2.1-.82 2.27-1.9.45-2.87-.8-4.67-3.59-7.33h-.01zM2.97 15.65c-.24-1.53.15-2.65 1.66-4.33.1 1.83.55 3.45 1.06 4.71H3.46c-.24 0-.45-.17-.49-.38zm6.18 1.55c-.57 0-1.09-.32-1.33-.81-.64-1.31-1.41-3.37-1.41-5.78 0-3.71 1.84-6.34 3.6-7.63 1.81 1.35 3.6 4.16 3.6 7.63 0 2.41-.77 4.47-1.41 5.78-.24.49-.77.81-1.33.81H9.15zm7.88-1.55c-.03.21-.25.38-.49.38h-2.23c.51-1.26.96-2.88 1.06-4.71 1.51 1.69 1.9 2.8 1.66 4.33z"></path><path d="M10 8.35c-.91 0-1.65.74-1.65 1.65 0 .91.74 1.65 1.65 1.65.91 0 1.65-.74 1.65-1.65 0-.91-.74-1.65-1.65-1.65z"></path></svg>
-                                <span>Latest</span>
-                            </a>
-
-                            <a href="?sort=new{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 {% if request.GET.sort == 'new' %}bg-gray-100 rounded{% endif %}">
-                                <svg fill="currentColor" height="20" viewBox="0 0 20 20" width="20"><path d="M10 10.9H4.68V9.1H9.1V4.68h1.8V10c0 .5-.4.9-.9.9z"></path><path d="M13.3 16.39c-.99.51-2.11.81-3.3.81-3.97 0-7.2-3.23-7.2-7.2S6.03 2.8 10 2.8c3.22 0 5.96 2.13 6.87 5.06.05.02.11.03.16.05.33.14.63.33.88.58l1.07 1.07C18.75 4.8 14.82 1 10 1s-9 4.03-9 9a9 9 0 009 9c1.17 0 2.28-.23 3.3-.63v-1.98z"></path><path d="M19.64 12.76l-3-3a.915.915 0 00-1.27 0l-3 3a.9.9 0 000 1.27.9.9 0 001.27 0l1.46-1.46v6.03c0 .5.4.9.9.9s.9-.4.9-.9v-6.03l1.46 1.46c.18.18.41.26.64.26.23 0 .46-.09.64-.26a.9.9 0 000-1.27z"></path></svg>
-                                <span>New</span>
-                            </a>
-
-                            <a href="?sort=top{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 {% if request.GET.sort == 'top' %}bg-gray-100 rounded{% endif %}">
-                                <svg fill="currentColor" height="20" viewBox="0 0 20 20" width="20"><path d="M17.1 11.03h-3.3V8.98h1.17a1.328 1.328 0 00.94-2.27l-5.27-5.28c-.34-.34-.94-.34-1.27 0L4.09 6.71c-.38.38-.49.95-.29 1.45.21.5.69.82 1.23.82H6.2v2.05H2.9a1.9 1.9 0 00-1.9 1.9v2.6c0 1.82 1.48 3.3 3.3 3.3h11.4c1.82 0 3.3-1.48 3.3-3.3v-2.6a1.9 1.9 0 00-1.9-1.9zM10 3.34l3.83 3.84H12v7.85c0 1.1-.9 2-2 2s-2-.9-2-2V7.18H6.17L10 3.34zM2.8 15.52v-2.6c0-.06.04-.1.1-.1h3.3v2.2c0 .74.22 1.42.58 2H4.3c-.83 0-1.5-.67-1.5-1.5zm14.4 0c0 .83-.67 1.5-1.5 1.5h-2.48c.36-.58.58-1.26.58-2v-2.2h3.3c.05 0 .1.04.1.1v2.6z"></path></svg>
-                                <span>Top</span>
-                            </a>
-
-                            <a href="?sort=best{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 {% if request.GET.sort == 'best' %}bg-gray-100 rounded{% endif %}">
-                                <svg fill="currentColor" height="20" viewBox="0 0 20 20" width="20"><path d="M17.536 2.465a5.006 5.006 0 00-7.072 0 4.98 4.98 0 00-1.458 3.503 1.934 1.934 0 00-.437-.023 1.903 1.903 0 00-1.388.759l-5.457 7.319c-.925 1.24-.806 2.87.288 3.965a3.015 3.015 0 002.14.908c.631 0 1.268-.205 1.826-.621l7.317-5.457a1.9 1.9 0 00.761-1.386 1.892 1.892 0 00-.022-.44 4.982 4.982 0 003.502-1.458 5.006 5.006 0 000-7.07zm-5.316 8.91l-7.318 5.457c-.633.474-1.249.25-1.617-.117-.366-.366-.589-.983-.117-1.616l5.457-7.32.15-.01L9.867 8.86l-2.162 2.162 1.273 1.272 2.162-2.162 1.091 1.09-.01.152zm4.043-3.112c-1.209 1.209-3.316 1.209-4.525 0a3.204 3.204 0 010-4.525 3.18 3.18 0 012.263-.938c.855 0 1.658.333 2.263.938a3.204 3.204 0 010 4.525z"></path></svg>
-                                <span>Best</span>
-                            </a>
-                        </div>
-
-                    </div>
-                </div>
-
-                {% comment %} Everywhere {% endcomment %}
-                <div x-data="{ open: false }" class="relative" @click.away="open = false" x-cloak>
-                    <div class="relative" @click.away="open = false">
-                        <div class="flex items-center gap-1">
-                            <!-- Dropdown trigger -->
-                            <button @click="open = !open" :class="{'bg-gray-200': open}" class="font-semibold font-inter text-sm text-gray-600 ml-2 py-2 px-2 flex items-center gap-1 rounded-2xl hover:bg-gray-200 transition-colors">
-                                    Everywhere
-                                    <svg rpl="" fill="currentColor" height="16" icon-name="caret-down-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
-                                    </svg>
-                                </button>
-                        </div>
-
-                        <!-- Dropdown menu -->
-                        <div x-show="open" x-transition class="absolute mt-2 ml-3 w-55 bg-white border rounded-2xl shadow-lg z-10" x-cloak>
-                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 bg-gray-100 rounded">
-                                <span class="font-bold">Countries</span>
+                    {% comment %} Latest/Sort Dropdown {% endcomment %}
+                    <div x-data="{ open: false }" class="relative" @click.away="open = false">
+                        <div class="relative">
+                            <div class="flex items-center gap-1">
+                                <button @click="open = !open" :class="{'bg-gray-200': open}" class="font-semibold font-inter text-sm text-gray-600 py-2 px-3 flex items-center gap-1 rounded-2xl hover:bg-gray-200 transition-colors border md:border-transparent">
+                        Latest
+                        <svg fill="currentColor" height="16" viewBox="0 0 20 20" width="16">
+                            <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
+                        </svg>
+                    </button>
                             </div>
 
-                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-                                <svg class="w-4 h-4 text-gray-900" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-    </svg>
-                                <span>Australia</span>
+                            <div x-show="open" x-transition class="absolute mt-2 left-0 w-36 bg-white border rounded-2xl shadow-lg z-20" x-cloak>
+                                <a href="?sort=latest{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 {% if request.GET.sort == 'latest' or not request.GET.sort %}bg-gray-100 rounded{% endif %}">
+                                    <span>Latest</span>
+                                </a>
+                                <a href="?sort=new{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 {% if request.GET.sort == 'new' %}bg-gray-100 rounded{% endif %}">
+                                    <span>New</span>
+                                </a>
+                                <a href="?sort=top{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 {% if request.GET.sort == 'top' %}bg-gray-100 rounded{% endif %}">
+                                    <span>Top</span>
+                                </a>
+                                <a href="?sort=best{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 {% if request.GET.sort == 'best' %}bg-gray-100 rounded{% endif %}">
+                                    <span>Best</span>
+                                </a>
                             </div>
-                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-                                <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-    </svg>
-                                <span>Bangladesh</span>
-                            </div>
-                            <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-                                <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-    </svg>
-                                <span>India</span>
-                            </div>
-
-                            <!-- Add other items like New, Top, Recently here similarly -->
                         </div>
                     </div>
+
+                    {% comment %} Everywhere Dropdown {% endcomment %}
+                    <div x-data="{ open: false }" class="relative" @click.away="open = false" x-cloak>
+                        <div class="relative">
+                            <div class="flex items-center gap-1">
+                                <button @click="open = !open" :class="{'bg-gray-200': open}" class="font-semibold font-inter text-sm text-gray-600 py-2 px-3 flex items-center gap-1 rounded-2xl hover:bg-gray-200 transition-colors border md:border-transparent">
+                        Everywhere
+                        <svg fill="currentColor" height="16" viewBox="0 0 20 20" width="16">
+                            <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
+                        </svg>
+                    </button>
+                            </div>
+
+                            <div x-show="open" x-transition class="absolute mt-2 left-0 w-48 bg-white border rounded-2xl shadow-lg z-20" x-cloak>
+                                <div class="px-4 py-2 bg-gray-50 font-bold text-xs uppercase tracking-wider text-gray-500 rounded-t-2xl">Countries</div>
+                                <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"><span>Australia</span></div>
+                                <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"><span>Bangladesh</span></div>
+                                <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"><span>India</span></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Search Bar -->
-                <div class="flex-1">
-                    <form method="GET" action="." class="relative w-full max-w-sm">
+                <div class="w-full md:flex-1 md:max-w-sm">
+                    <form method="GET" action="." class="relative w-full">
                         {% if request.GET.sort %}
                         <input type="hidden" name="sort" value="{{ request.GET.sort }}"> {% endif %}
 
                         <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-            <svg fill="currentColor" height="16" viewBox="0 0 20 20" width="16" class="text-gray-500 ml-2">
-                <path d="M18.736 17.464l-3.483-3.483A7.961 7.961 0 0016.999 9 8 8 0 109 17a7.961 7.961 0 004.981-1.746l3.483 3.483a.9.9 0 101.272-1.273zM9 15.2A6.207 6.207 0 012.8 9c0-3.419 2.781-6.2 6.2-6.2s6.2 2.781 6.2 6.2-2.781 6.2-6.2 6.2z"></path>
-            </svg>
-        </span>
-                        <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search question" class="w-[85%] pl-10 pr-4 py-1.5 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-transparent shadow-sm" />
+                            <svg fill="currentColor" height="16" viewBox="0 0 20 20" width="16" class="text-gray-400">
+                                <path d="M18.736 17.464l-3.483-3.483A7.961 7.961 0 0016.999 9 8 8 0 109 17a7.961 7.961 0 004.981-1.746l3.483 3.483a.9.9 0 101.272-1.273zM9 15.2A6.207 6.207 0 012.8 9c0-3.419 2.781-6.2 6.2-6.2s6.2 2.781 6.2 6.2-2.781 6.2-6.2 6.2z"></path>
+                            </svg>
+                        </span>
+                        <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search question" class="w-full md:w-[90%] pl-10 pr-4 py-2 md:py-1.5 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 shadow-sm text-sm"
+                        />
                     </form>
                 </div>
 
             </div>
 
-            <div class="space-y-4 mx-auto">
+            <div class="space-y-4 mx-auto px-2 md:px-0">
                 {% for question in popular_question %}
-                <!-- Card 1 -->
-                <div class="bg-white pl-5 pt-5 pb-4 pr-4 mt-5 border rounded-xl hover:shadow-sm flex flex-col md:flex-row items-start justify-between">
-                    <!-- Left Section -->
-                    <div class="flex flex-col md:flex-row items-start gap-3 flex-1">
-                        <img src="{{ question.author.profile_picture.url }}" class="w-12 h-12 rounded-full" alt="avatar" />
-                        <div class="flex-1">
-                            <a hx-get="{% url 'questions' slug=question.slug %}" hx-target="#blog_post_form" hx-swap="innerHTML" hx-push-url="true" class="text-lg font-semibold text-gray-800 line-clamp-2 hover:text-blue-500 cursor-pointer">{{ question.title }}</a>
-                            <p class="text-sm text-gray-500 flex items-center gap-1">
-                                <svg aria-hidden="true" class="icon-share flip-horizontal" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002zm-.994-1.548V12h-.9c-3.969 0-6.162 2.1-8.001 4.161.514-4.011 2.823-8.16 8-8.16h.9V4.024L17.784 10l-5.977 5.976z"></path>
-                                    </svg> Latest reply from {% with last_answer=question.answers.first %} {% if last_answer %}
-                                <span class="font-medium">
-                                    @ {{ last_answer.author.last_name }}
-                                </span>
-                                <span class="text-green-500 font-bold text-2xl ml-2">·</span> {{ question.created_at|timesince|slice:":20" }} ago {% else %}
-                                <span class="font-medium italic">No replies yet</span> {% endif %} {% endwith %}
+                <div class="bg-white p-4 md:pl-5 md:pt-5 md:pb-4 md:pr-4 mt-4 md:mt-5 border rounded-xl hover:shadow-sm flex flex-col md:flex-row items-start justify-between gap-4">
+
+                    <div class="flex flex-row items-start gap-3 flex-1 w-full">
+                        <img src="{{ question.author.profile_picture.url }}" class="w-10 h-10 md:w-12 md:h-12 rounded-full flex-shrink-0" alt="avatar" />
+
+                        <div class="flex-1 min-w-0">
+                            <a hx-get="{% url 'questions' slug=question.slug %}" hx-target="#blog_post_form" hx-swap="innerHTML" hx-push-url="true" class="text-base md:text-lg font-semibold text-gray-800 line-clamp-2 hover:text-blue-500 cursor-pointer leading-tight">
+                    {{ question.title }}
+                </a>
+
+                            <p class="text-[11px] md:text-sm text-gray-500 flex items-center flex-wrap gap-1 mt-1">
+                                <svg aria-hidden="true" class="icon-share flip-horizontal flex-shrink-0" fill="currentColor" height="14" viewBox="0 0 20 20" width="14">
+                        <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002zm-.994-1.548V12h-.9c-3.969 0-6.162 2.1-8.001 4.161.514-4.011 2.823-8.16 8-8.16h.9V4.024L17.784 10l-5.977 5.976z"></path>
+                    </svg>
+                                <span class="hidden md:inline">Latest reply from</span> {% with last_answer=question.answers.first %} {% if last_answer %}
+                                <span class="font-medium">@{{ last_answer.author.last_name }}</span>
+                                <span class="text-green-500 font-bold ml-1">·</span>
+                                <span class="whitespace-nowrap">{{ question.created_at|timesince|slice:":10" }} ago</span> {% else %}
+                                <span class="font-medium italic text-xs">No replies yet</span> {% endif %} {% endwith %}
                             </p>
-                            <p class="text-gray-500 mt-2 text-sm line-clamp-3">{{ question.content }}</p>
+
+                            <p class="text-gray-500 mt-2 text-xs md:text-sm line-clamp-2 md:line-clamp-3 leading-relaxed">
+                                {{ question.content }}
+                            </p>
                         </div>
                     </div>
 
-                    <!-- Right Section -->
-                    <div class="flex flex-col items-end mt-4 md:mt-0 w-full md:w-[20%]">
-                        <div class="flex -space-x-3 mt-5 mr-2 flex-wrap justify-end">
-                            {% for answer in question.answers.all|slice:"4" %}
-                            <img src="{{ answer.author.profile_picture.url }}" class="w-8 h-8 rounded-full border border-gray-300" /> {% endfor %} {% if question.answers.all %}
-                            <div class="w-8 h-8 flex items-center justify-center bg-gray-300 text-gray-700 rounded-full border border-white text-sm font-semibold">+{{ question.answers.count|add:"-4" }}</div>
-                            {% endif %}
+                    <div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-start w-full md:w-auto pt-3 md:pt-0 border-t md:border-none border-gray-100">
+                        <div class="flex -space-x-2 md:-space-x-3 flex-row-reverse md:flex-row">
+                            {% if question.answers.count > 4 %}
+                            <div class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center bg-gray-100 text-gray-600 rounded-full border-2 border-white text-[10px] md:text-xs font-bold z-0">
+                                +{{ question.answers.count|add:"-4" }}
+                            </div>
+                            {% endif %} {% for answer in question.answers.all|slice:":4" %}
+                            <img src="{{ answer.author.profile_picture.url }}" class="w-7 h-7 md:w-8 md:h-8 rounded-full border-2 border-white object-cover" /> {% endfor %}
                         </div>
 
-                        <div class="flex items-center text-gray-600 text-sm font-inter font-semibold mt-2">
-                            <svg aria-hidden="true" class="icon-comment font-semibold" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 1a9 9 0 00-9 9c0 1.947.79 3.58 1.935 4.957L.231 17.661A.784.784 0 00.785 19H10a9 9 0 009-9 9 9 0 00-9-9zm0 16.2H6.162c-.994.004-1.907.053-3.045.144l-.076-.188a36.981 36.981 0 002.328-2.087l-1.05-1.263C3.297 12.576 2.8 11.331 2.8 10c0-3.97 3.23-7.2 7.2-7.2s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2z"></path>
-                                </svg>
-                            <span class="ml-2">{{ question.answers.count }} Comments</span>
+                        <div class="flex items-center text-gray-500 text-[11px] md:text-sm font-semibold mt-0 md:mt-2">
+                            <svg aria-hidden="true" class="icon-comment flex-shrink-0" fill="currentColor" height="14" viewBox="0 0 20 20" width="14">
+                    <path d="M10 1a9 9 0 00-9 9c0 1.947.79 3.58 1.935 4.957L.231 17.661A.784.784 0 00.785 19H10a9 9 0 009-9 9 9 0 00-9-9zm0 16.2H6.162c-.994.004-1.907.053-3.045.144l-.076-.188a36.981 36.981 0 002.328-2.087l-1.05-1.263C3.297 12.576 2.8 11.331 2.8 10c0-3.97 3.23-7.2 7.2-7.2s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2z"></path>
+                </svg>
+                            <span class="ml-1.5 whitespace-nowrap">{{ question.answers.count }} Comments</span>
                         </div>
                     </div>
+
                 </div>
-
                 {% endfor %}
-
-
             </div>
 
 

@@ -12,95 +12,71 @@
         <!-- LEFT CONTENT (Post) -->
         <div class="w-full lg:w-2/3 max-w-2xl flex-shrink-0 mx-auto">
             {% comment %} Questions section {% endcomment %}
-            <div class="bg-gray-50 rounded-2xl p-4 mt-5 mb-2 pb-10">
+            <div class="bg-gray-50 rounded-2xl lg:p-2 mt-5 mb-2 pb-10">
 
-                <div class="py-5 px-4">
-                    <!-- Header -->
-                    <div class="flex items-start text-gray-500 pb-0 w-full">
-                        <div class="flex items-start gap-3 w-full">
-                            <!-- <img src="{{ particular_question.author.profile_picture.url }}" class="w-10 h-10 rounded-full flex-shrink-0" /> -->
+                <!-- header titile, content, answer box -->
+                <div class="py-4 md:py-5 px-3 md:px-4">
+                    <div class="flex items-start text-gray-500 w-full" x-data="{ 
+                            hoverCardHovered: false,
+                            hoverCardDelay: 200,
+                            hoverCardLeaveDelay: 200,
+                            hoverCardTimout: null,
+                            hoverCardLeaveTimeout: null,
+                            hoverCardEnter () {
+                                clearTimeout(this.hoverCardLeaveTimeout);
+                                if(this.hoverCardHovered) return;
+                                clearTimeout(this.hoverCardTimout);
+                                this.hoverCardTimout = setTimeout(() => {
+                                    this.hoverCardHovered = true;
+                                }, this.hoverCardDelay);
+                            },
+                            hoverCardLeave () {
+                                clearTimeout(this.hoverCardTimout);
+                                if(!this.hoverCardHovered) return;
+                                clearTimeout(this.hoverCardLeaveTimeout);
+                                this.hoverCardLeaveTimeout = setTimeout(() => {
+                                    this.hoverCardHovered = false;
+                                }, this.hoverCardLeaveDelay);
+                            }
+                        }">
 
-                            <div class="flex items-start text-gray-500 pb-0 w-full" x-data="{ 
-                                    hoverCardHovered: false,
-                                    hoverCardDelay: 200,
-                                    hoverCardLeaveDelay: 200,
-                                    hoverCardTimout: null,
-                                    hoverCardLeaveTimeout: null,
-                                    hoverCardEnter () {
-                                        clearTimeout(this.hoverCardLeaveTimeout);
-                                        if(this.hoverCardHovered) return;
-                                        clearTimeout(this.hoverCardTimout);
-                                        this.hoverCardTimout = setTimeout(() => {
-                                            this.hoverCardHovered = true;
-                                        }, this.hoverCardDelay);
-                                    },
-                                    hoverCardLeave () {
-                                        clearTimeout(this.hoverCardTimout);
-                                        if(!this.hoverCardHovered) return;
-                                        clearTimeout(this.hoverCardLeaveTimeout);
-                                        this.hoverCardLeaveTimeout = setTimeout(() => {
-                                            this.hoverCardHovered = false;
-                                        }, this.hoverCardLeaveDelay);
-                                    }
-                                }">
+                        <div class="flex items-start gap-3 w-full relative">
+                            <img src="{{ particular_question.author.profile_picture.url }}" class="border-2 border-blue-500 w-10 h-10 md:w-12 md:h-12 rounded-full flex-shrink-0 cursor-pointer object-cover" @mouseover="hoverCardEnter()" @mouseleave="hoverCardLeave()" />
 
-                                <div class="flex items-start gap-3 w-full relative">
-                                    <img src="{{ particular_question.author.profile_picture.url }}" class="border border-2 border-blue-500 w-10 h-10 rounded-full flex-shrink-0 cursor-pointer" @mouseover="hoverCardEnter()" @mouseleave="hoverCardLeave()" />
+                            <div class="flex flex-1 flex-col min-w-0">
+                                <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0" @mouseover="hoverCardEnter()" @mouseleave="hoverCardLeave()">
+                                    <span class="font-inter text-lg md:text-2xl font-semibold text-gray-800 hover:text-blue-500 cursor-pointer truncate max-w-[180px] md:max-w-none">
+                                        {{ particular_question.author.first_name }} {{particular_question.author.last_name }}
+                                    </span>
 
-                                    <div class="flex flex-1 justify-between items-start min-w-0">
-
-                                        <div class="flex flex-col leading-tight min-w-0 flex-1" @mouseover="hoverCardEnter()" @mouseleave="hoverCardLeave()">
-
-                                            <div class="flex items-center gap-2 group cursor-pointer">
-                                                <span class="font-inter text-2xl font-semibold text-gray-800 group-hover:text-blue-500 truncate">
-                                                    {{ particular_question.author.first_name }} {{ particular_question.author.last_name }}
-                                                </span>
-                                                <div class="flex items-center gap-1 flex-shrink-0">
-                                                    <span class="text-green-400">•</span>
-                                                    <span class="font-inter text-sm text-gray-500">{{ particular_question.created_at|timesince|slice:"8" }} ago</span>
-                                                </div>
-                                            </div>
-
-                                            <span class="text-sm text-gray-500 cursor-pointer block truncate">{{ particular_question.author.email }}</span>
-                                        </div>
-
-
-
+                                    <div class="flex items-center gap-1 flex-shrink-0 text-xs md:text-sm text-gray-500">
+                                        <span class="text-green-400">•</span>
+                                        <span>{{ particular_question.created_at|timesince|slice:"8" }} ago</span>
                                     </div>
                                 </div>
+
+                                <span class="text-xs md:text-sm text-gray-500 cursor-pointer block truncate max-w-[200px] md:max-w-none">
+                                    {{ particular_question.author.email }}
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Post Title -->
-                    <h1 class="text-xl font-bold mb-1 mt-3 break-words leading-tight">{{ particular_question.title }}
+                    <h1 class="text-lg md:text-xl font-bold mb-2 mt-4 break-words leading-tight text-gray-900">
+                        {{ particular_question.title }}
                     </h1>
-                    <!-- photo -->
+
                     {% if particular_question.image %}
-                    <div class="W-[100%] rounded-md mt-2 mb-2">
-                        <img src="{{ particular_question.image.url }}" alt=" " width="100%" height="100%" class="rounded-md">
+                    <div class="w-full rounded-md mt-3 mb-3 overflow-hidden shadow-sm">
+                        <img src="{{ particular_question.image.url }}" alt="{{ particular_question.title }}" class="w-full h-auto max-h-[500px] object-contain bg-gray-50 rounded-md">
                     </div>
                     {% endif %}
 
-                    <!-- Post Content -->
-                    <p class="mt-2 break-words leading-0 text-gray-500 text-sm ">{{ particular_question.content }}</p>
-
-                    <!-- Interaction Bar -->
-                    <!-- <div class="flex items-center justify-between mt-5 text-gray-600 ">
-                        <div class="flex items-center gap-3 flex-wrap ">
-                            <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1 cursor-pointer ">
-                                <i class="fa-regular fa-thumbs-up "></i> Like
-                            </a>
-                            <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1 cursor-pointer ">
-                                <i class="fa-regular fa-comment "></i> Comment
-                            </a>
-                            <a class="flex items-center gap-1 bg-gray-100 rounded-2xl px-3 py-1 ">
-                                <i class="fa-regular fa-eye "></i> View
-                            </a>
-
-                        </div>
-                    </div> -->
-
+                    <div class="mt-3 break-words">
+                        <p class="text-gray-600 text-sm md:text-base leading-relaxed text-justify">
+                            {{ particular_question.content }}
+                        </p>
+                    </div>
                 </div>
 
 
@@ -118,7 +94,8 @@
                             <div class="flex justify-end mt-2 gap-2">
                                 <button type="button" @click="showSearch = true" class="px-5 py-1 border border-gray-300 text-gray-600 rounded-full hover:bg-gray-100 transition">Cancel</button>
 
-                                <button type="submit" class="px-4 bg-gray-800 text-[15px] text-white rounded-full hover:bg-gray-900 shadow-sm transition">Add Post</button>
+                                <button type="submit" class="px-4 bg-gray-800 text-[15px] text-white rounded-full hover:bg-gray-900 shadow-sm transition">Add
+                                    Post</button>
                             </div>
                         </form>
                     </div>

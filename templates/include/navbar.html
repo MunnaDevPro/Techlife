@@ -195,11 +195,11 @@
                 </a>
 
                 <a href="{% url 'blogs' %}" class="text-gray-700 font-medium hover:text-blue-600 block py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
-                    <i class="fas fa-home mr-3 w-5 text-center"></i> All Blogs
+                    <i class="fas fa-newspaper mr-3 w-5 text-center"></i> All Blogs
                 </a>
 
                 <a href="{% url 'popular_blogs' %}" class="text-gray-700 font-medium hover:text-blue-600 block py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
-                    <i class="fas fa-home mr-3 w-5 text-center"></i> Popular
+                    <i class="fas fa-fire mr-3 w-5 text-center"></i> Popular
                 </a>
 
                 <a href="{% url 'questions_list' %}" class="text-gray-700 font-medium hover:text-blue-600 block py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors text-left">
@@ -214,7 +214,7 @@
 
                 <!-- Popular Categories -->
                 {% for category in popular_categories|slice:"4" %}
-                <a hx-get="{% url 'category_post' category.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="text-gray-700 font-medium hover:text-blue-600 block py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
+                <a href="{% url 'category_post' category.slug %}" class="text-gray-700 font-medium hover:text-blue-600 block py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
                     <i class="fas fa-folder mr-3 w-5 text-center"></i> {{ category.name }}
                 </a>
                 {% endfor %}
@@ -224,12 +224,9 @@
                     <i class="fas fa-envelope mr-3 w-5 text-center"></i> Contact
                 </a>
 
-                <!-- Forum Button Only (Today's News removed) -->
-                <div class="border-t border-gray-200 pt-4 mt-2">
-                    <a href="{% url 'questions_list' %}" onclick=" closeMobileSidebar(); " class="w-full px-4 py-3 border border-blue-600 text-blue-600 hover:bg-blue-50 transition-colors rounded-lg font-semibold ">
-                        <i class="fas fa-comments mr-2 "></i> Forum
-                    </a>
-                </div>
+
+
+
             </div>
         </div>
     </div>
