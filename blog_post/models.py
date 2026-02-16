@@ -86,7 +86,7 @@ class BlogPost(models.Model):
     featured_image = models.ImageField(upload_to="blog_images/", null=True, blank=True)
     featured_image_thumbnail = ImageSpecField(
             source='featured_image',
-        processors=[ResizeToFill(300, 200),Adjust(sharpness=1.5)],
+        processors=[ResizeToFill(550,380),Adjust(sharpness=1)],
         format='WEBP',
         options={'quality': 90}
         )

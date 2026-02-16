@@ -163,9 +163,9 @@
                     <!-- Blog Image -->
                     <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" class="relative mt-3">
                         {% if blog_detail.featured_image %}
-                        <img class="w-full h-[380px] object-cover rounded-md" src="{{ blog_detail.featured_image_thumbnail.url }}" alt="{{ blog_detail.title }}" /> {% elif blog_detail.featured_image_url %}
-                        <img class="w-full h-[380px] object-cover rounded-md" src="{{ blog_detail.featured_image_url }}" alt="{{ blog_detail.title }}" /> {% else %}
-                        <img class="w-full h-[380px] object-cover rounded-md" src="{% static 'images/default-blog.jpg' %}" alt="Default Blog Image" /> {% endif %}
+                        <img class="w-full h-[400px] object-cover rounded-md" src="{{ blog_detail.featured_image_thumbnail.url }}" alt="{{ blog_detail.title }}" /> {% elif blog_detail.featured_image_url %}
+                        <img class="w-full h-[400px] object-cover rounded-md" src="{{ blog_detail.featured_image_url }}" alt="{{ blog_detail.title }}" /> {% else %}
+                        <img class="w-full h-[400px] object-cover rounded-md" src="{% static 'images/default-blog.jpg' %}" alt="Default Blog Image" /> {% endif %}
                     </div>
 
 
