@@ -1,31 +1,17 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} {% load static %} {% block title %}User Dashboard - Light Theme{% endblock %} {% block head %} {% endblock %} {% block content %}
 
-{% block title %}User Dashboard - Light Theme{% endblock %}
+<div class="container max-w-7xl mx-auto flex  bg-white text-gray-800 lg:-mt-[40px]">
 
-{% block head %}
-    {% endblock %}
-
-{% block content %}
-
-<div class="flex min-h-screen bg-white text-gray-800 lg:-mt-[40px]">
-    
     {% include 'account/demo/sidebar.html' %}
 
     <div class="flex-1 flex flex-col overflow-hidden">
-        
+
         {% include 'account/demo/header.html' %}
 
         <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 lg:p-10">
-            
-            {% include 'account/demo/main_stats.html' %}
-            
-            {% include 'account/demo/data_rows.html' %}
 
-            {% include 'account/demo/order_table.html' %}
+            {% include 'account/demo/main_stats.html' %} {% include 'account/demo/data_rows.html' %} {% include 'account/demo/order_table.html' %} {% include 'account/demo/visitors_map.html' %}
 
-            {% include 'account/demo/visitors_map.html' %}
-            
         </main>
 
         {% include 'account/demo/footer.html' %}
@@ -34,39 +20,39 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-    const sidebar = document.getElementById('sidebar');
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    
-    if (sidebar && mobileMenuBtn) {
-        if (window.innerWidth < 768) { 
-            sidebar.classList.add('hidden');
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+
+        if (sidebar && mobileMenuBtn) {
+            if (window.innerWidth < 768) {
+                sidebar.classList.add('hidden');
+            }
+
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('hidden');
+            });
         }
 
-        mobileMenuBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('hidden');
-        });
-    }
+        const transactionChartCanvas = document.getElementById('transactionChart');
+        if (transactionChartCanvas) {
 
-    const transactionChartCanvas = document.getElementById('transactionChart');
-    if (transactionChartCanvas) {
-       
-    }
+        }
 
-    const todoCheckboxes = document.querySelectorAll('.form-checkbox');
-    todoCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', (e) => {
-            const label = e.target.closest('label').querySelector('span');
-            if (e.target.checked) {
-               
-                label.classList.add('line-through', 'text-gray-500');
-                label.classList.remove('text-gray-800'); 
-            } else {
-                label.classList.remove('line-through', 'text-gray-500');
-                label.classList.add('text-gray-800'); 
-            }
+        const todoCheckboxes = document.querySelectorAll('.form-checkbox');
+        todoCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const label = e.target.closest('label').querySelector('span');
+                if (e.target.checked) {
+
+                    label.classList.add('line-through', 'text-gray-500');
+                    label.classList.remove('text-gray-800');
+                } else {
+                    label.classList.remove('line-through', 'text-gray-500');
+                    label.classList.add('text-gray-800');
+                }
+            });
         });
+
     });
-
-});
 </script>
 {% endblock %}
