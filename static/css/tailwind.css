@@ -1738,9 +1738,6 @@
   .border-t-transparent {
     border-top-color: transparent;
   }
-  .bg-\[var\(--logo-color\)\] {
-    background-color: var(--logo-color);
-  }
   .bg-black {
     background-color: var(--color-black);
   }
@@ -2380,9 +2377,6 @@
   }
   .text-\[\#1877F2\] {
     color: #1877F2;
-  }
-  .text-black {
-    color: var(--color-black);
   }
   .text-blue-50 {
     color: var(--color-blue-50);
@@ -3163,13 +3157,6 @@
       }
     }
   }
-  .hover\:bg-\[var\(--logo-color\)\] {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--logo-color);
-      }
-    }
-  }
   .hover\:bg-black {
     &:hover {
       @media (hover: hover) {
@@ -3201,13 +3188,6 @@
         @supports (color: color-mix(in lab, red, red)) {
           background-color: color-mix(in oklab, var(--color-blue-100) 70%, transparent);
         }
-      }
-    }
-  }
-  .hover\:bg-blue-400 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-blue-400);
       }
     }
   }
