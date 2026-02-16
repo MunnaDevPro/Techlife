@@ -1,14 +1,14 @@
 {% load static %}
 
 <!-- Blog Posts Grid -->
-<div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 -mt-7 mx-auto">
+<div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 -mt-7 px-5">
 
-    {% for blog in blogs %}
-    <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="bg-white rounded-md overflow-hidden hover:drop-shadow-lg duration-200 pb-2 mb-6 cursor-pointer border border-gray-200 hover:border-gray-400">
+    {% for blog in popular_blogs %}
+    <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="bg-white rounded-md overflow-hidden hover:drop-shadow-sm duration-200 pb-2 mb-6 cursor-pointer border border-gray-200 hover:border-gray-300">
         <!-- Image section -->
         <div class="relative p-3 pt-3">
             {% if blog.featured_image %}
-            <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md" /> {% elif blog.featured_image_url %}
+            <img src="{{ blog.featured_image_thumbnail.url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md" /> {% elif blog.featured_image_url %}
             <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md" /> {% else %}
             <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md" /> {% endif %}
         </div>
@@ -48,22 +48,7 @@
                 </svg>
                 {{ blog.author.last_name }}
 
-            </span> {% comment %}
-            <!-- Stats -->
-            <div class="flex items-center text-gray-600 text-sm gap-5 mt-3">
-                <span class="flex items-center gap-1">
-                    <i class="fa-solid fa-eye"></i>
-                    {{ blog.views }}
-                </span>
-                <span class="flex items-center gap-1">
-                    <i class="fa-solid fa-thumbs-up"></i>
-                    {{ blog.likes }}
-                </span>
-                <span class="flex items-center gap-1">
-                    <i class="fa-solid fa-share-nodes"></i>
-                    {{ blog.shares.count }}
-                </span>
-            </div> {% endcomment %}
+            </span>
         </div>
     </a>
     {% empty %}
@@ -87,17 +72,17 @@
             <div class="w-full sm:w-auto text-center sm:text-left mb-4 sm:mb-0">
                 <p class="text-sm text-gray-700">
                     Showing
-                    <span class="font-medium">{{ blogs.start_index }}</span> to
-                    <span class="font-medium">{{ blogs.end_index }}</span> of
-                    <span class="font-medium">{{ blogs.paginator.count }}</span> results
+                    <span class="font-medium">{{ popular_blogs.start_index }}</span> to
+                    <span class="font-medium">{{ popular_blogs.end_index }}</span> of
+                    <span class="font-medium">{{ popular_blogs.paginator.count }}</span> results
                 </p>
             </div>
 
             <div class="w-full flex justify-center sm:w-auto sm:justify-end">
                 <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
 
-                    {% if blogs.has_previous %}
-                    <a href="{% url 'blogs' %}?page={{ blogs.previous_page_number }}" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                    {% if popular_blogs.has_previous %}
+                    <a href="{% url 'popular_blogs' %}?page={{ popular_blogs.previous_page_number }}" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                         <span class="sr-only">Previous</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path fill-rule="evenodd"
@@ -114,14 +99,14 @@
                                     clip-rule="evenodd" />
                             </svg>
                     </span>
-                    {% endif %} {% for i in blogs.paginator.page_range %} {% if blogs.number == i %}
+                    {% endif %} {% for i in popular_blogs.paginator.page_range %} {% if popular_blogs.number == i %}
                     <span aria-current="page" class="relative z-10 inline-flex items-center bg-blue-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
                             {{ i }}
                         </span> {% else %}
-                    <a href="{% url 'blogs' %}?page={{ i }}" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                    <a href="{% url 'popular_blogs' %}?page={{ i }}" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                             {{ i }}
-                        </a> {% endif %} {% endfor %} {% if blogs.has_next %}
-                    <a href="{% url 'blogs' %}?page={{ blogs.next_page_number }}" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                        </a> {% endif %} {% endfor %} {% if popular_blogs.has_next %}
+                    <a href="{% url 'popular_blogs' %}?page={{ popular_blogs.next_page_number }}" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                         <span class="sr-only">Next</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path fill-rule="evenodd"

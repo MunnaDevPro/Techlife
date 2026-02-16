@@ -451,8 +451,9 @@
         {% for news in related_news|slice:":8" %}
         <a hx-get="{% url 'blog_details' news.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="flex items-start mb-4 border-b border-gray-300 pb-3 group last:border-b-0">
             <div class="w-20 h-16 min-w-20 flex-shrink-0 overflow-hidden rounded-md transform transition-transform duration-300 group-hover:scale-105">
-                <img class="w-full h-full object-cover" src="{{ news.featured_image_url }}" alt="{{ news.title }}" />
-            </div>
+                {% if news.featured_image %}
+                <img class="w-full h-full object-cover" src="{{ news.featured_image_thumbnail.url }}" alt="{{ news.title }}" /> {% elif news.featured_image_url %}
+                <img class="w-full h-full object-cover" src="{{ news.featured_image_url }}" alt="{{ news.title }}" /> {% endif %} </div>
             <div class="ml-3 flex-1 min-w-0">
                 <p class="text-sm text-gray-800 group-hover:text-blue-600 cursor-pointer line-clamp-2 leading-tight">
                     {{ news.title }}</p>
@@ -474,8 +475,9 @@
         {% for news in most_viewed_blogs|slice:":8" %}
         <div hx-get="{% url 'blog_details' news.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="flex items-start mb-4 border-b border-gray-300 pb-3 group last:border-b-0 cursor-pointer">
             <div class="w-20 h-16 min-w-20 flex-shrink-0 overflow-hidden rounded-md transform transition-transform duration-300 group-hover:scale-105">
-                <img class="w-full h-full object-cover" src="{{ news.featured_image_url }}" alt="{{ news.title }}" />
-            </div>
+                {% if news.featured_image %}
+                <img class="w-full h-full object-cover" src="{{ news.featured_image_thumbnail.url }}" alt="{{ news.title }}" /> {% elif news.featured_image_url %}
+                <img class="w-full h-full object-cover" src="{{ news.featured_image_url }}" alt="{{ news.title }}" /> {% endif %} </div>
             <div class="ml-3 flex-1 min-w-0">
                 <p class="text-sm text-gray-800 group-hover:text-blue-600 line-clamp-2 leading-tight">
                     {{ news.title }}</p>

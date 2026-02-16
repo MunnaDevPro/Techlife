@@ -414,13 +414,14 @@ def popular_blog_post(request):
     popular_blogs_list = (
         BlogPost.objects.filter(
             status="published",
-            views__gte=100,
+            views__gte=10,
             likes__gte=10
         )
         .select_related("category", "author")
-        .order_by("-views", "-likes")
+        .order_by( "-id") 
+        .distinct()
+        
     )
-    
     blogs_per_page = 8 
     
     paginator = Paginator(popular_blogs_list, blogs_per_page)
@@ -436,7 +437,7 @@ def popular_blog_post(request):
 
 
     context = {
-        "blogs": blogs, 
+        "popular_blogs": blogs, 
     }
 
     return render(request, "components/popular/popular_post.html", context)
