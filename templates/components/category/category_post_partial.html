@@ -71,7 +71,7 @@
             {% for blog in blogs|slice:":1" %}
             <div class="w-full h-64 md:h-80 bg-gray-100 overflow-hidden mobile-image">
                 {% if blog.featured_image %}
-                <img src="{{ blog.featured_image_thumbnail.url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-contain rounded-md"> {% elif blog.featured_image_url %}
+                <img src="{{ blog.featured_image_thumbnail.url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md "> {% elif blog.featured_image_url %}
                 <img src="{{ blog.featured_image_url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md"> {% else %}
                 <img src="https://via.placeholder.com/640x360?text=Image+Not+Available" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md"> {% endif %}
             </div>

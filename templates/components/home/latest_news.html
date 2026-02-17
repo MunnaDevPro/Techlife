@@ -25,7 +25,7 @@
                     {{ latest_post.title }}
                 </h3>
                 <span class="line-clamp-5 font-inter text-gray-500 text-sm">
-        {{ latest_post.description }}
+        {{ latest_post.description|striptags }}
     </span>
             </div>
             {% endfor %}

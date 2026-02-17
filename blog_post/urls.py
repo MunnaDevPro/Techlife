@@ -28,7 +28,7 @@ urlpatterns = [
     path("blogs/", all_blog_post_view, name="blogs"),
     path("popular-blogs/", popular_blog_post, name="popular_blogs"),
     path("all-blog/", all_article, name='all_article'),
-    path("blog_details/<slug:slug>/", blog_details_view, name="blog_details"),
+    path("details/<slug:slug>/", blog_details_view, name="blog_details"),
     path('blog/detials/update/<slug:slug>/', right_blog_details_partial, name='right_blog_details_partial'),
     
 

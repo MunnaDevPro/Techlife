@@ -27,30 +27,5 @@
             {% endfor %}
         </ul>
     </div>
-    <!-- latest blog -->
-    <!-- <div class="bg-white rounded-lg mt-1 lg:mt-0 p-3  top-4 max-h-[90vh] overflow-y-auto scrollbar-hide ">
-        <h3 class="text-lg font-inter text-gray-700 font-sm pb-3 "><span class="w-2 h-full bg-blue-600 text-blue-600 mr-2">.</span>Recent Posts</h3>
-        <ul class="flex flex-col gap-y-2 ">
-            {% for blog in blogs|slice:"1:6 " %}
-            <a href="{% url 'blog_details' blog.slug %} " class="flex flex-col ">
-                <li class="flex items-center gap-x-3 p-1 mb-2 border-gray-300 rounded-lg hover:scale-104 transition-transform duration-300 group ">
-                    <div class="w-24 h-20 flex-shrink-0 overflow-hidden rounded-md group ">
-                        {% if blog.featured_image %}
-                        <img src="{{ blog.featured_image.url }} " alt="{{ blog.title }} " class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110 " /> {% elif blog.featured_image_url%}
-                        <img src="{{ blog.featured_image_url }} " alt="{{ blog.title }} " class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110 " /> {% else %}
-                        <img src="{% static 'image/placeholder-5.png' %} " alt="{{ blog.title }} " class="w-full h-full object-cover transform transition duration-300 group-hover:aspect-square group-hover:scale-110 " /> {% endif %}
-                    </div>
 
-                    <div class="flex flex-col gap-y-1 ">
-                        <h1 class="text-[12px] font-bold group-hover:text-blue-600 line-clamp-1 ">{{ blog.title }}
-                        </h1>
-                        <p class="text-xs text-gray-600 line-clamp-2 ">{{ blog.description|truncatewords:10 }}
-                        </p>
-                    </div>
-                </li>
-                <hr />
-            </a>
-            {% endfor %}
-        </ul>
-    </div> -->
 </div>
