@@ -8,9 +8,9 @@
         <!-- Image section -->
         <div class="relative p-3 pt-3">
             {% if blog.featured_image %}
-            <img src="{{ blog.featured_image_thumbnail.url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md" /> {% elif blog.featured_image_url %}
-            <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md" /> {% else %}
-            <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md" /> {% endif %}
+            <img src="{{ blog.featured_image_thumbnail.url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md" loading="lazy" decoding="async" /> {% elif blog.featured_image_url %}
+            <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md" loading="lazy" decoding="async" /> {% else %}
+            <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-44 object-cover rounded-md" loading="lazy" decoding="async" /> {% endif %}
         </div>
 
         <!-- Category name and date -->

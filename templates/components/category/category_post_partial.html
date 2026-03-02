@@ -71,9 +71,9 @@
             {% for blog in blogs|slice:":1" %}
             <div class="w-full h-64 md:h-80 bg-gray-100 overflow-hidden mobile-image">
                 {% if blog.featured_image %}
-                <img src="{{ blog.featured_image_thumbnail.url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md "> {% elif blog.featured_image_url %}
-                <img src="{{ blog.featured_image_url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md"> {% else %}
-                <img src="https://via.placeholder.com/640x360?text=Image+Not+Available" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md"> {% endif %}
+                <img src="{{ blog.featured_image_thumbnail.url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md " loading="lazy" decoding="async"> {% elif blog.featured_image_url %}
+                <img src="{{ blog.featured_image_url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md" loading="lazy" decoding="async"> {% else %}
+                <img src="https://via.placeholder.com/640x360?text=Image+Not+Available" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md" loading="lazy" decoding="async"> {% endif %}
             </div>
 
             <div class="space-y-4">
@@ -92,9 +92,15 @@
                 <div class="flex items-center gap-3 md:gap-4 pb-4 border-b border-gray-200">
                     <div class="w-16 h-16 md:w-20 md:h-16 flex-shrink-0 rounded overflow-hidden bg-gray-100">
                         {% if blog.featured_image %}
-                        <img src="{{ blog.featured_image.url }}" alt="{{ blog.title|default:'Headline Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"> {% elif blog.featured_image_url %}
-                        <img src="{{ blog.featured_image_url }}" alt="{{ blog.title|default:'Headline Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"> {% else %}
-                        <img src="https://placehold.co/100x80/d1d5db/333?text=NEWS" alt="{{ blog.title|default:'Placeholder Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"> {% endif %}
+                        <img src="{{ blog.featured_image.url }}" alt="{{ blog.title|default:'Headline Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" loading="lazy" decoding="async">
+                        <!--  -->
+                        {% elif blog.featured_image_url %}
+                        <img src="{{ blog.featured_image_url }}" alt="{{ blog.title|default:'Headline Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" loading="lazy" decoding="async">
+
+                        <!--  -->
+                        {% else %}
+                        <img src="https://placehold.co/100x80/d1d5db/333?text=NEWS" alt="{{ blog.title|default:'Placeholder Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" loading="lazy" decoding="async">{%
+                        endif %}
                     </div>
                     <div class="flex-1">
                         <p class="text-sm md:text-base font-semibold transition-colors duration-200 group-hover:text-blue-600 cursor-pointer line-clamp-2 mobile-text">
@@ -159,9 +165,9 @@
 
             <div class="aspect-video overflow-hidden  flex-shrink-0 rounded-md">
                 {% if post.featured_image %}
-                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class=" rounded-md w-full h-full object-cover transition duration-500 "> {% elif post.featured_image_url %}
-                <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class=" rounded-md w-full h-full object-cover transition duration-500 "> {% else %}
-                <img src="https://placehold.co/400x250/d1d5db/333?text=NEWS" alt="Placeholder" class=" rounded-md w-full h-full object-cover"> {% endif %}
+                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class=" rounded-md w-full h-full object-cover transition duration-500 " loading="lazy" decoding="async"> {% elif post.featured_image_url %}
+                <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class=" rounded-md w-full h-full object-cover transition duration-500 " loading="lazy" decoding="async"> {% else %}
+                <img src="https://placehold.co/400x250/d1d5db/333?text=NEWS" alt="Placeholder" class=" rounded-md w-full h-full object-cover" loading="lazy" decoding="async"> {% endif %}
             </div>
             <div class=" flex flex-col flex-grow space-y-2 mb-2">
                 <h3 class="mt-2 cursor-pointer font-bold line-clamp-2 leading-tight transition-colors duration-200 group-hover:text-blue-700">

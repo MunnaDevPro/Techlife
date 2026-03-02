@@ -16,11 +16,11 @@
 
             <a hx-get="{% url 'blog_details' main_blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="group overflow-hidden relative p-2 pt-3 rounded-t-lg block cursor-pointer">
             {% if main_blog.featured_image %}
-                <img src="{{ main_blog.featured_image.url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" />
+                <img src="{{ main_blog.featured_image.url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"/>
             {% elif main_blog.featured_image_url %}
-                <img src="{{ main_blog.featured_image_url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" />
+                <img src="{{ main_blog.featured_image_url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"/>
             {% else %}
-                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" />
+                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"/>
             {% endif %}
         </a>
 
@@ -57,11 +57,11 @@
 
             <a hx-get="{% url 'blog_details' main_blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="group overflow-hidden relative p-2 pt-3 rounded-t-lg block cursor-pointer">
             {% if main_blog.featured_image %}
-                <img src="{{ main_blog.featured_image.url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" />
+                <img src="{{ main_blog.featured_image.url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"loading="lazy" decoding="async"/>
             {% elif main_blog.featured_image_url %}
-                <img src="{{ main_blog.featured_image_url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" />
+                <img src="{{ main_blog.featured_image_url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"loading="lazy" decoding="async"/>
             {% else %}
-                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" />
+                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"loading="lazy" decoding="async"/>
             {% endif %}
         </a>
 
@@ -100,11 +100,11 @@
 
             <a href="{% url 'blog_details' main_blog.slug %}" class="group overflow-hidden relative p-2 pt-3 rounded-t-lg block">
         {% if main_blog.featured_image %}
-            <img src="{{ main_blog.featured_image.url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" />
+            <img src="{{ main_blog.featured_image.url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"/>
         {% elif main_blog.featured_image_url %}
-            <img src="{{ main_blog.featured_image_url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" />
+            <img src="{{ main_blog.featured_image_url }}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"/>
         {% else %}
-            <img src="{% static 'image/placeholder-5.png' %}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" />
+            <img src="{% static 'image/placeholder-5.png' %}" alt="{{ main_blog.title }}" class="w-full h-44 object-cover rounded-t-lg transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"/>
         {% endif %}
     </a>
 

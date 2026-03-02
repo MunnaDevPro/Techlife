@@ -71,7 +71,7 @@
             {% if not carousel_blogs %}
             <div class="carousel-slide absolute inset-0">
                 <div class="absolute inset-0">
-                    <img src="{% static 'image/placeholder-5.png' %}" class="w-full h-full object-cover" alt="No blogs available" />
+                    <img src="{% static 'image/placeholder-5.png' %}" class="w-full h-full object-cover" alt="No blogs available" loading="lazy" decoding="async" />
                     <div class="absolute inset-0 bg-black/40"></div>
                 </div>
                 <div class="absolute inset-0 flex items-center justify-center">
@@ -110,11 +110,14 @@
             <li class="flex flex-col w-full group gap-y-1 mb-3" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                 <div class="w-full h-[160px] sm:h-32 relative overflow-hidden rounded-md">
                     {% if blog.featured_image %}
-                    <img class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" />
+                    <img class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" loading="lazy" decoding="async"
+                    />
                     <!-- elif confition -->
                     {% elif blog.featured_image_url %}
-                    <img class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" /> {%else%}
-                    <img class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" />                    {% endif %}
+                    <img class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" loading="lazy" decoding="async"
+                    /> {%else%}
+                    <img class="w-full h-full object-cover rounded-md shadow transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" loading="lazy" decoding="async"
+                    /> {% endif %}
                 </div>
                 <h1 class="text-sm font-semibold text-gray-700 line-clamp-2 hover:text-blue-500">
                     {{ blog.title }}
@@ -131,9 +134,9 @@
     <a hx-get="{% url 'blog_details' latest_blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="flex flex-col cursor-pointer">
         <div class="flex w-full mb-6 rounded-md flex-col gap-1 group relative overflow-hidden">
             {% if latest_blog.featured_image %}
-            <img class="rounded-md w-full h-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ latest_blog.featured_image.url }}" alt="{{ latest_blog.title }}" /> {% elif latest_blog.featured_image_url%}
-            <img class="rounded-md w-full h-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ latest_blog.featured_image_url }}" alt="{{ latest_blog.title }}" /> {% else %}
-            <img class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{% static 'image/placeholder-5.png' %}" alt="{{ latest_blog.title }}" /> {% endif %}
+            <img class="rounded-md w-full h-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ latest_blog.featured_image.url }}" alt="{{ latest_blog.title }}" loading="lazy" decoding="async" />            {% elif latest_blog.featured_image_url%}
+            <img class="rounded-md w-full h-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{{ latest_blog.featured_image_url }}" alt="{{ latest_blog.title }}" loading="lazy" decoding="async" />            {% else %}
+            <img class="rounded-md w-full transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]" src="{% static 'image/placeholder-5.png' %}" alt="{{ latest_blog.title }}" loading="lazy" decoding="async" />            {% endif %}
             <h1 class="text-sm md:text-base font-semibold pl-1 pb-6 group-hover:text-blue-600 line-clamp-2">
                 {{ latest_blog.title|truncatewords:9 }}
             </h1>
@@ -168,19 +171,19 @@
             class="w-12 h-12 rounded-md sm:w-14 sm:h-14 flex-shrink-0 group relative overflow-hidden"
           >
             {% if blog.featured_image %}
-            <img
+            <img loading="lazy" decoding="async"
               src="{{ blog.featured_image.url }}"
               alt="{{ blog.title }}"
               class="w-full h-full object-cover rounded-md transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]"
             />
             {% elif blog.featured_image_url %}
-            <img
+            <img loading="lazy" decoding="async"
               src="{{ blog.featured_image_url }}"
               alt="{{ blog.title }}"
               class="w-full h-full object-cover rounded-md transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]"
             />
             {% else %}
-            <img
+            <img loading="lazy" decoding="async"
               src="{% static 'image/placeholder-5.png' %}"
               alt="{{ blog.title }}"
               class="w-full h-full object-cover rounded-md transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]"
@@ -248,7 +251,7 @@
         {% else %}
         <img
           src="{{ user.profile_picture.url }}"
-          class="w-10 h-10 rounded-full object-cover border border-blue-400"
+          class="w-10 h-10 rounded-full object-cover border border-blue-400" loading="lazy" decoding="async"
         />
         {% endif %}
         <div class="flex-1 px-2">

@@ -16,8 +16,10 @@
             <div hx-get="{% url 'blog_details' latest_post.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="h-60 md:h-full w-full md:w-3/5 overflow-hidden group rounded-md relative">
 
                 {% if latest_post.featured_image_url %}
-                <img src="{{ latest_post.featured_image_url }}" alt="{{ latest_post.title }}" class="object-cover w-full h-full hover:cursor-pointer rounded-md transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" />                {# Ekhane latest_post.featured_image check korte hobe #} {% elif latest_post.featured_image %}
-                <img src="{{ latest_post.featured_image.url }}" alt="{{ latest_post.title }}" class="object-cover w-full h-full hover:cursor-pointer rounded-md transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" />                {% endif %}
+                <img src="{{ latest_post.featured_image_url }}" alt="{{ latest_post.title }}" class="object-cover w-full h-full hover:cursor-pointer rounded-md transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy"
+                    decoding="async" /> {% elif latest_post.featured_image %}
+                <img src="{{ latest_post.featured_image.url }}" alt="{{ latest_post.title }}" class="object-cover w-full h-full hover:cursor-pointer rounded-md transform transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy"
+                    decoding="async" /> {% endif %}
             </div>
 
             <div class="h-auto md:h-full w-full md:w-2/5 p-1 md:pl-2 bg-gray-100">
@@ -39,9 +41,9 @@
                     <div class="h-6/7 w-full rounded-md group relative overflow-hidden">
                         {% if popular_blog.featured_image %}
                         <img src="{{ popular_blog.featured_image.url }}" alt="" class="w-full h-full object-cover rounded-sm transform transition-transform duration-300 ease-out 
-                                    group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% elif popular_blog.featured_image_url %}
+                                    group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% elif popular_blog.featured_image_url %}
                         <img src="{{ popular_blog.featured_image_url }}" alt="" class="w-full h-full object-cover rounded-sm transform transition-transform duration-300 ease-out 
-                                    group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% endif %}
+                                    group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% endif %}
                     </div>
 
                     <div class="h-2/7 w-full object-cover p-1 hover:text-blue-500">

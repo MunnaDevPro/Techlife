@@ -68,13 +68,13 @@
 
                     {% if particular_question.image %}
                     <div class="w-full rounded-md mt-3 mb-3 overflow-hidden shadow-sm">
-                        <img src="{{ particular_question.image.url }}" alt="{{ particular_question.title }}" class="w-full h-auto max-h-[500px] object-contain bg-gray-50 rounded-md">
+                        <img src="{{ particular_question.image_thumbnail.url }}" alt="{{ particular_question.title }}" title="{{ particular_question.title }}" width="550" height="380" loading="lazy" decoding="async" class="w-full h-auto max-h-[500px] object-contain bg-gray-50 rounded-md">
                     </div>
                     {% endif %}
 
                     <div class="mt-3 break-words">
                         <p class="text-gray-600 text-sm md:text-base leading-relaxed text-justify">
-                            {{ particular_question.content }}
+                            {{ particular_question.content|safe }}
                         </p>
                     </div>
                 </div>

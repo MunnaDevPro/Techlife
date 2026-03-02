@@ -12,14 +12,14 @@
             <div x-ref="item" class="flex items-center justify-around flex-shrink-0 w-full py-2 space-x-8">
 
                 {% for logo in logos %} {% if logo.company_image %}
-                <img src="{{ logo.company_image.url }}" alt="{{ logo.name }}" class="h-16 w-auto object-contain "> {% elif logo.company_image_url %}
-                <img src="{{ logo.company_image_url }}" alt="{{ logo.name }}" class="h-16 w-auto object-contain "> {% endif %} {% endfor %}
+                <img src="{{ logo.company_image.url }}" alt="{{ logo.name }}" class="h-16 w-auto object-contain " loading="lazy" decoding="async"> {% elif logo.company_image_url %}
+                <img src="{{ logo.company_image_url }}" alt="{{ logo.name }}" class="h-16 w-auto object-contain " loading="lazy" decoding="async"> {% endif %} {% endfor %}
 
             </div>
 
             <div class="flex items-center justify-around flex-shrink-0 w-full py-2 space-x-8">
                 {% for logo in logos %}
-                <img src="{% if logo.company_image %}{{ logo.company_image.url }}{% else %}{{ logo.company_image_url }}{% endif %}" alt="{{ logo.name }}" class="h-16 w-auto object-contain"> {% endfor %}
+                <img src="{% if logo.company_image %}{{ logo.company_image.url }}{% else %}{{ logo.company_image_url }}{% endif %}" alt="{{ logo.name }}" class="h-16 w-auto object-contain" loading="lazy" decoding="async"> {% endfor %}
             </div>
         </div>
     </div>

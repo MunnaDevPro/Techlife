@@ -1,14 +1,23 @@
 from django.db import models
 from accounts.models import CustomUserModel
 from django.utils.text import slugify
-
+from ckeditor_uploader.fields import RichTextUploadingField
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill, Adjust
 
 class Question(models.Model):
     author = models.ForeignKey(CustomUserModel, on_delete=models.CASCADE, related_name='questions',default=1)
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=500,blank=True,null=True,unique=True,db_index=True,)
-    content = models.TextField(blank=True, null=True)
+    content = RichTextUploadingField(blank=True, null=True)
     image = models.ImageField(upload_to='question_images/', null=True, blank=True)
+    image_thumbnail = ImageSpecField(
+            source='image',
+        processors=[ResizeToFill(550,380),Adjust(sharpness=1)],
+        format='WEBP',
+        options={'quality': 90}
+        )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -18,7 +18,7 @@
                     <div class="flex flex-col gap-y-1 ">
                         <h1 class="text-[12px] font-bold group-hover:text-blue-600 line-clamp-2 cursor-pointer">{{ question.title }}
                         </h1>
-                        <p class="text-xs text-gray-600 line-clamp-2 ">{{ question.content|truncatewords:20 }}
+                        <p class="text-xs text-gray-600 line-clamp-2 ">{{ question.content|truncatewords:20|striptags }}
                         </p>
                     </div>
                 </li>

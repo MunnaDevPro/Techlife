@@ -26,9 +26,9 @@
                     <div class="w-full h-40 bg-gray-200 overflow-hidden relative group cursor-pointer rounded-t-md" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                         {% if post.featured_image %}
                         <img src="{{ post.featured_image.url }}" alt="{{ news_related.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-t-md transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% elif post.featured_image_url %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% elif post.featured_image_url %}
                         <img src="{{ post.featured_image_url }}" alt="{{ news_related.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-md transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% endif %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% endif %}
                     </div>
                     <a href="{% url 'blog_details' post.slug %}" class="font-bold text-lg leading-snug text-gray-900 hover:text-blue-500 cursor-pointer line-clamp-2">
                         {{ post.title }}</a>
@@ -41,9 +41,9 @@
                         <div class="w-16 h-12 flex-shrink-0 rounded-md bg-gray-200 overflow-hidden relative group">
                             {% if post.featured_image %}
                             <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-sm transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% elif post.featured_image_url %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% elif post.featured_image_url %}
                             <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-sm transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% endif %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% endif %}
 
                         </div>
                         <a href="{% url 'blog_details' slug=post.slug %}" class="font-medium text-sm leading-tight group-hover:text-blue-600 line-clamp-2">{{ post.title }}</a>
@@ -65,9 +65,9 @@
                     <div class="w-full h-40 rounded-md bg-gray-200 overflow-hidden relative group cursor-pointer" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                         {% if post.featured_image %}
                         <img src="{{ post.featured_image.url }}" alt="{{ news_related.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-md transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% elif post.featured_image_url %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% elif post.featured_image_url %}
                         <img src="{{ post.featured_image_url }}" alt="{{ news_related.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-md transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% endif %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% endif %}
                     </div>
                     <a href="{% url 'blog_details' post.slug %}" class="font-bold text-lg leading-snug text-gray-900 hover:text-blue-500 cursor-pointer line-clamp-2">
                         {{ post.title }}</a>
@@ -80,9 +80,9 @@
                         <div class="w-16 h-12 rounded-md flex-shrink-0 bg-gray-200 overflow-hidden group relative">
                             {% if post.featured_image %}
                             <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-sm transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% elif post.featured_image_url %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% elif post.featured_image_url %}
                             <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-sm transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% endif %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% endif %}
 
                         </div>
                         <a href="{% url 'blog_details' slug=post.slug %}" class="font-medium text-sm leading-tight group-hover:text-blue-600 line-clamp-2">{{ post.title }}</a>
@@ -104,9 +104,9 @@
                     <div class="w-full h-40 rounded-md bg-gray-200 overflow-hidden relative group cursor-pointer" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
                         {% if post.featured_image %}
                         <img src="{{ post.featured_image.url }}" alt="{{ news_related.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-md transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% elif post.featured_image_url %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% elif post.featured_image_url %}
                         <img src="{{ post.featured_image_url }}" alt="{{ news_related.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-md transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% endif %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% endif %}
                     </div>
                     <a href="{% url 'blog_details' post.slug %}" class="font-bold text-lg leading-snug text-gray-900 hover:text-blue-500 cursor-pointer line-clamp-2">
                         {{ post.title }}</a>
@@ -119,9 +119,9 @@
                         <div class="w-16 h-12 rounded-md flex-shrink-0 bg-gray-200 overflow-hidden group relative">
                             {% if post.featured_image %}
                             <img src="{{ post.featured_image.url }}" alt="{{ post.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-sm transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% elif post.featured_image_url %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% elif post.featured_image_url %}
                             <img src="{{ post.featured_image_url }}" alt="{{ post.title|truncatechars:'5' }}" class="w-full h-full object-cover rounded-sm transform transition-transform duration-300 ease-out 
-                                group-hover:-translate-y-1 group-hover:scale-[1.02]"> {% endif %}
+                                group-hover:-translate-y-1 group-hover:scale-[1.02]" loading="lazy" decoding="async"> {% endif %}
 
                         </div>
                         <a href="{% url 'blog_details' slug=post.slug %}" class="font-medium text-sm leading-tight group-hover:text-blue-600 line-clamp-2">{{ post.title }}</a>
