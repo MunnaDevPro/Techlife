@@ -17,28 +17,22 @@
     .category-header-bg {
         background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .05) 10px, transparent 10px, transparent 20px);
     }
-    /* Mobile-specific optimizations */
     
     @media (max-width: 768px) {
-        /* Improve touch targets */
         .mobile-touch-target {
             min-height: 44px;
             min-width: 44px;
         }
-        /* Better text sizing for mobile */
         .mobile-text {
             font-size: 16px;
         }
-        /* Improve image aspect ratios */
         .mobile-image {
             height: 200px !important;
         }
-        /* Better spacing for mobile */
         .mobile-spacing {
             padding-left: 1rem;
             padding-right: 1rem;
         }
-        /* Improve grid layout for mobile */
         .mobile-grid {
             gap: 1rem;
         }
@@ -92,15 +86,11 @@
                 <div class="flex items-center gap-3 md:gap-4 pb-4 border-b border-gray-200">
                     <div class="w-16 h-16 md:w-20 md:h-16 flex-shrink-0 rounded overflow-hidden bg-gray-100">
                         {% if blog.featured_image %}
-                        <img src="{{ blog.featured_image.url }}" alt="{{ blog.title|default:'Headline Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" loading="lazy" decoding="async">
-                        <!--  -->
-                        {% elif blog.featured_image_url %}
-                        <img src="{{ blog.featured_image_url }}" alt="{{ blog.title|default:'Headline Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" loading="lazy" decoding="async">
-
-                        <!--  -->
-                        {% else %}
-                        <img src="https://placehold.co/100x80/d1d5db/333?text=NEWS" alt="{{ blog.title|default:'Placeholder Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" loading="lazy" decoding="async">{%
-                        endif %}
+                        <img src="{{ blog.featured_image.url }}" alt="{{ blog.title|default:'Headline Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" loading="lazy" decoding="async"> {%
+                        elif blog.featured_image_url %}
+                        <img src="{{ blog.featured_image_url }}" alt="{{ blog.title|default:'Headline Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" loading="lazy" decoding="async"> {%
+                        else %}
+                        <img src="https://placehold.co/100x80/d1d5db/333?text=NEWS" alt="{{ blog.title|default:'Placeholder Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" loading="lazy" decoding="async">                        {% endif %}
                     </div>
                     <div class="flex-1">
                         <p class="text-sm md:text-base font-semibold transition-colors duration-200 group-hover:text-blue-600 cursor-pointer line-clamp-2 mobile-text">
@@ -129,7 +119,6 @@
                 <img src="{{ blog.featured_image.url }}" alt="No image" class="w-full h-full object-cover opacity-70 transition-transform duration-500 ease-in-out group-hover:scale-105"> {% elif blog.featured_image_url %}
                 <img src="{{ blog.featured_image_url }}" alt="No image" class="w-full h-full object-cover opacity-70 transition-transform duration-500 ease-in-out group-hover:scale-105"> {% else %}
                 <img src="https://placehold.co/120x80/e5e7eb/333?text=Video" alt="No image" class="w-full h-full object-cover opacity-70 transition-transform duration-500 ease-in-out group-hover:scale-105"> {% endif %}
-                <div class="absolute inset-0 flex items-center justify-center"></div>
             </div>
             <div class="flex-1">
                 <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="text-lg font-bold hover:text-blue-700 cursor-pointer line-clamp-2 md:line-clamp-1 mobile-text">
@@ -152,18 +141,16 @@
     <div id="{{ featured_sub_cat.slug }}" class="mt-8 mb-3 py-6 border-y border-gray-200 flex justify-center items-center relative mobile-spacing">
         <h2 class="text-xl md:text-2xl font-bold text-center px-4">{{ featured_sub_cat.name }}</h2>
         <span class="text-blue-500">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                stroke="currentColor" class="w-6 h-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
             </svg>
         </span>
     </div>
-    <!-- sub castegory post -->
+
     <div class="p-4 md:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {% for post in sub_blogs %}
         <a hx-get="{% url 'blog_details' post.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="p-3 flex flex-col h-full group bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-
-            <div class="aspect-video overflow-hidden  flex-shrink-0 rounded-md">
+            <div class="aspect-video overflow-hidden flex-shrink-0 rounded-md">
                 {% if post.featured_image %}
                 <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class=" rounded-md w-full h-full object-cover transition duration-500 " loading="lazy" decoding="async"> {% elif post.featured_image_url %}
                 <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class=" rounded-md w-full h-full object-cover transition duration-500 " loading="lazy" decoding="async"> {% else %}
@@ -173,12 +160,10 @@
                 <h3 class="mt-2 cursor-pointer font-bold line-clamp-2 leading-tight transition-colors duration-200 group-hover:text-blue-700">
                     {{ post.title }}
                 </h3>
-
                 <p class="text-sm text-gray-600 text-justify line-clamp-3 flex-grow">
                     {{ post.description|default:""|striptags|truncatewords:20 }}
                 </p>
             </div>
-
         </a>
         {% endfor %}
     </div>
@@ -189,13 +174,10 @@
     <p class="p-4 text-gray-500 text-center mobile-text">No posts found in any subcategories for this section.</p>
     {% endfor %} {% else %}
     <div class="py-16 md:py-24 px-4 md:px-10 flex flex-col items-center justify-center bg-white text-center border-t border-b border-gray-100 shadow-inner mobile-spacing">
-
         <i class="fa-regular fa-folder-open text-4xl md:text-6xl text-gray-400 mb-4 md:mb-6"></i>
-
         <h2 class="text-2xl md:text-4xl font-extrabold text-gray-900 mb-3 mobile-text">
             No Content Available
         </h2>
-
         <p class="text-lg md:text-xl text-gray-600 max-w-2xl mb-6 mobile-text">
             We currently do not have any published posts in the {{ category.name }} category. Please check back soon!
         </p>
@@ -204,8 +186,6 @@
 </section>
 
 <style>
-    /* Mobile-specific utility classes */
-    
     @media (max-width: 768px) {
         .scrollbar-hide {
             -ms-overflow-style: none;
