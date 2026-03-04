@@ -55,7 +55,7 @@
     {% comment %}
     <script src="https://unpkg.com/htmx.org@1.9.12" xintegrity="sha384-qbtR4rS9adLkqseSremUcbR/vgFA2A6XPKYoHCi8S4EbMLjI/RJjVqEX+qtYLaqd" crossorigin="anonymous">
     </script> {% endcomment %}
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
 
     {% comment %} AOS animation {% endcomment %}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -86,7 +86,7 @@
 
     <!-- Google Analytics -->
     {% if GOOGLE_ANALYTICS_ID %}
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}" defer></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 

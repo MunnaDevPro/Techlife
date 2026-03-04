@@ -1,20 +1,13 @@
-{% load static %}
-<style>
-    [x-cloak] {
-        display: none !important;
-    }
-</style>
-
-
-<div class="max-w-7xl mx-auto px-1 font-inter -mt-10">
+<div class="max-w-7xl mx-auto font-inter px-3 md:px-4">
     <!-- Flex container for main content -->
     <div class="flex flex-col lg:flex-row gap-4 mx-auto">
+
         <!-- LEFT CONTENT (Post) -->
-        <div class="w-full lg:w-2/3 max-w-2xl flex-shrink-0 mx-auto">
+        <div class="w-full lg:w-2/3 flex-shrink-0">
             {% comment %} Questions section {% endcomment %}
             <div class="bg-gray-50 rounded-2xl lg:p-2 mt-5 mb-2 pb-10">
 
-                <!-- header titile, content, answer box -->
+                <!-- header title, content, answer box -->
                 <div class="py-4 md:py-5 px-3 md:px-4">
                     <div class="flex items-start text-gray-500 w-full" x-data="{ 
                             hoverCardHovered: false,
@@ -46,15 +39,13 @@
                             <div class="flex flex-1 flex-col min-w-0">
                                 <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0" @mouseover="hoverCardEnter()" @mouseleave="hoverCardLeave()">
                                     <span class="font-inter text-lg md:text-2xl font-semibold text-gray-800 hover:text-blue-500 cursor-pointer truncate max-w-[180px] md:max-w-none">
-                                        {{ particular_question.author.first_name }} {{particular_question.author.last_name }}
+                                        {{ particular_question.author.first_name }} {{ particular_question.author.last_name }}
                                     </span>
-
                                     <div class="flex items-center gap-1 flex-shrink-0 text-xs md:text-sm text-gray-500">
                                         <span class="text-green-400">•</span>
                                         <span>{{ particular_question.created_at|timesince|slice:"8" }} ago</span>
                                     </div>
                                 </div>
-
                                 <span class="text-xs md:text-sm text-gray-500 cursor-pointer block truncate max-w-[200px] md:max-w-none">
                                     {{ particular_question.author.email }}
                                 </span>
@@ -79,8 +70,7 @@
                     </div>
                 </div>
 
-
-                <div x-data="{ showSearch: true } " class="mt-2" x-cloak>
+                <div x-data="{ showSearch: true }" class="mt-2" x-cloak>
                     <div x-show="showSearch" class="text-center w-full" x-cloak>
                         <div class="relative w-full ml-0.5">
                             <input type="search" placeholder="Add your answer" class="w-[95%] pl-5 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm" @focus="showSearch = false" />
@@ -93,42 +83,20 @@
                             <textarea name="content" id="editor" class="required w-full rounded-lg p-2 resize-none text-sm text-gray-500" placeholder="Write your answer..."></textarea>
                             <div class="flex justify-end mt-2 gap-2">
                                 <button type="button" @click="showSearch = true" class="px-5 py-1 border border-gray-300 text-gray-600 rounded-full hover:bg-gray-100 transition">Cancel</button>
-
-                                <button type="submit" class="px-4 bg-gray-800 text-[15px] text-white rounded-full hover:bg-gray-900 shadow-sm transition">Add
-                                    Post</button>
+                                <button type="submit" class="px-4 bg-gray-800 text-[15px] text-white rounded-full hover:bg-gray-900 shadow-sm transition">Add Post</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
 
-            {% comment %} Answer section {% endcomment %} {% include "forum/forum_answer.html " %}
+            {% comment %} Answer section {% endcomment %} {% include "forum/forum_answer.html" %}
         </div>
 
-        <!-- MIDDLE GAP -->
-        <div class="w-1 bg-gray-100 flex-shrink-0 mx-auto "></div>
+        <!-- DIVIDER: only visible on lg+ -->
+        <div class="hidden lg:block w-px bg-gray-200 flex-shrink-0"></div>
 
         <!-- RIGHT SIDEBAR -->
         {% include 'forum/right_sidebar.html' %}
     </div>
-
-
-
 </div>
-
-
-
-
-<script>
-    // CKEditor initialization logic
-    let editorInstance;
-
-    ClassicEditor
-        .create(document.querySelector('#editor'))
-        .then(editor => {
-            editorInstance = editor;
-        })
-        .catch(error => {
-            console.error(error);
-        });
-</script>

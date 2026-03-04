@@ -12,7 +12,8 @@ class Advertisement(models.Model):
         (6, 'After Marquee'),
         (7, 'Popular sidebar'),
         (8, 'Category Details page'),
-        (9, 'Under Top question (hero section)')
+        (9, 'Under Top question (hero section)'),
+        (10, 'Category page add(left side)')
 
     ]
     

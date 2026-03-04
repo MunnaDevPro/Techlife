@@ -39,7 +39,7 @@
     }
 </style>
 
-<section class="max-w-7xl mx-auto bg-white border-t border-gray-200 -mt-[45px]">
+<section class="max-w-7xl mx-auto bg-white border-t border-gray-200 -mt-[45px] overflow-x-hidden">
 
     <div class="category-header-bg bg-gray-800 p-4 md:p-3 md:px-8 shadow-lg mobile-spacing">
         <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight text-center md:text-left">
@@ -47,8 +47,8 @@
         </h1>
     </div>
 
-    <nav class="border-b-[1px] border-gray-200 md:px-6 mobile-spacing">
-        <ul class="flex flex-wrap justify-center md:justify-start gap-2 md:gap-0 md:overflow-x-auto md:whitespace-nowrap text-sm font-medium text-gray-700 py-3">
+    <nav class="border-b-[1px] border-gray-200 md:px-6 mobile-spacing overflow-x-auto scrollbar-hide">
+        <ul class="flex flex-nowrap justify-start gap-2 md:gap-0 overflow-x-auto whitespace-nowrap text-sm font-medium text-gray-700 py-3">
             {% for sub_cat in category.subcategories.all %}
             <li class="flex-shrink-0">
                 <a href="#{{ sub_cat.slug }}" class="inline-block px-4 py-2 md:py-3 border-b-2 md:border-b-4 border-transparent hover:border-blue-500 hover:text-blue-500 transition-all duration-200 mobile-touch-target whitespace-nowrap rounded-lg md:rounded-none hover:bg-blue-50 md:hover:bg-transparent">
@@ -60,16 +60,45 @@
     </nav>
 
     {% if blogs %}
-    <div class="p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-12 gap-4 md:gap-6 pb-5 mobile-spacing mobile-grid">
-        <div class="{% if blogs|length > 1 %}md:col-span-2 lg:col-span-6{% else %}md:col-span-3 lg:col-span-10{% endif %} space-y-4">
-            {% for blog in blogs|slice:":1" %}
-            <div class="w-full h-64 md:h-80 bg-gray-100 overflow-hidden mobile-image">
+    <div class="p-4 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 pb-5 mobile-spacing mobile-grid">
+
+        {% if blogs|length == 1 %} {% for blog in blogs|slice:":1" %}
+        <div class="col-span-1 md:col-span-12 flex flex-col md:flex-row gap-6 min-w-0">
+
+            <!-- Left: Image -->
+            <div class="w-full md:w-1/2 h-64 md:h-80 bg-gray-100 overflow-hidden rounded-md flex-shrink-0">
                 {% if blog.featured_image %}
-                <img src="{{ blog.featured_image_thumbnail.url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md " loading="lazy" decoding="async"> {% elif blog.featured_image_url %}
+                <img src="{{ blog.featured_image_thumbnail.url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md" loading="lazy" decoding="async"> {% elif blog.featured_image_url %}
                 <img src="{{ blog.featured_image_url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md" loading="lazy" decoding="async"> {% else %}
                 <img src="https://via.placeholder.com/640x360?text=Image+Not+Available" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md" loading="lazy" decoding="async"> {% endif %}
             </div>
 
+            <!-- Right: Title, Description, Ad -->
+            <div class="w-full md:w-1/2 flex flex-col gap-4 min-w-0">
+                <h2 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="cursor-pointer text-xl md:text-2xl font-bold line-clamp-2 leading-tight hover:text-blue-500 mobile-text">
+                    {{ blog.title }}
+                </h2>
+                <p class="text-gray-700 line-clamp-6">{{ blog.description|striptags }}</p>
+
+
+            </div>
+            {% if ad_10 %}
+            <div class="flex justify-center items-center mt-auto">
+                {{ ad_10.ad_code|safe }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %} {% else %}
+
+        <!-- Featured (hero) blog -->
+        <div class="col-span-1 md:col-span-7 lg:col-span-6 min-w-0 space-y-4">
+            {% for blog in blogs|slice:":1" %}
+            <div class="w-full h-64 md:h-80 bg-gray-100 overflow-hidden mobile-image">
+                {% if blog.featured_image %}
+                <img src="{{ blog.featured_image_thumbnail.url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md" loading="lazy" decoding="async"> {% elif blog.featured_image_url %}
+                <img src="{{ blog.featured_image_url }}" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md" loading="lazy" decoding="async"> {% else %}
+                <img src="https://via.placeholder.com/640x360?text=Image+Not+Available" alt="{{ blog.title|default:'Blog Post Image' }}" class="w-full h-full object-cover rounded-md" loading="lazy" decoding="async"> {% endif %}
+            </div>
             <div class="space-y-4">
                 <h2 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="cursor-pointer text-xl md:text-2xl font-bold line-clamp-2 md:line-clamp-1 leading-tight hover:text-blue-500 mobile-text">
                     {{ blog.title }}
@@ -79,8 +108,8 @@
             {% endfor %}
         </div>
 
-        {% if blogs|length > 1 %}
-        <div class="md:col-span-1 lg:col-span-4 space-y-4 md:space-y-3">
+        <!-- Sidebar list -->
+        <div class="col-span-1 md:col-span-5 lg:col-span-4 min-w-0 space-y-4 md:space-y-3">
             {% for blog in blogs|slice:"1:6" %}
             <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="block group mobile-touch-target">
                 <div class="flex items-center gap-3 md:gap-4 pb-4 border-b border-gray-200">
@@ -92,7 +121,7 @@
                         else %}
                         <img src="https://placehold.co/100x80/d1d5db/333?text=NEWS" alt="{{ blog.title|default:'Placeholder Image' }}" class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" loading="lazy" decoding="async">                        {% endif %}
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 min-w-0">
                         <p class="text-sm md:text-base font-semibold transition-colors duration-200 group-hover:text-blue-600 cursor-pointer line-clamp-2 mobile-text">
                             {{ blog.title }}
                         </p>
@@ -101,26 +130,29 @@
             </a>
             {% endfor %}
         </div>
-        {% endif %}
 
-        <div class="hidden lg:block lg:col-span-2 relative h-[450px] p-4 bg-gray-300 text-white rounded overflow-hidden">
-            <div class="absolute inset-0 bg-gray-100 bg-opacity-30"></div>
-            <div class="relative h-full flex items-center justify-center">
-                <span class="text-4xl font-extrabold tracking-widest text opacity-70"></span>
-            </div>
+        <!-- Ad section -->
+        {% if ad_10 %}
+        <div class="col-span-1 md:col-span-12 lg:col-span-2 flex justify-center items-center mx-auto px-4 sm:px-0">
+            {{ ad_10.ad_code|safe }}
         </div>
+        {% endif %} {% endif %}
+        <!-- ===== END LAYOUT CONDITION ===== -->
+
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 md:pl-4 group mobile-spacing">
+    <!-- Blogs slice 6–8 two-column section (only for multiple posts) -->
+    {% if blogs|length > 1 %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 md:px-6 group mobile-spacing">
         {% for blog in blogs|slice:"6:7" %}
-        <div class="flex items-start gap-4 md:space-x-4">
+        <div class="flex items-start gap-4 min-w-0">
             <div class="relative w-24 h-20 md:w-28 md:h-20 flex-shrink-0 bg-gray-900 rounded overflow-hidden">
                 {% if blog.featured_image %}
                 <img src="{{ blog.featured_image.url }}" alt="No image" class="w-full h-full object-cover opacity-70 transition-transform duration-500 ease-in-out group-hover:scale-105"> {% elif blog.featured_image_url %}
                 <img src="{{ blog.featured_image_url }}" alt="No image" class="w-full h-full object-cover opacity-70 transition-transform duration-500 ease-in-out group-hover:scale-105"> {% else %}
                 <img src="https://placehold.co/120x80/e5e7eb/333?text=Video" alt="No image" class="w-full h-full object-cover opacity-70 transition-transform duration-500 ease-in-out group-hover:scale-105"> {% endif %}
             </div>
-            <div class="flex-1">
+            <div class="flex-1 min-w-0">
                 <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="text-lg font-bold hover:text-blue-700 cursor-pointer line-clamp-2 md:line-clamp-1 mobile-text">
                     {{ blog.title }}
                 </h3>
@@ -128,15 +160,17 @@
             </div>
         </div>
         {% endfor %} {% for blog in blogs|slice:"7:8" %}
-        <div class="space-y-2 md:space-y-1">
+        <div class="min-w-0 space-y-2">
             <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="text-lg font-bold hover:text-blue-700 cursor-pointer line-clamp-2 md:line-clamp-1 mobile-text">
                 {{ blog.title }}
             </h3>
-            <p class="text-sm text-gray-600 line-clamp-2 md:line-clamp-2 mobile-text">{{ blog.description }}</p>
+            <p class="text-sm text-gray-600 line-clamp-2 mobile-text">{{ blog.description }}</p>
         </div>
         {% endfor %}
     </div>
+    {% endif %}
 
+    <!-- Subcategory sections -->
     {% for featured_sub_cat, sub_blogs in subcategory_blogs_map.items|slice:"4" %}
     <div id="{{ featured_sub_cat.slug }}" class="mt-8 mb-3 py-6 border-y border-gray-200 flex justify-center items-center relative mobile-spacing">
         <h2 class="text-xl md:text-2xl font-bold text-center px-4">{{ featured_sub_cat.name }}</h2>
@@ -147,16 +181,16 @@
         </span>
     </div>
 
-    <div class="p-4 md:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="p-4 md:p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {% for post in sub_blogs %}
         <a hx-get="{% url 'blog_details' post.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="p-3 flex flex-col h-full group bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
             <div class="aspect-video overflow-hidden flex-shrink-0 rounded-md">
                 {% if post.featured_image %}
-                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class=" rounded-md w-full h-full object-cover transition duration-500 " loading="lazy" decoding="async"> {% elif post.featured_image_url %}
-                <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class=" rounded-md w-full h-full object-cover transition duration-500 " loading="lazy" decoding="async"> {% else %}
-                <img src="https://placehold.co/400x250/d1d5db/333?text=NEWS" alt="Placeholder" class=" rounded-md w-full h-full object-cover" loading="lazy" decoding="async"> {% endif %}
+                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="rounded-md w-full h-full object-cover transition duration-500" loading="lazy" decoding="async"> {% elif post.featured_image_url %}
+                <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="rounded-md w-full h-full object-cover transition duration-500" loading="lazy" decoding="async"> {% else %}
+                <img src="https://placehold.co/400x250/d1d5db/333?text=NEWS" alt="Placeholder" class="rounded-md w-full h-full object-cover" loading="lazy" decoding="async"> {% endif %}
             </div>
-            <div class=" flex flex-col flex-grow space-y-2 mb-2">
+            <div class="flex flex-col flex-grow space-y-2 mb-2">
                 <h3 class="mt-2 cursor-pointer font-bold line-clamp-2 leading-tight transition-colors duration-200 group-hover:text-blue-700">
                     {{ post.title }}
                 </h3>
@@ -167,6 +201,7 @@
         </a>
         {% endfor %}
     </div>
+
     {% empty %}
     <div class="py-6 text-center border-y border-gray-200 mobile-spacing">
         <h2 class="text-xl md:text-2xl font-bold uppercase tracking-widest">{{ category.name }} Stories</h2>
@@ -183,17 +218,17 @@
         </p>
     </div>
     {% endif %}
+
 </section>
 
 <style>
-    @media (max-width: 768px) {
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
     }
 </style>
 

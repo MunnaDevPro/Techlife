@@ -16,7 +16,7 @@ def google_adds(request):
         'ad_7': get_ad(7), 
         'ad_8': get_ad(8), 
         'ad_9': get_ad(9), 
-
-
+        'ad_10': get_ad(10),
     }
+
     return (context)

@@ -31,6 +31,9 @@ from django.shortcuts import get_object_or_404
 from blog_post.models import Post_view_ip
 
 
+
+
+
 # Ip Tracking system for views section
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -331,40 +334,36 @@ def home(request):
 
     return render(request, "home.html", context)
 
-
-
 def redirect_search_results(request):
-
     query = request.GET.get('q', '').strip()
     
     if not query:
-        return redirect('homepage') 
+        return redirect('homepage')
 
+    # ১. Category exact match
     try:
         category_match = Category.objects.get(name__iexact=query)
         return redirect('category_post', slug=category_match.slug)
     except Category.DoesNotExist:
         pass
     
-    # Search SubCategory Match 
+    # ২. SubCategory exact match → subcategory এর নিজের page এ পাঠাও
     try:
-        subcategory_match = SubCategory.objects.select_related('category').get(name__iexact=query)
-        return redirect('category_post', slug=subcategory_match.category.slug)
+        subcategory_match = SubCategory.objects.get(name__iexact=query)
+        return redirect('category_post', slug=subcategory_match.slug)
     except SubCategory.DoesNotExist:
         pass
-        
 
-    blog_post_match = BlogPost.objects.select_related('category').filter(
-        Q(title__icontains=query) | Q(subtitle__icontains=query), 
+    # ৩. Blog post title match → সরাসরি post detail page এ পাঠাও
+    blog_post_match = BlogPost.objects.filter(
+        Q(title__icontains=query) | Q(subtitle__icontains=query),
         status="published"
     ).first()
 
-    if blog_post_match and blog_post_match.category:
-        return redirect('category_post', slug=blog_post_match.category.slug)
+    if blog_post_match:
+        return redirect('blog_details', slug=blog_post_match.slug)
             
     return redirect('homepage')
-
-
 
 def all_blog_post_view(request):
 

@@ -4,7 +4,7 @@
 
 <div class="max-w-7xl mx-auto hero_section -mt-[50px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4 lg:gap-6 w-full px-3 pt-5 lg:pt-4 mb-10">
     <!-- Left Section Carousel and Blogs and Add -->
-    <div class="w-full md:col-span-3 flex flex-col gap-y-4 lg:gap-y-6" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
+    <div class="w-full md:col-span-2 lg:col-span-2 xl:col-span-3 flex flex-col gap-y-4 lg:gap-y-6" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
         <!-- Enhanced Blog Carousel -->
         <div class="blog-carousel relative rounded-2xl shadow-sm overflow-hidden group mb-4" x-data="blogCarousel()">
             <div class="carousel-container relative h-48 sm:h-64 md:h-80 lg:h-96" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
@@ -57,7 +57,7 @@
                             </div>
 
                             <!-- See More Button -->
-                            <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="inline-flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg text-white text-sm font-medium transition-all duration-300 hover:scale-105 group/btn w-fit">
+                            <a hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg text-white text-sm font-medium transition-all duration-300 hover:scale-105 group/btn w-fit">
                                 <span>See More</span>
                                 <i class="fas fa-arrow-right text-xs group-hover/btn:translate-x-1 transition-transform duration-300"></i>
                             </a>
@@ -210,7 +210,7 @@
   </div>
 
   <!-- Right Section -->
-  <div class="w-full justify-start overflow-hidden md:col-span-1 flex flex-col gap-y-2 lg:gap-y-1"
+  <div class="w-full justify-start overflow-hidden md:col-span-2 lg:col-span-1 flex flex-col gap-y-2 lg:gap-y-1"
     data-aos="fade-up"
     data-aos-anchor-placement="top-bottom"
     data-aos-duration="500">
@@ -260,7 +260,7 @@
           >
             {{ user.first_name }} {{ user.last_name }}
           </h3>
-          <p class="text-xs text-gray-600 truncate">{{ user.email }}</p>
+          <p class="text-xs text-gray-600">{{ user.email|truncatechars:20 }}</p>
         </div>
       </li>
       <hr class="text-gray-200" />
@@ -327,17 +327,17 @@
         {% endfor %}
       </ul>
     </div> -->
-{% if ad_9 %}
-<div class="w-full flex justify-center items-center mt-5 mx-auto px-4 sm:px-0">
-    {{ ad_9.ad_code|safe }}
-</div>
-{% endif %}
+    {% if ad_9 %}
+    <div class="w-full flex justify-center items-center mt-5 mx-auto px-4 sm:px-0">
+        {{ ad_9.ad_code|safe }}
+    </div>
+    {% endif %}
     <!-- Tags Filter -->
     <div
-      class="tag-filter w-full rounded-2xl mt-3"
+      class="tag-filter w-full rounded-2xl mt-3 mb-4"
       data-aos="fade-up"
       data-aos-anchor-placement="top-bottom"
-    >
+        >
       <div
         class="p-1 mt-4"
         data-aos="fade-up"

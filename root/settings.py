@@ -11,10 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-#tblx)k33leost0v7$9m!9iel*ah86s=h5%qmp9knpwc-c+t7q"
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
-
 ALLOWED_HOSTS = ["*"]
-
 
 # Application definition
 
@@ -110,6 +109,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     
     "django_browser_reload.middleware.BrowserReloadMiddleware", 
+    "blog_post.middleware.Redirect404Middleware", 
 
     "django_htmx.middleware.HtmxMiddleware",
 ]
