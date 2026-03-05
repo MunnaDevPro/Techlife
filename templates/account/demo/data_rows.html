@@ -7,7 +7,48 @@
 </style>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-300 lg:col-span-1">
+    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-300 lg:col-span-1 relative overflow-hidden">
+
+        <h3 class="text-lg font-semibold mb-4 border-b border-gray-200 text-gray-800 pb-2">Earning History (Last 30 Days)</h3>
+
+        <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/60 backdrop-blur-[1px]">
+            <div class="bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg font-medium">
+                Coming Soon
+            </div>
+            <p class="text-xs text-gray-600 mt-2">This feature is under maintenance</p>
+        </div>
+
+        <div class="opacity-30 pointer-events-none select-none">
+            <div class="w-full flex justify-center items-center h-48">
+                <div id="earning-chart" class="relative w-36 h-36">
+                    <svg class="w-full h-full transform -rotate-90">
+                    <circle class="text-gray-200" stroke-width="8" stroke="currentColor" fill="transparent" r="66" cx="72" cy="72" />
+                </svg>
+                    <div class="absolute inset-0 flex items-center justify-center text-center text-xs text-gray-400">
+                        <span class="text-xl font-bold">$0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 space-y-3">
+                <div class="flex justify-between items-center text-sm border-t border-gray-100 pt-3 text-gray-400">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-money-check-alt"></i>
+                        <span>Payout Details</span>
+                    </div>
+                    <span class="font-bold">$0</span>
+                </div>
+                <div class="flex justify-between items-center text-sm border-t border-gray-100 pt-3 text-gray-400">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-heart"></i>
+                        <span>Bonus Details</span>
+                    </div>
+                    <span class="font-bold">$0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="bg-white p-6 rounded-xl shadow-md border border-gray-300 lg:col-span-1">
         <h3 class="text-lg font-semibold mb-4 border-b border-gray-200 text-gray-800 pb-2">Earning History (Last 30 Days)
         </h3>
 
@@ -34,24 +75,24 @@
                     <i class="fas fa-money-check-alt text-gray-400"></i>
                     <span>Payout for "News Article"</span>
                 </div>
-                <span class="font-bold text-gray-900">$120.00</span>
+                <span class="font-bold text-gray-900">$0</span>
             </div>
             <div class="flex justify-between items-center text-sm border-t border-gray-200 pt-3 text-gray-700">
                 <div class="flex items-center space-x-2">
                     <i class="fas fa-heart text-gray-400"></i>
                     <span>Bonus from 500 Likes</span>
                 </div>
-                <span class="font-bold text-gray-900">$10.50</span>
+                <span class="font-bold text-gray-900">$0</span>
             </div>
             <div class="flex justify-between items-center text-sm border-t border-gray-200 pt-3 text-gray-700">
                 <div class="flex items-center space-x-2">
                     <i class="fas fa-comments text-gray-400"></i>
                     <span>Forum Answer Bonus</span>
                 </div>
-                <span class="font-bold text-gray-900">$5.00</span>
+                <span class="font-bold text-gray-900">$0</span>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="bg-white p-6 rounded-xl shadow-md border border-gray-300 lg:col-span-2">
         <h3 class="text-lg font-semibold mb-4 border-b border-gray-200 text-gray-800 pb-2">Recent User Activities</h3>

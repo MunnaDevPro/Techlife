@@ -221,49 +221,36 @@
       data-aos="fade-up"
       data-aos-anchor-placement="top-bottom"
       
-    >
-      <i class="fa-solid fa-trophy"></i>
-      <span class="text-lg font-bold text-center text-gray-950"
-        >Top Questions</span
-      >
+          >
+          <i class="fa-solid fa-trophy"></i>
+          <span class="text-lg font-bold text-center text-gray-950"
+            >Top Questions</span
+          >
     </div>
     <hr class="text-gray-200 mb-1" />
 
-    <ul
-      class="space-y-1"
-      data-aos="fade-up"
-      data-aos-anchor-placement="top-bottom"
-      
-    >
-      {% for user in top_users|slice:"4" %}
-      <li
-        class="flex items-center justify-between rounded-xl px-1 hover: transition duration-300 hover:scale-102 group cursor-pointer"
-        data-aos="fade-up"
-        data-aos-anchor-placement="top-bottom"
-       
-      >
-        {% if not user.profile_picture %}
-        <div
-          class="size-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-800 font-semibold"
-        >
-          {{ user.first_name|slice:":1" }}
-        </div>
-        {% else %}
-        <img
-          src="{{ user.profile_picture.url }}"
-          class="w-10 h-10 rounded-full object-cover border border-blue-400" loading="lazy" decoding="async"
-        />
+      <ul class="space-y-1" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+      {% for user in top_users %}
+        {% if not user.is_superuser %}
+          <li class="flex items-center justify-between rounded-xl px-1 hover: transition duration-300 hover:scale-102 group cursor-pointer" data-aos="fade-up" data-aos-anchor-placement="top-bottom">
+            
+            {% if not user.profile_picture %}
+              <div class="size-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-800 font-semibold">
+                {{ user.first_name|slice:":1" }}
+              </div>
+            {% else %}
+              <img src="{{ user.profile_picture.url }}" class="w-10 h-10 rounded-full object-cover border border-blue-400" loading="lazy" decoding="async" />
+            {% endif %}
+
+            <div class="flex-1 px-2">
+              <h3 class="font-semibold text-gray-700 group-hover:text-blue-600 text-sm">
+                {{ user.first_name }} {{ user.last_name }}
+              </h3>
+              <p class="text-xs text-gray-600">{{ user.email|truncatechars:20 }}</p>
+            </div>
+          </li>
+          <hr class="text-gray-200" />
         {% endif %}
-        <div class="flex-1 px-2">
-          <h3
-            class="font-semibold text-gray-700 group-hover:text-blue-600 text-sm"
-          >
-            {{ user.first_name }} {{ user.last_name }}
-          </h3>
-          <p class="text-xs text-gray-600">{{ user.email|truncatechars:20 }}</p>
-        </div>
-      </li>
-      <hr class="text-gray-200" />
       {% endfor %}
     </ul>
     <!-- Top Authors -->
@@ -342,18 +329,14 @@
         <i class="fa-solid fa-tag"></i>
         <span class="text-lg font-bold mb-2 text-gray-950">Popular Tags</span>
         </div>
-        <hr class="text-gray-200 mb-2" /> {% comment %}
-        <h1 class="text-lg sm:text-xl font-bold mb-4 text-gray-800 flex items-center justify-center gap-2">
-            Popular Tags
-        </h1>
-        {% endcomment %}
+        <hr class="text-gray-200 mb-2" />
 
         <ul class="flex flex-wrap gap-1" data-aos="fade-up" data-aos-anchor-placement="top-bottom" data-aos-duration="500">
             {% for tag in top_tags %}
             <li>
                 <a href="{% url 'tag_posts' tag.slug %}">
                     <span class="text-[10px] badge badge-md border border-blue-200 bg-blue-50 text-blue-500 font-medium rounded-full hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 cursor-pointer px-3 py-1">
-            {{ tag.name|slice:'20' }}
+            {{ tag.name|slice:'10' }}
         </span>
                 </a>
             </li>

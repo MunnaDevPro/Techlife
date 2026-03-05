@@ -7,6 +7,9 @@ from .models import CustomUserModel
 
 @admin.register(CustomUserModel)
 class CustomUserAdmin(UserAdmin):
+
+    actions = ['delete_selected']
+
     list_display = (
         'user_photo',  
         'email', 
@@ -15,7 +18,7 @@ class CustomUserAdmin(UserAdmin):
         'is_verified', 
         'is_staff', 
     )
-    
+    list_display_links = ('email',)
     ordering = ('email',) 
 
     fieldsets = (
