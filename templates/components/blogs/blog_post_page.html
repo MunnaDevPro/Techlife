@@ -46,7 +46,15 @@
                         d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.73 0-5.45-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
                         clip-rule="evenodd" />
                 </svg>
-                {{ blog.author.last_name }}
+                        {% if blog.author.first_name and blog.author.last_name %}
+                                    {{ blog.author.last_name }}
+                                {% elif blog.author.first_name %}
+                                    {{ blog.author.first_name }}
+                                {% elif blog.author.last_name %}
+                                    {{ blog.author.last_name }}
+                                {% else %}
+                                    Anonymous
+                                {% endif %}
 
             </span> {% comment %}
             <!-- Stats -->

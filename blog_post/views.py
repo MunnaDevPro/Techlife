@@ -340,21 +340,18 @@ def redirect_search_results(request):
     if not query:
         return redirect('homepage')
 
-    # ১. Category exact match
     try:
         category_match = Category.objects.get(name__iexact=query)
         return redirect('category_post', slug=category_match.slug)
     except Category.DoesNotExist:
         pass
     
-    # ২. SubCategory exact match → subcategory এর নিজের page এ পাঠাও
     try:
         subcategory_match = SubCategory.objects.get(name__iexact=query)
         return redirect('category_post', slug=subcategory_match.slug)
     except SubCategory.DoesNotExist:
         pass
 
-    # ৩. Blog post title match → সরাসরি post detail page এ পাঠাও
     blog_post_match = BlogPost.objects.filter(
         Q(title__icontains=query) | Q(subtitle__icontains=query),
         status="published"
@@ -413,8 +410,7 @@ def popular_blog_post(request):
     popular_blogs_list = (
         BlogPost.objects.filter(
             status="published",
-            views__gte=10,
-            likes__gte=10
+            views__gte=1000,
         )
         .select_related("category", "author")
         .order_by( "-id") 

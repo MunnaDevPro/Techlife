@@ -105,7 +105,15 @@
                         <div data-aos="fade-up" data-aos-anchor-placement="top-bottom" class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                             <span>
                                 <i class="fa-solid fa-user pr-2"></i>
-                                {{ blog_detail.author.first_name }} {{ blog_detail.author.last_name }}
+                                {% if blog_detail.author.first_name and blog_detail.author.last_name %}
+                                    {{ blog_detail.author.last_name }}
+                                {% elif blog_detail.author.first_name %}
+                                    {{ blog_detail.author.first_name }}
+                                {% elif blog_detail.author.last_name %}
+                                    {{ blog_detail.author.last_name }}
+                                {% else %}
+                                    Anonymous
+                                {% endif %}
                             </span>
                             <span>
                                 <i class="fa-solid fa-eye pt-[5px]"></i>

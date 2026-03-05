@@ -156,7 +156,7 @@
                 <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="text-lg font-bold hover:text-blue-700 cursor-pointer line-clamp-2 md:line-clamp-1 mobile-text">
                     {{ blog.title }}
                 </h3>
-                <p class="text-sm text-gray-600 mt-1 line-clamp-2 mobile-text">{{ blog.description }}</p>
+                <p class="text-sm text-gray-600 mt-1 line-clamp-2 mobile-text">{{ blog.description|striptags }}</p>
             </div>
         </div>
         {% endfor %} {% for blog in blogs|slice:"7:8" %}
@@ -164,7 +164,7 @@
             <h3 hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="text-lg font-bold hover:text-blue-700 cursor-pointer line-clamp-2 md:line-clamp-1 mobile-text">
                 {{ blog.title }}
             </h3>
-            <p class="text-sm text-gray-600 line-clamp-2 mobile-text">{{ blog.description }}</p>
+            <p class="text-sm text-gray-600 line-clamp-2 mobile-text">{{ blog.description|striptags }}</p>
         </div>
         {% endfor %}
     </div>
@@ -195,7 +195,7 @@
                     {{ post.title }}
                 </h3>
                 <p class="text-sm text-gray-600 text-justify line-clamp-3 flex-grow">
-                    {{ post.description|default:""|striptags|truncatewords:20 }}
+                    {{ post.description|striptags|truncatewords:20 }}
                 </p>
             </div>
         </a>
