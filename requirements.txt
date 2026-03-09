@@ -82,3 +82,4 @@ whitenoise==6.8.2
 willow==1.11.0
 django-import-export==4.3.8
 django-imagekit==5.0.0
+gunicorn==25.1.0
