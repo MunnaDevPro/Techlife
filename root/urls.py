@@ -8,7 +8,7 @@ urlpatterns = [
     path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'image/company_logo.ico')),
 
     path("admin/", admin.site.urls),
-    # path("__reload__/", include("django_browser_reload.urls")),  # Temporarily commented - install django-browser-reload
+    path("__reload__/", include("django_browser_reload.urls")), 
     path("", include("blog_post.urls")),
     path("account/", include("accounts.urls")),
     path("contact/", include("contact.urls")),
