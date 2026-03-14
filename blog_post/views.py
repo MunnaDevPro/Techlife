@@ -7,7 +7,7 @@ from .models import BlogPost, BlogAdditionalImage, Category, Tag
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
+from site_settings.models import SiteSettings
 from django.db import IntegrityError 
 from .models import BlogPost, Like 
 
@@ -551,17 +551,17 @@ def create_blog(request):
         featured_image_url  = request.POST.get('featured_image_url', '').strip()
         tags_list_input     = request.POST.get('tags_list', '')
 
-        # ── 1. Basic validation ───────────────────────────────────────────
+        #  Basic validation 
         if not (title and description and category_id):
             messages.error(request, "Please fill in all required fields.")
             return render(request, "components/blogs/partial_create_blog_content.html", context)
 
-        # ── 2. Title duplicate check ──────────────────────────────────────
+        # Title duplicate check
         if BlogPost.objects.filter(title__iexact=title).exists():
             messages.error(request, "This title already exists in our database.")
             return render(request, "components/blogs/partial_create_blog_content.html", context)
 
-        # ── 3. Description duplicate check (HTML stripped + hash) ─────────
+        # Description duplicate check (HTML stripped + hash)
         clean_description = _strip_html(description)
         description_hash  = hashlib.md5(clean_description.encode("utf-8")).hexdigest()
 
@@ -569,7 +569,7 @@ def create_blog(request):
             messages.error(request, "This content already exists in our database.")
             return render(request, "components/blogs/partial_create_blog_content.html", context)
 
-        # ── 4. Combined content hash check ───────────────────────────────
+        # Combined content hash check
         content_hash = hashlib.md5(
             (title + clean_description).encode("utf-8")
         ).hexdigest()
@@ -578,7 +578,7 @@ def create_blog(request):
             messages.error(request, "Your title and content combination already exists.")
             return render(request, "components/blogs/partial_create_blog_content.html", context)
 
-        # ── 5. Image duplicate check ──────────────────────────────────────
+        # Image duplicate check 
         image_hash = None
         if featured_image_file:
             try:
@@ -594,27 +594,35 @@ def create_blog(request):
             except Exception as e:
                 logger.error(f"Image hash error in view: {e}")
 
-        # ── 6. Adult content check (Groq) ─────────────────────────────────
+        # Adult content check (Groq) 
         is_adult = check_adult_content(title, description)
         if is_adult:
             messages.error(request, "Your post violates our content policy (adult or harmful content detected).")
             return render(request, "components/blogs/partial_create_blog_content.html", context)
 
-        # ── 7. Copyright / plagiarism check (Groq) ────────────────────────
+        # Copyright 
         is_copied = check_copyright(title, description)
         if is_copied:
             messages.error(request, "This content appears to be copied from another source (copyright issue).")
             return render(request, "components/blogs/partial_create_blog_content.html", context)
 
-        # ── 8. Quality score (Groq) ───────────────────────────────────────
+        # qality score (Groq)
         quality_score = get_quality_score(title, description)
 
-        if quality_score >= 70:
+        settings = SiteSettings.get_settings()
+        try:
+            threshold_score = int(settings.score_control) if settings.score_control else 70
+        except ValueError:
+            threshold_score = 70
+
+
+
+        if quality_score >= threshold_score:
             post_status = "published"
         else:
             post_status = "pending"
 
-        # ── 9. Save the post ──────────────────────────────────────────────
+        #  Save the post 
         try:
             category    = get_object_or_404(Category, pk=category_id)
             subcategory = None
@@ -640,7 +648,6 @@ def create_blog(request):
                 tag_objects = [Tag.objects.get_or_create(name=name)[0] for name in tag_names]
                 new_blog.tags.set(tag_objects)
 
-            # ── 10. User-facing message ───────────────────────────────────
             if post_status == "published":
                 messages.success(request, "Your blog post has been published successfully!")
             else:

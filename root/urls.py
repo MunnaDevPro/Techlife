@@ -3,8 +3,10 @@ from django.urls import path, include
 from .views import *
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.views.generic.base import RedirectView 
 urlpatterns = [
+    path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'image/company_logo.ico')),
+
     path("admin/", admin.site.urls),
     # path("__reload__/", include("django_browser_reload.urls")),  # Temporarily commented - install django-browser-reload
     path("", include("blog_post.urls")),

@@ -8,6 +8,9 @@ class SiteSettingsAdmin(ModelAdmin):
         ("SEO Settings", {
             "fields": ("site_title", "meta_description"),
         }),
+        ("Content Score control", {
+            "fields": ("score_control",),
+        }),
         ("Analytics", {
             "fields": ("google_analytics_id",),
         }),
