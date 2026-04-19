@@ -26,7 +26,12 @@ def ads_txt(request):
 
 def cached_media_serve(request, path):
     """Serve media files with 1-year cache headers."""
-    response = serve(request, path, document_root=settings.MEDIA_ROOT)
+    import os
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if not os.path.exists(file_path):
+        from django.http import Http404
+        raise Http404("Media file not found")
+    response = FileResponse(open(file_path, 'rb'))
     response['Cache-Control'] = 'public, max-age=31536000, immutable'
     return response
 
