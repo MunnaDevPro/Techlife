@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from django.db.models import Count
+from django.db.models import Count, F
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
@@ -32,6 +32,7 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from blog_post.models import Post_view_ip
+from zlib import crc32
 
 
 # IP Tracking
@@ -66,6 +67,13 @@ def published_posts_queryset():
         .only(*BLOG_LIST_ONLY_FIELDS)
         .filter(status="published")
     )
+
+
+def get_display_views(post):
+    # Stable pseudo-random baseline in [2000, 5000] so the displayed value
+    # remains smooth across refreshes while real views still grow naturally.
+    baseline = 2000 + (crc32(post.slug.encode("utf-8")) % 3001)
+    return post.views + baseline
 
 
 def blog_details_view(request, slug):
@@ -141,6 +149,7 @@ def blog_details_view(request, slug):
     context = {
         "blog_detail":    blog_detail,
         "post":           blog_detail,
+        "display_views":  get_display_views(blog_detail),
         "related_news":   related_news,
         "word_count":     word_count,
         "most_viewed_blogs": most_viewed_blogs,
@@ -528,7 +537,6 @@ def category_post(request, slug):
         sub_blogs = (
             published_posts
             .filter(subcategory=subcategory)
-            .select_related("subcategory")
             .prefetch_related("shares")
         )
         if sub_blogs.exists():
@@ -536,12 +544,20 @@ def category_post(request, slug):
 
     sidebar_blogs  = published_posts.order_by("-created_at")[:10]
     popular_blogs  = published_posts.order_by("-views", "-likes")[:5]
+    most_viewed = BlogPost.objects.filter(
+        status="published"
+    ).exclude(
+        featured_image=''
+    ).order_by('-views').only(
+        'title', 'slug', 'featured_image', 'featured_image_url', 'views'
+    )[:8]
 
     context = {
         "category":             category,
         "blogs":                blogs,
         "sidebar_blogs":        sidebar_blogs,
         "popular_blogs":        popular_blogs,
+        "most_viewed_blogs":    most_viewed,
         "subcategory_blogs_map": subcategory_blogs_map,
         "action":               "category_post",
     }

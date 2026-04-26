@@ -10,8 +10,10 @@
     .cat-hero { height: 250px; }
     @media (min-width: 768px) { .cat-hero { height: 420px; } }
     .cat-grid-img { height: 180px; }
-    .cat-list-thumb { width: 96px; height: 64px; }
+    .cat-list-thumb { width: 96px; height: 64px; flex-shrink: 0; }
     .cat-pop-thumb { width: 60px; height: 50px; }
+    .blog-list-item { display: flex; }
+    .blog-list-item.hidden-item { display: none; }
 </style>
 
 <section class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-5 pb-10">
@@ -26,12 +28,10 @@
     {% if blogs %}
     <div class="grid grid-cols-1 lg:grid-cols-10 gap-5">
 
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <!-- LEFT: MAIN CONTENT (70%)                                       -->
-        <!-- ════════════════════════════════════════════════════════════ -->
+        <!-- LEFT: MAIN CONTENT (70%) -->
         <div class="lg:col-span-7 flex flex-col gap-5 min-w-0">
 
-            <!-- ── SECTION 1 — Hero Featured Post ─────────────────────── -->
+            <!-- SECTION 1 — Hero Featured Post -->
             {% with featured_post=blogs|first %}
             <a href="{% url 'blog_details' featured_post.slug %}"
                hx-get="{% url 'blog_details' featured_post.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
@@ -40,13 +40,7 @@
                 <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-[1.03]"
                      style="background-image: url('{% if featured_post.featured_image %}{{ featured_post.featured_image.url }}{% elif featured_post.featured_image_url %}{{ featured_post.featured_image_url }}{% else %}{% static 'image/placeholder-5.png' %}{% endif %}');">
                 </div>
-
-                <!-- Gradient overlay (water-drop style: dark at bottom) -->
-                <div class="absolute inset-0"
-                     style="background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%);">
-                </div>
-
-                <!-- Overlaid text -->
+                <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%);"></div>
                 <div class="absolute bottom-0 left-0 right-0 p-5 sm:p-6 text-white">
                     <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#1e3a6e] mb-3">{{ category.name }}</span>
                     <h1 class="text-lg sm:text-2xl lg:text-3xl font-extrabold leading-tight mb-3 line-clamp-3 group-hover:text-[#dbeafe] transition-colors">{{ featured_post.title }}</h1>
@@ -64,7 +58,7 @@
             </a>
             {% endwith %}
 
-            <!-- ── SECTION 2 — 3-col grid (next 3 posts) ───────────────── -->
+            <!-- SECTION 2 — 3-col grid (next 3 posts) -->
             {% with grid_posts=blogs|slice:"1:4" %}
             {% if grid_posts %}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -97,21 +91,26 @@
             <!-- Ad slot -->
             {% if ad_10 %}<div class="flex justify-center my-1">{{ ad_10.ad_code|safe }}</div>{% endif %}
 
-            <!-- ── SECTION 3 — All Articles list (remaining posts) ────── -->
+            <!-- SECTION 3 — All Articles list (remaining posts) with See More/Less -->
             {% with list_posts=blogs|slice:"4:" %}
             {% if list_posts %}
             <div class="tl-card rounded-xl overflow-hidden">
                 <div class="flex items-center gap-2 px-4 py-3 bg-[#1e3a6e]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
                     <span class="text-[13px] font-bold text-white">All Articles</span>
+                    <span class="ml-auto text-[10px] font-semibold bg-white/20 text-white px-2 py-0.5 rounded-full">{{ list_posts|length }} posts</span>
                 </div>
-                <div class="divide-y divide-gray-100">
+
+                <!-- Article List -->
+                <div id="article-list-{{ category.slug }}" class="divide-y divide-gray-100">
                     {% for blog in list_posts %}
                     <a href="{% url 'blog_details' blog.slug %}"
                        hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-                       class="flex items-start gap-3 p-3 sm:p-4 hover:bg-gray-50 transition-colors group cursor-pointer">
+                       data-index="{{ forloop.counter0 }}"
+                       class="blog-list-item {% if forloop.counter > 5 %}hidden-item{% endif %} items-center gap-3 p-3 sm:p-4 hover:bg-gray-50 transition-colors group cursor-pointer">
 
-                        <div class="cat-list-thumb shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                        <!-- Thumbnail — middle aligned via items-center on parent -->
+                        <div class="cat-list-thumb overflow-hidden rounded-lg bg-gray-100">
                             {% if blog.featured_image %}
                             <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]" width="96" height="64" loading="lazy" decoding="async">
                             {% elif blog.featured_image_url %}
@@ -121,6 +120,7 @@
                             {% endif %}
                         </div>
 
+                        <!-- Content — middle aligned -->
                         <div class="flex-1 min-w-0">
                             <span class="inline-block text-[9px] font-bold text-[#1e3a6e] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full mb-1.5">{{ category.name }}</span>
                             <h3 class="font-bold text-[13px] text-gray-800 line-clamp-2 group-hover:text-[#1e3a6e] transition-colors leading-snug mb-1">{{ blog.title }}</h3>
@@ -136,11 +136,30 @@
                     </a>
                     {% endfor %}
                 </div>
+
+                <!-- See More / See Less Buttons -->
+                {% if list_posts|length > 5 %}
+                <div class="px-4 py-3 border-t border-gray-100 flex items-center justify-center gap-3">
+                    <button id="see-more-btn-{{ category.slug }}"
+                        onclick="expandList('{{ category.slug }}')"
+                        class="inline-flex items-center gap-2 px-5 py-2 bg-[#1e3a6e] text-white text-[12px] font-semibold rounded-lg hover:bg-[#152d56] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        See More
+                    </button>
+                    <button id="see-less-btn-{{ category.slug }}"
+                        onclick="collapseList('{{ category.slug }}')"
+                        style="display:none;"
+                        class="inline-flex items-center gap-2 px-5 py-2 border border-[#1e3a6e] text-[#1e3a6e] text-[12px] font-semibold rounded-lg hover:bg-[#dbeafe]/40 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                        See Less
+                    </button>
+                </div>
+                {% endif %}
             </div>
             {% endif %}
             {% endwith %}
 
-            <!-- ── Subcategory Sections (preserved from original) ─────── -->
+            <!-- Subcategory Sections -->
             {% for featured_sub_cat, sub_blogs in subcategory_blogs_map.items|slice:"4" %}
             <div id="{{ featured_sub_cat.slug }}" class="mt-2">
                 <div class="flex items-center justify-between mb-3">
@@ -152,7 +171,6 @@
                         {% endif %}
                     </div>
                 </div>
-
                 <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
                     {% for post in sub_blogs %}
                     <a href="{% url 'blog_details' post.slug %}"
@@ -179,12 +197,10 @@
 
         </div>
 
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <!-- RIGHT: SIDEBAR (30%)                                          -->
-        <!-- ════════════════════════════════════════════════════════════ -->
+        <!-- RIGHT: SIDEBAR (30%) -->
         <aside class="lg:col-span-3 flex flex-col gap-5">
 
-            <!-- ── 1. About This Category ─────────────────────────────── -->
+            <!-- 1. About This Category -->
             <div class="tl-card rounded-xl overflow-hidden">
                 <div class="flex items-center gap-2 px-4 py-3 bg-[#1e3a6e]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
@@ -210,7 +226,48 @@
                 </div>
             </div>
 
-            <!-- ── 2. Popular Articles in this category ───────────────── -->
+            <!-- 2. Most Viewed -->
+            {% if most_viewed_blogs %}
+            <div class="tl-card rounded-xl overflow-hidden">
+                <div class="flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-[#1e3a6e]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <h2 class="text-[12px] font-bold text-white">Most Viewed</h2>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5 p-3">
+                    {% for news in most_viewed_blogs|slice:":8" %}
+                    <div hx-get="{% url 'blog_details' news.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true"
+                         class="group cursor-pointer">
+                        <a href="{% url 'blog_details' news.slug %}" class="block">
+                            <div class="overflow-hidden rounded-lg mb-1.5" style="aspect-ratio: 16/9;">
+                                {% if news.featured_image %}
+                                <img class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.06]"
+                                     src="{{ news.featured_image.url }}"
+                                     alt="{{ news.title }}" width="300" height="169" loading="lazy" decoding="async" />
+                                {% elif news.featured_image_url %}
+                                <img class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.06]"
+                                     src="{{ news.featured_image_url }}"
+                                     alt="{{ news.title }}" width="300" height="169" loading="lazy" decoding="async" />
+                                {% else %}
+                                <img class="w-full h-full object-cover"
+                                     src="{% static 'image/placeholder-5.png' %}"
+                                     alt="{{ news.title }}" width="300" height="169" loading="lazy" decoding="async" />
+                                {% endif %}
+                            </div>
+                            <h3 class="text-[11px] font-semibold text-gray-800 line-clamp-2 group-hover:text-[#1e3a6e] transition-colors leading-snug">{{ news.title }}</h3>
+                            <div class="flex items-center gap-1.5 mt-0.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <span class="text-[9px] text-gray-400">{{ news.views }}</span>
+                            </div>
+                        </a>
+                    </div>
+                    {% empty %}
+                    <div class="col-span-2 text-center py-6 text-[12px] text-gray-400">No posts found.</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- 3. Popular Articles in this category -->
             {% with cat_popular=blogs|dictsortreversed:"views"|slice:":5" %}
             {% if cat_popular %}
             <div class="tl-card rounded-xl overflow-hidden">
@@ -248,7 +305,7 @@
             {% endif %}
             {% endwith %}
 
-            <!-- ── 3. Related Categories ──────────────────────────────── -->
+            <!-- 4. Related Categories -->
             {% if popular_categories %}
             <div class="tl-card rounded-xl overflow-hidden">
                 <div class="flex items-center gap-2 px-4 py-3 bg-[#1e3a6e]">
@@ -284,7 +341,7 @@
     </div>
 
     {% else %}
-    <!-- ══ Empty State ══════════════════════════════════════════════ -->
+    <!-- Empty State -->
     <div class="py-20 px-4 flex flex-col items-center justify-center text-center">
         <div class="w-16 h-16 bg-[#1e3a6e]/10 rounded-full flex items-center justify-center mx-auto mb-5">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
@@ -301,3 +358,78 @@
     {% endif %}
 
 </section>
+
+<script>
+(function() {
+    var STEP = 5;
+
+    // Track how many items are currently visible per category
+    var visibleCounts = {};
+
+    function getItems(slug) {
+        return document.querySelectorAll('#article-list-' + slug + ' .blog-list-item');
+    }
+
+    window.expandList = function(slug) {
+        var items = getItems(slug);
+        if (!visibleCounts[slug]) visibleCounts[slug] = 5;
+
+        var current = visibleCounts[slug];
+        var next = current + STEP;
+        var total = items.length;
+
+        for (var i = current; i < next && i < total; i++) {
+            items[i].style.display = 'flex';
+        }
+
+        visibleCounts[slug] = Math.min(next, total);
+
+        var moreBtn = document.getElementById('see-more-btn-' + slug);
+        var lessBtn = document.getElementById('see-less-btn-' + slug);
+
+        if (visibleCounts[slug] >= total) {
+            if (moreBtn) moreBtn.style.display = 'none';
+            if (lessBtn) lessBtn.style.display = 'inline-flex';
+        } else {
+            if (moreBtn) moreBtn.style.display = 'inline-flex';
+            if (lessBtn) lessBtn.style.display = 'none';
+        }
+    };
+
+    window.collapseList = function(slug) {
+        var items = getItems(slug);
+        visibleCounts[slug] = 5;
+
+        items.forEach(function(item, i) {
+            item.style.display = i < 5 ? 'flex' : 'none';
+        });
+
+        var moreBtn = document.getElementById('see-more-btn-' + slug);
+        var lessBtn = document.getElementById('see-less-btn-' + slug);
+
+        if (moreBtn) moreBtn.style.display = 'inline-flex';
+        if (lessBtn) lessBtn.style.display = 'none';
+
+        // Smooth scroll back to top of list
+        var list = document.getElementById('article-list-' + slug);
+        if (list) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    // Init: hide items beyond first 5 (CSS handles it but JS double-ensures)
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('[id^="article-list-"]').forEach(function(listEl) {
+            var slug = listEl.id.replace('article-list-', '');
+            var items = listEl.querySelectorAll('.blog-list-item');
+            visibleCounts[slug] = 0;
+            items.forEach(function(item, i) {
+                if (i < 5) {
+                    item.style.display = 'flex';
+                    visibleCounts[slug] = i + 1;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+})();
+</script>
