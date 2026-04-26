@@ -289,8 +289,7 @@ def home(request):
     ).order_by("-views", "-likes", "-created_at")
 
     logos    = compnay_logo.objects.all()
-    all_tags = Tag.objects.annotate(num_posts=Count('blog_posts')).order_by('-num_posts')
-    top_tags = all_tags[:15]
+    top_tags = Tag.objects.annotate(num_posts=Count('blog_posts')).order_by('-num_posts')
 
     context = {
         "first_category":   first_category,
@@ -659,21 +658,22 @@ def record_share(request, post_slug):
 
 
 def tag_posts(request, tag_slug):
-    tag   = get_object_or_404(Tag, slug=tag_slug)
+    tag = get_object_or_404(Tag, slug=tag_slug)
     blogs = published_posts_queryset().filter(tags=tag).order_by("-created_at")
-
-    paginator = Paginator(blogs, 8)
-    page      = request.GET.get('page')
-
-    try:
-        blogs = paginator.page(page)
-    except PageNotAnInteger:
-        blogs = paginator.page(1)
-    except EmptyPage:
-        blogs = paginator.page(paginator.num_pages)
+    total_blogs = blogs.count()
 
     context = {
-        'tag':   tag,
+        'tag': tag,
         'blogs': blogs,
+        'total_blogs': total_blogs,
     }
     return render(request, 'components/blogs/tag_realted_post.html', context)
+
+
+def popular_tags_modal(request):
+    all_tags = Tag.objects.annotate(num_posts=Count('blog_posts')).order_by('-num_posts')
+    return render(
+        request,
+        'components/home/partials/popular_tags_modal_content.html',
+        {'all_tags': all_tags},
+    )

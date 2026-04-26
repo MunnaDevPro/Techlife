@@ -1,0 +1,14 @@
+<ul class="flex flex-wrap gap-1.5">
+    {% for tag in all_tags %}
+    <li>
+        <a href="{% url 'tag_posts' tag.slug %}" class="inline-block text-[10px] font-medium px-2 py-1 rounded-full border border-[#1e3a6e]/30 text-[#1e3a6e] bg-[#dbeafe]/40 hover:bg-[#1e3a6e] hover:text-white hover:border-[#1e3a6e] transition-all duration-200 leading-none">
+            {{ tag.name }}
+            {% if tag.num_posts %}
+            <span class="ml-1 text-[9px] opacity-70">({{ tag.num_posts }})</span>
+            {% endif %}
+        </a>
+    </li>
+    {% empty %}
+    <li class="text-xs text-gray-500">No tags found.</li>
+    {% endfor %}
+</ul>

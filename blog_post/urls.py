@@ -17,7 +17,8 @@ from .views import (
     user_like_toggle,
     redirect_search_results,
     record_share,
-    tag_posts
+    tag_posts,
+    popular_tags_modal,
 )
 
 from interactions.views import share_post
@@ -59,6 +60,7 @@ urlpatterns = [
     path('search/', redirect_search_results, name='redirect_search_results'),
 
     path('tag/<slug:tag_slug>/', tag_posts, name='tag_posts'),
+    path('popular-tags/modal/', popular_tags_modal, name='popular_tags_modal'),
 
     
  
