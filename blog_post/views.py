@@ -76,6 +76,18 @@ def get_display_views(post):
     return post.views + baseline
 
 
+def get_display_link_count(post):
+    # Stable pseudo-random baseline in [1000, 4000] + real likes.
+    baseline = 1000 + (crc32(f"{post.slug}-link".encode("utf-8")) % 3001)
+    return baseline + post.likes.count()
+
+
+def get_display_like_count(post):
+    # Stable pseudo-random baseline in [1000, 4000] + real likes.
+    baseline = 1000 + (crc32(f"{post.slug}-like".encode("utf-8")) % 3001)
+    return baseline + post.likes.count()
+
+
 def blog_details_view(request, slug):
     blog_detail = (
         BlogPost.objects.select_related("category", "author")
@@ -150,6 +162,8 @@ def blog_details_view(request, slug):
         "blog_detail":    blog_detail,
         "post":           blog_detail,
         "display_views":  get_display_views(blog_detail),
+        "display_link_count": get_display_link_count(blog_detail),
+        "display_like_count": get_display_like_count(blog_detail),
         "related_news":   related_news,
         "word_count":     word_count,
         "most_viewed_blogs": most_viewed_blogs,

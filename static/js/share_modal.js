@@ -5,6 +5,7 @@ function initShareModule() {
     const closeModal = document.getElementById('closeModal');
     const shareLinkInput = document.getElementById('shareLink');
     const copyLinkBtn = document.getElementById('copyLinkBtn');
+    const quickCopyLinkBtn = document.getElementById('quickCopyLinkBtn');
     const successToast = document.getElementById('successToast');
     const shareOptions = document.querySelectorAll('.share-option');
     const dataContainer = document.getElementById('share-data-container');
@@ -17,9 +18,64 @@ function initShareModule() {
     const shareUrl = dataContainer.dataset.shareUrl;
     const csrfToken = dataContainer.dataset.csrfToken;
     const postTitle = dataContainer.dataset.postTitle || document.title;
-    const currentUrl = window.location.href;
+    const getCurrentUrl = () => window.location.href;
 
-    if (shareLinkInput) shareLinkInput.value = currentUrl;
+    if (shareLinkInput) shareLinkInput.value = getCurrentUrl();
+
+    const copyTextFallback = (text) => {
+        const tempInput = document.createElement('textarea');
+        tempInput.value = text;
+        tempInput.setAttribute('readonly', '');
+        tempInput.style.position = 'fixed';
+        tempInput.style.top = '-9999px';
+        tempInput.style.left = '-9999px';
+        document.body.appendChild(tempInput);
+        tempInput.focus();
+        tempInput.select();
+        const copied = document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        return copied;
+    };
+
+    const copyCurrentUrlToClipboard = async () => {
+        const urlToCopy = getCurrentUrl();
+        if (shareLinkInput) shareLinkInput.value = urlToCopy;
+
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(urlToCopy);
+            return true;
+        }
+
+        return copyTextFallback(urlToCopy);
+    };
+
+    const setCopyFeedback = (btn, text, cssClass) => {
+        if (!btn) return;
+
+        const labelNode = btn.querySelector('[data-copy-label]');
+        const hasLabelNode = Boolean(labelNode);
+        const originalText = hasLabelNode ? labelNode.textContent : btn.textContent;
+
+        if (hasLabelNode) {
+            labelNode.textContent = text;
+        } else {
+            btn.textContent = text;
+        }
+        btn.classList.add(cssClass);
+
+        setTimeout(() => {
+            if (hasLabelNode) {
+                labelNode.textContent = originalText;
+            } else {
+                btn.textContent = originalText;
+            }
+            btn.classList.remove(cssClass);
+        }, 1800);
+    };
+
+    const flashCopyButtonState = (btn) => {
+        setCopyFeedback(btn, 'Copied!', 'text-green-600');
+    };
 
     // Open modal
     shareBtn.onclick = (e) => {
@@ -41,27 +97,46 @@ function initShareModule() {
     };
 
     // Copy link logic
+    const handleCopyClick = async (btn) => {
+        try {
+            const copied = await copyCurrentUrlToClipboard();
+            if (!copied) throw new Error('Copy command was unsuccessful');
+
+            flashCopyButtonState(btn);
+            if (btn !== copyLinkBtn && copyLinkBtn) {
+                flashCopyButtonState(copyLinkBtn);
+            }
+
+            if (btn !== quickCopyLinkBtn && quickCopyLinkBtn) {
+                flashCopyButtonState(quickCopyLinkBtn);
+            }
+
+            if (successToast) {
+                successToast.classList.remove('hidden');
+                setTimeout(() => successToast.classList.add('hidden'), 3000);
+            }
+        } catch (err) {
+            console.error('Failed to copy:', err);
+            if (btn) {
+                setCopyFeedback(btn, 'Copy failed', 'text-red-600');
+            }
+        }
+    };
+
     if (copyLinkBtn) {
-        copyLinkBtn.onclick = async() => {
+        copyLinkBtn.onclick = async () => {
             try {
-                await navigator.clipboard.writeText(currentUrl);
-                copyLinkBtn.textContent = 'Copied!';
-                copyLinkBtn.classList.add('bg-green-600');
-                copyLinkBtn.classList.remove('bg-blue-600');
-
-                if (successToast) {
-                    successToast.classList.remove('hidden');
-                    setTimeout(() => successToast.classList.add('hidden'), 3000);
-                }
-
-                setTimeout(() => {
-                    copyLinkBtn.textContent = 'Copy';
-                    copyLinkBtn.classList.remove('bg-green-600');
-                    copyLinkBtn.classList.add('bg-blue-600');
-                }, 2000);
+                await handleCopyClick(copyLinkBtn);
             } catch (err) {
                 console.error('Failed to copy:', err);
             }
+        };
+    }
+
+    if (quickCopyLinkBtn) {
+        quickCopyLinkBtn.onclick = async (e) => {
+            e.preventDefault();
+            await handleCopyClick(quickCopyLinkBtn);
         };
     }
 
@@ -95,7 +170,7 @@ function initShareModule() {
             }
 
             // 2. Open Social Media Dialog
-            const encodedUrl = encodeURIComponent(currentUrl);
+            const encodedUrl = encodeURIComponent(getCurrentUrl());
             const encodedTitle = encodeURIComponent(postTitle);
             let shareLink = '';
 

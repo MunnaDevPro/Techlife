@@ -34,5 +34,5 @@
     {% endif %}
 </span>
 {% if include_oob %}
-<span id="like-count" hx-swap-oob="true">{{ blog_detail.likes.count|humanize_number }}</span>
+<span id="like-count" hx-swap-oob="true">{{ display_like_count|default:blog_detail.likes.count|humanize_number }}</span>
 {% endif %}
