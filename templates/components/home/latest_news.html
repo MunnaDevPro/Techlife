@@ -36,6 +36,10 @@
                         {{ latest_post.title }}
                     </h3>
                     <p class="text-[11px] text-gray-500 line-clamp-4 leading-relaxed">{{ latest_post.description|striptags }}</p>
+                    <a href="{% url 'blog_details' latest_post.slug %}" hx-get="{% url 'blog_details' latest_post.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+                        class="inline-flex items-center mt-2 text-[11px] font-semibold text-[#1e3a6e] hover:text-[#152d56] transition-colors duration-150">
+                        Read more ->
+                    </a>
                 </div>
             </div>
             {% endfor %}
@@ -67,7 +71,7 @@
                 <span class="text-[12px] font-bold text-white">Popular Now</span>
             </div>
             <ul class="divide-y divide-gray-100">
-                {% for popular_posts in popular_posts_flat_list|slice:"4" %}
+                {% for popular_posts in popular_posts_flat_list|slice:"6" %}
                 <li>
                     <div hx-get="{% url 'blog_details' popular_posts.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
                         class="flex gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors cursor-pointer group">

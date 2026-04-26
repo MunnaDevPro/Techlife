@@ -3332,6 +3332,13 @@
       }
     }
   }
+  .hover\:text-\[\#152d56\] {
+    &:hover {
+      @media (hover: hover) {
+        color: #152d56;
+      }
+    }
+  }
   .hover\:text-blue-500 {
     &:hover {
       @media (hover: hover) {

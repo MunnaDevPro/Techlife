@@ -133,7 +133,7 @@
                 <span class="text-[13px] font-bold text-gray-800">Recent Posts</span>
             </div>
             <ul class="divide-y divide-gray-100">
-                {% for blog in blogs|slice:"5" %}
+                {% for blog in blogs|slice:"6" %}
                 <li>
                     <a href="{% url 'blog_details' blog.slug %}" hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
                         class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors duration-150 group cursor-pointer">
