@@ -65,16 +65,8 @@
     {% csrf_token %}
     <meta name="csrf-token" content="{{ csrf_token }}" />
 
-    <!-- Tailwind CSS -->
-    <link rel="preload" href="{% static 'css/output.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{% static 'css/output.css' %}"></noscript>
-    <!-- Critical inline CSS for above-fold -->
-    <style>
-      body { font-family: "Inter", sans-serif; background-color: #f0f2f5; margin: 0; }
-      .tl-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; }
-      header { background: white; border-bottom: 1px solid #f3f4f6; position: sticky; top: 0; z-index: 50; }
-      #container { margin-top: 2.25rem; }
-    </style>
+        <!-- Tailwind CSS -->
+        <link rel="stylesheet" href="{% static 'css/output.css' %}">
 
     <!-- Core Styles -->
     <style>
@@ -137,6 +129,12 @@
       @media (max-width: 767px) {
         body { padding-bottom: 64px; }
       }
+
+            @media (min-width: 768px) {
+                nav.mobile-bottom-nav {
+                    display: none !important;
+                }
+            }
 
       /* Login / Signup */
       .login, .signup {
@@ -309,8 +307,8 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{% static 'image/favicon.ico' %}">
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'image/favicon.ico' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'image/favicon.ico' %}">
+    <link rel="shortcut icon" href="{% static 'image/favicon.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'image/favicon.ico' %}">
     <meta name="theme-color" content="#1e3a6e">
 
     <!-- Google Analytics -->
@@ -421,7 +419,7 @@
     {% include 'include/footer.html' %}
 
     <!-- Mobile Bottom Navigation -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-[999] bg-white border-t border-gray-200 flex items-center justify-around px-2 py-2 safe-area-bottom">
+    <nav class="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-[999] bg-white border-t border-gray-200 flex items-center justify-around px-2 py-2 safe-area-bottom">
         <a href="/" class="flex flex-col items-center gap-0.5 text-[#1e3a6e] min-w-[44px] py-1">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>

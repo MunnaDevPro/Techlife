@@ -170,18 +170,25 @@
             <ul class="divide-y divide-gray-100">
                 {% for user in top_users %}
                 {% if not user.is_superuser %}
-                <li class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors cursor-pointer group">
-                    {% if not user.profile_picture %}
-                    <div class="w-8 h-8 bg-[#1e3a6e] rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">
-                        {{ user.first_name|slice:":1" }}
-                    </div>
-                    {% else %}
-                    <img src="{{ user.profile_picture.url }}" alt="{{ user.first_name }} profile photo" class="w-8 h-8 rounded-full object-cover border-2 border-[#1e3a6e]/20 shrink-0" width="32" height="32" loading="lazy" decoding="async" />
-                    {% endif %}
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-[12px] font-semibold text-gray-800 group-hover:text-[#1e3a6e] truncate">{{ user.first_name }} {{ user.last_name }}</h3>
-                        <p class="text-[10px] text-gray-500 truncate">{{ user.email|truncatechars:20 }}</p>
-                    </div>
+                <li>
+                    <a href="/blogs/?author={{ user.email }}"
+                       hx-get="/blogs/?author={{ user.email }}"
+                       hx-target="#container"
+                       hx-push-url="true"
+                       hx-swap="innerHTML"
+                       class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors cursor-pointer group">
+                        {% if not user.profile_picture %}
+                        <div class="w-8 h-8 bg-[#1e3a6e] rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">
+                            {{ user.first_name|slice:":1" }}
+                        </div>
+                        {% else %}
+                        <img src="{{ user.profile_picture.url }}" alt="{{ user.first_name }} profile photo" class="w-8 h-8 rounded-full object-cover border-2 border-[#1e3a6e]/20 shrink-0" width="32" height="32" loading="lazy" decoding="async" />
+                        {% endif %}
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-[12px] font-semibold text-gray-800 group-hover:text-[#1e3a6e] truncate">{{ user.first_name }} {{ user.last_name }}</h3>
+                            <p class="text-[10px] text-gray-500 truncate">{{ user.email|truncatechars:20 }}</p>
+                        </div>
+                    </a>
                 </li>
                 {% endif %}
                 {% endfor %}
