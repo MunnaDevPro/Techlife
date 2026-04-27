@@ -7,6 +7,7 @@ from .views import (
     update_blog_stat,
     category_post,
     create_blog,
+    edit_blog,
     contact_page,
     popular_blog_post,
     all_article,
@@ -42,6 +43,7 @@ urlpatterns = [
     ),
 
     path("blogs/create_blog/" , create_blog , name="create_blog"),
+    path("blogs/<slug:slug>/edit/", edit_blog, name="edit_blog"),
 
     path("contact/", contact_page, name="contact_page" ),
 

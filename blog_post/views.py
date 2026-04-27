@@ -526,6 +526,69 @@ def create_blog(request):
         "categories":   categories,
         "subcategories": subcategories,
         "form":         form,
+        "action":       "post_create",
+        "is_edit":      False,
+        "post":         None,
+        "selected_tags": [],
+    }
+
+    if request.headers.get("HX-Request"):
+        return render(request, "components/blogs/partial_create_blog_content.html", context)
+
+    return render(request, "base.html", context)
+
+
+@login_required
+def edit_blog(request, slug):
+    post = get_object_or_404(BlogPost, slug=slug, author=request.user)
+    categories = Category.objects.all()
+    subcategories = SubCategory.objects.all()
+
+    if request.method == 'POST':
+        form = BlogPostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            updated_post = form.save(commit=False)
+            updated_post.author = request.user
+            updated_post.status = "edited"
+
+            category = form.cleaned_data.get("category")
+            subcategory = form.cleaned_data.get("subcategory")
+            if subcategory and category and subcategory.category_id != category.id:
+                subcategory = None
+            updated_post.subcategory = subcategory
+
+            if updated_post.featured_image:
+                updated_post.featured_image_url = None
+
+            updated_post.save(skip_auto_status=True)
+            form.save_m2m()
+
+            messages.success(request, "Blog post updated and sent for review.")
+
+            if request.headers.get("HX-Request"):
+                response = HttpResponse(status=204)
+                response["HX-Redirect"] = reverse('user_dashboard')
+                return response
+
+            return redirect('user_dashboard')
+
+        messages.error(request, "Please fix the errors below.")
+    else:
+        form = BlogPostForm(instance=post)
+
+    selected_tags = [
+        {"id": tag.id, "label": tag.name}
+        for tag in post.tags.all()
+    ]
+
+    context = {
+        "categories": categories,
+        "subcategories": subcategories,
+        "form": form,
+        "action": "post_edit",
+        "is_edit": True,
+        "post": post,
+        "selected_tags": selected_tags,
     }
 
     if request.headers.get("HX-Request"):

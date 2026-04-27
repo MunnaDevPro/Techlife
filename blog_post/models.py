@@ -73,6 +73,7 @@ class SubCategory(models.Model):
 class BlogPost(models.Model):
     STATUS_CHOICES = (
         ("pending", "Pending Approval"),
+        ("edited", "Edited - Pending Approval"),
         ("published", "Published"),
         ("rejected", "Rejected"),
     )

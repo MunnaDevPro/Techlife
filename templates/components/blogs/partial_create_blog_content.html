@@ -7,16 +7,23 @@
         <div class="flex items-center gap-3 px-6 py-4 bg-[#1e3a6e]">
             <img src="{% static 'image/company_logo.webp' %}" alt="TechLife Logo" class="w-8 h-8 rounded-full object-cover" />
             <div>
-                <h1 class="text-[15px] font-bold text-white">Create New Article</h1>
-                <p class="text-[11px] text-white/70">Share your knowledge with the community</p>
+                <h1 class="text-[15px] font-bold text-white">
+                    {% if is_edit %}Edit Article{% else %}Create New Article{% endif %}
+                </h1>
+                <p class="text-[11px] text-white/70">
+                    {% if is_edit %}Update your article and resubmit for approval{% else %}Share your knowledge with the community{% endif %}
+                </p>
             </div>
         </div>
 
         <form class="p-6 space-y-5"
             id="create-blog-form"
+            data-is-edit="{% if is_edit %}true{% else %}false{% endif %}"
+            data-ckeditor-upload-url="{% url 'ckeditor_upload' %}"
+            data-ckeditor-browse-url="{% url 'ckeditor_browse' %}"
             method="POST"
             enctype="multipart/form-data"
-            action="{% url 'create_blog' %}">
+            action="{% if is_edit %}{% url 'edit_blog' post.slug %}{% else %}{% url 'create_blog' %}{% endif %}">
             {% csrf_token %}
 
             <!-- Category + Subcategory (2-col on desktop) -->
@@ -29,9 +36,9 @@
                     <div class="relative">
                         <select id="category_select" name="category" required
                             class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] appearance-none transition-all">
-                            <option value="" disabled selected>Select Category</option>
+                            <option value="" disabled {% if not form.category.value %}selected{% endif %}>Select Category</option>
                             {% for category in categories %}
-                            <option value="{{ category.pk }}">{{ category.name }}</option>
+                            <option value="{{ category.pk }}" {% if category.pk|stringformat:"s" == form.category.value %}selected{% endif %}>{{ category.name }}</option>
                             {% endfor %}
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
@@ -48,9 +55,9 @@
                     <div class="relative">
                         <select id="subcategory_select" name="subcategory"
                             class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] appearance-none transition-all">
-                            <option value="" disabled selected>Select Sub-Category</option>
+                            <option value="" disabled {% if not form.subcategory.value %}selected{% endif %}>Select Sub-Category</option>
                             {% for subcategory in subcategories %}
-                            <option value="{{ subcategory.pk }}">{{ subcategory.name }}</option>
+                            <option value="{{ subcategory.pk }}" {% if subcategory.pk|stringformat:"s" == form.subcategory.value %}selected{% endif %}>{{ subcategory.name }}</option>
                             {% endfor %}
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
@@ -66,6 +73,7 @@
                     Post Title <span class="text-red-400">*</span>
                 </label>
                 <input type="text" name="title" id="post_title" required autocomplete="off"
+                    value="{{ form.title.value|default_if_none:'' }}"
                     placeholder="Enter a clear, descriptive title..."
                     class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] transition-all" />
             </div>
@@ -76,7 +84,7 @@
                     Description <span class="text-red-400">*</span>
                 </label>
                 <textarea name="description" id="post_description" rows="12"
-                    class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-800"></textarea>
+                    class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-800">{{ form.description.value|default_if_none:''|safe }}</textarea>
                 <p id="desc-error" class="hidden text-red-500 text-[11px] mt-1 flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                     Description is required.
@@ -90,7 +98,10 @@
                     <input type="file" name="featured_image" id="featured_image" accept="image/*"
                         class="w-full text-[12px] text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-[#1e3a6e] file:text-white hover:file:bg-[#152d56] file:cursor-pointer" />
                     <p class="text-[11px] text-gray-400 mt-1.5">PNG, JPG, WebP · Max 5MB</p>
-                    <img id="image-preview" src="" alt="Preview" class="hidden mt-3 rounded-xl max-h-40 object-cover w-full" />
+                    <img id="image-preview"
+                        src="{% if form.instance.featured_image %}{{ form.instance.featured_image.url }}{% elif form.instance.featured_image_url %}{{ form.instance.featured_image_url }}{% endif %}"
+                        alt="Preview"
+                        class="{% if form.instance.featured_image or form.instance.featured_image_url %}mt-3 rounded-xl max-h-40 object-cover w-full{% else %}hidden mt-3 rounded-xl max-h-40 object-cover w-full{% endif %}" />
                 </div>
             </div>
 
@@ -100,6 +111,7 @@
                     Featured Image URL <span class="text-gray-400 font-normal normal-case">(optional)</span>
                 </label>
                 <input type="url" name="featured_image_url" id="featured_image_url"
+                    value="{{ form.featured_image_url.value|default_if_none:'' }}"
                     placeholder="https://example.com/image.jpg"
                     class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] transition-all" />
             </div>
@@ -160,63 +172,44 @@
 
             <!-- Actions -->
             <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
-                <a href="{% url 'homepage' %}"
+                <a href="{% if is_edit %}{% url 'user_dashboard' %}{% else %}{% url 'homepage' %}{% endif %}"
                     class="px-5 py-2.5 border border-gray-200 text-gray-600 text-[13px] font-semibold rounded-xl hover:bg-gray-50 transition-colors">
                     Cancel
                 </a>
                 <button type="submit" id="create-submit-btn"
                     class="px-6 py-2.5 bg-[#1e3a6e] text-white text-[13px] font-bold rounded-xl hover:bg-[#152d56] transition-colors shadow-sm flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span id="submit-text">Publish Article</span>
+                    <span id="submit-text">{% if is_edit %}Save Changes{% else %}Publish Article{% endif %}</span>
                 </button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- CKEditor -->
+{{ selected_tags|json_script:"selected-tags-data" }}
+
+
+
+<!-- CKEditor load -->
 <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 
 <script>
 (function () {
-
-    /* ── Image preview ── */
-    var imgInput   = document.getElementById('featured_image');
-    var imgPreview = document.getElementById('image-preview');
-    if (imgInput && imgPreview) {
-        imgInput.addEventListener('change', function () {
-            var file = this.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    imgPreview.src = e.target.result;
-                    imgPreview.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-
-    /* ── CKEditor ── */
     function initEditor() {
-        if (typeof CKEDITOR === 'undefined') {
-            setTimeout(initEditor, 500);
-            return;
-        }
+        if (typeof CKEDITOR === 'undefined') { setTimeout(initEditor, 500); return; }
         if (CKEDITOR.instances['post_description']) {
             CKEDITOR.instances['post_description'].destroy(true);
         }
-
         CKEDITOR.replace('post_description', {
             toolbar: [
-                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat'] },
-                { name: 'paragraph',   items: ['NumberedList', 'BulletedList', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-                { name: 'links',       items: ['Link', 'Unlink'] },
-                { name: 'insert',      items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
+                { name: 'basicstyles', items: ['Bold','Italic','Underline','Strike','-','RemoveFormat'] },
+                { name: 'paragraph',   items: ['NumberedList','BulletedList','-','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight'] },
+                { name: 'links',       items: ['Link','Unlink'] },
+                { name: 'insert',      items: ['Image','Table','HorizontalRule'] },
                 '/',
-                { name: 'styles',      items: ['Styles', 'Format', 'Font', 'FontSize'] },
-                { name: 'document',    items: ['Source', 'Maximize'] },
-                { name: 'clipboard',   items: ['Undo', 'Redo'] },
+                { name: 'styles',      items: ['Styles','Format','Font','FontSize'] },
+                { name: 'document',    items: ['Source','Maximize'] },
+                { name: 'clipboard',   items: ['Undo','Redo'] },
             ],
             height: 420,
             filebrowserUploadUrl:      "{% url 'ckeditor_upload' %}",
@@ -224,56 +217,38 @@
             filebrowserImageUploadUrl: "{% url 'ckeditor_upload' %}?type=Images",
             filebrowserImageBrowseUrl: "{% url 'ckeditor_browse' %}?type=Images",
             allowedContent: true,
-            extraAllowedContent: 'script[*](*); iframe[*](*); *(*)',
             entities: false,
             removePlugins: 'exportpdf,elementspath,scayt,wsc',
-            /* ── CRITICAL: prevent CKEditor overriding page colors ── */
             contentsCss: [
                 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap',
-                'body { font-family: Inter, sans-serif; font-size: 14px; line-height: 1.8; color: #1c1c1e; padding: 12px 16px; background: #fff; }' +
-                'p { margin: 0 0 1em 0; }' +
-                'h1,h2,h3,h4,h5,h6 { font-weight: 700; line-height: 1.3; margin: 1.2em 0 0.5em; }' +
-                'a { color: #1e3a6e; }' +
-                'blockquote { border-left: 3px solid #1e3a6e; margin: 1em 0; padding: 0.5em 1em; color: #555; background: #f9fafb; }' +
-                'img { max-width: 100%; height: auto; border-radius: 6px; }'
+                'body{font-family:Inter,sans-serif;font-size:14px;line-height:1.8;color:#1c1c1e;padding:12px 16px;background:#fff;}' +
+                'p{margin:0 0 1em 0;}' +
+                'h1,h2,h3,h4{font-weight:700;line-height:1.3;margin:1.2em 0 0.5em;}' +
+                'a{color:#1e3a6e;}' +
+                'blockquote{border-left:3px solid #1e3a6e;margin:1em 0;padding:0.5em 1em;color:#555;background:#f9fafb;}' +
+                'img{max-width:100%;height:auto;border-radius:6px;}'
             ],
-            /* Prevent CKEditor from injecting its own body styles into your page */
-            bodyClass: 'ckeditor-content',
-            on: {
-                instanceReady: function(ev) {
-                    /* Remove the red security warning banner */
-                    var editor = ev.editor;
-                    try {
-                        var notification = editor._.elementsPath;
-                    } catch(e) {}
-                }
-            }
         });
     }
 
-    /* ── Form submit ── */
+    /* Form submit — sync CKEditor → textarea */
     var form = document.getElementById('create-blog-form');
     if (form) {
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances['post_description']) {
                 CKEDITOR.instances['post_description'].updateElement();
             }
             var desc  = document.getElementById('post_description');
             var errEl = document.getElementById('desc-error');
-            var content = (desc ? desc.value : '').trim();
-            if (!content) {
+            if (desc && !desc.value.trim()) {
                 e.preventDefault();
                 if (errEl) errEl.classList.remove('hidden');
                 return false;
             }
             if (errEl) errEl.classList.add('hidden');
-
-            var btn  = document.getElementById('create-submit-btn');
-            var text = document.getElementById('submit-text');
-            if (btn && text) {
-                btn.disabled = true;
-                text.textContent = 'Publishing…';
-            }
+            var btn = document.getElementById('create-submit-btn');
+            var txt = document.getElementById('submit-text');
+            if (btn && txt) { btn.disabled = true; txt.textContent = 'Publishing…'; }
         });
     }
 
@@ -282,149 +257,9 @@
     } else {
         initEditor();
     }
-
 })();
 </script>
 
-<!-- ── TAG SYSTEM ────────────────────────────────────────────────── -->
-<script>
-(function() {
-    var selectedTags = {}; // { id_or_label: { id: '', label: '' } }
 
-    var input       = document.getElementById('tag-input');
-    var chipsEl     = document.getElementById('tag-chips');
-    var suggestions = document.getElementById('tag-suggestions');
-
-    /* Show suggestions on focus */
-    input.addEventListener('focus', function() {
-        suggestions.classList.remove('hidden');
-    });
-
-    /* Hide suggestions on outside click */
-    document.addEventListener('click', function(e) {
-        if (!document.getElementById('tag-box').contains(e.target) &&
-            !suggestions.contains(e.target)) {
-            suggestions.classList.add('hidden');
-        }
-    });
-
-    /* Add tag on Enter or comma */
-    input.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ',') {
-            e.preventDefault();
-            var val = input.value.trim().replace(/,+$/, '');
-            if (val) addCustomTag(val);
-            input.value = '';
-        }
-        /* Remove last tag on Backspace if input empty */
-        if (e.key === 'Backspace' && input.value === '') {
-            var keys = Object.keys(selectedTags);
-            if (keys.length > 0) removeTag(keys[keys.length - 1]);
-        }
-    });
-
-    /* Filter suggestions as user types */
-    input.addEventListener('input', function() {
-        var q = input.value.toLowerCase();
-        var btns = document.querySelectorAll('.tag-suggestion-btn');
-        btns.forEach(function(btn) {
-            var label = btn.dataset.tagLabel.toLowerCase();
-            btn.style.display = label.includes(q) ? '' : 'none';
-        });
-        suggestions.classList.remove('hidden');
-    });
-
-    /* Add from suggestion button */
-    window.addTagFromSuggestion = function(btn) {
-        var id    = btn.dataset.tagId;
-        var label = btn.dataset.tagLabel;
-        var key   = 'id_' + id;
-        if (selectedTags[key]) return; // already added
-        selectedTags[key] = { id: id, label: label, isExisting: true };
-        renderChips();
-        syncCheckboxes();
-        /* mark button as selected */
-        btn.classList.add('bg-[#1e3a6e]', 'text-white', 'border-[#1e3a6e]');
-        btn.classList.remove('bg-gray-50', 'text-gray-700', 'border-gray-200');
-        btn.querySelector('svg').style.display = 'none';
-        input.focus();
-    };
-
-    function addCustomTag(label) {
-        var key = 'custom_' + label.toLowerCase();
-        if (selectedTags[key]) return;
-        /* Check if it matches an existing tag */
-        var btns = document.querySelectorAll('.tag-suggestion-btn');
-        var matched = null;
-        btns.forEach(function(btn) {
-            if (btn.dataset.tagLabel.toLowerCase() === label.toLowerCase()) {
-                matched = btn;
-            }
-        });
-        if (matched) {
-            addTagFromSuggestion(matched);
-            return;
-        }
-        selectedTags[key] = { id: '', label: label, isExisting: false };
-        renderChips();
-    }
-
-    function removeTag(key) {
-        var tag = selectedTags[key];
-        if (!tag) return;
-        /* Un-highlight suggestion button if existing tag */
-        if (tag.isExisting) {
-            var btn = document.querySelector('.tag-suggestion-btn[data-tag-id="' + tag.id + '"]');
-            if (btn) {
-                btn.classList.remove('bg-[#1e3a6e]', 'text-white', 'border-[#1e3a6e]');
-                btn.classList.add('bg-gray-50', 'text-gray-700', 'border-gray-200');
-                btn.querySelector('svg').style.display = '';
-            }
-        }
-        delete selectedTags[key];
-        renderChips();
-        syncCheckboxes();
-    }
-
-    function renderChips() {
-        chipsEl.innerHTML = '';
-        Object.entries(selectedTags).forEach(function(entry) {
-            var key = entry[0];
-            var tag = entry[1];
-            var chip = document.createElement('span');
-            chip.className = 'inline-flex items-center gap-1 pl-2.5 pr-1.5 py-1 rounded-full text-[11px] font-semibold bg-[#1e3a6e] text-white';
-            chip.innerHTML =
-                '<span>' + escapeHtml(tag.label) + '</span>' +
-                '<button type="button" onclick="removeTagByKey(\'' + key.replace(/'/g, "\\'") + '\')" ' +
-                'class="w-4 h-4 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center flex-shrink-0 transition-colors" ' +
-                'aria-label="Remove tag">' +
-                '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
-                '</button>';
-            chipsEl.appendChild(chip);
-        });
-    }
-
-    window.removeTagByKey = function(key) {
-        removeTag(key);
-    };
-
-    function syncCheckboxes() {
-        /* Tick checkboxes for existing tags */
-        var allCbs = document.querySelectorAll('#tag-hidden-checkboxes input[type="checkbox"]');
-        allCbs.forEach(function(cb) { cb.checked = false; });
-        Object.values(selectedTags).forEach(function(tag) {
-            if (tag.id) {
-                var cb = document.getElementById('tag-cb-' + tag.id);
-                if (cb) cb.checked = true;
-            }
-        });
-    }
-
-    function escapeHtml(str) {
-        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-})();
-</script>
 
 <script src="{% static 'js/create_blog.js' %}"></script>

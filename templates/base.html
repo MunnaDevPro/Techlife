@@ -402,7 +402,7 @@
     <!-- Main Content -->
     <main id="container" class="mt-9 mx-auto flex-grow min-h-[calc(100vh-128px)] py-4">
         {% block content %}
-        {% if action == 'post_create' %} {% include 'components/blogs/partial_create_blog_content.html' %}
+        {% if action == 'post_create' or action == 'post_edit' %} {% include 'components/blogs/partial_create_blog_content.html' %}
         {% elif action == 'home_page' %} {% include 'components/home/home_page.html' %}
         {% elif action == 'all_blogs' %} {% include 'components/blogs/partial_all_blog_page.html' %}
         {% elif action == 'contact_page' %} {% include 'partial_contact_us_page.html' %}
@@ -477,6 +477,11 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+    <script>
+        window.CKEDITOR_CDN_URL = 'https://cdn.ckeditor.com/4.25.1-lts/full/ckeditor.js';
+        window.CKEDITOR_LOCAL_URL = "{% static 'ckeditor/ckeditor/ckeditor.js' %}";
+    </script>
+    <script src="{% static 'js/blog_editor.js' %}" defer></script>
     <script src="{% static 'js/script.js' %}" defer></script>
     <script src="{% static 'js/share_modal.js' %}" defer></script>
     <script src="{% static 'js/success_message_for_create.js' %}" defer></script>

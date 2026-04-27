@@ -102,7 +102,7 @@ class BlogPostResource(resources.ModelResource):
             if row.get('title'):
                 row['slug'] = slugify(str(row.get('title')))
         
-        valid_statuses = ['pending', 'published', 'rejected']
+        valid_statuses = ['pending', 'edited', 'published', 'rejected']
         if not row.get('status') or str(row.get('status')).strip() == '':
             row['status'] = 'pending'
         elif row.get('status') not in valid_statuses:
