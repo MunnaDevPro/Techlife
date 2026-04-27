@@ -19,38 +19,43 @@
             action="{% url 'create_blog' %}">
             {% csrf_token %}
 
-            <!-- Category -->
-            <div>
-                <label for="category_select" class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">
-                    Category <span class="text-red-400">*</span>
-                </label>
-                <div class="relative">
-                    <select id="category_select" name="category" required
-                        class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] appearance-none transition-all">
-                        <option value="" disabled selected>Select Category</option>
-                        {% for category in categories %}
-                        <option value="{{ category.pk }}">{{ category.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            <!-- Category + Subcategory (2-col on desktop) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Category -->
+                <div>
+                    <label for="category_select" class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">
+                        Category <span class="text-red-400">*</span>
+                    </label>
+                    <div class="relative">
+                        <select id="category_select" name="category" required
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] appearance-none transition-all">
+                            <option value="" disabled selected>Select Category</option>
+                            {% for category in categories %}
+                            <option value="{{ category.pk }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Subcategory -->
-            <div>
-                <label for="subcategory_select" class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">Sub-Category</label>
-                <div class="relative">
-                    <select id="subcategory_select" name="subcategory"
-                        class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] appearance-none transition-all">
-                        <option value="" disabled selected>Select Sub-Category</option>
-                        {% for subcategory in subcategories %}
-                        <option value="{{ subcategory.pk }}">{{ subcategory.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                <!-- Subcategory -->
+                <div>
+                    <label for="subcategory_select" class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">
+                        Sub-Category <span class="text-gray-400 font-normal normal-case">(optional)</span>
+                    </label>
+                    <div class="relative">
+                        <select id="subcategory_select" name="subcategory"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] appearance-none transition-all">
+                            <option value="" disabled selected>Select Sub-Category</option>
+                            {% for subcategory in subcategories %}
+                            <option value="{{ subcategory.pk }}">{{ subcategory.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -70,7 +75,6 @@
                 <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">
                     Description <span class="text-red-400">*</span>
                 </label>
-                <!-- NOTE: NO 'required' — CKEditor hides textarea, browser validation fails -->
                 <textarea name="description" id="post_description" rows="12"
                     class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-800"></textarea>
                 <p id="desc-error" class="hidden text-red-500 text-[11px] mt-1 flex items-center gap-1">
@@ -82,12 +86,11 @@
             <!-- Featured Image Upload -->
             <div>
                 <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">Featured Image</label>
-                <div class="border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-[#1e3a6e] transition-colors cursor-pointer" id="drop-zone">
+                <div class="border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-[#1e3a6e] transition-colors" id="drop-zone">
                     <input type="file" name="featured_image" id="featured_image" accept="image/*"
                         class="w-full text-[12px] text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-[#1e3a6e] file:text-white hover:file:bg-[#152d56] file:cursor-pointer" />
-                    <p class="text-[11px] text-gray-500 mt-1.5">PNG, JPG, WebP · Max 5MB</p>
-                    <!-- Preview -->
-                    <img id="image-preview" src="" alt="Preview" class="hidden mt-3 rounded-xl max-h-40 object-cover" />
+                    <p class="text-[11px] text-gray-400 mt-1.5">PNG, JPG, WebP · Max 5MB</p>
+                    <img id="image-preview" src="" alt="Preview" class="hidden mt-3 rounded-xl max-h-40 object-cover w-full" />
                 </div>
             </div>
 
@@ -101,21 +104,58 @@
                     class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] transition-all" />
             </div>
 
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-3">
-                    <i class="fa-solid fa-tags mr-1 text-[#1e3a6e]"></i> Tags
+            <!-- ── TAGS ─────────────────────────────────────────────────── -->
+            <div>
+                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">
+                    Tags <span class="text-gray-400 font-normal normal-case">(select or type to add)</span>
                 </label>
-                <div class="flex flex-wrap gap-2 max-h-52 overflow-y-auto border border-gray-200 rounded-xl p-3 bg-gray-50">
+
+                <!-- Tag input box -->
+                <div id="tag-box"
+                    class="min-h-[48px] flex flex-wrap gap-2 items-center bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-[#1e3a6e] focus-within:border-[#1e3a6e] transition-all cursor-text"
+                    onclick="document.getElementById('tag-input').focus()">
+
+                    <!-- Selected tag chips render here -->
+                    <div id="tag-chips" class="flex flex-wrap gap-1.5"></div>
+
+                    <!-- Type-in input -->
+                    <input type="text" id="tag-input" placeholder="Type a tag & press Enter..."
+                        autocomplete="off" spellcheck="false"
+                        class="flex-1 min-w-[140px] bg-transparent text-[13px] text-gray-700 placeholder-gray-400 outline-none border-none py-1" />
+                </div>
+
+                <!-- Suggestions dropdown -->
+                <div id="tag-suggestions"
+                    class="hidden mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-52 overflow-y-auto z-40 relative">
+                    <div class="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">Suggested Tags</div>
+                    <div id="tag-suggestion-list" class="flex flex-wrap gap-2 p-3">
+                        {% for checkbox in form.tags %}
+                        <button type="button"
+                            data-tag-id="{{ checkbox.data.value }}"
+                            data-tag-label="{{ checkbox.choice_label }}"
+                            onclick="addTagFromSuggestion(this)"
+                            class="tag-suggestion-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 text-[12px] font-medium text-gray-700 hover:bg-[#1e3a6e] hover:text-white hover:border-[#1e3a6e] transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                            {{ checkbox.choice_label }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Hidden checkboxes (original form.tags — needed for form POST) -->
+                <div id="tag-hidden-checkboxes" class="hidden">
                     {% for checkbox in form.tags %}
-                    <label class="flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-full border border-gray-200 bg-white hover:border-[#1e3a6e] hover:bg-blue-50 transition-all text-sm font-medium text-gray-700 has-checked:bg-[#1e3a6e] has-checked:text-white has-checked:border-[#1e3a6e]">
-                        {{ checkbox.tag }}
-                        <span>{{ checkbox.choice_label }}</span>
-                    </label>
+                    <input type="checkbox"
+                        name="{{ checkbox.data.name }}"
+                        value="{{ checkbox.data.value }}"
+                        id="tag-cb-{{ checkbox.data.value }}">
                     {% endfor %}
                 </div>
-                {% if form.tags.errors %}
-                <p class="text-red-500 text-xs mt-1">{{ form.tags.errors }}</p>
-                {% endif %}
+
+                <p class="text-[11px] text-gray-400 mt-1.5 flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    Press Enter or comma to add a tag. Click × to remove.
+                </p>
             </div>
 
             <!-- Actions -->
@@ -134,13 +174,13 @@
     </div>
 </div>
 
-<!-- Load CKEditor from Django's static -->
+<!-- CKEditor -->
 <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 
 <script>
 (function () {
 
-    /* ── Image preview ──────────────────────────────────────────── */
+    /* ── Image preview ── */
     var imgInput   = document.getElementById('featured_image');
     var imgPreview = document.getElementById('image-preview');
     if (imgInput && imgPreview) {
@@ -157,77 +197,77 @@
         });
     }
 
-    /* ── CKEditor init ──────────────────────────────────────────── */
+    /* ── CKEditor ── */
     function initEditor() {
         if (typeof CKEDITOR === 'undefined') {
-            // retry once after 500ms in case script hasn't fully loaded
             setTimeout(initEditor, 500);
             return;
         }
-
-        // Destroy previous instance if re-init (HTMX SPA navigation)
         if (CKEDITOR.instances['post_description']) {
             CKEDITOR.instances['post_description'].destroy(true);
         }
 
         CKEDITOR.replace('post_description', {
             toolbar: [
-                { name: 'document',    items: ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print'] },
-                { name: 'clipboard',   items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
-                { name: 'editing',     items: ['Find', 'Replace', '-', 'SelectAll'] },
-                '/',
-                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat'] },
-                { name: 'paragraph',   items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
-                { name: 'links',       items: ['Link', 'Unlink', 'Anchor'] },
-                { name: 'insert',      items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat'] },
+                { name: 'paragraph',   items: ['NumberedList', 'BulletedList', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+                { name: 'links',       items: ['Link', 'Unlink'] },
+                { name: 'insert',      items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
                 '/',
                 { name: 'styles',      items: ['Styles', 'Format', 'Font', 'FontSize'] },
-                { name: 'colors',      items: ['TextColor', 'BGColor'] },
-                { name: 'tools',       items: ['Maximize', 'ShowBlocks'] },
+                { name: 'document',    items: ['Source', 'Maximize'] },
+                { name: 'clipboard',   items: ['Undo', 'Redo'] },
             ],
-            height: 450,
-            // File manager — django-ckeditor-uploader URLs
+            height: 420,
             filebrowserUploadUrl:      "{% url 'ckeditor_upload' %}",
             filebrowserBrowseUrl:      "{% url 'ckeditor_browse' %}",
             filebrowserImageUploadUrl: "{% url 'ckeditor_upload' %}?type=Images",
             filebrowserImageBrowseUrl: "{% url 'ckeditor_browse' %}?type=Images",
-            // Allow all HTML including script, iframe
             allowedContent: true,
             extraAllowedContent: 'script[*](*); iframe[*](*); *(*)',
-            // Encoding
             entities: false,
-            // Remove unused plugins
-            removePlugins: 'exportpdf,elementspath',
-            // Content CSS — match site font
+            removePlugins: 'exportpdf,elementspath,scayt,wsc',
+            /* ── CRITICAL: prevent CKEditor overriding page colors ── */
             contentsCss: [
                 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap',
-                'body { font-family: Inter, sans-serif; font-size: 14px; line-height: 1.7; color: #1c1c1e; padding: 12px 16px; }'
+                'body { font-family: Inter, sans-serif; font-size: 14px; line-height: 1.8; color: #1c1c1e; padding: 12px 16px; background: #fff; }' +
+                'p { margin: 0 0 1em 0; }' +
+                'h1,h2,h3,h4,h5,h6 { font-weight: 700; line-height: 1.3; margin: 1.2em 0 0.5em; }' +
+                'a { color: #1e3a6e; }' +
+                'blockquote { border-left: 3px solid #1e3a6e; margin: 1em 0; padding: 0.5em 1em; color: #555; background: #f9fafb; }' +
+                'img { max-width: 100%; height: auto; border-radius: 6px; }'
             ],
+            /* Prevent CKEditor from injecting its own body styles into your page */
+            bodyClass: 'ckeditor-content',
+            on: {
+                instanceReady: function(ev) {
+                    /* Remove the red security warning banner */
+                    var editor = ev.editor;
+                    try {
+                        var notification = editor._.elementsPath;
+                    } catch(e) {}
+                }
+            }
         });
     }
 
-    /* ── Form submit — sync CKEditor → textarea ─────────────────── */
+    /* ── Form submit ── */
     var form = document.getElementById('create-blog-form');
     if (form) {
         form.addEventListener('submit', function (e) {
-            // 1. Sync CKEditor content into textarea
             if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances['post_description']) {
                 CKEDITOR.instances['post_description'].updateElement();
             }
-
-            // 2. Manual validation (textarea has no `required`)
-            var desc = document.getElementById('post_description');
+            var desc  = document.getElementById('post_description');
             var errEl = document.getElementById('desc-error');
             var content = (desc ? desc.value : '').trim();
-
-            if (!content || content === '') {
+            if (!content) {
                 e.preventDefault();
                 if (errEl) errEl.classList.remove('hidden');
                 return false;
             }
             if (errEl) errEl.classList.add('hidden');
 
-            // 3. Show loading state on button
             var btn  = document.getElementById('create-submit-btn');
             var text = document.getElementById('submit-text');
             if (btn && text) {
@@ -237,11 +277,151 @@
         });
     }
 
-    /* ── Boot ───────────────────────────────────────────────────── */
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initEditor);
     } else {
         initEditor();
+    }
+
+})();
+</script>
+
+<!-- ── TAG SYSTEM ────────────────────────────────────────────────── -->
+<script>
+(function() {
+    var selectedTags = {}; // { id_or_label: { id: '', label: '' } }
+
+    var input       = document.getElementById('tag-input');
+    var chipsEl     = document.getElementById('tag-chips');
+    var suggestions = document.getElementById('tag-suggestions');
+
+    /* Show suggestions on focus */
+    input.addEventListener('focus', function() {
+        suggestions.classList.remove('hidden');
+    });
+
+    /* Hide suggestions on outside click */
+    document.addEventListener('click', function(e) {
+        if (!document.getElementById('tag-box').contains(e.target) &&
+            !suggestions.contains(e.target)) {
+            suggestions.classList.add('hidden');
+        }
+    });
+
+    /* Add tag on Enter or comma */
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            var val = input.value.trim().replace(/,+$/, '');
+            if (val) addCustomTag(val);
+            input.value = '';
+        }
+        /* Remove last tag on Backspace if input empty */
+        if (e.key === 'Backspace' && input.value === '') {
+            var keys = Object.keys(selectedTags);
+            if (keys.length > 0) removeTag(keys[keys.length - 1]);
+        }
+    });
+
+    /* Filter suggestions as user types */
+    input.addEventListener('input', function() {
+        var q = input.value.toLowerCase();
+        var btns = document.querySelectorAll('.tag-suggestion-btn');
+        btns.forEach(function(btn) {
+            var label = btn.dataset.tagLabel.toLowerCase();
+            btn.style.display = label.includes(q) ? '' : 'none';
+        });
+        suggestions.classList.remove('hidden');
+    });
+
+    /* Add from suggestion button */
+    window.addTagFromSuggestion = function(btn) {
+        var id    = btn.dataset.tagId;
+        var label = btn.dataset.tagLabel;
+        var key   = 'id_' + id;
+        if (selectedTags[key]) return; // already added
+        selectedTags[key] = { id: id, label: label, isExisting: true };
+        renderChips();
+        syncCheckboxes();
+        /* mark button as selected */
+        btn.classList.add('bg-[#1e3a6e]', 'text-white', 'border-[#1e3a6e]');
+        btn.classList.remove('bg-gray-50', 'text-gray-700', 'border-gray-200');
+        btn.querySelector('svg').style.display = 'none';
+        input.focus();
+    };
+
+    function addCustomTag(label) {
+        var key = 'custom_' + label.toLowerCase();
+        if (selectedTags[key]) return;
+        /* Check if it matches an existing tag */
+        var btns = document.querySelectorAll('.tag-suggestion-btn');
+        var matched = null;
+        btns.forEach(function(btn) {
+            if (btn.dataset.tagLabel.toLowerCase() === label.toLowerCase()) {
+                matched = btn;
+            }
+        });
+        if (matched) {
+            addTagFromSuggestion(matched);
+            return;
+        }
+        selectedTags[key] = { id: '', label: label, isExisting: false };
+        renderChips();
+    }
+
+    function removeTag(key) {
+        var tag = selectedTags[key];
+        if (!tag) return;
+        /* Un-highlight suggestion button if existing tag */
+        if (tag.isExisting) {
+            var btn = document.querySelector('.tag-suggestion-btn[data-tag-id="' + tag.id + '"]');
+            if (btn) {
+                btn.classList.remove('bg-[#1e3a6e]', 'text-white', 'border-[#1e3a6e]');
+                btn.classList.add('bg-gray-50', 'text-gray-700', 'border-gray-200');
+                btn.querySelector('svg').style.display = '';
+            }
+        }
+        delete selectedTags[key];
+        renderChips();
+        syncCheckboxes();
+    }
+
+    function renderChips() {
+        chipsEl.innerHTML = '';
+        Object.entries(selectedTags).forEach(function(entry) {
+            var key = entry[0];
+            var tag = entry[1];
+            var chip = document.createElement('span');
+            chip.className = 'inline-flex items-center gap-1 pl-2.5 pr-1.5 py-1 rounded-full text-[11px] font-semibold bg-[#1e3a6e] text-white';
+            chip.innerHTML =
+                '<span>' + escapeHtml(tag.label) + '</span>' +
+                '<button type="button" onclick="removeTagByKey(\'' + key.replace(/'/g, "\\'") + '\')" ' +
+                'class="w-4 h-4 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center flex-shrink-0 transition-colors" ' +
+                'aria-label="Remove tag">' +
+                '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+                '</button>';
+            chipsEl.appendChild(chip);
+        });
+    }
+
+    window.removeTagByKey = function(key) {
+        removeTag(key);
+    };
+
+    function syncCheckboxes() {
+        /* Tick checkboxes for existing tags */
+        var allCbs = document.querySelectorAll('#tag-hidden-checkboxes input[type="checkbox"]');
+        allCbs.forEach(function(cb) { cb.checked = false; });
+        Object.values(selectedTags).forEach(function(tag) {
+            if (tag.id) {
+                var cb = document.getElementById('tag-cb-' + tag.id);
+                if (cb) cb.checked = true;
+            }
+        });
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
 })();
