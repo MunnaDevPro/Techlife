@@ -481,7 +481,8 @@
         window.CKEDITOR_CDN_URL = 'https://cdn.ckeditor.com/4.25.1-lts/full/ckeditor.js';
         window.CKEDITOR_LOCAL_URL = "{% static 'ckeditor/ckeditor/ckeditor.js' %}";
     </script>
-    <script src="{% static 'js/blog_editor.js' %}" defer></script>
+    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+    <script src="{% static 'js/blog_editor.js' %}"></script>
     <script src="{% static 'js/script.js' %}" defer></script>
     <script src="{% static 'js/share_modal.js' %}" defer></script>
     <script src="{% static 'js/success_message_for_create.js' %}" defer></script>
@@ -502,6 +503,23 @@
 
         document.body.addEventListener('htmx:afterSwap', (event) => {
             if (window.Alpine) window.Alpine.initTree(event.target);
+        });
+        document.body.addEventListener('htmx:afterSwap', function(e) {
+            // Re-initialize CKEditor after HTMX swap
+            setTimeout(function() {
+                if (typeof CKEDITOR !== 'undefined') {
+                    // Destroy existing instances first
+                    for (var instance in CKEDITOR.instances) {
+                        CKEDITOR.instances[instance].destroy(true);
+                    }
+                    // Re-initialize all textareas with ckeditor class
+                    document.querySelectorAll('.django-ckeditor-widget textarea, textarea[name="description"]').forEach(function(el) {
+                        if (el.id && !CKEDITOR.instances[el.id]) {
+                            CKEDITOR.replace(el.id);
+                        }
+                    });
+                }
+            }, 300);
         });
         document.body.addEventListener('htmx:afterSwap', (event) => {
             const triggerEl = event.detail?.requestConfig?.elt || lastHtmxTrigger;
