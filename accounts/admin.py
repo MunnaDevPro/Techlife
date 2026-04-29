@@ -4,10 +4,15 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.conf import settings
 from django.utils.safestring import mark_safe 
+from unfold.admin import ModelAdmin
 from .models import CustomUserModel 
 
 @admin.register(CustomUserModel)
-class CustomUserAdmin(UserAdmin):
+class CustomUserAdmin(ModelAdmin, UserAdmin):
+
+    compressed_fields = True
+    warn_unsaved_form = True
+    list_fullwidth = True
 
     actions = ['delete_selected']
 
@@ -21,13 +26,48 @@ class CustomUserAdmin(UserAdmin):
     )
     list_display_links = ('email',)
     ordering = ('email',) 
+    readonly_fields = ('last_login', 'date_joined', 'created_at', 'updated_at')
+
+    add_fieldsets = (
+        ('Account', {
+            'classes': ('tab',),
+            'fields': ('email', 'password1', 'password2'),
+        }),
+        ('Personal info', {
+            'classes': ('tab',),
+            'fields': ('first_name', 'last_name', 'mobile', 'profile_picture'),
+        }),
+        ('Address', {
+            'classes': ('tab',),
+            'fields': ('address_line_1', 'address_line_2', 'city', 'postcode', 'country'),
+        }),
+        ('Permissions', {
+            'classes': ('tab',),
+            'fields': ('is_active', 'is_verified', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+        }),
+    )
 
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'mobile', 'profile_picture')}),
-        ('Address', {'fields': ('address_line_1', 'address_line_2', 'city', 'postcode', 'country')}),
-        ('Permissions', {'fields': ('is_active', 'is_verified', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        ('Account', {
+            'classes': ('tab',),
+            'fields': ('email', 'password'),
+        }),
+        ('Personal info', {
+            'classes': ('tab',),
+            'fields': ('first_name', 'last_name', 'mobile', 'profile_picture'),
+        }),
+        ('Address', {
+            'classes': ('tab',),
+            'fields': ('address_line_1', 'address_line_2', 'city', 'postcode', 'country'),
+        }),
+        ('Permissions', {
+            'classes': ('tab',),
+            'fields': ('is_active', 'is_verified', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+        }),
+        ('System info', {
+            'classes': ('tab',),
+            'fields': ('last_login', 'date_joined', 'created_at', 'updated_at'),
+        }),
     )
     
 
