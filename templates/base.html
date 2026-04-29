@@ -306,11 +306,13 @@
     {% block extra_head %} {% endblock extra_head %}
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{% static 'image/favicon.ico' %}">
-    <link rel="shortcut icon" href="{% static 'image/favicon.ico' %}">
-    <link rel="apple-touch-icon" href="{% static 'image/favicon.ico' %}">
-
+    <link rel="icon" type="image/x-icon" href="{% static 'image/favicon.ico' %}?v=2">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'image/favicon.ico' %}?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'image/favicon.ico' %}?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'image/favicon.ico' %}?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'image/favicon.ico' %}?v=2">
     <meta name="theme-color" content="#1e3a6e">
+    <meta name="msapplication-TileColor" content="#1e3a6e">
 
     <!-- Google Analytics -->
     {% if GOOGLE_ANALYTICS_ID %}
@@ -504,21 +506,13 @@
         document.body.addEventListener('htmx:afterSwap', (event) => {
             if (window.Alpine) window.Alpine.initTree(event.target);
         });
-        document.body.addEventListener('htmx:afterSwap', function(e) {
-            // Re-initialize CKEditor after HTMX swap
+        document.body.addEventListener('htmx:afterSwap', function() {
             setTimeout(function() {
-                if (typeof CKEDITOR !== 'undefined') {
-                    // Destroy existing instances first
-                    for (var instance in CKEDITOR.instances) {
-                        CKEDITOR.instances[instance].destroy(true);
-                    }
-                    // Re-initialize all textareas with ckeditor class
-                    document.querySelectorAll('.django-ckeditor-widget textarea, textarea[name="description"]').forEach(function(el) {
-                        if (el.id && !CKEDITOR.instances[el.id]) {
-                            CKEDITOR.replace(el.id);
-                        }
-                    });
-                }
+                if (typeof CKEDITOR === 'undefined') return;
+                for (var k in CKEDITOR.instances) CKEDITOR.instances[k].destroy(true);
+                document.querySelectorAll('textarea[name="description"]').forEach(function(el) {
+                    if (el.id) CKEDITOR.replace(el.id, { allowedContent: true, versionCheck: false });
+                });
             }, 300);
         });
         document.body.addEventListener('htmx:afterSwap', (event) => {

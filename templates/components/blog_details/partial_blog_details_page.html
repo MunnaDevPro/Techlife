@@ -101,12 +101,14 @@
                         <div class="flex flex-wrap items-center gap-4 text-[12px] text-gray-500">
                             <span class="flex items-center gap-1.5">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                <span class="font-medium text-gray-700">
-                                    {% if blog_detail.author.first_name and blog_detail.author.last_name %}{{ blog_detail.author.first_name }} {{ blog_detail.author.last_name }}
-                                    {% elif blog_detail.author.first_name %}{{ blog_detail.author.first_name }}
-                                    {% elif blog_detail.author.last_name %}{{ blog_detail.author.last_name }}
-                                    {% else %}Anonymous{% endif %}
-                                </span>
+                                <a href="{% url 'blogs' %}?author={{ blog_detail.author.email }}"
+                                   hx-get="{% url 'blogs' %}?author={{ blog_detail.author.email }}"
+                                   hx-target="#container"
+                                   hx-push-url="true"
+                                   hx-swap="innerHTML"
+                                   class="font-medium text-[#1e3a6e] hover:underline cursor-pointer">
+                                   {{ blog_detail.author.get_full_name|default:blog_detail.author.email }}
+                                </a>
                             </span>
                             <span class="flex items-center gap-1.5">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>

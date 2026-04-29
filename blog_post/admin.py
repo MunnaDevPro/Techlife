@@ -4,6 +4,7 @@ from blog_post.models import (
     Post_view_ip,
     Category,
     BlogPost,
+    HomepageConfig,
     Review,
     BlogAdditionalImage,
     Like,
@@ -154,16 +155,24 @@ class BlogPostAdmin(ModelAdmin, ImportExportModelAdmin):
 
     list_display = (
         "image_preview", "title", "author", "category",
-        "subcategory", "status", "views", "created_at"
+        "subcategory", "status", "is_featured", "views", "created_at"
     )
-    list_filter = ("status", "category", "subcategory", "created_at")
+    list_filter = ("is_featured", "status", "category", "subcategory", "created_at")
+    list_editable = ("is_featured", "status")
     search_fields = ("title", "author__email", "category__name", "subcategory__name")
     ordering = ("-created_at",)
     autocomplete_fields = ("author", "category", "subcategory")
     filter_horizontal = ("tags",)
     prepopulated_fields = {"slug": ("title",)}
     inlines = [BlogAdditionalImageInline]
-    readonly_fields = ("content_hash", "image_hash", "created_at", "updated_at")
+    readonly_fields = (
+        "content_hash",
+        "image_hash",
+        "created_at",
+        "updated_at",
+        "views",
+        "slug",
+    )
 
     # ✅ FIX: show all posts per page (বা বড় সংখ্যা)
     list_per_page = 50
@@ -173,7 +182,7 @@ class BlogPostAdmin(ModelAdmin, ImportExportModelAdmin):
         ("Basic Info", {
             "fields": (
                 "title", "subtitle", "slug", "category",
-                "subcategory", "tags", "author", "status", "views"
+                "subcategory", "tags", "author", "status", "is_featured", "views"
             ),
         }),
         ("Media", {
@@ -218,6 +227,26 @@ class BlogPostAdmin(ModelAdmin, ImportExportModelAdmin):
         return format_html('<span style="color:#999;font-size:11px;">No Image</span>')
 
     image_preview.short_description = "Preview"
+
+
+# ============================================
+# HOMEPAGE CONFIG ADMIN
+# ============================================
+
+@admin.register(HomepageConfig)
+class HomepageConfigAdmin(ModelAdmin):
+    list_display = (
+        "order",
+        "section_key",
+        "title",
+        "category",
+        "post_count",
+        "is_active",
+    )
+    list_editable = ("order", "post_count", "is_active", "category")
+    list_display_links = ("section_key",)
+    ordering = ("order",)
+    help_text = "Configure what each homepage section shows."
 
 
 # ============================================

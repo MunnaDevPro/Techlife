@@ -171,12 +171,12 @@
                 {% for user in top_users %}
                 {% if not user.is_superuser %}
                 <li>
-                    <a href="/blogs/?author={{ user.email }}"
-                       hx-get="/blogs/?author={{ user.email }}"
+                    <a href="{% url 'blogs' %}?author={{ user.email }}"
+                       hx-get="{% url 'blogs' %}?author={{ user.email }}"
                        hx-target="#container"
                        hx-push-url="true"
                        hx-swap="innerHTML"
-                       class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors cursor-pointer group">
+                       class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-all cursor-pointer group">
                         {% if not user.profile_picture %}
                         <div class="w-8 h-8 bg-[#1e3a6e] rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">
                             {{ user.first_name|slice:":1" }}

@@ -18,6 +18,15 @@
         </div>
     </div>
 
+    {% if filtered_author %}
+    <div class="flex items-center gap-2 mb-4 px-3 py-2 bg-blue-50 rounded-lg text-sm">
+        <span class="text-gray-600">Showing articles by:</span>
+        <span class="font-semibold text-[#1e3a6e]">{{ filtered_author }}</span>
+        <a href="{% url 'blogs' %}" hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+           class="ml-auto text-xs text-gray-500 hover:text-red-500">✕ Clear</a>
+    </div>
+    {% endif %}
+
     <!-- Category Filter Pills -->
     <div class="overflow-x-auto scrollbar-hide mb-6">
         <ul class="flex gap-2 flex-nowrap pb-1">

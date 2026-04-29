@@ -183,7 +183,6 @@
             </div>
         </form>
     </div>
-</div>
 
 {{ selected_tags|json_script:"selected-tags-data" }}
 
@@ -237,3 +236,14 @@
 
 
 <script src="{% static 'js/create_blog.js' %}"></script>
+
+<script>
+(function tryInitCK() {
+    if (typeof CKEDITOR === 'undefined') { setTimeout(tryInitCK, 150); return; }
+    for (var k in CKEDITOR.instances) CKEDITOR.instances[k].destroy(true);
+    document.querySelectorAll('textarea[name="description"]').forEach(function(el) {
+        if (el.id) CKEDITOR.replace(el.id, { allowedContent: true, versionCheck: false });
+    });
+})();
+</script>
+</div>

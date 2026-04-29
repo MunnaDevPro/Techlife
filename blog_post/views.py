@@ -26,6 +26,8 @@ from django.contrib import messages
 from blog_post.models import BlogPost, compnay_logo
 from comments.models import Comment, Reply
 
+from .homepage_helpers import get_carousel_posts, get_homepage_config, get_section_posts
+
 from interactions.models import Share
 from django.http import JsonResponse
 from django.http import HttpResponse
@@ -183,59 +185,70 @@ def blog_details_view(request, slug):
 def home(request):
     published_posts = published_posts_queryset()
 
-    # ══════════════════════════════════════════════════════════════════════
-    # DEDUPLICATION — fetch pools once, track used IDs across all sections
-    # so the same post never appears twice on the homepage.
-    # ══════════════════════════════════════════════════════════════════════
-    recent_pool  = list(published_posts.order_by("-created_at")[:80])
-    popular_pool = list(published_posts.order_by("-views", "-created_at")[:60])
-    views_pool   = list(published_posts.order_by("-views")[:40])
+    carousel_blogs = get_carousel_posts()
 
-    used_ids = set()
+    blogs = get_section_posts("blog_grid", default_count=8)
 
-    # 1. Carousel (hero slider) — 5 most recent
-    carousel_blogs = recent_pool[:5]
-    used_ids.update(b.id for b in carousel_blogs)
+    latest_blogs = get_section_posts("latest_news", default_count=8)
+    if not latest_blogs:
+        latest_blogs = list(published_posts.order_by("-created_at")[:8])
 
-    # 2. Hero grid (small cards beside carousel) — next 6
-    remaining = [b for b in recent_pool if b.id not in used_ids]
-    blogs = remaining[:6]
-    used_ids.update(b.id for b in blogs)
+    latest_blog = latest_blogs[0] if latest_blogs else None
+    Only_latest_blogs = latest_blogs[:1]
+    latest_popular_blogs = latest_blogs
 
-    # 3. Featured latest_blog (middle featured section) — next 1
-    remaining = [b for b in recent_pool if b.id not in used_ids]
-    latest_blog = remaining[0] if remaining else None
-    if latest_blog:
-        used_ids.add(latest_blog.id)
+    most_viewed_blogs = get_section_posts(
+        "most_viewed",
+        default_count=8,
+        order_by="-views",
+    )
 
-    # 4. Only_latest_blogs (latest news section hero) — next 1
-    remaining = [b for b in recent_pool if b.id not in used_ids]
-    Only_latest_blogs = remaining[:1]
-    used_ids.update(b.id for b in Only_latest_blogs)
+    fallback_top_categories = list(
+        Category.objects.annotate(
+            post_count=Count("blogpost")
+        ).filter(post_count__gt=0).order_by("-post_count")[:6]
+    )
 
-    # 5. Latest popular (trending/popular list) — 8 from popular pool
-    remaining_pop = [b for b in popular_pool if b.id not in used_ids]
-    latest_popular_blogs = remaining_pop[:8]
-    used_ids.update(b.id for b in latest_popular_blogs)
+    cat1_config = get_homepage_config("cat_section_1")
+    cat2_config = get_homepage_config("cat_section_2")
+    cat3_config = get_homepage_config("cat_section_3")
 
-    # 6. Most viewed section — deduplicated from views pool
-    most_viewed_blogs = [b for b in views_pool if b.id not in used_ids][:15]
-    # ══════════════════════════════════════════════════════════════════════
+    def _fallback_category(index):
+        return fallback_top_categories[index] if len(fallback_top_categories) > index else None
 
-    # Categories (intentionally NOT deduplicated — category sections
-    # show category-specific posts which is expected even if they
-    # overlap with the general sections above)
-    top_categories = Category.objects.annotate(
-        post_count=Count('blogpost')
-    ).filter(post_count__gt=0).order_by('-post_count')[:3]
+    first_category = (
+        cat1_config.category if cat1_config and cat1_config.category else _fallback_category(0)
+    )
+    second_category = (
+        cat2_config.category if cat2_config and cat2_config.category else _fallback_category(1)
+    )
+    third_category = (
+        cat3_config.category if cat3_config and cat3_config.category else _fallback_category(2)
+    )
 
-    first_category  = top_categories[0] if top_categories.count() > 0 else None
-    second_category = top_categories[1] if top_categories.count() > 1 else None
-    third_category  = top_categories[2] if top_categories.count() > 2 else None
+    top_categories = [
+        category
+        for category in (first_category, second_category, third_category)
+        if category
+    ]
 
-    first_blogs  = published_posts.filter(category=first_category).order_by("-created_at")
-    second_blogs = published_posts.filter(category=second_category).order_by("-created_at")
-    third_blogs  = published_posts.filter(category=third_category).order_by("-created_at")
+    def _category_posts(section_key, config, category, default_count=6):
+        if config and config.category:
+            return get_section_posts(section_key, default_count=default_count)
+        count = config.post_count if config else default_count
+        if not category:
+            return []
+        return list(
+            published_posts.filter(category=category).order_by("-created_at")[:count]
+        )
+
+    cat1_blogs = _category_posts("cat_section_1", cat1_config, first_category, default_count=6)
+    cat2_blogs = _category_posts("cat_section_2", cat2_config, second_category, default_count=6)
+    cat3_blogs = _category_posts("cat_section_3", cat3_config, third_category, default_count=6)
+
+    first_blogs = cat1_blogs
+    second_blogs = cat2_blogs
+    third_blogs = cat3_blogs
 
     all_category = Category.objects.all()
 
@@ -315,8 +328,12 @@ def home(request):
         "first_blogs":      first_blogs,
         "second_blogs":     second_blogs,
         "third_blogs":      third_blogs,
+        "cat1_blogs":       cat1_blogs,
+        "cat2_blogs":       cat2_blogs,
+        "cat3_blogs":       cat3_blogs,
         "blogs":            blogs,
         "latest_blog":      latest_blog,
+        "latest_blogs":     latest_blogs,
         "top_users":        top_users,
         "carousel_blogs":   carousel_blogs,
         "top_tags":         top_tags,
@@ -377,6 +394,10 @@ def all_blog_post_view(request):
     blogs      = published_posts.order_by("-created_at")
     categories = Category.objects.all()
 
+    author_email = request.GET.get("author")
+    if author_email:
+        blogs = blogs.filter(author__email=author_email)
+
     paginator    = Paginator(blogs, 12)
     page_number  = request.GET.get('page')
     blogs        = paginator.get_page(page_number)
@@ -384,6 +405,7 @@ def all_blog_post_view(request):
     context = {
         "blogs":      blogs,
         "categories": categories,
+        "filtered_author": author_email,
         "action":     "all_blogs",
     }
 

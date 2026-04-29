@@ -127,6 +127,13 @@ class BlogPost(models.Model):
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
 
+    is_featured = models.BooleanField(
+        default=False,
+        db_index=True,
+        verbose_name="Featured (Homepage Hero)",
+        help_text="Toggle ON to show this post in the homepage carousel/hero section"
+    )
+
     views = models.PositiveIntegerField(default=0)
 
     # likes = models.PositiveIntegerField(default=0)
@@ -310,6 +317,49 @@ class compnay_logo(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class HomepageConfig(models.Model):
+    SECTION_KEYS = (
+        ('carousel', 'Hero Carousel (Top Featured)'),
+        ('blog_grid', 'Blog Grid Section'),
+        ('latest_news', 'Latest News Section'),
+        ('cat_section_1', 'Category Section 1'),
+        ('cat_section_2', 'Category Section 2'),
+        ('cat_section_3', 'Category Section 3'),
+        ('most_viewed', 'Most Viewed Section'),
+    )
+
+    section_key = models.CharField(max_length=50, choices=SECTION_KEYS, unique=True)
+    title = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Override section heading (optional)"
+    )
+    category = models.ForeignKey(
+        'Category',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="Filter posts by this category (leave blank = all categories)"
+    )
+    post_count = models.PositiveIntegerField(
+        default=6,
+        help_text="How many posts to show"
+    )
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(
+        default=0,
+        help_text="Display order on homepage"
+    )
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = 'Homepage Section Config'
+        verbose_name_plural = 'Homepage Section Configs'
+
+    def __str__(self):
+        return f"{self.get_section_key_display()} - {self.category or 'All'} ({self.post_count} posts)"
     
 
 
