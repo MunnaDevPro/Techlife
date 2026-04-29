@@ -179,14 +179,20 @@
                        class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-all cursor-pointer group">
                         {% if not user.profile_picture %}
                         <div class="w-8 h-8 bg-[#1e3a6e] rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">
-                            {{ user.first_name|slice:":1" }}
+                            {% if user.get_full_name %}
+                                {{ user.get_full_name|slice:":1"|upper }}
+                            {% elif user.first_name %}
+                                {{ user.first_name|slice:":1"|upper }}
+                            {% else %}
+                                {{ user.email|slice:":1"|upper }}
+                            {% endif %}
                         </div>
                         {% else %}
                         <img src="{{ user.profile_picture.url }}" alt="{{ user.first_name }} profile photo" class="w-8 h-8 rounded-full object-cover border-2 border-[#1e3a6e]/20 shrink-0" width="32" height="32" loading="lazy" decoding="async" />
                         {% endif %}
                         <div class="flex-1 min-w-0">
                             <h3 class="text-[12px] font-semibold text-gray-800 group-hover:text-[#1e3a6e] truncate">{{ user.first_name }} {{ user.last_name }}</h3>
-                            <p class="text-[10px] text-gray-500 truncate">{{ user.email|truncatechars:20 }}</p>
+                            <p class="text-[10px] text-gray-500 truncate">{{ user.post_count }} post{{ user.post_count|pluralize }}</p>
                         </div>
                     </a>
                 </li>

@@ -256,6 +256,7 @@ def home(request):
         CustomUserModel.objects
         .filter(is_verified=True, is_superuser=False)
         .annotate(post_count=Count('authored_posts'))
+        .filter(post_count__gt=0)
         .order_by('-post_count')[:4]
     )
 
