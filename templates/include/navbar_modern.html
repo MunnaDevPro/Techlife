@@ -1,15 +1,33 @@
 {% load static %}
 
-<header class="bg-white w-full z-50 font-inter sticky top-0 shadow-sm">
+<header class="bg-white w-full font-inter shadow-sm">
 
     <div class="hidden lg:flex justify-between items-center py-2 px-4 border-b border-gray-100 text-[12px] text-gray-600 max-w-7xl mx-auto w-full">
+        {% if trending_post %}
         <div class="flex items-center gap-2">
             <span class="text-[#2563eb] font-bold tracking-wide">TRENDING</span>
             <span class="w-1 h-1 rounded-full bg-gray-400"></span>
-            <a href="#" class="hover:text-[#1e3a6e] transition-colors truncate max-w-2xl">
-                WUST Expands Campus, Launches Scholarships & Innovation Hub
+            <a href="{% url 'blog_details' trending_post.slug %}" class="hover:text-[#1e3a6e] transition-colors truncate max-w-2xl">
+                {{ trending_post.title }}
             </a>
         </div>
+        {% elif latest_blogs %}
+        {% with top_story=latest_blogs|first %}
+        <div class="flex items-center gap-2">
+            <span class="text-[#2563eb] font-bold tracking-wide">TRENDING</span>
+            <span class="w-1 h-1 rounded-full bg-gray-400"></span>
+            <a href="{% url 'blog_details' top_story.slug %}" class="hover:text-[#1e3a6e] transition-colors truncate max-w-2xl">
+                {{ top_story.title }}
+            </a>
+        </div>
+        {% endwith %}
+        {% else %}
+        <div class="flex items-center gap-2">
+            <span class="text-[#2563eb] font-bold tracking-wide">TRENDING</span>
+            <span class="w-1 h-1 rounded-full bg-gray-400"></span>
+            <span class="text-gray-500">Latest stories will appear here soon.</span>
+        </div>
+        {% endif %}
         <div class="flex items-center gap-6">
             <div class="flex items-center gap-1.5">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -25,21 +43,21 @@
         </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-6 relative bg-white">
+    <div class="max-w-7xl mx-auto px-3 lg:px-4 py-2 lg:py-2.5 flex items-center justify-between gap-3 lg:gap-6 relative bg-white">
         
-        <button id="menu-toggle" aria-label="Open navigation menu" class="lg:hidden w-9 h-9 flex items-center justify-center text-gray-800 hover:text-[#1e3a6e] hover:bg-gray-100 rounded-lg transition-colors">
+        <button id="menu-toggle" aria-label="Open navigation menu" class="lg:hidden w-8 h-8 flex items-center justify-center text-gray-800 hover:text-[#1e3a6e] hover:bg-gray-100 rounded-lg transition-colors">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
 
         <a href="{% url 'homepage' %}" aria-label="TechLife BD - Home" class="flex-shrink-0">
-            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-10 w-auto" loading="eager" fetchpriority="high" />
+            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-7 sm:h-8 lg:h-9 w-auto" loading="eager" fetchpriority="high" />
         </a>
 
         <div class="hidden lg:flex flex-1 max-w-2xl px-8">
             <form action="{% url 'redirect_search_results' %}" method="GET" class="w-full relative flex items-center">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 pointer-events-none"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 <input type="search" name="q" placeholder="Search blogs, tech, startups..." 
-                    class="w-full pl-11 pr-20 py-2.5 text-[14px] border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#1e3a6e] focus:ring-1 focus:ring-[#1e3a6e] transition-all shadow-sm" />
+                    class="w-full pl-11 pr-20 py-2 text-[14px] border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#1e3a6e] focus:ring-1 focus:ring-[#1e3a6e] transition-all shadow-sm" />
                 <div class="absolute right-3 flex items-center gap-1">
                     <span class="text-[11px] text-gray-400 font-medium px-1.5 py-0.5 border border-gray-200 rounded">Ctrl + K</span>
                 </div>
@@ -48,7 +66,7 @@
 
         <div class="flex items-center gap-4">
             
-            <button onclick="toggleMobileSearch()" class="lg:hidden w-9 h-9 flex items-center justify-center text-gray-800 hover:bg-gray-100 rounded-lg">
+            <button onclick="toggleMobileSearch()" class="lg:hidden w-8 h-8 flex items-center justify-center text-gray-800 hover:bg-gray-100 rounded-lg">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </button>
 
@@ -64,162 +82,140 @@
             </button>
             {% endif %}
 
-            <button class="relative w-9 h-9 flex items-center justify-center text-gray-600 hover:text-[#1e3a6e] hover:bg-gray-50 rounded-full transition-colors">
+            <button class="relative w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#1e3a6e] hover:bg-gray-50 rounded-full transition-colors">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 <span class="absolute top-0.5 right-0.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">3</span>
             </button>
 
             {% if request.user.is_authenticated %}
-            <a href="{% url 'user_dashboard' %}" class="hidden sm:flex flex-shrink-0" aria-label="Dashboard">
+            <a href="{% url 'user_dashboard' %}" class="hidden sm:flex items-center gap-3 flex-shrink-0 rounded-lg px-2 py-1 hover:bg-gray-50 transition-colors" aria-label="Dashboard">
                 {% if request.user.profile_picture %}
-                <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.first_name }}" class="w-10 h-10 rounded-lg object-cover border border-gray-200" />
+                <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.first_name }}" class="w-8 h-8 lg:w-9 lg:h-9 rounded-lg object-cover border border-gray-200" />
                 {% else %}
-                <div class="w-10 h-10 rounded-lg bg-[#1e3a6e] flex items-center justify-center text-white text-sm font-bold">
-                    {{ request.user.first_name|slice:":1"|upper }}
+                <div class="w-8 h-8 lg:w-9 lg:h-9 rounded-lg bg-[#1e3a6e] flex items-center justify-center text-white text-sm font-bold">
+                    {{ request.user.first_name|default:request.user.email|slice:":1"|upper }}
                 </div>
                 {% endif %}
+                <div class="hidden xl:block text-left">
+                    <p class="text-[11px] text-gray-500 leading-none">Welcome back</p>
+                    <p class="text-[13px] font-semibold text-gray-800 leading-tight">{{ request.user.first_name|default:request.user.email }}</p>
+                </div>
             </a>
             {% else %}
-            <a href="{% url 'login' %}" class="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-[#1e3a6e] text-white rounded-lg text-[14px] font-semibold hover:bg-[#152d56] transition-colors shadow-md">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            <a href="{% url 'login' %}" class="hidden sm:flex items-center gap-2 px-4 py-2 bg-[#1e3a6e] text-white rounded-lg text-[14px] font-semibold hover:bg-[#152d56] transition-colors shadow-md">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-16a2 2 0 0 1 2-2z"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
                 Login / Sign Up
             </a>
             {% endif %}
         </div>
     </div>
 
-    <nav class="hidden lg:block bg-[#1e3a6e] w-full">
-        <div class="max-w-7xl mx-auto px-4 flex items-center text-white text-[14px] font-medium">
+    <nav class="hidden lg:block bg-[#1e3a6e] w-full sticky top-0 z-50 relative">
+        <div class="max-w-7xl mx-auto px-3 lg:px-4 flex items-center justify-between text-white text-[14px] font-medium h-[48px]">
             
-            <a href="{% url 'homepage' %}" class="flex items-center gap-2 px-4 py-3.5 hover:bg-white/10 transition-colors">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                Home
-            </a>
-            
-            <a href="{% url 'blogs' %}" class="flex items-center gap-2 px-4 py-3.5 hover:bg-white/10 transition-colors relative">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
-                News
-                <span class="absolute top-2 right-1 bg-green-500 text-white text-[9px] font-bold px-1 rounded-sm tracking-wider uppercase">New</span>
-            </a>
+            <div class="flex items-center overflow-x-auto scrollbar-hide whitespace-nowrap flex-1 h-full min-w-0 static">
+                
+                <a href="{% url 'homepage' %}" class="flex items-center gap-2 px-4 h-full hover:bg-white/10 transition-colors shrink-0">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Home
+                </a>
+                
+                <a href="{% url 'blogs' %}" class="flex items-center gap-2 px-4 h-full hover:bg-white/10 transition-colors relative shrink-0">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+                    News
+                    <span class="absolute top-1.5 right-1 bg-green-500 text-white text-[9px] font-bold px-1 rounded-sm tracking-wider uppercase">New</span>
+                </a>
 
-            <div class="group static">
-                <button class="flex items-center gap-1.5 px-4 py-3.5 hover:bg-white/10 transition-colors cursor-pointer outline-none">
-                    Technology
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:rotate-180"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
+                <div class="group static shrink-0 h-full">
+                    <button class="flex items-center gap-1.5 px-4 h-full hover:bg-white/10 transition-colors cursor-pointer outline-none">
+                        Technology
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:rotate-180"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
 
-                <div class="absolute left-0 top-[100%] w-full bg-white shadow-2xl border-t border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 text-gray-800 rounded-b-xl border-b-4 border-b-gray-100">
-                    <div class="max-w-7xl mx-auto p-8 grid grid-cols-12 gap-8">
-                        
-                        <div class="col-span-2 space-y-4">
-                            <h4 class="text-[11px] font-bold text-[#1e3a6e] uppercase tracking-wider mb-4">Categories</h4>
-                            <ul class="space-y-3">
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 12 2.1 7.1"/><path d="M12 12l9.9 4.9"/></svg> AI & Robotics</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg> Software & Apps</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Cyber Security</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> Gadgets</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12h4l2-9 5 18 2-9h4"/></svg> Internet & Telecom</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4"/><path d="M8 10v4"/><circle cx="15" cy="12" r="1"/><circle cx="18" cy="12" r="1"/></svg> Gaming</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg> Science & Space</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg> Green Tech</a></li>
-                            </ul>
-                        </div>
+                    <div class="absolute left-0 top-full w-full bg-white shadow-2xl border-t border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 text-gray-800 rounded-b-xl border-b-4 border-b-gray-100">
+                        <div class="max-w-7xl mx-auto p-8 flex gap-8">
+                            <div class="flex-1 grid grid-cols-4 gap-6">
+                                {% for category in categories|slice:":4" %}
+                                <div class="flex flex-col space-y-4">
+                                    <h4 class="text-[11px] font-bold text-[#1e3a6e] uppercase tracking-wider mb-2 flex items-center gap-2 border-b border-gray-100 pb-2">
+                                        {% if category.font_awesome_icon %}<i class="{{ category.font_awesome_icon }} text-gray-400"></i>{% endif %}
+                                        {{ category.name }}
+                                    </h4>
+                                    <ul class="space-y-3">
+                                        {% for sub in category.subcategories.all %}
+                                        <li>
+                                            <a href="{% url 'category_post' sub.slug %}" class="flex items-center gap-2.5 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-400 shrink-0"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                                <span class="truncate">{{ sub.name }}</span>
+                                            </a>
+                                        </li>
+                                        {% empty %}
+                                        <li><span class="text-[12px] text-gray-400 italic">No subcategories</span></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endfor %}
+                            </div>
 
-                        <div class="col-span-2 space-y-4">
-                            <h4 class="text-[11px] font-bold text-[#1e3a6e] uppercase tracking-wider mb-4">Business</h4>
-                            <ul class="space-y-3">
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg> Startups</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Funding & Investment</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Case Studies</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> E-commerce</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Digital Marketing</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Business Tips</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> Fintech</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Entrepreneurship</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="col-span-2 space-y-4">
-                            <h4 class="text-[11px] font-bold text-[#1e3a6e] uppercase tracking-wider mb-4">Learning</h4>
-                            <ul class="space-y-3">
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Programming</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Web Development</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> Data Science</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Machine Learning</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Career Tips</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> Online Courses</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg> Tutorials</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> Tech Guides</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="col-span-2 space-y-4">
-                            <h4 class="text-[11px] font-bold text-[#1e3a6e] uppercase tracking-wider mb-4">Community</h4>
-                            <ul class="space-y-3">
-                                <li><a href="{% url 'questions_list' %}" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Questions & Answers</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Forum</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Tech Events</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Meetups</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Jobs</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Internships</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg> Scholarships</a></li>
-                                <li><a href="#" class="flex items-center gap-3 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Community Stories</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="col-span-4 pl-6 border-l border-gray-100 flex flex-col h-full">
-                            <h4 class="text-[11px] font-bold text-[#1e3a6e] uppercase tracking-wider mb-4">Trending Now</h4>
-                            <div class="space-y-4 flex-1">
-                                <a href="#" class="flex items-start gap-3 group/trend">
-                                    <img src="{% static 'images/default_og_image.png' %}" alt="Trending" class="w-16 h-16 rounded-lg object-cover bg-gray-200 flex-shrink-0 border border-gray-100 group-hover/trend:border-[#1e3a6e] transition-colors" />
-                                    <div>
-                                        <h5 class="text-[13px] font-bold text-gray-800 leading-tight group-hover/trend:text-[#1e3a6e] transition-colors">WUST Expands Campus, Launches Scholarships & Innovation Hub</h5>
-                                        <span class="text-[11px] text-gray-500 mt-1 block">2 hours ago</span>
-                                    </div>
-                                </a>
-                                <a href="#" class="flex items-start gap-3 group/trend">
-                                    <div class="w-16 h-16 rounded-lg bg-black flex items-center justify-center flex-shrink-0 border border-gray-100 group-hover/trend:border-[#1e3a6e] transition-colors">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                                    </div>
-                                    <div>
-                                        <h5 class="text-[13px] font-bold text-gray-800 leading-tight group-hover/trend:text-[#1e3a6e] transition-colors">ChatGPT-5 Expected to Launch in August 2026</h5>
-                                        <span class="text-[11px] text-gray-500 mt-1 block">5 hours ago</span>
-                                    </div>
-                                </a>
-                                <a href="#" class="flex items-start gap-3 group/trend">
-                                    <div class="w-16 h-16 rounded-lg bg-[#1e293b] flex items-center justify-center flex-shrink-0 border border-gray-100 group-hover/trend:border-[#1e3a6e] transition-colors">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                                    </div>
-                                    <div>
-                                        <h5 class="text-[13px] font-bold text-gray-800 leading-tight group-hover/trend:text-[#1e3a6e] transition-colors">Python 3.13 Released with Major Performance Boost</h5>
-                                        <span class="text-[11px] text-gray-500 mt-1 block">8 hours ago</span>
-                                    </div>
+                            <div class="w-[300px] pl-6 border-l border-gray-100 flex flex-col shrink-0 h-full">
+                                <h4 class="text-[11px] font-bold text-[#1e3a6e] uppercase tracking-wider mb-4">Trending Now</h4>
+                                <div class="space-y-4 flex-1">
+                                    {% if trending_post %}
+                                    <a href="{% url 'blog_details' trending_post.slug %}" class="flex items-start gap-3 group/trend">
+                                        {% if trending_post.featured_image %}
+                                        <img src="{{ trending_post.featured_image.url }}" alt="{{ trending_post.title }}" class="w-16 h-16 rounded-lg object-cover bg-gray-200 shrink-0 border border-gray-100 group-hover/trend:border-[#1e3a6e] transition-colors" />
+                                        {% else %}
+                                        <img src="{% static 'images/default_og_image.png' %}" alt="Trending" class="w-16 h-16 rounded-lg object-cover bg-gray-200 shrink-0 border border-gray-100 group-hover/trend:border-[#1e3a6e] transition-colors" />
+                                        {% endif %}
+                                        <div>
+                                            <h5 class="text-[13px] font-bold text-gray-800 leading-tight group-hover/trend:text-[#1e3a6e] transition-colors">{{ trending_post.title }}</h5>
+                                            <span class="text-[11px] text-gray-500 mt-1 block">Latest story</span>
+                                        </div>
+                                    </a>
+                                    {% elif latest_blogs %}
+                                    {% for story in latest_blogs|slice:":3" %}
+                                    <a href="{% url 'blog_details' story.slug %}" class="flex items-start gap-3 group/trend">
+                                        {% if story.featured_image %}
+                                        <img src="{{ story.featured_image.url }}" alt="{{ story.title }}" class="w-16 h-16 rounded-lg object-cover bg-gray-200 shrink-0 border border-gray-100 group-hover/trend:border-[#1e3a6e] transition-colors" />
+                                        {% else %}
+                                        <img src="{% static 'images/default_og_image.png' %}" alt="Trending" class="w-16 h-16 rounded-lg object-cover bg-gray-200 shrink-0 border border-gray-100 group-hover/trend:border-[#1e3a6e] transition-colors" />
+                                        {% endif %}
+                                        <div>
+                                            <h5 class="text-[13px] font-bold text-gray-800 leading-tight group-hover/trend:text-[#1e3a6e] transition-colors">{{ story.title }}</h5>
+                                            <span class="text-[11px] text-gray-500 mt-1 block">{{ story.created_at|timesince }} ago</span>
+                                        </div>
+                                    </a>
+                                    {% endfor %}
+                                    {% else %}
+                                    <div class="rounded-lg border border-dashed border-gray-200 p-4 text-sm text-gray-500">No recent posts available.</div>
+                                    {% endif %}
+                                </div>
+                                <a href="{% url 'popular_blogs' %}" class="mt-4 block w-full text-center py-2.5 bg-[#dbeafe]/50 text-[#1e3a6e] text-[13px] font-semibold rounded-lg hover:bg-[#dbeafe] transition-colors">
+                                    View All Trending <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block ml-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                                 </a>
                             </div>
-                            <a href="#" class="mt-4 block w-full text-center py-2.5 bg-[#dbeafe]/50 text-[#1e3a6e] text-[13px] font-semibold rounded-lg hover:bg-[#dbeafe] transition-colors">
-                                View All Trending <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block ml-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                            </a>
                         </div>
                     </div>
                 </div>
+
+                {% for category in categories|slice:":7" %}
+                <a href="{% url 'category_post' category.slug %}" class="px-4 h-full flex items-center hover:bg-white/10 transition-colors shrink-0">{{ category.name }}</a>
+                {% endfor %}
+                <a href="{% url 'questions_list' %}" class="px-4 h-full flex items-center hover:bg-white/10 transition-colors shrink-0">Questions</a>
+                <a href="#" class="px-4 h-full flex items-center hover:bg-white/10 transition-colors shrink-0">Resources</a>
+                <a href="#" class="px-4 h-full flex items-center hover:bg-white/10 transition-colors shrink-0">Freelancing</a>
+                <a href="#" class="px-4 h-full flex items-center hover:bg-white/10 transition-colors shrink-0">International</a>
+
             </div>
 
-            <a href="#" class="px-4 py-3.5 hover:bg-white/10 transition-colors">Startups</a>
-            <a href="#" class="px-4 py-3.5 hover:bg-white/10 transition-colors">Reviews</a>
-            <a href="#" class="px-4 py-3.5 hover:bg-white/10 transition-colors">Tutorials</a>
-            <a href="{% url 'questions_list' %}" class="px-4 py-3.5 hover:bg-white/10 transition-colors">Questions</a>
-            <a href="#" class="px-4 py-3.5 hover:bg-white/10 transition-colors">Resources</a>
-            <a href="#" class="px-4 py-3.5 hover:bg-white/10 transition-colors">Freelancing</a>
-            <a href="#" class="px-4 py-3.5 hover:bg-white/10 transition-colors">International</a>
-
-            <div class="group static ml-auto">
-                <button class="flex items-center gap-1.5 px-4 py-3.5 hover:bg-white/10 transition-colors bg-[#152d56] rounded-t-lg ml-2 cursor-pointer outline-none">
+            <div class="group relative shrink-0 flex items-center h-full border-l border-white/10 pl-1 ml-1 z-50">
+                <button class="flex items-center gap-1.5 px-4 h-full hover:bg-white/10 transition-colors bg-[#152d56] rounded-t-lg cursor-pointer outline-none">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                     More
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:rotate-180"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 
-                <div class="absolute right-0 top-[100%] w-64 bg-white shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-gray-800 rounded-b-lg rounded-tl-lg p-2">
+                <div class="absolute right-0 top-full w-64 bg-white shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-gray-800 rounded-b-lg rounded-tl-lg p-2">
                     {% for category in popular_categories|slice:"6" %}
                     <a href="{% url 'category_post' category.slug %}" class="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-600 font-medium rounded-lg hover:bg-[#dbeafe]/50 hover:text-[#1e3a6e] transition-colors whitespace-nowrap">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
@@ -234,6 +230,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </nav>
 
@@ -253,7 +250,7 @@
 
     <div id="mobile-sidebar" class="fixed top-0 right-0 h-full w-[300px] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-[70] lg:hidden flex flex-col font-inter">
         
-        <div class="bg-[#1e3a6e] px-5 py-6 flex-shrink-0 relative">
+        <div class="bg-[#1e3a6e] px-5 py-4 flex-shrink-0 relative">
             <button id="close-sidebar" class="absolute top-4 right-4 text-white/70 hover:text-white p-1">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
@@ -264,12 +261,12 @@
                 <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.first_name }}" class="w-12 h-12 rounded-full border-2 border-white object-cover" />
                 {% else %}
                 <div class="w-12 h-12 rounded-full bg-white text-[#1e3a6e] flex items-center justify-center text-lg font-bold border-2 border-white">
-                    {{ request.user.first_name|slice:":1"|upper }}
+                    {{ request.user.first_name|default:request.user.email|slice:":1"|upper }}
                 </div>
                 {% endif %}
                 <div class="text-white">
                     <p class="text-[12px] text-blue-200">Hello,</p>
-                    <p class="text-[15px] font-bold leading-tight">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                    <p class="text-[15px] font-bold leading-tight">{{ request.user.first_name|default:request.user.email }}</p>
                 </div>
             </div>
             {% else %}
@@ -306,11 +303,22 @@
                         </div>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" :class="{'rotate-180': techOpen}" class="transition-transform text-gray-400"><polyline points="6 9 12 15 18 9"/></svg>
                     </button>
-                    <div x-show="techOpen" style="display: none;" class="pl-11 pr-3 py-1 space-y-2 text-[13px]">
-                        <a href="#" class="block text-gray-600 hover:text-[#1e3a6e] py-1">AI & Robotics</a>
-                        <a href="#" class="block text-gray-600 hover:text-[#1e3a6e] py-1">Software & Apps</a>
-                        <a href="#" class="block text-gray-600 hover:text-[#1e3a6e] py-1">Cyber Security</a>
-                        <a href="#" class="block text-gray-600 hover:text-[#1e3a6e] py-1">Gadgets</a>
+                    <div x-show="techOpen" style="display: none;" class="pl-11 pr-3 py-2 space-y-4 text-[13px]">
+                        {% for category in categories|slice:":4" %}
+                        <div>
+                            <h5 class="font-bold text-[#1e3a6e] mb-1.5 uppercase text-[10px]">{{ category.name }}</h5>
+                            <div class="flex flex-col space-y-1.5 pl-2 border-l-2 border-gray-100">
+                                {% for sub in category.subcategories.all %}
+                                <a href="{% url 'category_post' sub.slug %}" class="text-gray-600 hover:text-[#1e3a6e] py-1 flex items-center gap-2">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-400 shrink-0"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                    {{ sub.name }}
+                                </a>
+                                {% empty %}
+                                <span class="text-gray-400 italic text-[11px]">No subcategories</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -396,7 +404,7 @@
     function closeSidebar() {
         var s = document.getElementById('mobile-sidebar');
         var o = document.getElementById('sidebar-overlay');
-        if (s) s.classList.add('translate-x-full'); // Fixed for right side slide
+        if (s) s.classList.add('translate-x-full');
         if (o) { o.classList.add('opacity-0', 'invisible'); o.classList.remove('opacity-100'); }
         document.body.classList.remove('overflow-hidden');
     }
@@ -431,7 +439,6 @@
         if (close)   close.addEventListener('click', closeSidebar);
         if (overlay) overlay.addEventListener('click', closeSidebar);
         document.querySelectorAll('#mobile-sidebar a').forEach(function (l) { 
-            // Only close if it's not a dropdown toggle (if using standard links)
             if(!l.hasAttribute('@click')) l.addEventListener('click', closeSidebar); 
         });
 
