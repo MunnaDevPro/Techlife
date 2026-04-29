@@ -27,23 +27,32 @@
             <!-- Featured Post -->
             {% for post in first_blogs|slice:"1" %}
             <a href="{% url 'blog_details' post.slug %}" class="block group overflow-hidden cursor-pointer">
-                <div class="overflow-hidden" style="aspect-ratio: 16/9;">
+                <div class="relative overflow-hidden" style="aspect-ratio: 16/9;">
                     {% if post.featured_image %}
                     <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
                     {% elif post.featured_image_url %}
                     <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
                     {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2">
+                        <div class="flex items-center gap-2 text-[10px] text-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <span>{{ post.view_count|default:"0" }}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            <span>{{ post.reaction_count|default:"0" }}</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="px-3 pt-2.5 pb-1">
                     <span class="text-[10px] font-bold text-[#1e3a6e] uppercase tracking-wide">{{ first_category.name }}</span>
                     <h3 class="font-bold text-[13px] text-gray-900 line-clamp-2 group-hover:text-[#1e3a6e] leading-snug mt-0.5">{{ post.title }}</h3>
+                    <p class="text-[10px] text-gray-500 mt-1">{{ post.created_at|date:"M d, Y" }}</p>
                 </div>
             </a>
             {% endfor %}
 
             <!-- Post List -->
             <ul class="divide-y divide-gray-100 flex-1">
-                {% for post in first_blogs|slice:"1:5" %}
+                {% for post in first_blogs|slice:"1:9" %}
                 <li>
                     <a href="{% url 'blog_details' slug=post.slug %}"
                         class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors group cursor-pointer">
@@ -54,7 +63,17 @@
                             <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.04]" width="64" height="48" loading="lazy" decoding="async">
                             {% endif %}
                         </div>
-                        <span class="text-[12px] font-medium text-gray-700 group-hover:text-[#1e3a6e] line-clamp-2 leading-snug">{{ post.title }}</span>
+                        <div class="flex-1 min-w-0">
+                            <span class="text-[12px] font-medium text-gray-700 group-hover:text-[#1e3a6e] line-clamp-2 leading-snug">{{ post.title }}</span>
+                            <div class="flex items-center gap-2 text-[9px] text-gray-500 mt-0.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <span>{{ post.view_count|default:"0" }}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                <span>{{ post.reaction_count|default:"0" }}</span>
+                                <span>·</span>
+                                <span>{{ post.created_at|date:"M d" }}</span>
+                            </div>
+                        </div>
                     </a>
                 </li>
                 {% endfor %}
@@ -74,22 +93,31 @@
         <div class="tl-card rounded-xl overflow-hidden flex flex-col">
             {% for post in second_blogs|slice:"1" %}
             <a href="{% url 'blog_details' post.slug %}" class="block group overflow-hidden cursor-pointer">
-                <div class="overflow-hidden" style="aspect-ratio: 16/9;">
+                <div class="relative overflow-hidden" style="aspect-ratio: 16/9;">
                     {% if post.featured_image %}
                     <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
                     {% elif post.featured_image_url %}
                     <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
                     {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent px-3 py-2">
+                        <div class="flex items-center gap-2 text-[10px] text-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <span>{{ post.view_count|default:"0" }}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            <span>{{ post.reaction_count|default:"0" }}</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="px-3 pt-2.5 pb-1">
                     <span class="text-[10px] font-bold text-[#1e3a6e] uppercase tracking-wide">{{ second_category.name }}</span>
                     <h3 class="font-bold text-[13px] text-gray-900 line-clamp-2 group-hover:text-[#1e3a6e] leading-snug mt-0.5">{{ post.title }}</h3>
+                    <p class="text-[10px] text-gray-500 mt-1">{{ post.created_at|date:"M d, Y" }}</p>
                 </div>
             </a>
             {% endfor %}
 
             <ul class="divide-y divide-gray-100 flex-1">
-                {% for post in second_blogs|slice:"1:5" %}
+                {% for post in second_blogs|slice:"1:9" %}
                 <li>
                     <a href="{% url 'blog_details' slug=post.slug %}"
                         class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors group cursor-pointer">
@@ -119,22 +147,31 @@
         <div class="tl-card rounded-xl overflow-hidden flex flex-col">
             {% for post in third_blogs|slice:"1" %}
             <a href="{% url 'blog_details' post.slug %}" class="block group overflow-hidden cursor-pointer">
-                <div class="overflow-hidden" style="aspect-ratio: 16/9;">
+                <div class="relative overflow-hidden" style="aspect-ratio: 16/9;">
                     {% if post.featured_image %}
                     <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
                     {% elif post.featured_image_url %}
                     <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
                     {% endif %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent px-3 py-2">
+                        <div class="flex items-center gap-2 text-[10px] text-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <span>{{ post.view_count|default:"0" }}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            <span>{{ post.reaction_count|default:"0" }}</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="px-3 pt-2.5 pb-1">
                     <span class="text-[10px] font-bold text-[#1e3a6e] uppercase tracking-wide">{{ third_category.name }}</span>
                     <h3 class="font-bold text-[13px] text-gray-900 line-clamp-2 group-hover:text-[#1e3a6e] leading-snug mt-0.5">{{ post.title }}</h3>
+                    <p class="text-[10px] text-gray-500 mt-1">{{ post.created_at|date:"M d, Y" }}</p>
                 </div>
             </a>
             {% endfor %}
 
             <ul class="divide-y divide-gray-100 flex-1">
-                {% for post in third_blogs|slice:"1:5" %}
+                {% for post in third_blogs|slice:"1:9" %}
                 <li>
                     <a href="{% url 'blog_details' slug=post.slug %}"
                         class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors group cursor-pointer">
