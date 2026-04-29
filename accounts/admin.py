@@ -2,6 +2,7 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.conf import settings
 from django.utils.safestring import mark_safe 
 from .models import CustomUserModel 
 
@@ -31,13 +32,8 @@ class CustomUserAdmin(UserAdmin):
     
 
     def user_photo(self, obj):
+        img_url = obj.profile_picture.url if obj.profile_picture else f"{settings.MEDIA_URL}user_profile/default_user_profile.png"
 
-        if obj.profile_picture:
-            img_url = obj.profile_picture.url
-
-            img_url = obj.profile_picture.url 
-            
-        # Return safe HTML for the image thumbnail
         return mark_safe(
             f'<img src="{img_url}" width="40" height="40" style="border-radius: 50%; object-fit: cover; border: 1px solid #ccc;" />'
         )
