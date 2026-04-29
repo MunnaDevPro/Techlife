@@ -398,7 +398,9 @@
     </div>
 
     <!-- Navbar -->
-    {% include 'include/navbar.html' %}
+    {% comment %} {% include 'include/navbar.html' %} {% endcomment %}
+    {% include 'include/navbar_modern.html' %}
+    {% comment %} {% include 'include/navbar_compact.html' %} {% endcomment %}
     {% include 'include/notification.html' %}
 
     <!-- Main Content -->
