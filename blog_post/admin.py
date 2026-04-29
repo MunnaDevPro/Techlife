@@ -1,4 +1,6 @@
+from django import forms
 from django.contrib import admin
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from unfold.admin import ModelAdmin
 from blog_post.models import (
     Post_view_ip,
@@ -81,6 +83,48 @@ class BlogAdditionalImageInline(admin.TabularInline):
     classes = ["collapse"]
 
 
+class BlogPostAdminForm(forms.ModelForm):
+    slug = forms.CharField(required=False, disabled=True)
+    views = forms.IntegerField(required=False, disabled=True)
+    content_hash = forms.CharField(required=False, disabled=True)
+    image_hash = forms.CharField(required=False, disabled=True)
+    created_at = forms.DateTimeField(required=False, disabled=True)
+    updated_at = forms.DateTimeField(required=False, disabled=True)
+
+    class Meta:
+        model = BlogPost
+        fields = (
+            "title",
+            "subtitle",
+            "slug",
+            "category",
+            "subcategory",
+            "tags",
+            "author",
+            "status",
+            "is_featured",
+            "views",
+            "featured_image",
+            "featured_image_url",
+            "description",
+            "meta_title",
+            "meta_description",
+        )
+    description = forms.CharField(
+        widget=CKEditorUploadingWidget(
+            attrs={
+                "id": "post_description",
+                "rows": 12,
+                "class": (
+                    "django-ckeditor-widget w-full bg-gray-50 border border-gray-200 "
+                    "rounded-xl px-4 py-3 text-[13px] text-gray-800"
+                ),
+            }
+        ),
+        required=False,
+    )
+
+
 # ============================================
 # CATEGORY ADMIN
 # ============================================
@@ -149,6 +193,7 @@ class SubCategoryAdmin(ModelAdmin, ImportExportModelAdmin):
 
 @admin.register(BlogPost)
 class BlogPostAdmin(ModelAdmin, ImportExportModelAdmin):
+    form = BlogPostAdminForm
     resource_class = BlogPostResource
     import_form_class = ImportForm
     export_form_class = ExportForm
@@ -163,15 +208,12 @@ class BlogPostAdmin(ModelAdmin, ImportExportModelAdmin):
     ordering = ("-created_at",)
     autocomplete_fields = ("author", "category", "subcategory")
     filter_horizontal = ("tags",)
-    prepopulated_fields = {"slug": ("title",)}
     inlines = [BlogAdditionalImageInline]
     readonly_fields = (
         "content_hash",
         "image_hash",
         "created_at",
         "updated_at",
-        "views",
-        "slug",
     )
 
     # ✅ FIX: show all posts per page (বা বড় সংখ্যা)
@@ -181,7 +223,7 @@ class BlogPostAdmin(ModelAdmin, ImportExportModelAdmin):
     fieldsets = (
         ("Basic Info", {
             "fields": (
-                "title", "subtitle", "slug", "category",
+                "title", "subtitle", "category",
                 "subcategory", "tags", "author", "status", "is_featured", "views"
             ),
         }),
