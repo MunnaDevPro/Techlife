@@ -8,58 +8,67 @@
 
         <!-- Carousel -->
         <div class="relative rounded-xl overflow-hidden group shadow-sm" x-data="blogCarousel()">
-            <div class="carousel-container relative h-52 sm:h-64 md:h-80 lg:h-[340px]">
-                {% for blog in carousel_blogs %}
-                <div class="carousel-slide absolute inset-0 transition-all duration-500 ease-in-out"
-                    :class="currentSlide === {{ forloop.counter0 }} ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'"
-                    x-show="currentSlide === {{ forloop.counter0 }}">
-                    <div class="absolute inset-0">
-                        {% if blog.featured_image %}
-                        <img src="{{ blog.featured_image.url }}" class="w-full h-full object-cover" alt="{{ blog.title }}" width="800" height="450" {% if forloop.first %}fetchpriority="high" loading="eager" decoding="async"{% else %}loading="lazy" decoding="async"{% endif %} />
-                        {% elif blog.featured_image_url %}
-                        <img src="{{ blog.featured_image_url }}" class="w-full h-full object-cover" alt="{{ blog.title }}" width="800" height="450" {% if forloop.first %}fetchpriority="high" loading="eager" decoding="async"{% else %}loading="lazy" decoding="async"{% endif %} />
-                        {% else %}
-                        <img src="{% static 'image/placeholder-5.png' %}" class="w-full h-full object-cover" alt="Placeholder" width="800" height="450" {% if forloop.first %}fetchpriority="high" loading="eager" decoding="async"{% else %}loading="lazy" decoding="async"{% endif %} />
-                        {% endif %}
-                        <!-- Gradient overlay -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                    </div>
-
-                    <!-- Content -->
-                    <div class="absolute inset-0 flex flex-col justify-end p-4 sm:p-5">
-                        <div class="text-white space-y-2 max-w-4xl">
-                            {% if blog.category %}
-                            <span class="inline-block px-2.5 py-0.5 bg-[#1e3a6e] rounded text-[11px] font-semibold tracking-wide uppercase">{{ blog.category.name }}</span>
+            <div class="carousel-container relative h-52 sm:h-64 md:h-80 lg:h-[340px] overflow-hidden">
+                <div
+                    class="flex h-full transition-transform duration-700 ease-in-out will-change-transform"
+                    :style="`width: ${(totalSlides || 1) * 100}%; transform: translateX(-${(currentSlide * 100) / (totalSlides || 1)}%);`"
+                >
+                    {% for blog in carousel_blogs %}
+                    <a
+                        href="{% url 'blog_details' blog.slug %}"
+                        hx-get="{% url 'blog_details' blog.slug %}"
+                        hx-target="#container"
+                        hx-push-url="true"
+                        hx-swap="innerHTML"
+                        class="relative block h-full flex-none overflow-hidden cursor-pointer group"
+                        style="width: calc(100% / {{ carousel_blogs|length|default:'1' }});"
+                        aria-label="Open {{ blog.title }}"
+                    >
+                        <div class="absolute inset-0">
+                            {% if blog.featured_image %}
+                            <img src="{{ blog.featured_image.url }}" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.05]" alt="{{ blog.title }}" width="800" height="450" {% if forloop.first %}fetchpriority="high" loading="eager" decoding="async"{% else %}loading="lazy" decoding="async"{% endif %} />
+                            {% elif blog.featured_image_url %}
+                            <img src="{{ blog.featured_image_url }}" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.05]" alt="{{ blog.title }}" width="800" height="450" {% if forloop.first %}fetchpriority="high" loading="eager" decoding="async"{% else %}loading="lazy" decoding="async"{% endif %} />
+                            {% else %}
+                            <img src="{% static 'image/placeholder-5.png' %}" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.05]" alt="Placeholder" width="800" height="450" {% if forloop.first %}fetchpriority="high" loading="eager" decoding="async"{% else %}loading="lazy" decoding="async"{% endif %} />
                             {% endif %}
-                            <h2 class="text-base sm:text-lg md:text-xl font-bold leading-snug line-clamp-2">{{ blog.title }}</h2>
-                            <div class="flex items-center justify-between gap-3">
-                                <div class="flex items-center gap-1.5 text-[11px] text-gray-300">
-                                    <span>{{ blog.author.first_name }} {{ blog.author.last_name }}</span>
-                                    <span>·</span>
-                                    <span>{{ blog.created_at|date:"M d, Y" }}</span>
+                            <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent"></div>
+                        </div>
+
+                        <div class="absolute inset-0 flex flex-col justify-end p-4 sm:p-5">
+                            <div class="text-white space-y-2 max-w-4xl">
+                                {% if blog.category %}
+                                <span class="inline-block px-2.5 py-0.5 bg-[#1e3a6e] rounded text-[11px] font-semibold tracking-wide uppercase">{{ blog.category.name }}</span>
+                                {% endif %}
+                                <h2 class="text-base sm:text-lg md:text-xl font-bold leading-snug line-clamp-2 transition-colors duration-200 group-hover:text-blue-300">{{ blog.title }}</h2>
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="flex items-center gap-1.5 text-[11px] text-gray-300">
+                                        <span>{{ blog.author.first_name }} {{ blog.author.last_name }}</span>
+                                        <span>·</span>
+                                        <span>{{ blog.created_at|date:"M d, Y" }}</span>
+                                    </div>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1e3a6e] hover:bg-[#152d56] rounded text-white text-[11px] font-semibold transition-all duration-300 ease-out shadow-[0_8px_22px_rgba(0,0,0,0.5)] hover:shadow-[0_10px_24px_rgba(255,255,255,1)] hover:-translate-y-0.5 shrink-0">
+                                        Read {{ blog.title|truncatechars:30 }}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                    </span>
                                 </div>
-                                <a href="{% url 'blog_details' blog.slug %}" hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1e3a6e] hover:bg-[#152d56] rounded text-white text-[11px] font-semibold transition-colors duration-200 shrink-0">
-                                    Read {{ blog.title|truncatechars:30 }}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                </a>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+
+                    {% if not carousel_blogs %}
+                    <div class="relative block h-full flex-none overflow-hidden" style="width: 100%;">
+                        <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent flex items-center justify-center">
+                            <img src="{% static 'image/placeholder-5.png' %}" class="w-full h-full object-cover" alt="Welcome" width="800" height="450" loading="eager" fetchpriority="high" decoding="async" />
+                            <div class="absolute text-center text-white">
+                                <h2 class="text-xl font-bold mb-2">Welcome to TechLife BD</h2>
+                                <p class="text-gray-200 text-sm">Stay tuned for amazing content!</p>
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                 </div>
-                {% endfor %}
-
-                {% if not carousel_blogs %}
-                <div class="carousel-slide absolute inset-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-center justify-center">
-                        <img src="{% static 'image/placeholder-5.png' %}" class="w-full h-full object-cover" alt="Welcome" width="800" height="450" loading="eager" fetchpriority="high" decoding="async" />
-                        <div class="absolute text-center text-white">
-                            <h2 class="text-xl font-bold mb-2">Welcome to TechLife BD</h2>
-                            <p class="text-gray-200 text-sm">Stay tuned for amazing content!</p>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
             </div>
 
             <!-- Nav Arrows -->

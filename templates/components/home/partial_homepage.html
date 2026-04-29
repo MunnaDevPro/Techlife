@@ -86,6 +86,7 @@
             },
             startAutoSlide() {
                 if (this.totalSlides > 1) {
+                    this.stopAutoSlide();
                     this.autoSlideInterval = setInterval(() => this.nextSlide(), 4000);
                 }
             },
