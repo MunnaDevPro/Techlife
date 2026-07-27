@@ -13,7 +13,7 @@
 
     <!-- Table -->
     <c-ui.card>
-        <c-ui.table headers="['Answer Content', 'On Question', 'Author', 'Created Date', 'Actions']">
+        <c-ui.table :headers="['Answer Content', 'On Question', 'Author', 'Created Date', 'Actions']">
             {% for a in answers %}
                 <tr>
                     <td class="px-6 py-4 text-gray-700 font-medium">

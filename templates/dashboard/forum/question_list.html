@@ -15,7 +15,7 @@
 
     <!-- Table -->
     <c-ui.card>
-        <c-ui.table headers="['Title', 'Author', 'Answers Count', 'Created Date', 'Actions']">
+        <c-ui.table :headers="['Title', 'Author', 'Answers Count', 'Created Date', 'Actions']">
             {% for q in questions %}
                 <tr>
                     <td class="px-6 py-4 font-medium text-gray-900">

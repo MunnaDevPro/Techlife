@@ -33,7 +33,7 @@
 
     <!-- Categories List -->
     <c-ui.card title="Existing Categories">
-        <c-ui.table headers="['Name', 'Slug', 'Icon Class', 'Description', 'Posts Count', 'Actions']">
+        <c-ui.table :headers="['Name', 'Slug', 'Icon Class', 'Description', 'Posts Count', 'Actions']">
             {% for cat in categories %}
                 <tr>
                     <td class="px-6 py-4 font-medium text-gray-900">{{ cat.name }}</td>

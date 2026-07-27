@@ -36,7 +36,7 @@
 
     <!-- Audit List -->
     <c-ui.card>
-        <c-ui.table headers="['Post Article Title', 'Meta Title Length', 'Meta Desc Length', 'Featured Image', 'og:image Present', 'Actions']">
+        <c-ui.table :headers="['Post Article Title', 'Meta Title Length', 'Meta Desc Length', 'Featured Image', 'og:image Present', 'Actions']">
             {% for item in posts %}
                 <tr>
                     <td class="px-6 py-4 font-semibold text-gray-900 leading-snug">

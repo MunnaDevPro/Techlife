@@ -33,7 +33,7 @@
 
     <!-- Performance Table -->
     <c-ui.card>
-        <c-ui.table headers="['Rank', 'Author Account', 'Total Range Views', 'Articles Published', 'Avg views/Post']">
+        <c-ui.table :headers="['Rank', 'Author Account', 'Total Range Views', 'Articles Published', 'Avg views/Post']">
             {% for item in authors %}
                 <tr>
                     <td class="px-6 py-4 font-bold text-gray-400">#{{ forloop.counter }}</td>

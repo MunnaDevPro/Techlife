@@ -10,7 +10,7 @@
 
     <!-- Broken Links table -->
     <c-ui.card title="404 Log List">
-        <c-ui.table headers="['Request Path', 'HTTP Referer', 'Hit Count', 'Last Seen']">
+        <c-ui.table :headers="['Request Path', 'HTTP Referer', 'Hit Count', 'Last Seen']">
             {% for log in logs %}
                 <tr>
                     <td class="px-6 py-4 font-semibold text-gray-900 leading-snug">

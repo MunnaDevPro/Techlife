@@ -31,7 +31,7 @@
 
     <!-- Users Table -->
     <c-ui.card>
-        <c-ui.table headers="['Name', 'Email', 'Verified Status', 'Posts Authored', 'Join Date', 'Last Login', 'Actions']">
+        <c-ui.table :headers="['Name', 'Email', 'Verified Status', 'Posts Authored', 'Join Date', 'Last Login', 'Actions']">
             {% for u in users %}
                 <tr>
                     <td class="px-6 py-4 font-medium text-gray-900">{{ u.first_name }} {{ u.last_name }}</td>

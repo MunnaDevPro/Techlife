@@ -10,7 +10,7 @@
 
     <!-- Table or Empty State -->
     <c-ui.card>
-        <c-ui.table headers="['Email', 'Name', 'Date Joined', 'Status', 'Actions']">
+        <c-ui.table :headers="['Email', 'Name', 'Date Joined', 'Status', 'Actions']">
             {% for u in users %}
                 <tr>
                     <td class="px-6 py-4 font-medium text-gray-900">{{ u.email }}</td>

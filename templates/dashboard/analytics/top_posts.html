@@ -38,7 +38,7 @@
 
     <!-- Top Posts Table -->
     <c-ui.card>
-        <c-ui.table headers="['Rank', 'Article Title', 'Category', 'Period Views count', 'Lifetime Views', 'Actions']">
+        <c-ui.table :headers="['Rank', 'Article Title', 'Category', 'Period Views count', 'Lifetime Views', 'Actions']">
             {% for item in posts %}
                 <tr>
                     <td class="px-6 py-4 font-bold text-gray-400">#{{ forloop.counter }}</td>

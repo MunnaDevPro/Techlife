@@ -22,7 +22,7 @@
 
     <!-- Advertisements list -->
     <c-ui.card>
-        <c-ui.table headers="['Ad Title', 'Position Order', 'Active Status', 'Actions']">
+        <c-ui.table :headers="['Ad Title', 'Position Order', 'Active Status', 'Actions']">
             {% for ad in ads %}
                 <tr>
                     <td class="px-6 py-4 font-semibold text-gray-900 leading-snug">

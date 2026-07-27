@@ -97,7 +97,7 @@
         </div>
 
         <c-ui.card>
-            <c-ui.table headers="['Logo Name', 'Branding Image / URL', 'Actions']">
+            <c-ui.table :headers="['Logo Name', 'Branding Image / URL', 'Actions']">
                 {% for logo in logos %}
                     <tr>
                         <td class="px-6 py-4 font-semibold text-gray-900 leading-snug">{{ logo.name }}</td>
