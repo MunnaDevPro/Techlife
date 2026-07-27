@@ -263,11 +263,11 @@ def subcategory_list_crud(request):
             get_object_or_404(SubCategory, pk=sub_id).delete()
             messages.success(request, "Subcategory deleted.")
             
-        return redirect("dashboard:content_homepage") # Wait, subcategory URL matches subcategories config
+        return redirect("dashboard:content_subcategories")
         
     subcategories = SubCategory.objects.select_related('category').annotate(post_count=Count('posts')).order_by('category__name', 'name')
     categories = Category.objects.all()
-    ctx = get_dashboard_context(request, "Pending Review", "Content", "dashboard:content_pending") # Reuse subcategories under content
+    ctx = get_dashboard_context(request, "Subcategories", "Content", "dashboard:content_subcategories")
     ctx.update({
         "subcategories": subcategories,
         "categories": categories,

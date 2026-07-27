@@ -25,6 +25,7 @@ urlpatterns = [
     path("content/posts/<int:post_pk>/comments/<int:comment_pk>/delete/", content.post_comment_delete, name="post_comment_delete"),
     
     path("content/pending/", content.subcategory_list_crud, name="content_pending"),
+    path("content/subcategories/", content.subcategory_list_crud, name="content_subcategories"),
     path("content/categories/", content.category_list_crud, name="content_categories"),
     path("content/tags/", content.tag_list_crud, name="content_tags"),
     path("content/homepage/", content.homepage_sections, name="content_homepage"),
