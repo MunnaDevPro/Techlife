@@ -46,12 +46,13 @@ Slot: <option> elements
         <button type="button" @click="open = !open" @keydown.escape="open = false"
                 class="ft-input"
                 style="display:flex;align-items:center;justify-content:space-between;
-                       cursor:pointer;text-align:left;{% if error %}border-color:var(--danger){% endif %}"
+                       cursor:pointer;text-align:left;height:38px;padding:0 12px;{% if error %}border-color:var(--danger){% endif %}"
                 :class="open ? '!border-indigo-400' : ''"
                 :style="open ? 'box-shadow:0 0 0 3px rgba(99,102,241,.15)' : ''">
-            <span x-text="selectedLabel || 'Select…'" style="color:var(--text)"></span>
-            <i data-lucide="chevron-down" style="width:13px;height:13px;color:var(--text-muted);
-               transition:transform .2s;flex-shrink:0"
+            <span x-text="selectedLabel || 'Select Category…'"
+                  style="color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;padding-right:8px"></span>
+            <i data-lucide="chevron-down" style="width:14px;height:14px;color:var(--text-muted);
+               transition:transform .2s;flex-shrink:0;margin-left:auto"
                :style="open ? 'transform:rotate(180deg)' : ''"></i>
         </button>
 

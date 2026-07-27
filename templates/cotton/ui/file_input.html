@@ -24,10 +24,10 @@ Props: name, label, help, required, disabled, accept, extra_class, id
     </label>
     {% endif %}
 
-    <div style="position:relative;border:2px dashed var(--border-strong);border-radius:var(--radius-md);
-                padding:16px;text-align:center;background:var(--surface);cursor:pointer;
-                transition:all .2s ease"
-         :style="isHovered ? 'border-color:var(--primary);background:var(--surface-2)' : ''"
+    <div style="position:relative;border:1px dashed var(--border-strong);border-radius:var(--radius-md);
+                padding:14px;text-align:center;background:var(--surface-2);cursor:pointer;
+                transition:all .18s ease"
+         :style="isHovered ? 'border-color:var(--primary);background:var(--primary-light)' : ''"
          @dragover.prevent="isHovered = true"
          @dragleave.prevent="isHovered = false"
          @drop.prevent="isHovered = false; $refs.fileInput.files = $event.dataTransfer.files; handleFile({target: $refs.fileInput})"
@@ -41,16 +41,16 @@ Props: name, label, help, required, disabled, accept, extra_class, id
                style="display:none">
 
         <template x-if="!fileName">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-                <div style="width:36px;height:36px;border-radius:50%;background:var(--surface-3);
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);
                             display:flex;align-items:center;justify-content:center">
-                    <i data-lucide="upload-cloud" style="width:18px;height:18px;color:var(--primary)"></i>
+                    <i data-lucide="upload-cloud" style="width:16px;height:16px;color:var(--primary)"></i>
                 </div>
                 <p style="font-size:12px;font-weight:600;color:var(--text);margin:0">
-                    Click to upload <span style="font-weight:400;color:var(--text-muted)">or drag and drop</span>
+                    Click to upload <span style="font-weight:400;color:var(--text-muted)">or drag & drop</span>
                 </p>
                 <p style="font-size:10.5px;color:var(--text-disabled);margin:0">
-                    PNG, JPG, WEBP or GIF
+                    PNG, JPG, WEBP (Max 5MB)
                 </p>
             </div>
         </template>
