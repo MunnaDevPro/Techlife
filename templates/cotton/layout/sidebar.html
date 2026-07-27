@@ -1,47 +1,268 @@
-<aside :class="sidebarOpen ? 'w-64' : 'w-16'" class="flex-shrink-0 bg-white border-r border-gray-200 min-h-screen flex flex-col transition-all duration-300 sticky top-0">
-    <!-- Header/Logo area -->
-    <div class="h-16 flex items-center justify-between px-4 border-b border-gray-200">
-        <a href="{% url 'dashboard:overview' %}" class="flex items-center gap-2 font-bold text-lg text-blue-600 overflow-hidden whitespace-nowrap">
-            <i data-lucide="zap" class="w-5 h-5 flex-shrink-0 text-blue-600"></i>
-            <span x-show="sidebarOpen" class="transition-opacity duration-300 font-bold text-[16px]">TechLife Admin</span>
-        </a>
-        <button @click="sidebarOpen = !sidebarOpen" class="p-1 rounded hover:bg-gray-100 text-gray-500">
-            <i data-lucide="menu" class="w-5 h-5"></i>
+<aside x-data="{
+    collapsed: localStorage.getItem('tl_sidebar') === 'collapsed',
+    toggle() {
+        this.collapsed = !this.collapsed;
+        localStorage.setItem('tl_sidebar', this.collapsed ? 'collapsed' : 'expanded');
+        const main = document.getElementById('tl-main');
+        if (main) main.classList.toggle('sidebar-collapsed', this.collapsed);
+    }
+}"
+x-init="
+    const main = document.getElementById('tl-main');
+    if (main) main.classList.toggle('sidebar-collapsed', collapsed);
+    $nextTick(() => { if(window.lucide) lucide.createIcons(); });
+"
+:class="collapsed ? 'ft-sidebar collapsed' : 'ft-sidebar'"
+aria-label="Main navigation">
+
+    <!-- Brand -->
+    <div class="ft-sidebar-brand">
+        <div class="ft-sidebar-logo">
+            <i data-lucide="zap" style="width:16px;height:16px;color:white"></i>
+        </div>
+        <span x-show="!collapsed" x-cloak
+              style="font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden">
+            TechLife Admin
+        </span>
+        <button @click="toggle()" x-show="!collapsed" x-cloak type="button"
+                class="ft-btn ft-btn-ghost ft-btn-icon"
+                style="margin-left:auto;flex-shrink:0"
+                title="Collapse sidebar">
+            <i data-lucide="panel-left-close" style="width:15px;height:15px"></i>
+        </button>
+    </div>
+    <!-- Expand button when collapsed -->
+    <div x-show="collapsed" x-cloak style="padding:8px 6px;border-bottom:1px solid var(--border)">
+        <button @click="toggle()" type="button"
+                class="ft-nav-item" style="justify-content:center;padding:7px"
+                title="Expand sidebar">
+            <i data-lucide="panel-left-open" style="width:15px;height:15px"></i>
         </button>
     </div>
 
-    <!-- Navigation items -->
-    <nav class="flex-grow overflow-y-auto px-2 py-4 space-y-1">
-        {% for item in sidebar_menu %}
-            <div x-data="{ open: {% if active_menu == item.name %}true{% else %}false{% endif %} }" class="space-y-0.5">
-                {% if item.sub_items %}
-                    <!-- Has sub items -->
-                    <button type="button" @click="open = !open" 
-                       class="cursor-pointer w-full flex items-center justify-between py-1 px-1.5 rounded-md text-[14px] text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors {% if active_menu == item.name %}font-semibold{% endif %}">
-                        <span class="flex items-center gap-2">
-                            <i data-lucide="{{ item.icon }}" class="w-4 h-4 text-gray-500"></i>
-                            <span x-show="sidebarOpen">{{ item.name }}</span>
-                        </span>
-                        <i x-show="sidebarOpen" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
-                    </button>
-                    
-                    <div x-show="open && sidebarOpen" class="pl-4 space-y-0.5 transition-all duration-300">
-                        {% for sub in item.sub_items %}
-                            <a href="{% url sub.url_name %}" hx-get="{% url sub.url_name %}" hx-target="#main-content" hx-push-url="true"
-                               class="cursor-pointer block py-1 px-1.5 rounded-md text-[13px] transition-colors border-l-2 {% if active_submenu == sub.url_name %}bg-blue-50 text-blue-600 border-blue-600 font-medium{% else %}text-gray-600 border-transparent hover:bg-gray-50 hover:text-gray-900{% endif %}">
-                               {{ sub.name }}
-                            </a>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <!-- No sub items -->
-                    <a href="{% url item.url_name %}" hx-get="{% url item.url_name %}" hx-target="#main-content" hx-push-url="true"
-                       class="cursor-pointer flex items-center gap-2 py-1 px-1.5 rounded-md text-[14px] transition-colors border-l-2 {% if active_menu == item.name %}bg-blue-50 text-blue-600 border-blue-600 font-semibold{% else %}text-gray-700 border-transparent hover:bg-gray-50 hover:text-gray-900{% endif %}">
-                        <i data-lucide="{{ item.icon }}" class="w-4 h-4 {% if active_menu == item.name %}text-blue-600{% else %}text-gray-500{% endif %}"></i>
-                        <span x-show="sidebarOpen">{{ item.name }}</span>
-                    </a>
-                {% endif %}
+    <!-- Navigation -->
+    <nav class="ft-sidebar-nav scrollbar-hide">
+
+        <!-- Overview -->
+        <a href="{% url 'dashboard:overview' %}"
+           class="ft-nav-item {% if active_menu == 'Overview' %}active{% endif %}"
+           title="Overview">
+            <i data-lucide="layout-dashboard"></i>
+            <span x-show="!collapsed" x-cloak>Overview</span>
+        </a>
+
+        <!-- Content -->
+        <div x-data="{ open: {% if active_menu == 'Content' %}true{% else %}false{% endif %} }">
+            <button @click="open = !open" type="button"
+                    class="ft-nav-item {% if active_menu == 'Content' %}active{% endif %}"
+                    title="Content">
+                <i data-lucide="file-text"></i>
+                <span x-show="!collapsed" x-cloak style="flex:1;text-align:left">Content</span>
+                <i x-show="!collapsed" x-cloak data-lucide="chevron-down"
+                   style="width:13px;height:13px;transition:transform .2s"
+                   :style="open ? 'transform:rotate(180deg)' : ''"></i>
+            </button>
+            <div x-show="open && !collapsed" x-cloak x-collapse>
+                <a href="{% url 'dashboard:content_posts' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_posts' %}active{% endif %}">
+                    Posts
+                </a>
+                <a href="{% url 'dashboard:content_pending' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_pending' %}active{% endif %}">
+                    Pending Review
+                </a>
+                <a href="{% url 'dashboard:content_categories' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_categories' %}active{% endif %}">
+                    Categories
+                </a>
+                <a href="{% url 'dashboard:content_subcategories' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_subcategories' %}active{% endif %}">
+                    Subcategories
+                </a>
             </div>
-        {% endfor %}
+        </div>
+
+        <!-- Forum -->
+        <div x-data="{ open: {% if active_menu == 'Forum' %}true{% else %}false{% endif %} }">
+            <button @click="open = !open" type="button"
+                    class="ft-nav-item {% if active_menu == 'Forum' %}active{% endif %}"
+                    title="Forum">
+                <i data-lucide="message-square"></i>
+                <span x-show="!collapsed" x-cloak style="flex:1;text-align:left">Forum</span>
+                <i x-show="!collapsed" x-cloak data-lucide="chevron-down"
+                   style="width:13px;height:13px;transition:transform .2s"
+                   :style="open ? 'transform:rotate(180deg)' : ''"></i>
+            </button>
+            <div x-show="open && !collapsed" x-cloak x-collapse>
+                <a href="{% url 'dashboard:forum_questions' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:forum_questions' %}active{% endif %}">
+                    Questions
+                </a>
+                <a href="{% url 'dashboard:forum_answers' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:forum_answers' %}active{% endif %}">
+                    Answers
+                </a>
+                <a href="{% url 'dashboard:forum_reported' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:forum_reported' %}active{% endif %}">
+                    Reported
+                </a>
+            </div>
+        </div>
+
+        <!-- Moderation -->
+        <div x-data="{ open: {% if active_menu == 'Moderation' %}true{% else %}false{% endif %} }">
+            <button @click="open = !open" type="button"
+                    class="ft-nav-item {% if active_menu == 'Moderation' %}active{% endif %}"
+                    title="Moderation">
+                <i data-lucide="shield"></i>
+                <span x-show="!collapsed" x-cloak style="flex:1;text-align:left">Moderation</span>
+                <i x-show="!collapsed" x-cloak data-lucide="chevron-down"
+                   style="width:13px;height:13px;transition:transform .2s"
+                   :style="open ? 'transform:rotate(180deg)' : ''"></i>
+            </button>
+            <div x-show="open && !collapsed" x-cloak x-collapse>
+                <a href="{% url 'dashboard:mod_comments' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_comments' %}active{% endif %}">
+                    Comment Queue
+                </a>
+                <a href="{% url 'dashboard:mod_flagged' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_flagged' %}active{% endif %}">
+                    Flagged
+                </a>
+                <a href="{% url 'dashboard:mod_blocked' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_blocked' %}active{% endif %}">
+                    Blocked Users
+                </a>
+            </div>
+        </div>
+
+        <!-- Users -->
+        <div x-data="{ open: {% if active_menu == 'Users' %}true{% else %}false{% endif %} }">
+            <button @click="open = !open" type="button"
+                    class="ft-nav-item {% if active_menu == 'Users' %}active{% endif %}"
+                    title="Users">
+                <i data-lucide="users"></i>
+                <span x-show="!collapsed" x-cloak style="flex:1;text-align:left">Users</span>
+                <i x-show="!collapsed" x-cloak data-lucide="chevron-down"
+                   style="width:13px;height:13px;transition:transform .2s"
+                   :style="open ? 'transform:rotate(180deg)' : ''"></i>
+            </button>
+            <div x-show="open && !collapsed" x-cloak x-collapse>
+                <a href="{% url 'dashboard:user_list' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:user_list' %}active{% endif %}">
+                    All Users
+                </a>
+                <a href="{% url 'dashboard:user_verification' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:user_verification' %}active{% endif %}">
+                    Verification
+                </a>
+                <a href="{% url 'dashboard:user_roles' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:user_roles' %}active{% endif %}">
+                    Roles
+                </a>
+            </div>
+        </div>
+
+        <!-- SEO -->
+        <div x-data="{ open: {% if active_menu == 'SEO' %}true{% else %}false{% endif %} }">
+            <button @click="open = !open" type="button"
+                    class="ft-nav-item {% if active_menu == 'SEO' %}active{% endif %}"
+                    title="SEO">
+                <i data-lucide="search"></i>
+                <span x-show="!collapsed" x-cloak style="flex:1;text-align:left">SEO</span>
+                <i x-show="!collapsed" x-cloak data-lucide="chevron-down"
+                   style="width:13px;height:13px;transition:transform .2s"
+                   :style="open ? 'transform:rotate(180deg)' : ''"></i>
+            </button>
+            <div x-show="open && !collapsed" x-cloak x-collapse>
+                <a href="{% url 'dashboard:seo_audit' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_audit' %}active{% endif %}">
+                    Meta Audit
+                </a>
+                <a href="{% url 'dashboard:seo_sitemap' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_sitemap' %}active{% endif %}">
+                    Sitemap
+                </a>
+                <a href="{% url 'dashboard:seo_broken' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_broken' %}active{% endif %}">
+                    404 Logs
+                </a>
+            </div>
+        </div>
+
+        <!-- Analytics -->
+        <div x-data="{ open: {% if active_menu == 'Analytics' %}true{% else %}false{% endif %} }">
+            <button @click="open = !open" type="button"
+                    class="ft-nav-item {% if active_menu == 'Analytics' %}active{% endif %}"
+                    title="Analytics">
+                <i data-lucide="bar-chart-2"></i>
+                <span x-show="!collapsed" x-cloak style="flex:1;text-align:left">Analytics</span>
+                <i x-show="!collapsed" x-cloak data-lucide="chevron-down"
+                   style="width:13px;height:13px;transition:transform .2s"
+                   :style="open ? 'transform:rotate(180deg)' : ''"></i>
+            </button>
+            <div x-show="open && !collapsed" x-cloak x-collapse>
+                <a href="{% url 'dashboard:analytics_traffic' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_traffic' %}active{% endif %}">
+                    Traffic
+                </a>
+                <a href="{% url 'dashboard:analytics_top_posts' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_top_posts' %}active{% endif %}">
+                    Top Posts
+                </a>
+                <a href="{% url 'dashboard:analytics_authors' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_authors' %}active{% endif %}">
+                    Author Performance
+                </a>
+            </div>
+        </div>
+
+        <!-- Site Settings -->
+        <div x-data="{ open: {% if active_menu == 'Site Settings' %}true{% else %}false{% endif %} }">
+            <button @click="open = !open" type="button"
+                    class="ft-nav-item {% if active_menu == 'Site Settings' %}active{% endif %}"
+                    title="Site Settings">
+                <i data-lucide="settings"></i>
+                <span x-show="!collapsed" x-cloak style="flex:1;text-align:left">Site Settings</span>
+                <i x-show="!collapsed" x-cloak data-lucide="chevron-down"
+                   style="width:13px;height:13px;transition:transform .2s"
+                   :style="open ? 'transform:rotate(180deg)' : ''"></i>
+            </button>
+            <div x-show="open && !collapsed" x-cloak x-collapse>
+                <a href="{% url 'dashboard:config_ads' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:config_ads' %}active{% endif %}">
+                    Ads Config
+                </a>
+                <a href="{% url 'dashboard:config_footer' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:config_footer' %}active{% endif %}">
+                    Footer / Logos
+                </a>
+                <a href="{% url 'dashboard:config_maintenance' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:config_maintenance' %}active{% endif %}">
+                    Maintenance
+                </a>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <a href="{% url 'dashboard:notifications' %}"
+           class="ft-nav-item {% if active_menu == 'Notifications' %}active{% endif %}"
+           title="Notifications">
+            <i data-lucide="bell"></i>
+            <span x-show="!collapsed" x-cloak>Notifications</span>
+        </a>
+
     </nav>
+
+    <!-- Sidebar footer -->
+    <div style="padding:8px 6px;border-top:1px solid var(--border);flex-shrink:0">
+        <a href="/" target="_blank"
+           class="ft-nav-item" title="View Site">
+            <i data-lucide="external-link" style="opacity:.6"></i>
+            <span x-show="!collapsed" x-cloak style="font-size:12px;color:var(--text-muted)">View Site</span>
+        </a>
+    </div>
 </aside>
+
+<!-- Alpine.js collapse plugin CDN -->
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>

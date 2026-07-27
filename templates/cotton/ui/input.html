@@ -1,0 +1,36 @@
+{% comment %}
+c-ui.input — styled text input
+Props: name, type, label, value, placeholder, required, disabled, error, help, icon, extra_class, id
+{% endcomment %}
+<div class="flex flex-col {{ extra_class }}" style="gap:4px">
+    {% if label %}
+    <label for="{{ id|default:name }}" class="ft-label">
+        {{ label }}{% if required %}<span style="color:var(--danger);margin-left:2px">*</span>{% endif %}
+    </label>
+    {% endif %}
+
+    <div class="ft-input-wrap">
+        {% if icon %}
+        <div class="ft-input-icon-el">
+            <i data-lucide="{{ icon }}" style="width:14px;height:14px"></i>
+        </div>
+        {% endif %}
+        <input
+            type="{{ type|default:'text' }}"
+            name="{{ name }}"
+            id="{{ id|default:name }}"
+            value="{{ value }}"
+            placeholder="{{ placeholder }}"
+            {% if required %}required{% endif %}
+            {% if disabled %}disabled{% endif %}
+            class="ft-input {% if icon %}ft-input-icon{% endif %} {% if error %}!border-red-400{% endif %}"
+            style="{% if error %}box-shadow:0 0 0 3px rgba(239,68,68,.12){% endif %}"
+        >
+    </div>
+
+    {% if error %}
+        <p class="ft-error-text">{{ error }}</p>
+    {% elif help %}
+        <p class="ft-help-text">{{ help }}</p>
+    {% endif %}
+</div>

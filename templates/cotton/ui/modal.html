@@ -1,26 +1,27 @@
-<div x-data="{ open: {{ open|default:'false' }} }" 
-     x-show="open" 
-     class="fixed inset-0 z-50 overflow-y-auto" 
-     style="display: none;">
-    <!-- Backdrop -->
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="open = false"></div>
-
-    <!-- Modal Content -->
-    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-        <div class="relative transform overflow-hidden rounded-md bg-white text-left border border-gray-200 transition-all sm:my-8 sm:w-full sm:max-w-lg">
-            <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                {% if title %}
-                    <h3 class="text-lg font-semibold text-gray-900 mb-3">{{ title }}</h3>
-                {% endif %}
-                <div class="text-[14px] text-gray-700">
-                    {{ slot }}
-                </div>
-            </div>
-            {% if footer %}
-                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 border-t border-gray-200">
-                    {{ footer }}
-                </div>
-            {% endif %}
+{% comment %}
+c-ui.modal
+Props: open (default 'false'), title, footer, extra_class
+Slot: modal body content
+{% endcomment %}
+<div x-data="{ open: {{ open|default:'false' }} }"
+     x-show="open" x-cloak x-transition.opacity
+     class="ft-modal-backdrop">
+    <div class="ft-modal {{ extra_class }}" @click.stop>
+        {% if title %}
+        <div class="ft-card-header">
+            <span class="ft-card-title">{{ title }}</span>
+            <button @click="open = false" type="button" class="ft-btn ft-btn-ghost ft-btn-icon ft-btn-sm">
+                <i data-lucide="x" style="width:14px;height:14px"></i>
+            </button>
         </div>
+        {% endif %}
+        <div class="ft-card-body">
+            {{ slot }}
+        </div>
+        {% if footer %}
+        <div style="padding:12px 16px;border-top:1px solid var(--border);background:var(--surface-2)">
+            {{ footer }}
+        </div>
+        {% endif %}
     </div>
 </div>

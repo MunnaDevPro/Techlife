@@ -1,14 +1,24 @@
-<button type="{{ type|default:'button' }}" 
-    {% if hx_get %}hx-get="{{ hx_get }}"{% endif %} 
-    {% if hx_post %}hx-post="{{ hx_post }}"{% endif %}
-    {% if hx_target %}hx-target="{{ hx_target }}"{% endif %}
-    class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-[14px] font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
-    {% if variant == 'primary' %}bg-blue-600 hover:bg-blue-700 text-white
-    {% elif variant == 'secondary' %}bg-white border border-gray-300 hover:bg-gray-50 text-gray-700
-    {% elif variant == 'danger' %}bg-red-600 hover:bg-red-700 text-white
-    {% else %}bg-gray-100 hover:bg-gray-200 text-gray-800{% endif %} {{ extra_class }}">
-    {% if icon %}
-        <i data-lucide="{{ icon }}" class="w-4 h-4"></i>
-    {% endif %}
+{% comment %}
+c-ui.button
+Props: variant (primary|secondary|ghost|danger|success), size (sm|md|lg),
+       type, icon, href, extra_class, hx_get, hx_post, hx_target
+Slot: button label text
+{% endcomment %}
+{% if href %}
+<a href="{{ href }}"
+   class="ft-btn ft-btn-{{ variant|default:'primary' }} {% if size == 'sm' %}ft-btn-sm{% elif size == 'lg' %}ft-btn-lg{% endif %} {{ extra_class }}">
+    {% if icon %}<i data-lucide="{{ icon }}"></i>{% endif %}
+    {{ slot }}
+</a>
+{% else %}
+<button type="{{ type|default:'button' }}"
+        {% if hx_get %}hx-get="{{ hx_get }}"{% endif %}
+        {% if hx_post %}hx-post="{{ hx_post }}"{% endif %}
+        {% if hx_target %}hx-target="{{ hx_target }}"{% endif %}
+        {% if hx_push_url %}hx-push-url="{{ hx_push_url }}"{% endif %}
+        {% if disabled %}disabled{% endif %}
+        class="ft-btn ft-btn-{{ variant|default:'primary' }} {% if size == 'sm' %}ft-btn-sm{% elif size == 'lg' %}ft-btn-lg{% endif %} {% if full %}ft-btn-full{% endif %} {{ extra_class }}">
+    {% if icon %}<i data-lucide="{{ icon }}"></i>{% endif %}
     {{ slot }}
 </button>
+{% endif %}

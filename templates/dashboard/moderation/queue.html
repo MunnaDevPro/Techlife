@@ -1,24 +1,19 @@
 {% extends base_template %}
 
 {% block content %}
-<div class="space-y-6">
-    <!-- Header -->
+<div style="display:flex;flex-direction:column;gap:20px">
+
     <div>
-        <h2 class="text-lg font-bold text-gray-800">Moderation Queue</h2>
-        <p class="text-[12px] text-gray-500">
-            {% if queue_type == "comments" %}
-                Review flagged comment items
-            {% elif queue_type == "forum" %}
-                Review flagged forum questions and answers
-            {% else %}
-                Review all flagged system items
-            {% endif %}
+        <h2 class="ft-page-title">Moderation Queue</h2>
+        <p class="ft-page-subtitle">
+            {% if queue_type == "comments" %}Review flagged comment items
+            {% elif queue_type == "forum" %}Review flagged forum questions and answers
+            {% else %}Review all flagged system items{% endif %}
         </p>
     </div>
 
-    <!-- Review Card or Empty State -->
     {% if flag_data %}
-        <c-ui.moderation_card 
+        <c-ui.moderation_card
             content_type="{{ flag_data.content_type }}"
             reason="{{ flag_data.reason }}"
             created_at="{{ flag_data.created_at }}"
@@ -29,15 +24,17 @@
             remove_url="{% url 'dashboard:flag_remove' flag_data.flag.pk queue_type %}"
             skip_url="{% url 'dashboard:flag_skip' flag_data.flag.pk queue_type %}" />
     {% else %}
-        <div class="max-w-2xl mx-auto">
-            <c-ui.card>
-                <c-ui.empty_state 
-                    icon="shield-check" 
-                    title="All clear!" 
-                    description="No pending flagged items in this queue." 
-                    action="<a href='{% url 'dashboard:reset_skip_list' queue_type %}' class='px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[14px] font-semibold transition-colors'>Reset Skip List</a>" />
-            </c-ui.card>
-        </div>
+        <c-ui.card>
+            <div style="text-align:center;padding:48px 24px;color:var(--text-muted)">
+                <i data-lucide="shield-check" style="width:40px;height:40px;margin:0 auto 12px;display:block;opacity:.35"></i>
+                <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px">All clear!</p>
+                <p style="font-size:13px;margin-bottom:16px">No pending flagged items in this queue.</p>
+                <a href="{% url 'dashboard:reset_skip_list' queue_type %}" class="ft-btn ft-btn-secondary ft-btn-sm">
+                    <i data-lucide="refresh-cw"></i> Reset Skip List
+                </a>
+            </div>
+        </c-ui.card>
     {% endif %}
+
 </div>
 {% endblock %}

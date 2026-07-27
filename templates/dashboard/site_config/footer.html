@@ -1,170 +1,168 @@
 {% extends base_template %}
 
 {% block content %}
-<div class="space-y-6" x-data="{ tab: 'footer' }">
-    <!-- Header -->
+<div x-data="{ tab: 'footer', showLogoModal: false }"
+     style="display:flex;flex-direction:column;gap:20px">
+
     <div>
-        <h2 class="text-lg font-bold text-gray-800">Footer & Branding</h2>
-        <p class="text-[12px] text-gray-500">Configure footer descriptions, social networks, contact details, and partner brand logos</p>
+        <h2 class="ft-page-title">Footer & Branding</h2>
+        <p class="ft-page-subtitle">Configure footer text, social links, contact details, and partner logos</p>
     </div>
 
-    <!-- Tabbed navigation -->
-    <div class="border-b border-gray-200">
-        <nav class="-mb-px flex space-x-6">
-            <button @click="tab = 'footer'" :class="tab === 'footer' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
-                Footer Configuration
-            </button>
-            <button @click="tab = 'logos'" :class="tab === 'logos' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
-                Branding & Logos ({{ logos|length }})
-            </button>
-        </nav>
+    <!-- Tabs -->
+    <div class="ft-tabs">
+        <button @click="tab = 'footer'" type="button"
+                class="ft-tab" :class="tab === 'footer' ? 'active' : ''">
+            Footer Configuration
+        </button>
+        <button @click="tab = 'logos'" type="button"
+                class="ft-tab" :class="tab === 'logos' ? 'active' : ''">
+            Branding & Logos ({{ logos|length }})
+        </button>
     </div>
 
-    <!-- Footer Settings Form Tab -->
-    <div x-show="tab === 'footer'" class="space-y-4">
+    <!-- Footer Settings Tab -->
+    <div x-show="tab === 'footer'">
         <c-ui.card title="Edit Footer Metadata">
-            <form action="{% url 'dashboard:settings_footer' %}" method="post" enctype="multipart/form-data" class="space-y-6">
+            <form action="{% url 'dashboard:settings_footer' %}" method="post"
+                  enctype="multipart/form-data"
+                  style="display:flex;flex-direction:column;gap:14px">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="save_footer">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Company Description</label>
-                        <textarea name="description" rows="3" required class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">{{ footer.description }}</textarea>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                        <label class="ft-label">Company Description *</label>
+                        <textarea name="description" rows="3" required class="ft-input"
+                                  style="resize:vertical">{{ footer.description }}</textarea>
                     </div>
-
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Office Address</label>
-                        <textarea name="address" rows="3" required class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">{{ footer.address }}</textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Contact Email</label>
-                        <input type="email" name="email" value="{{ footer.email }}" required class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Phone Number</label>
-                        <input type="text" name="phone" value="{{ footer.phone }}" required class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Facebook Profile URL</label>
-                        <input type="url" name="facebook_url" value="{{ footer.facebook_url }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Twitter/X Profile URL</label>
-                        <input type="url" name="twitter_url" value="{{ footer.twitter_url }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">LinkedIn Profile URL</label>
-                        <input type="url" name="linkedin_url" value="{{ footer.linkedin_url }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">WhatsApp Chat Number</label>
-                        <input type="text" name="whatsapp_number" value="{{ footer.whatsapp_number }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Developer Company Name</label>
-                        <input type="text" name="developer_company_name" value="{{ footer.developer_company_name }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Developer Website URL</label>
-                        <input type="url" name="developer_company_url" value="{{ footer.developer_company_url }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                        <label class="ft-label">Office Address *</label>
+                        <textarea name="address" rows="3" required class="ft-input"
+                                  style="resize:vertical">{{ footer.address }}</textarea>
                     </div>
                 </div>
 
-                <div class="flex justify-end pt-4 border-t border-gray-100">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[14px] font-semibold transition-colors">
-                        Save Footer Details
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                    <c-ui.input name="email" type="email" label="Contact Email" required="true"
+                        value="{{ footer.email }}" icon="mail" />
+                    <c-ui.input name="phone" type="text" label="Phone Number" required="true"
+                        value="{{ footer.phone }}" icon="phone" />
+                </div>
+
+                <p class="ft-label" style="margin-top:4px">Social Links</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                    <c-ui.input name="facebook_url" type="url" label="Facebook URL"
+                        value="{{ footer.facebook_url }}" icon="external-link" />
+                    <c-ui.input name="twitter_url" type="url" label="Twitter/X URL"
+                        value="{{ footer.twitter_url }}" icon="external-link" />
+                    <c-ui.input name="linkedin_url" type="url" label="LinkedIn URL"
+                        value="{{ footer.linkedin_url }}" icon="external-link" />
+                    <c-ui.input name="whatsapp_number" type="text" label="WhatsApp Number"
+                        value="{{ footer.whatsapp_number }}" icon="message-circle" />
+                </div>
+
+                <p class="ft-label" style="margin-top:4px">Developer Info</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                    <c-ui.input name="developer_company_name" type="text" label="Developer Company Name"
+                        value="{{ footer.developer_company_name }}" icon="code" />
+                    <c-ui.input name="developer_company_url" type="url" label="Developer Website URL"
+                        value="{{ footer.developer_company_url }}" icon="external-link" />
+                </div>
+
+                <div style="display:flex;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--border)">
+                    <button type="submit" class="ft-btn ft-btn-primary">
+                        <i data-lucide="save"></i> Save Footer Details
                     </button>
                 </div>
             </form>
         </c-ui.card>
     </div>
 
-    <!-- Company Logos / Branding Tab -->
-    <div x-show="tab === 'logos'" style="display: none;" class="space-y-4" x-data="{ showLogoModal: false }">
-        <div class="flex justify-end">
-            <button @click="showLogoModal = true" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[14px] font-semibold transition-colors flex items-center gap-1.5">
-                <i data-lucide="plus" class="w-4 h-4"></i> Add Partner Logo
+    <!-- Logos Tab -->
+    <div x-show="tab === 'logos'">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+            <button @click="showLogoModal = true" type="button" class="ft-btn ft-btn-primary ft-btn-sm">
+                <i data-lucide="plus"></i> Add Partner Logo
             </button>
         </div>
 
-        <c-ui.card>
-            <c-ui.table :headers="['Logo Name', 'Branding Image / URL', 'Actions']">
+        <c-ui.card title="Partner Logos" subtitle="{{ logos|length }} logos">
+            <c-ui.table :headers="['Logo Name', 'Branding Image', 'Actions']">
                 {% for logo in logos %}
-                    <tr>
-                        <td class="px-6 py-4 font-semibold text-gray-900 leading-snug">{{ logo.name }}</td>
-                        <td class="px-6 py-4">
-                            {% if logo.company_image %}
-                                <img src="{{ logo.company_image.url }}" class="h-8 max-w-[120px] object-contain border border-gray-100 p-0.5 bg-white" alt="{{ logo.name }}">
-                            {% elif logo.company_image_url %}
-                                <span class="text-[12px] text-gray-500 font-mono select-all">{{ logo.company_image_url }}</span>
-                            {% else %}
-                                <span class="text-[12px] text-gray-400 italic">No image assets</span>
-                            {% endif %}
-                        </td>
-                        <td class="px-6 py-4">
-                            <form action="{% url 'dashboard:settings_footer' %}" method="post" onsubmit="return confirm('Delete this logo unit?');">
-                                {% csrf_token %}
-                                <input type="hidden" name="action" value="delete_logo">
-                                <input type="hidden" name="id" value="{{ logo.pk }}">
-                                <button type="submit" class="text-red-600 hover:text-red-700 font-semibold text-[13px]">
-                                    Delete
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>{{ logo.name }}</td>
+                    <td>
+                        {% if logo.company_image %}
+                            <img src="{{ logo.company_image.url }}"
+                                 style="height:32px;max-width:120px;object-fit:contain;
+                                        background:var(--surface-2);border-radius:4px;padding:2px"
+                                 alt="{{ logo.name }}">
+                        {% elif logo.company_image_url %}
+                            <code style="font-size:11px;color:var(--text-muted)">{{ logo.company_image_url }}</code>
+                        {% else %}
+                            <span style="font-size:11px;color:var(--text-disabled);font-style:italic">No image</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="{% url 'dashboard:settings_footer' %}" method="post"
+                              onsubmit="return confirm('Delete this logo?')" style="display:inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete_logo">
+                            <input type="hidden" name="id" value="{{ logo.pk }}">
+                            <button type="submit" class="ft-btn ft-btn-danger ft-btn-sm">
+                                <i data-lucide="trash-2"></i> Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
                 {% empty %}
-                    <tr>
-                        <td colspan="3" class="px-6 py-4 text-center text-gray-500 font-medium">No partner logo records.</td>
-                    </tr>
+                <tr>
+                    <td colspan="3" style="text-align:center;padding:32px;color:var(--text-muted)">
+                        <i data-lucide="image" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                        No partner logos added yet
+                    </td>
+                </tr>
                 {% endfor %}
             </c-ui.table>
         </c-ui.card>
+    </div>
 
-        <!-- Logo Add Modal -->
-        <div x-show="showLogoModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showLogoModal = false"></div>
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-md bg-white text-left border border-gray-200 transition-all sm:my-8 sm:w-full sm:max-w-lg p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Add Company Logo</h3>
-                    
-                    <form action="{% url 'dashboard:settings_footer' %}" method="post" enctype="multipart/form-data" class="space-y-4">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="add_logo">
-
-                        <div>
-                            <label class="block text-[12px] font-medium text-gray-700 mb-1">Company / Partner Name</label>
-                            <input type="text" name="name" required class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                        </div>
-
-                        <div>
-                            <label class="block text-[12px] font-medium text-gray-700 mb-1">Upload Logo Image</label>
-                            <input type="file" name="company_image" class="w-full text-[14px] text-gray-700">
-                        </div>
-
-                        <div class="text-center text-gray-400 text-[11px] font-semibold">-- OR --</div>
-
-                        <div>
-                            <label class="block text-[12px] font-medium text-gray-700 mb-1">Logo Image External URL</label>
-                            <input type="url" name="company_image_url" placeholder="https://example.com/logo.webp" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                        </div>
-
-                        <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                            <button type="button" @click="showLogoModal = false" class="px-4 py-2 border border-gray-300 rounded-md text-[14px] hover:bg-gray-50">Cancel</button>
-                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[14px] font-semibold">Add Logo</button>
-                        </div>
-                    </form>
-                </div>
+    <!-- Add Logo Modal -->
+    <div x-show="showLogoModal" x-cloak class="ft-modal-backdrop">
+        <div class="ft-modal" @click.stop>
+            <div class="ft-card-header">
+                <span class="ft-card-title">Add Partner Logo</span>
+                <button @click="showLogoModal=false" class="ft-btn ft-btn-ghost ft-btn-icon ft-btn-sm">
+                    <i data-lucide="x" style="width:14px;height:14px"></i>
+                </button>
+            </div>
+            <div class="ft-card-body">
+                <form action="{% url 'dashboard:settings_footer' %}" method="post"
+                      enctype="multipart/form-data"
+                      style="display:flex;flex-direction:column;gap:12px">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_logo">
+                    <c-ui.input name="logo_name" label="Logo / Company Name" required="true"
+                        placeholder="e.g. Acme Corp" icon="tag" />
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                        <label class="ft-label">Upload Image</label>
+                        <input type="file" name="company_image" accept="image/*"
+                               style="font-size:13px;color:var(--text);cursor:pointer">
+                        <p class="ft-help-text">Or provide image URL below</p>
+                    </div>
+                    <c-ui.input name="company_image_url" label="Image URL (optional)"
+                        type="url" placeholder="https://example.com/logo.png" icon="link" />
+                    <div style="display:flex;gap:8px;justify-content:flex-end;padding-top:10px;border-top:1px solid var(--border)">
+                        <button type="button" @click="showLogoModal=false" class="ft-btn ft-btn-secondary ft-btn-sm">Cancel</button>
+                        <button type="submit" class="ft-btn ft-btn-primary ft-btn-sm">
+                            <i data-lucide="upload"></i> Add Logo
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}

@@ -1,19 +1,39 @@
-<div class="bg-white border border-gray-200 rounded-md p-4 flex items-center justify-between">
-    <div>
-        <p class="text-[12px] text-gray-500 font-medium uppercase tracking-wider">{{ label }}</p>
-        <h4 class="text-2xl font-bold text-gray-900 mt-1">{{ value }}</h4>
-        {% if change %}
-            <p class="text-[12px] mt-1 flex items-center gap-1">
-                <span class="{% if trend == 'up' %}text-green-600{% elif trend == 'down' %}text-red-600{% else %}text-gray-500{% endif %} font-semibold">
-                    {{ change }}
-                </span>
-                <span class="text-gray-400">vs last period</span>
-            </p>
-        {% endif %}
-    </div>
+{% comment %}
+c-ui.kpi_card
+Props: label, value, icon, change, trend (up|down|neutral), color (primary|accent|warning|danger|neutral)
+{% endcomment %}
+{% with c=color|default:'primary' %}
+<div class="ft-kpi">
     {% if icon %}
-        <div class="p-3 bg-blue-50 rounded-md text-blue-600">
-            <i data-lucide="{{ icon }}" class="w-5 h-5 text-blue-600"></i>
-        </div>
+    <div class="ft-kpi-icon
+        {% if c == 'accent' %}bg-emerald-50 text-emerald-600
+        {% elif c == 'warning' %}bg-amber-50 text-amber-600
+        {% elif c == 'danger' %}bg-red-50 text-red-600
+        {% elif c == 'neutral' %}bg-gray-100 text-gray-500
+        {% elif c == 'indigo' %}bg-indigo-50 text-indigo-600
+        {% elif c == 'sky' %}bg-sky-50 text-sky-600
+        {% elif c == 'purple' %}bg-purple-50 text-purple-600
+        {% else %}bg-indigo-50 text-indigo-600{% endif %}">
+        <i data-lucide="{{ icon }}"></i>
+    </div>
     {% endif %}
+    <div style="flex:1;min-width:0">
+        <p style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">
+            {{ label }}
+        </p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+            <h4 style="font-size:22px;font-weight:700;color:var(--text);line-height:1">{{ value }}</h4>
+            {% if change %}
+            <span style="font-size:11px;font-weight:600;
+                color:{% if trend == 'up' %}#10b981{% elif trend == 'down' %}#ef4444{% else %}var(--text-muted){% endif %};
+                display:flex;align-items:center;gap:2px">
+                {% if trend == 'up' %}<i data-lucide="trending-up" style="width:11px;height:11px"></i>
+                {% elif trend == 'down' %}<i data-lucide="trending-down" style="width:11px;height:11px"></i>{% endif %}
+                {{ change }}
+            </span>
+            {% endif %}
+        </div>
+        {% if subtitle %}<p style="font-size:11px;color:var(--text-muted);margin-top:2px">{{ subtitle }}</p>{% endif %}
+    </div>
 </div>
+{% endwith %}

@@ -1,37 +1,37 @@
 {% extends base_template %}
 
 {% block content %}
-<div class="space-y-6">
-    <!-- Header -->
+<div style="display:flex;flex-direction:column;gap:20px">
     <div>
-        <h2 class="text-lg font-bold text-gray-800">Verification Requests</h2>
-        <p class="text-[12px] text-gray-500">Manually verify users whose verification emails are stuck or failing</p>
+        <h2 class="ft-page-title">Verification Requests</h2>
+        <p class="ft-page-subtitle">Manually verify users whose emails are stuck</p>
     </div>
 
-    <!-- Table -->
-    <c-ui.card>
-        <c-ui.table :headers="['Email', 'Name', 'Date Joined', 'Verification Status', 'Actions']">
+    <c-ui.card title="Pending Verification" subtitle="{{ users|length }} pending">
+        <c-ui.table :headers="['Email', 'Name', 'Date Joined', 'Status', 'Actions']">
             {% for u in users %}
-                <tr>
-                    <td class="px-6 py-4 font-medium text-gray-900">{{ u.email }}</td>
-                    <td class="px-6 py-4 text-gray-700">{{ u.first_name }} {{ u.last_name }}</td>
-                    <td class="px-6 py-4 text-gray-500 text-[12px]">{{ u.date_joined|date:"Y-m-d H:i" }}</td>
-                    <td class="px-6 py-4">
-                        <c-ui.badge type="warning">Unverified</c-ui.badge>
-                    </td>
-                    <td class="px-6 py-4">
-                        <form action="{% url 'dashboard:user_verify' u.pk %}" method="post" onsubmit="return confirm('Manually verify this user?');">
-                            {% csrf_token %}
-                            <button type="submit" class="px-3 py-1 bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 rounded text-[13px] font-semibold transition-colors flex items-center gap-1">
-                                <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Verify User
-                            </button>
-                        </form>
-                    </td>
-                </tr>
+            <tr>
+                <td>{{ u.email }}</td>
+                <td style="color:var(--text-muted)">{{ u.first_name }} {{ u.last_name }}</td>
+                <td style="font-size:11px;color:var(--text-muted)">{{ u.date_joined|date:"Y-m-d H:i" }}</td>
+                <td><c-ui.badge variant="warning" dot="true">Unverified</c-ui.badge></td>
+                <td>
+                    <form action="{% url 'dashboard:user_verify' u.pk %}" method="post"
+                          onsubmit="return confirm('Manually verify this user?')">
+                        {% csrf_token %}
+                        <button type="submit" class="ft-btn ft-btn-success ft-btn-sm">
+                            <i data-lucide="check-circle"></i> Verify User
+                        </button>
+                    </form>
+                </td>
+            </tr>
             {% empty %}
-                <tr>
-                    <td colspan="5" class="px-6 py-4 text-center text-gray-500 font-medium">No pending verification requests found. All users verified!</td>
-                </tr>
+            <tr>
+                <td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted)">
+                    <i data-lucide="check-circle" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4;color:#10b981"></i>
+                    All users are verified!
+                </td>
+            </tr>
             {% endfor %}
         </c-ui.table>
     </c-ui.card>

@@ -1,8 +1,15 @@
-<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[12px] font-medium 
-    {% if type == 'success' %}bg-green-50 text-green-700 border border-green-200
-    {% elif type == 'danger' %}bg-red-50 text-red-700 border border-red-200
-    {% elif type == 'warning' %}bg-yellow-50 text-yellow-700 border border-yellow-200
-    {% elif type == 'info' %}bg-blue-50 text-blue-700 border border-blue-200
-    {% else %}bg-gray-50 text-gray-700 border border-gray-200{% endif %} {{ extra_class }}">
+{% comment %}
+c-ui.badge
+Props: variant (success|danger|warning|info|primary|neutral), type (alias for variant), dot, extra_class
+Slot: badge text
+{% endcomment %}
+{% with v=variant|default:type|default:'neutral' %}
+<span class="ft-badge ft-badge-{{ v }} {{ extra_class }}">
+    {% if dot %}
+    <span style="display:inline-block;width:6px;height:6px;border-radius:50%;
+                 background:{% if v == 'success' %}#10b981{% elif v == 'danger' %}#ef4444{% elif v == 'warning' %}#f59e0b{% elif v == 'info' %}#3b82f6{% elif v == 'primary' %}#6366f1{% else %}#9ca3af{% endif %}">
+    </span>
+    {% endif %}
     {{ slot }}
 </span>
+{% endwith %}

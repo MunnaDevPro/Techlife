@@ -1,11 +1,22 @@
-<div class="bg-white border border-gray-200 rounded-md p-4 {{ extra_class }}">
-    {% if title %}
-        <div class="border-b border-gray-150 pb-3 mb-4 flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-gray-800">{{ title }}</h3>
-            {% if header_action %}{{ header_action }}{% endif %}
+{% comment %}
+c-ui.card
+Props: title, subtitle, extra_class, header_action, padding (none|sm|md|lg)
+Slots: default slot = card body
+{% endcomment %}
+<div class="ft-card {{ extra_class }}"
+     {% if padding == 'none' %}style="--cp:0"{% endif %}>
+    {% if title or header_action %}
+    <div class="ft-card-header">
+        <div>
+            <p class="ft-card-title">{{ title }}</p>
+            {% if subtitle %}<p class="ft-card-subtitle">{{ subtitle }}</p>{% endif %}
         </div>
+        {% if header_action %}
+        <div style="display:flex;align-items:center;gap:8px">{{ header_action }}</div>
+        {% endif %}
+    </div>
     {% endif %}
-    <div class="text-[14px]">
+    <div class="ft-card-body {% if padding == 'none' %}!p-0{% elif padding == 'sm' %}!p-3{% elif padding == 'lg' %}!p-6{% endif %}">
         {{ slot }}
     </div>
 </div>

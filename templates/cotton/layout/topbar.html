@@ -1,43 +1,95 @@
-<header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
-    <!-- Page Title / Left side -->
-    <div class="flex items-center gap-4">
-        <h1 class="text-lg font-semibold text-gray-800">{{ page_title }}</h1>
+<header class="ft-topbar">
+    <!-- Left: Page title -->
+    <div style="display:flex;align-items:center;gap:10px;min-width:0">
+        <div style="min-width:0">
+            <h1 style="font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                {{ page_title }}
+            </h1>
+        </div>
     </div>
 
-    <!-- Search & Profile / Right side -->
-    <div class="flex items-center gap-4">
-        <!-- Search bar -->
-        <div class="relative">
-            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i data-lucide="search" class="h-4 w-4 text-gray-400"></i>
-            </span>
-            <input type="text" placeholder="Search..." class="pl-9 pr-4 py-1.5 bg-gray-50 border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white w-64 transition-colors">
+    <!-- Right: clock + user -->
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+
+        <!-- Live date/time -->
+        <div style="display:flex;align-items:center;gap:10px;padding:4px 12px;
+                    background:var(--surface-2);border:1px solid var(--border);
+                    border-radius:var(--radius-sm);font-size:11px;color:var(--text-muted)">
+            <span id="tl-date" style="font-weight:600"></span>
+            <span style="width:1px;height:14px;background:var(--border)"></span>
+            <span id="tl-time" style="font-weight:600;font-family:monospace;letter-spacing:.04em"></span>
         </div>
 
-        <!-- Notification bell placeholder -->
-        <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-500 relative">
-            <i data-lucide="bell" class="w-5 h-5"></i>
-            <span class="absolute top-1.5 right-1.5 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
-        </button>
+        <!-- View site -->
+        <a href="/" target="_blank"
+           class="ft-btn ft-btn-ghost ft-btn-icon" title="View site">
+            <i data-lucide="external-link" style="width:15px;height:15px"></i>
+        </a>
 
-        <!-- Profile dropdown -->
-        <div x-data="{ open: false }" class="relative">
-            <button @click="open = !open" class="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded-md transition-colors">
-                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center font-semibold text-blue-700 text-[14px]">
-                    {{ user.username|slice:":2"|upper }}
+        <!-- User dropdown -->
+        <div x-data="{ open: false }" style="position:relative">
+            <button @click="open = !open" type="button"
+                    style="display:flex;align-items:center;gap:8px;padding:4px 8px;
+                           border-radius:var(--radius-sm);border:none;cursor:pointer;
+                           background:transparent;transition:background .15s"
+                    onmouseenter="this.style.background='var(--surface-2)'"
+                    onmouseleave="this.style.background='transparent'">
+                <div style="width:30px;height:30px;border-radius:50%;background:var(--primary);
+                             display:flex;align-items:center;justify-content:center;
+                             color:white;font-size:12px;font-weight:700;flex-shrink:0">
+                    {{ request.user.email|default:"U"|make_list|first|upper }}
                 </div>
-                <span class="text-[14px] text-gray-700 font-medium hidden md:inline">{{ user.username }}</span>
-                <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                <div style="text-align:left;display:none" class="md-show">
+                    <p style="font-size:12px;font-weight:600;color:var(--text);
+                               max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                        {{ request.user.get_full_name|default:request.user.email|truncatechars:18 }}
+                    </p>
+                    <p style="font-size:10px;color:var(--text-muted)">Administrator</p>
+                </div>
+                <i data-lucide="chevron-down" style="width:13px;height:13px;color:var(--text-muted)"></i>
             </button>
-            <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md py-1 z-20" style="display: none;">
-                <div class="px-4 py-2 border-b border-gray-100">
-                    <p class="text-[12px] text-gray-500">Logged in as</p>
-                    <p class="text-[14px] font-semibold text-gray-800 truncate">{{ user.email }}</p>
+
+            <div x-show="open" @click.away="open = false" x-cloak
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="ft-dropdown"
+                 style="position:absolute;right:0;top:calc(100% + 6px);min-width:200px">
+                <div style="padding:10px 12px;border-bottom:1px solid var(--border);margin-bottom:4px">
+                    <p style="font-size:12px;font-weight:600;color:var(--text);
+                               overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                        {{ request.user.email|default:"User" }}
+                    </p>
+                    <p style="font-size:10px;color:var(--text-muted)">Staff Administrator</p>
                 </div>
-                <a href="{% url 'profile_update' %}" class="block px-4 py-2 text-[14px] text-gray-700 hover:bg-gray-50">Profile Settings</a>
-                <div class="border-t border-gray-100"></div>
-                <a href="{% url 'logout' %}" class="block px-4 py-2 text-[14px] text-red-600 hover:bg-red-50">Sign out</a>
+                <a href="{% url 'profile_update' %}" class="ft-dropdown-item">
+                    <i data-lucide="user" style="width:13px;height:13px"></i>
+                    Profile Settings
+                </a>
+                <div style="height:1px;background:var(--border);margin:4px 0"></div>
+                <a href="{% url 'logout' %}" class="ft-dropdown-item"
+                   style="color:var(--danger)">
+                    <i data-lucide="log-out" style="width:13px;height:13px"></i>
+                    Sign out
+                </a>
             </div>
         </div>
     </div>
 </header>
+
+<script>
+(function() {
+    function updateClock() {
+        var now = new Date();
+        var d = document.getElementById('tl-date');
+        var t = document.getElementById('tl-time');
+        if (d) d.textContent = now.toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
+        if (t) t.textContent = now.toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+})();
+</script>

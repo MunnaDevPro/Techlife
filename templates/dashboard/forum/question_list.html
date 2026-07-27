@@ -1,79 +1,84 @@
 {% extends base_template %}
 
 {% block content %}
-<div class="space-y-6" x-data="{ 
-    showDeleteModal: false, 
+<div x-data="{
+    showDeleteModal: false,
     confirmDeleteId: null,
     confirmTitle: '',
-    confirmAnswersCount: 0 
-}">
-    <!-- Header -->
+    confirmAnswersCount: 0
+}" style="display:flex;flex-direction:column;gap:20px">
+
     <div>
-        <h2 class="text-lg font-bold text-gray-800">Forum Questions</h2>
-        <p class="text-[12px] text-gray-500">Manage questions posted on the forums</p>
+        <h2 class="ft-page-title">Forum Questions</h2>
+        <p class="ft-page-subtitle">Manage all questions posted on the forum</p>
     </div>
 
-    <!-- Table -->
-    <c-ui.card>
-        <c-ui.table :headers="['Title', 'Author', 'Answers Count', 'Created Date', 'Actions']">
+    <c-ui.card title="Questions" subtitle="{{ questions|length }} total">
+        <c-ui.table :headers="['Title', 'Author', 'Answers', 'Created', 'Actions']">
             {% for q in questions %}
-                <tr>
-                    <td class="px-6 py-4 font-medium text-gray-900">
-                        <a href="/forum/question/{{ q.slug }}/" target="_blank" class="hover:underline text-blue-600 font-medium">
-                            {{ q.title }}
+            <tr>
+                <td>
+                    <a href="/forum/question/{{ q.slug }}/" target="_blank"
+                       style="color:var(--primary);text-decoration:none;font-weight:500"
+                       onmouseover="this.style.textDecoration='underline'"
+                       onmouseout="this.style.textDecoration='none'">
+                        {{ q.title }}
+                    </a>
+                </td>
+                <td style="color:var(--text-muted)">{{ q.author.email }}</td>
+                <td><c-ui.badge variant="neutral">{{ q.answer_count }} answers</c-ui.badge></td>
+                <td style="font-size:11px;color:var(--text-muted)">{{ q.created_at|date:"Y-m-d H:i" }}</td>
+                <td>
+                    <div style="display:flex;gap:8px">
+                        <a href="/forum/question/{{ q.slug }}/" target="_blank" class="ft-btn ft-btn-ghost ft-btn-sm">
+                            <i data-lucide="external-link"></i> View
                         </a>
-                    </td>
-                    <td class="px-6 py-4 text-gray-700">{{ q.author.email }}</td>
-                    <td class="px-6 py-4">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[13px] bg-gray-100 text-gray-800 border border-gray-150">
-                            {{ q.answer_count }} answers
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-gray-500 text-[12px]">{{ q.created_at|date:"Y-m-d H:i" }}</td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-2">
-                            <a href="/forum/question/{{ q.slug }}/" target="_blank" class="px-2 py-1 bg-white border border-gray-300 hover:bg-gray-50 rounded text-[13px] font-medium text-gray-700 flex items-center gap-1">
-                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> View
-                            </a>
-                            <button @click="confirmDeleteId = {{ q.pk }}; confirmTitle = '{{ q.title|escapejs }}'; confirmAnswersCount = {{ q.answer_count }}; showDeleteModal = true" class="px-2 py-1 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded text-[13px] font-medium flex items-center gap-1">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+                        <button type="button" class="ft-btn ft-btn-danger ft-btn-sm"
+                            @click="confirmDeleteId={{ q.pk }}; confirmTitle='{{ q.title|escapejs }}'; confirmAnswersCount={{ q.answer_count }}; showDeleteModal=true">
+                            <i data-lucide="trash-2"></i> Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
             {% empty %}
-                <tr>
-                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">No questions found.</td>
-                </tr>
+            <tr>
+                <td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted)">
+                    <i data-lucide="message-square" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                    No forum questions found
+                </td>
+            </tr>
             {% endfor %}
         </c-ui.table>
     </c-ui.card>
 
-    <!-- Delete Confirmation Modal -->
-    <div x-show="showDeleteModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showDeleteModal = false"></div>
-        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <div class="relative transform overflow-hidden rounded-md bg-white text-left border border-gray-200 transition-all sm:my-8 sm:w-full sm:max-w-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Delete Question</h3>
-                <p class="text-[14px] text-gray-600">Are you sure you want to delete the question <strong x-text="'\'' + confirmTitle + '\'''"></strong>?</p>
-                
-                <!-- Explicit cascade warning -->
-                <div x-show="confirmAnswersCount > 0" class="mt-3 p-3 bg-red-50 border border-red-200 rounded text-[13px] text-red-700 flex items-start gap-2">
-                    <i data-lucide="alert-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
-                    <div>
-                        <span class="font-semibold">Warning:</span> This will also delete <span x-text="confirmAnswersCount" class="font-bold"></span> answers.
-                    </div>
+    <!-- Delete Modal -->
+    <div x-show="showDeleteModal" x-cloak class="ft-modal-backdrop">
+        <div class="ft-modal" @click.stop>
+            <div class="ft-card-header">
+                <span class="ft-card-title">Delete Question</span>
+            </div>
+            <div class="ft-card-body" style="display:flex;flex-direction:column;gap:10px">
+                <p style="font-size:13px;color:var(--text-secondary)">
+                    Are you sure you want to delete <strong x-text="'&quot;' + confirmTitle + '&quot;'"></strong>?
+                </p>
+                <div x-show="confirmAnswersCount > 0"
+                     style="display:flex;align-items:flex-start;gap:8px;padding:10px 12px;
+                            background:#fef2f2;border-radius:var(--radius-sm);border:1px solid #fecaca">
+                    <i data-lucide="alert-triangle" style="width:14px;height:14px;color:var(--danger);flex-shrink:0;margin-top:1px"></i>
+                    <span style="font-size:12px;color:#991b1b">
+                        Warning: This will also delete <strong x-text="confirmAnswersCount"></strong> answers.
+                    </span>
                 </div>
-                
-                <div class="flex justify-end gap-3 mt-6">
-                    <button @click="showDeleteModal = false" class="px-4 py-2 border border-gray-300 rounded-md text-[14px] hover:bg-gray-50">Cancel</button>
-                    <form :action="'/dashboard/forum/questions/' + confirmDeleteId + '/delete/'" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-[14px]">Delete Anyway</button>
-                    </form>
-                </div>
+            </div>
+            <div style="padding:12px 16px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border);background:var(--surface-2)">
+                <button @click="showDeleteModal=false" class="ft-btn ft-btn-secondary ft-btn-sm">Cancel</button>
+                <form :action="'/dashboard/forum/questions/' + confirmDeleteId + '/delete/'" method="post" style="display:inline">
+                    {% csrf_token %}
+                    <button type="submit" class="ft-btn ft-btn-danger ft-btn-sm">Delete Anyway</button>
+                </form>
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}

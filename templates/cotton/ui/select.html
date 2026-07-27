@@ -1,0 +1,90 @@
+{% comment %}
+c-ui.select — custom styled dropdown
+Props: name, label, value, required, disabled, error, help, extra_class, id
+Slot: <option> elements
+{% endcomment %}
+<div class="flex flex-col {{ extra_class }}" style="gap:4px"
+     x-data="{
+        open: false,
+        selected: '{{ value|default:''|escapejs }}',
+        selectedLabel: '',
+        init() {
+            this.$nextTick(() => {
+                const sel = this.$refs.nativeSelect;
+                if (!sel) return;
+                if (this.selected) sel.value = this.selected;
+                const opt = Array.from(sel.options).find(o => o.selected);
+                this.selectedLabel = opt ? opt.text.trim() : (sel.options[0] ? sel.options[0].text.trim() : '');
+                this.selected = sel.value;
+            });
+        },
+        pick(val, label) {
+            this.selected = val;
+            this.selectedLabel = label;
+            const sel = this.$refs.nativeSelect;
+            if (sel) { sel.value = val; sel.dispatchEvent(new Event('change')); }
+            this.open = false;
+        }
+     }">
+
+    {% if label %}
+    <label class="ft-label">
+        {{ label }}{% if required %}<span style="color:var(--danger);margin-left:2px">*</span>{% endif %}
+    </label>
+    {% endif %}
+
+    <!-- Hidden native select (submits with form) -->
+    <select x-ref="nativeSelect" name="{{ name }}" id="{{ id|default:name }}"
+            {% if required %}required{% endif %}
+            {% if disabled %}disabled{% endif %}
+            style="position:absolute;opacity:0;pointer-events:none;height:0;width:0">
+        {{ slot }}
+    </select>
+
+    <!-- Custom trigger -->
+    <div style="position:relative">
+        <button type="button" @click="open = !open" @keydown.escape="open = false"
+                class="ft-input"
+                style="display:flex;align-items:center;justify-content:space-between;
+                       cursor:pointer;text-align:left;{% if error %}border-color:var(--danger){% endif %}"
+                :class="open ? '!border-indigo-400' : ''"
+                :style="open ? 'box-shadow:0 0 0 3px rgba(99,102,241,.15)' : ''">
+            <span x-text="selectedLabel || 'Select…'" style="color:var(--text)"></span>
+            <i data-lucide="chevron-down" style="width:13px;height:13px;color:var(--text-muted);
+               transition:transform .2s;flex-shrink:0"
+               :style="open ? 'transform:rotate(180deg)' : ''"></i>
+        </button>
+
+        <!-- Dropdown list -->
+        <div x-show="open" @click.away="open = false" x-cloak
+             x-transition:enter="transition ease-out duration-100"
+             x-transition:enter-start="opacity-0 scale-98 -translate-y-1"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             class="ft-dropdown"
+             style="position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:240px;overflow-y:auto">
+            <!-- Iterate options from native select via JS -->
+            <template x-if="open">
+                <div x-init="
+                    const sel = $el.closest('[x-data]').__x.$data.$refs.nativeSelect;
+                    if (!sel) return;
+                    Array.from(sel.options).forEach(opt => {
+                        const div = document.createElement('div');
+                        div.className = 'ft-dropdown-item';
+                        if (opt.value === $el.closest('[x-data]').__x.$data.selected) div.classList.add('selected');
+                        div.textContent = opt.text.trim();
+                        div.addEventListener('click', () => {
+                            $el.closest('[x-data]').__x.$data.pick(opt.value, opt.text.trim());
+                        });
+                        $el.appendChild(div);
+                    });
+                "></div>
+            </template>
+        </div>
+    </div>
+
+    {% if error %}
+        <p class="ft-error-text">{{ error }}</p>
+    {% elif help %}
+        <p class="ft-help-text">{{ help }}</p>
+    {% endif %}
+</div>

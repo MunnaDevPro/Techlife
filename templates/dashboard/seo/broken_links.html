@@ -1,37 +1,32 @@
 {% extends base_template %}
 
 {% block content %}
-<div class="space-y-6">
-    <!-- Top Header -->
+<div style="display:flex;flex-direction:column;gap:20px">
     <div>
-        <h2 class="text-lg font-bold text-gray-800">Broken Links & 404 Logs</h2>
-        <p class="text-[12px] text-gray-500">View real-time page-not-found redirects recorded by the site middleware</p>
+        <h2 class="ft-page-title">Broken Links & 404 Logs</h2>
+        <p class="ft-page-subtitle">Real-time page-not-found redirects recorded by middleware</p>
     </div>
 
-    <!-- Broken Links table -->
-    <c-ui.card title="404 Log List">
+    <c-ui.card title="404 Log List" subtitle="{{ logs|length }} entries">
         <c-ui.table :headers="['Request Path', 'HTTP Referer', 'Hit Count', 'Last Seen']">
             {% for log in logs %}
-                <tr>
-                    <td class="px-6 py-4 font-semibold text-gray-900 leading-snug">
-                        {{ log.path }}
-                    </td>
-                    <td class="px-6 py-4 text-gray-700">
-                        {{ log.referer|default:"Direct / Empty" }}
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[13px] bg-red-50 text-red-700 border border-red-100 font-bold">
-                            {{ log.hit_count }} hits
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-gray-500 text-[12px]">
-                        {{ log.last_seen|date:"Y-m-d H:i" }}
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <code style="font-size:12px;background:var(--surface-3);padding:2px 6px;border-radius:4px">{{ log.path }}</code>
+                </td>
+                <td style="color:var(--text-muted);font-size:12px">{{ log.referer|default:"Direct / Empty" }}</td>
+                <td>
+                    <c-ui.badge variant="danger">{{ log.hit_count }} hits</c-ui.badge>
+                </td>
+                <td style="font-size:11px;color:var(--text-muted)">{{ log.last_seen|date:"Y-m-d H:i" }}</td>
+            </tr>
             {% empty %}
-                <tr>
-                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">No broken links recorded yet.</td>
-                </tr>
+            <tr>
+                <td colspan="4" style="text-align:center;padding:32px;color:var(--text-muted)">
+                    <i data-lucide="check-circle" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4;color:#10b981"></i>
+                    No broken links recorded yet
+                </td>
+            </tr>
             {% endfor %}
         </c-ui.table>
     </c-ui.card>
