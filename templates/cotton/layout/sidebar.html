@@ -70,7 +70,7 @@ aria-label="Main navigation">
                    style="width:13px;height:13px;transition:transform .22s cubic-bezier(.4,0,.2,1)"
                    :style="activeSubmenu === 'Content' ? 'transform:rotate(180deg)' : ''"></i>
             </button>
-            <div x-show="activeSubmenu === 'Content' && !collapsed" x-cloak x-collapse.duration.250ms>
+            <div x-show="activeSubmenu === 'Content' && !collapsed" x-cloak x-collapse.duration.250ms class="ft-tree-group">
                 <a href="{% url 'dashboard:content_posts' %}"
                    class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_posts' %}active{% endif %}">
                     Posts
@@ -101,7 +101,7 @@ aria-label="Main navigation">
                    style="width:13px;height:13px;transition:transform .22s cubic-bezier(.4,0,.2,1)"
                    :style="activeSubmenu === 'Forum' ? 'transform:rotate(180deg)' : ''"></i>
             </button>
-            <div x-show="activeSubmenu === 'Forum' && !collapsed" x-cloak x-collapse.duration.250ms>
+            <div x-show="activeSubmenu === 'Forum' && !collapsed" x-cloak x-collapse.duration.250ms class="ft-tree-group">
                 <a href="{% url 'dashboard:forum_questions' %}"
                    class="ft-nav-sub-item {% if active_submenu == 'dashboard:forum_questions' %}active{% endif %}">
                     Questions
@@ -128,7 +128,7 @@ aria-label="Main navigation">
                    style="width:13px;height:13px;transition:transform .22s cubic-bezier(.4,0,.2,1)"
                    :style="activeSubmenu === 'Moderation' ? 'transform:rotate(180deg)' : ''"></i>
             </button>
-            <div x-show="activeSubmenu === 'Moderation' && !collapsed" x-cloak x-collapse.duration.250ms>
+            <div x-show="activeSubmenu === 'Moderation' && !collapsed" x-cloak x-collapse.duration.250ms class="ft-tree-group">
                 <a href="{% url 'dashboard:mod_comments' %}"
                    class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_comments' %}active{% endif %}">
                     Comment Queue
@@ -155,7 +155,7 @@ aria-label="Main navigation">
                    style="width:13px;height:13px;transition:transform .22s cubic-bezier(.4,0,.2,1)"
                    :style="activeSubmenu === 'Users' ? 'transform:rotate(180deg)' : ''"></i>
             </button>
-            <div x-show="activeSubmenu === 'Users' && !collapsed" x-cloak x-collapse.duration.250ms>
+            <div x-show="activeSubmenu === 'Users' && !collapsed" x-cloak x-collapse.duration.250ms class="ft-tree-group">
                 <a href="{% url 'dashboard:users_all' %}"
                    class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_all' %}active{% endif %}">
                     All Users
@@ -182,7 +182,7 @@ aria-label="Main navigation">
                    style="width:13px;height:13px;transition:transform .22s cubic-bezier(.4,0,.2,1)"
                    :style="activeSubmenu === 'SEO' ? 'transform:rotate(180deg)' : ''"></i>
             </button>
-            <div x-show="activeSubmenu === 'SEO' && !collapsed" x-cloak x-collapse.duration.250ms>
+            <div x-show="activeSubmenu === 'SEO' && !collapsed" x-cloak x-collapse.duration.250ms class="ft-tree-group">
                 <a href="{% url 'dashboard:seo_audit' %}"
                    class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_audit' %}active{% endif %}">
                     Meta Audit
@@ -209,7 +209,7 @@ aria-label="Main navigation">
                    style="width:13px;height:13px;transition:transform .22s cubic-bezier(.4,0,.2,1)"
                    :style="activeSubmenu === 'Analytics' ? 'transform:rotate(180deg)' : ''"></i>
             </button>
-            <div x-show="activeSubmenu === 'Analytics' && !collapsed" x-cloak x-collapse.duration.250ms>
+            <div x-show="activeSubmenu === 'Analytics' && !collapsed" x-cloak x-collapse.duration.250ms class="ft-tree-group">
                 <a href="{% url 'dashboard:analytics_traffic' %}"
                    class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_traffic' %}active{% endif %}">
                     Traffic
@@ -236,7 +236,7 @@ aria-label="Main navigation">
                    style="width:13px;height:13px;transition:transform .22s cubic-bezier(.4,0,.2,1)"
                    :style="activeSubmenu === 'Site Settings' ? 'transform:rotate(180deg)' : ''"></i>
             </button>
-            <div x-show="activeSubmenu === 'Site Settings' && !collapsed" x-cloak x-collapse.duration.250ms>
+            <div x-show="activeSubmenu === 'Site Settings' && !collapsed" x-cloak x-collapse.duration.250ms class="ft-tree-group">
                 <a href="{% url 'dashboard:settings_ads' %}"
                    class="ft-nav-sub-item {% if active_submenu == 'dashboard:settings_ads' %}active{% endif %}">
                     Ads Config
