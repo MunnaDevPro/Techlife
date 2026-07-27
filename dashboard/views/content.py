@@ -6,6 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 from django_ratelimit.decorators import ratelimit
 from django_tables2 import RequestConfig
+from django.db.models import Count
 
 from dashboard.permissions import staff_required
 from dashboard.views.views import get_dashboard_context
