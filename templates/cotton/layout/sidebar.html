@@ -75,8 +75,8 @@ aria-label="Main navigation">
                    class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_categories' %}active{% endif %}">
                     Categories
                 </a>
-                <a href="{% url 'dashboard:content_subcategories' %}"
-                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_subcategories' %}active{% endif %}">
+                <a href="{% url 'dashboard:content_pending' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_pending' %}active{% endif %}">
                     Subcategories
                 </a>
             </div>
@@ -148,16 +148,16 @@ aria-label="Main navigation">
                    :style="open ? 'transform:rotate(180deg)' : ''"></i>
             </button>
             <div x-show="open && !collapsed" x-cloak x-collapse>
-                <a href="{% url 'dashboard:user_list' %}"
-                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:user_list' %}active{% endif %}">
+                <a href="{% url 'dashboard:users_all' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_all' %}active{% endif %}">
                     All Users
                 </a>
-                <a href="{% url 'dashboard:user_verification' %}"
-                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:user_verification' %}active{% endif %}">
+                <a href="{% url 'dashboard:users_verification' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_verification' %}active{% endif %}">
                     Verification
                 </a>
-                <a href="{% url 'dashboard:user_roles' %}"
-                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:user_roles' %}active{% endif %}">
+                <a href="{% url 'dashboard:users_roles' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_roles' %}active{% endif %}">
                     Roles
                 </a>
             </div>
@@ -206,8 +206,8 @@ aria-label="Main navigation">
                    class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_traffic' %}active{% endif %}">
                     Traffic
                 </a>
-                <a href="{% url 'dashboard:analytics_top_posts' %}"
-                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_top_posts' %}active{% endif %}">
+                <a href="{% url 'dashboard:analytics_posts' %}"
+                   class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_posts' %}active{% endif %}">
                     Top Posts
                 </a>
                 <a href="{% url 'dashboard:analytics_authors' %}"
