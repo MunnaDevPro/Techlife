@@ -1,0 +1,50 @@
+{% comment %} c-table component
+   Props:
+   - id: unique id for the table wrapper (optional)
+   - extra_class: additional classes on the wrapper div
+   Slots:
+   - header: <th> elements
+   - body: <tr> rows (or empty state)
+   - toolbar: filter bar / action buttons above table
+   - pagination: pagination controls at the bottom
+   - empty: custom empty state (overrides default)
+{% endcomment %}
+
+<div {% if id %}id="{{ id }}"{% endif %} class="w-full {{ extra_class }}">
+  {# Optional toolbar #}
+  {% if toolbar %}
+  <div class="py-2 mb-2 border-b" style="border-color:var(--border)">
+    {{ toolbar }}
+  </div>
+  {% endif %}
+
+  <div class="overflow-x-auto">
+    <table class="ft-table">
+      {% if header %}
+      <thead>
+        <tr>
+          {{ header }}
+        </tr>
+      </thead>
+      {% endif %}
+      <tbody {% if id %}id="{{ id }}-body"{% endif %}>
+        {{ slot }}
+        {{ body }}
+      </tbody>
+    </table>
+  </div>
+
+  {# Empty state fallback #}
+  {% if empty %}
+  <div class="py-16 flex flex-col items-center gap-3" style="color:var(--text-muted)">
+    {{ empty }}
+  </div>
+  {% endif %}
+
+  {# Pagination slot #}
+  {% if pagination %}
+  <div class="py-3 px-1 border-t flex items-center justify-between mt-2" style="border-color:var(--border)">
+    {{ pagination }}
+  </div>
+  {% endif %}
+</div>

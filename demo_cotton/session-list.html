@@ -1,0 +1,32 @@
+{% comment %}
+   c-session-list
+   Renders active and recent user device sessions.
+   Props:
+   - sessions: QuerySet of UserSession models
+   - current_session_key: String session_key of request
+{% endcomment %}
+<c-vars sessions="" current_session_key="" ></c-vars>
+
+<c-card class="p-4">
+  <div class="flex items-center justify-between mb-4 border-b pb-3" style="border-color:var(--border)">
+    <div>
+      <h3 class="text-sm font-semibold" style="color:var(--text)">Active Device Sessions</h3>
+      <p class="text-[11px]" style="color:var(--text-secondary)">Manage devices logged into your account</p>
+    </div>
+    <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+      Single Device Login Active
+    </span>
+  </div>
+
+  {% if sessions %}
+    <div class="space-y-3">
+      {% for sess in sessions %}
+        <c-session-row sess="{{ sess }}" current_session_key="{{ current_session_key }}"></c-session-row>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="py-6 text-center text-xs" style="color:var(--text-muted)">
+      No active session history found.
+    </div>
+  {% endif %}
+</c-card>

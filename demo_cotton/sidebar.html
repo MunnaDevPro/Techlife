@@ -1,0 +1,602 @@
+{% load static %}
+{% comment %} c-sidebar — Full hierarchical navigation sidebar
+   Props:
+   - active_href: request.path string for active state detection
+   - pending_leave_count: integer badge
+   - unread_notifications: integer badge
+   - expired_data_count: integer badge
+   - pending_expense_count: integer badge
+{% endcomment %}
+
+<div x-data="{
+       collapsed: localStorage.getItem('ft_sidebar') === 'collapsed',
+       mobileOpen: false,
+       currentOpenSubmenu: localStorage.getItem('ft_sidebar_active_submenu') || null,
+       search: '',
+
+       toggle() {
+         this.collapsed = !this.collapsed;
+         localStorage.setItem('ft_sidebar', this.collapsed ? 'collapsed' : 'expanded');
+         const main = document.getElementById('ft-main-content');
+         if (main) {
+           main.classList.toggle('sidebar-collapsed', this.collapsed);
+         }
+       },
+       getActiveId() {
+         const p = '{{ active_href }}';
+         if (p === '/admin-panel/dashboard/' || p === '/staff/home/' || p.includes('/notifications/')) return 'dashboards';
+         if (p.includes('/employees/') || p.includes('/branches/') || p.includes('/roles/')) return 'employees';
+         if (p.includes('/attendance/')) return 'attendance';
+         if (p.includes('/leave/')) return 'leave';
+         if (p.includes('/schedule/')) return 'schedule';
+         if (p.includes('/expense/')) return 'payroll';
+         if (p.includes('/projects/') && !p.includes('/tasks/')) return 'projects';
+         if (p.includes('/tasks/') || p.includes('/my-tasks/')) return 'tasks';
+         if (p.includes('/reports/')) return 'reports';
+         if (p.includes('/settings')) return 'system';
+         if (p.includes('/backups/') || p.includes('/expired-data/')) return 'data_mgmt';
+         return null;
+       },
+       toggleSubmenu(id) {
+         const isOpen = this.isSubmenuOpen(id);
+         if (isOpen) {
+           this.currentOpenSubmenu = 'none';
+         } else {
+           this.currentOpenSubmenu = id;
+         }
+         localStorage.setItem('ft_sidebar_active_submenu', this.currentOpenSubmenu);
+       },
+       isSubmenuOpen(id) {
+         if (this.search) return true;
+         if (this.currentOpenSubmenu !== null && this.currentOpenSubmenu !== undefined) {
+           return this.currentOpenSubmenu === id;
+         }
+         return this.getActiveId() === id;
+       },
+       matchSearch(label) {
+         if (!this.search) return true;
+         return label.toLowerCase().includes(this.search.toLowerCase());
+       }
+     }"
+     @toggle-sidebar.window="toggle()"
+     @toggle-mobile-sidebar.window="mobileOpen = !mobileOpen"
+     @keydown.escape.window="mobileOpen = false"
+     x-init="
+       const main = document.getElementById('ft-main-content');
+       if (main) main.classList.toggle('sidebar-collapsed', collapsed);
+       if (window.lucide) window.lucide.createIcons();
+     ">
+
+  {# Mobile backdrop #}
+  <div x-show="mobileOpen"
+       x-transition:enter="transition-opacity duration-200"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave="transition-opacity duration-200"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       @click="mobileOpen = false"
+       class="fixed inset-0 z-40 ft-mobile-overlay lg:hidden"
+       x-cloak></div>
+
+  {# Sidebar #}
+  <aside id="ft-sidebar"
+         :class="{
+           'ft-sidebar': true,
+           'collapsed': collapsed,
+           'mobile-open': mobileOpen
+         }"
+         aria-label="Main Navigation">
+
+    {# ── Brand header ───────────────────────────────────────────────── #}
+    <div class="h-12 flex items-center justify-between px-3 border-b shrink-0"
+         style="border-color:var(--border)">
+
+      <div class="flex items-center gap-2.5 min-w-0" :class="collapsed ? 'justify-center w-full' : ''">
+        <div class="w-7 h-7 rounded-btn bg-primary flex items-center justify-center flex-shrink-0">
+          <i data-lucide="zap" class="w-4 h-4 text-white"></i>
+        </div>
+        <div x-show="!collapsed" class="flex-1 min-w-0" x-cloak>
+          <img src="{% static 'main_logo.jpg' %}"
+               alt="FieldTrack"
+               class="h-6 w-auto object-contain"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+          <span class="text-[12px] font-bold hidden" style="color:var(--text)">FieldTrack</span>
+        </div>
+      </div>
+
+      <button @click="toggle()"
+              type="button"
+              x-show="!collapsed"
+              class="hidden lg:flex ft-btn ft-btn-ghost ft-btn-sm w-7 h-7 p-0 items-center justify-center flex-shrink-0"
+              title="Collapse sidebar"
+              x-cloak>
+        <i data-lucide="panel-left-close" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <button x-show="collapsed"
+            @click="toggle()"
+            type="button"
+            class="hidden lg:flex mx-auto mt-2 ft-btn ft-btn-ghost ft-btn-sm w-8 h-8 p-0 items-center justify-center"
+            title="Expand sidebar"
+            x-cloak>
+      <i data-lucide="panel-left-open" class="w-4 h-4"></i>
+    </button>
+
+    {# ── Search (only when expanded) ──────────────────────────────── #}
+    <div x-show="!collapsed" class="px-2 py-1.5 shrink-0" x-cloak>
+      <div class="relative flex items-center" style="">
+        <i data-lucide="search" class="absolute left-2.5 w-3.5 h-3.5" style="color:#B0B3B8; z-index:1; pointer-events:none"></i>
+        <input type="text"
+               x-model="search"
+               placeholder="Search menu…"
+               class="ft-search-input w-full text-[11px]"
+               style="padding-left: 28px">
+        <button type="button"
+                x-show="search"
+                @click="search = ''"
+                class="absolute right-2 w-4 h-4 flex items-center justify-center rounded-full"
+                style="background:rgba(0,0,0,0.08); border:none; cursor:pointer; color:#8A8D91">
+          <i data-lucide="x" class="w-2.5 h-2.5"></i>
+        </button>
+      </div>
+    </div>
+
+    {# ── Nav ─────────────────────────────────────────────────────────── #}
+    <nav class="flex-1 py-1 overflow-y-auto scrollbar-hide" aria-label="Sidebar Navigation">
+
+      {% with path=active_href %}
+
+      {# ════════════════════ SECTION: DASHBOARD ════════════════════ #}
+      <div x-show="!collapsed && (matchSearch('Dashboard') || matchSearch('Executive Dashboard') || matchSearch('Analytics') || matchSearch('Recent Activity'))" x-cloak>
+        <div class="ft-group-header"><i data-lucide="layout-grid" class="w-3.5 h-3.5"></i><span>DASHBOARD</span></div>
+      </div>
+
+      {# Menu: Dashboard dropdown #}
+      <div x-show="matchSearch('Dashboard') || matchSearch('Executive Dashboard') || matchSearch('Analytics') || matchSearch('Recent Activity')">
+        <button type="button"
+                @click="toggleSubmenu('dashboards')"
+                class="ft-nav-item w-full flex items-center justify-between"
+                :title="collapsed ? 'Dashboard' : ''"
+                :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+          <div class="flex items-center gap-2 min-w-0">
+            <i data-lucide="layout-dashboard" class="ft-icon"></i>
+            <span class="ft-nav-label" x-show="!collapsed" x-cloak>Dashboard</span>
+          </div>
+          <i data-lucide="chevron-down"
+             x-show="!collapsed"
+             class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="isSubmenuOpen('dashboards') ? 'rotate-180' : ''"
+             x-cloak></i>
+        </button>
+
+        {# Submenu #}
+        <div x-show="(isSubmenuOpen('dashboards') || search) && !collapsed"
+             x-collapse.duration.200ms
+             class="pl-4 pr-1 py-0.5 space-y-0.5"
+             x-cloak>
+          <a href="{% url 'admin_panel:dashboard' %}"
+             class="ft-nav-item {% if path == '/admin-panel/dashboard/' %}active{% endif %}"
+             x-show="matchSearch('Executive Dashboard')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Executive Dashboard</span>
+          </a>
+          <a href="{% url 'admin_panel:reports_main' %}"
+             class="ft-nav-item {% if '/admin-panel/reports/' in path and '/absent/' not in path %}active{% endif %}"
+             x-show="matchSearch('Analytics')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Analytics</span>
+          </a>
+          <a href="{% url 'notifications:list' %}"
+             class="ft-nav-item {% if '/notifications/' in path %}active{% endif %}"
+             x-show="matchSearch('Recent Activity')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Recent Activity</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="my-1.5 border-t" style="border-color:var(--border)"></div>
+
+      {# ════════════════════ SECTION: PEOPLE ════════════════════ #}
+      <div x-show="!collapsed" x-cloak>
+        <div class="ft-group-header"><i data-lucide="users" class="w-3.5 h-3.5"></i><span>PEOPLE</span></div>
+      </div>
+
+      {# Menu: Employees #}
+      <div>
+        <button type="button"
+                @click="toggleSubmenu('employees')"
+                class="ft-nav-item w-full flex items-center justify-between"
+                :title="collapsed ? 'Employees' : ''"
+                :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+          <div class="flex items-center gap-2 min-w-0">
+            <i data-lucide="users" class="ft-icon"></i>
+            <span class="ft-nav-label" x-show="!collapsed" x-cloak>Employees</span>
+          </div>
+          <i data-lucide="chevron-down"
+             x-show="!collapsed"
+             class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="isSubmenuOpen('employees') ? 'rotate-180' : ''"
+             x-cloak></i>
+        </button>
+        <div x-show="(isSubmenuOpen('employees') || search) && !collapsed"
+             x-collapse.duration.200ms
+             class="pl-4 pr-1 py-0.5 space-y-0.5"
+             x-cloak>
+          <a href="{% url 'employees:employee_list' %}"
+             class="ft-nav-item {% if path == '/employees/' %}active{% endif %}"
+             x-show="matchSearch('Employee Directory')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Employee Directory</span>
+          </a>
+          <a href="{% url 'employees:employee_add' %}"
+             class="ft-nav-item {% if '/employees/add/' in path %}active{% endif %}"
+             x-show="matchSearch('Employee Profile')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Employee Profile</span>
+          </a>
+          <a href="{% url 'branches:branch_list' %}"
+             class="ft-nav-item {% if '/branches/' in path %}active{% endif %}"
+             x-show="matchSearch('Departments')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Departments</span>
+          </a>
+          <a href="{% url 'admin_panel:role_list' %}"
+             class="ft-nav-item {% if '/admin-panel/roles/' in path %}active{% endif %}"
+             x-show="matchSearch('Designations')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Designations</span>
+          </a>
+        </div>
+      </div>
+
+      {# Menu: Attendance #}
+      <div>
+        <button type="button"
+                @click="toggleSubmenu('attendance')"
+                class="ft-nav-item w-full flex items-center justify-between"
+                :title="collapsed ? 'Attendance' : ''"
+                :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+          <div class="flex items-center gap-2 min-w-0">
+            <i data-lucide="clock" class="ft-icon"></i>
+            <span class="ft-nav-label" x-show="!collapsed" x-cloak>Attendance</span>
+          </div>
+          <i data-lucide="chevron-down"
+             x-show="!collapsed"
+             class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="isSubmenuOpen('attendance') ? 'rotate-180' : ''"
+             x-cloak></i>
+        </button>
+        <div x-show="(isSubmenuOpen('attendance') || search) && !collapsed"
+             x-collapse.duration.200ms
+             class="pl-4 pr-1 py-0.5 space-y-0.5"
+             x-cloak>
+          <a href="{% url 'attendance:status' %}" class="ft-nav-item {% if '/attendance/status' in path %}active{% endif %}" x-show="matchSearch('Live Attendance')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Live Attendance</span>
+          </a>
+          <a href="{% url 'admin_panel:attendance_list' %}" class="ft-nav-item {% if path == '/admin-panel/attendance/' or '/admin-panel/attendance/' in path and '/manual' not in path %}active{% endif %}" x-show="matchSearch('Attendance Logs')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Attendance Logs</span>
+          </a>
+          <a href="{% url 'admin_panel:manual_entry' %}" class="ft-nav-item {% if '/manual' in path %}active{% endif %}" x-show="matchSearch('Manual Attendance')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Manual Attendance</span>
+          </a>
+          <a href="{% url 'admin_panel:reports_attendance' %}" class="ft-nav-item {% if '/reports/attendance' in path %}active{% endif %}" x-show="matchSearch('Attendance Reports')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Attendance Reports</span>
+          </a>
+        </div>
+      </div>
+
+      {# Menu: Leave Management #}
+      <div>
+        <button type="button"
+                @click="toggleSubmenu('leave')"
+                class="ft-nav-item w-full flex items-center justify-between"
+                :title="collapsed ? 'Leave Management' : ''"
+                :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+          <div class="flex items-center gap-2 min-w-0">
+            <i data-lucide="clipboard-check" class="ft-icon"></i>
+            <span class="ft-nav-label" x-show="!collapsed" x-cloak>Leave Management</span>
+          </div>
+          <div class="flex items-center gap-1">
+            {% if pending_leave_count %}
+              <span class="ft-badge-pill" x-show="!collapsed" x-cloak>{{ pending_leave_count }}</span>
+            {% endif %}
+            <i data-lucide="chevron-down"
+               x-show="!collapsed"
+               class="w-3.5 h-3.5 transition-transform duration-200"
+               :class="isSubmenuOpen('leave') ? 'rotate-180' : ''"
+               x-cloak></i>
+          </div>
+        </button>
+        <div x-show="(isSubmenuOpen('leave') || search) && !collapsed"
+             x-collapse.duration.200ms
+             class="pl-4 pr-1 py-0.5 space-y-0.5"
+             x-cloak>
+          <a href="{% url 'leave:admin_dashboard' %}" class="ft-nav-item {% if '/leave/admin/' in path and '/types/' not in path and '/balances/' not in path %}active{% endif %}" x-show="matchSearch('Leave Requests')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Leave Requests</span>
+          </a>
+          <a href="{% url 'leave:admin_leave_types' %}" class="ft-nav-item {% if '/leave/types/' in path %}active{% endif %}" x-show="matchSearch('Leave Types')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Leave Types</span>
+          </a>
+          <a href="{% url 'leave:admin_balances' %}" class="ft-nav-item {% if '/leave/balances/' in path %}active{% endif %}" x-show="matchSearch('Leave Balance')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Leave Balance</span>
+          </a>
+        </div>
+      </div>
+
+      {# Menu: Schedule #}
+      <div>
+        <button type="button"
+                @click="toggleSubmenu('schedule')"
+                class="ft-nav-item w-full flex items-center justify-between"
+                :title="collapsed ? 'Schedule' : ''"
+                :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+          <div class="flex items-center gap-2 min-w-0">
+            <i data-lucide="calendar" class="ft-icon"></i>
+            <span class="ft-nav-label" x-show="!collapsed" x-cloak>Schedule</span>
+          </div>
+          <i data-lucide="chevron-down"
+             x-show="!collapsed"
+             class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="isSubmenuOpen('schedule') ? 'rotate-180' : ''"
+             x-cloak></i>
+        </button>
+        <div x-show="(isSubmenuOpen('schedule') || search) && !collapsed"
+             x-collapse.duration.200ms
+             class="pl-4 pr-1 py-0.5 space-y-0.5"
+             x-cloak>
+          <a href="{% url 'schedule:month_view' %}" class="ft-nav-item {% if '/schedule/' in path %}active{% endif %}" x-show="matchSearch('Shift Schedule')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Shift Schedule</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="my-1.5 border-t" style="border-color:var(--border)"></div>
+
+      {# ════════════════════ SECTION: WORK ════════════════════ #}
+      <div x-show="!collapsed" x-cloak>
+        <div class="ft-group-header"><i data-lucide="briefcase" class="w-3.5 h-3.5"></i><span>WORK</span></div>
+      </div>
+
+      {# Menu: Projects #}
+      <div>
+        <button type="button"
+                @click="toggleSubmenu('projects')"
+                class="ft-nav-item w-full flex items-center justify-between"
+                :title="collapsed ? 'Projects' : ''"
+                :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+          <div class="flex items-center gap-2 min-w-0">
+            <i data-lucide="briefcase" class="ft-icon"></i>
+            <span class="ft-nav-label" x-show="!collapsed" x-cloak>Projects</span>
+          </div>
+          <i data-lucide="chevron-down"
+             x-show="!collapsed"
+             class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="isSubmenuOpen('projects') ? 'rotate-180' : ''"
+             x-cloak></i>
+        </button>
+        <div x-show="(isSubmenuOpen('projects') || search) && !collapsed"
+             x-collapse.duration.200ms
+             class="pl-4 pr-1 py-0.5 space-y-0.5"
+             x-cloak>
+          <a href="{% url 'projects:project_list' %}" class="ft-nav-item {% if path == '/projects/' and 'status=' not in request.GET.urlencode %}active{% endif %}" x-show="matchSearch('All Projects')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">All Projects</span>
+          </a>
+          <a href="{% url 'projects:project_list' %}?status=active" class="ft-nav-item {% if 'status=active' in request.GET.urlencode %}active{% endif %}" x-show="matchSearch('Active Projects')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Active Projects</span>
+          </a>
+          <a href="{% url 'projects:project_list' %}?status=completed" class="ft-nav-item {% if 'status=completed' in request.GET.urlencode %}active{% endif %}" x-show="matchSearch('Completed Projects')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Completed Projects</span>
+          </a>
+        </div>
+      </div>
+
+      {# Menu: Tasks #}
+      <div>
+        <button type="button"
+                @click="toggleSubmenu('tasks')"
+                class="ft-nav-item w-full flex items-center justify-between"
+                :title="collapsed ? 'Tasks' : ''"
+                :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+          <div class="flex items-center gap-2 min-w-0">
+            <i data-lucide="check-square" class="ft-icon"></i>
+            <span class="ft-nav-label" x-show="!collapsed" x-cloak>Tasks</span>
+          </div>
+          <i data-lucide="chevron-down"
+             x-show="!collapsed"
+             class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="isSubmenuOpen('tasks') ? 'rotate-180' : ''"
+             x-cloak></i>
+        </button>
+        <div x-show="(isSubmenuOpen('tasks') || search) && !collapsed"
+             x-collapse.duration.200ms
+             class="pl-4 pr-1 py-0.5 space-y-0.5"
+             x-cloak>
+          <a href="{% url 'staff:my_tasks' %}" class="ft-nav-item {% if '/staff/my-tasks/' in path %}active{% endif %}" x-show="matchSearch('My Tasks')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">My Tasks</span>
+          </a>
+          <a href="{% url 'projects:global_task_list' %}" class="ft-nav-item {% if '/projects/tasks/' in path and 'view=kanban' not in request.GET.urlencode %}active{% endif %}" x-show="matchSearch('Team Tasks')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Team Tasks</span>
+          </a>
+          <a href="{% url 'projects:global_task_list' %}?view=kanban" class="ft-nav-item {% if '/projects/tasks/' in path and 'view=kanban' in request.GET.urlencode %}active{% endif %}" x-show="matchSearch('Task Board')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Task Board</span>
+          </a>
+        </div>
+      </div>
+
+      {# Menu direct link: Project Types #}
+      <a href="{% url 'projects:project_type_list' %}"
+         class="ft-nav-item {% if '/types/' in path %}active{% endif %}"
+         x-show="matchSearch('Project Types')"
+         :title="collapsed ? 'Project Types' : ''"
+         :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+        <i data-lucide="tag" class="ft-icon"></i>
+        <span class="ft-nav-label" x-show="!collapsed" x-cloak>Project Types</span>
+      </a>
+
+      {# Menu direct link: Task Templates #}
+      <a href="{% url 'projects:template_list' %}"
+         class="ft-nav-item {% if '/templates/' in path %}active{% endif %}"
+         x-show="matchSearch('Task Templates')"
+         :title="collapsed ? 'Task Templates' : ''"
+         :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+        <i data-lucide="clipboard-list" class="ft-icon"></i>
+        <span class="ft-nav-label" x-show="!collapsed" x-cloak>Task Templates</span>
+      </a>
+
+      <div class="my-1.5 border-t" style="border-color:var(--border)"></div>
+
+      {# ════════════════════ SECTION: FINANCE ════════════════════ #}
+      <div x-show="!collapsed" x-cloak>
+        <div class="ft-group-header"><i data-lucide="wallet" class="w-3.5 h-3.5"></i><span>FINANCE</span></div>
+      </div>
+
+      {# Menu direct link: Expenses #}
+      <a href="{% url 'expense:admin_expense_list' %}"
+         class="ft-nav-item {% if '/expense/' in path %}active{% endif %}"
+         x-show="matchSearch('Expenses')"
+         :title="collapsed ? 'Expenses' : ''"
+         :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+        <i data-lucide="receipt" class="ft-icon"></i>
+        <span class="ft-nav-label" x-show="!collapsed" x-cloak>Expenses</span>
+        {% if pending_expense_count %}
+          <span class="ft-badge-pill" x-show="!collapsed" x-cloak>{{ pending_expense_count }}</span>
+        {% endif %}
+      </a>
+
+      <div class="my-1.5 border-t" style="border-color:var(--border)"></div>
+
+      {# ════════════════════ SECTION: ORGANIZATION ════════════════════ #}
+      <div x-show="!collapsed" x-cloak>
+        <div class="ft-group-header"><i data-lucide="building" class="w-3.5 h-3.5"></i><span>ORGANIZATION</span></div>
+      </div>
+
+      <a href="{% url 'branches:branch_list' %}"
+         class="ft-nav-item {% if '/branches/' in path and '/holidays/' not in path %}active{% endif %}"
+         x-show="matchSearch('Branches')"
+         :title="collapsed ? 'Branches' : ''"
+         :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+        <i data-lucide="building-2" class="ft-icon"></i>
+        <span class="ft-nav-label" x-show="!collapsed" x-cloak>Branches</span>
+      </a>
+
+      <a href="{% url 'branches:holiday_list' %}"
+         class="ft-nav-item {% if '/branches/holidays/' in path %}active{% endif %}"
+         x-show="matchSearch('Holidays')"
+         :title="collapsed ? 'Holidays' : ''"
+         :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+        <i data-lucide="sun" class="ft-icon"></i>
+        <span class="ft-nav-label" x-show="!collapsed" x-cloak>Holidays</span>
+      </a>
+
+      <div class="my-1.5 border-t" style="border-color:var(--border)"></div>
+
+      {# ════════════════════ SECTION: ADMINISTRATION ════════════════════ #}
+      <div x-show="!collapsed" x-cloak>
+        <div class="ft-group-header"><i data-lucide="sliders" class="w-3.5 h-3.5"></i><span>ADMINISTRATION</span></div>
+      </div>
+
+      {# Menu: System #}
+      <div>
+        <button type="button"
+                @click="toggleSubmenu('system')"
+                class="ft-nav-item w-full flex items-center justify-between"
+                :title="collapsed ? 'System Settings' : ''"
+                :class="collapsed ? 'justify-center px-0 mx-auto w-9' : ''">
+          <div class="flex items-center gap-2 min-w-0">
+            <i data-lucide="settings" class="ft-icon"></i>
+            <span class="ft-nav-label" x-show="!collapsed" x-cloak>System Settings</span>
+          </div>
+          <i data-lucide="chevron-down"
+             x-show="!collapsed"
+             class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="isSubmenuOpen('system') ? 'rotate-180' : ''"
+             x-cloak></i>
+        </button>
+        <div x-show="(isSubmenuOpen('system') || search) && !collapsed"
+             x-collapse.duration.200ms
+             class="pl-4 pr-1 py-0.5 space-y-0.5"
+             x-cloak>
+          <a href="{% url 'admin_panel:schedule_settings' %}" class="ft-nav-item {% if '/settings' in path %}active{% endif %}" x-show="matchSearch('Settings')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Settings</span>
+          </a>
+          <a href="{% url 'leave:admin_dashboard' %}" class="ft-nav-item {% if '/leave/admin/' in path and '/types/' not in path and '/balances/' not in path %}active{% endif %}" x-show="matchSearch('Manage Leave Records')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Manage Leave Records</span>
+          </a>
+          <a href="{% url 'admin_panel:attendance_list' %}" class="ft-nav-item {% if path == '/admin-panel/attendance/' or '/admin-panel/attendance/' in path and '/manual' not in path %}active{% endif %}" x-show="matchSearch('Manage Attendance Records')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Manage Attendance Records</span>
+          </a>
+          <a href="{% url 'admin_panel:role_list' %}" class="ft-nav-item {% if '/admin-panel/roles/' in path %}active{% endif %}" x-show="matchSearch('System Roles & Access')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">System Roles & Access</span>
+          </a>
+          <a href="{% url 'accounts:admin_security_policies' %}" class="ft-nav-item {% if '/security/policies/' in path %}active{% endif %}" x-show="matchSearch('Security Policies')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Security Policies</span>
+          </a>
+          <a href="{% url 'accounts:admin_login_activity' %}" class="ft-nav-item {% if '/login-activity/' in path %}active{% endif %}" x-show="matchSearch('Login Activity')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Login Activity</span>
+          </a>
+          <a href="{% url 'admin_panel:admin_audit_logs' %}" class="ft-nav-item {% if '/audit-logs/' in path %}active{% endif %}" x-show="matchSearch('Audit Logs')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Audit Logs</span>
+          </a>
+          <a href="{% url 'accounts:user_sessions' %}" class="ft-nav-item {% if '/account/sessions/' in path %}active{% endif %}" x-show="matchSearch('User Sessions')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">User Sessions</span>
+          </a>
+          <a href="{% url 'backups:backup_list' %}" class="ft-nav-item {% if '/backups/' in path %}active{% endif %}" x-show="matchSearch('Backup')">
+            <i data-lucide="circle" class="w-1.5 h-1.5 shrink-0 opacity-60"></i>
+            <span class="ft-nav-label">Backups</span>
+          </a>
+        </div>
+      </div>
+
+      {% endwith %}
+
+    </nav>
+
+    {# ── User footer ──────────────────────────────────────────────── #}
+    <div class="border-t p-2.5 shrink-0 flex items-center gap-2"
+         :class="collapsed ? 'justify-center' : ''"
+         style="border-color:var(--border)">
+      <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-[11px] font-semibold shrink-0">
+        {{ request.user.email|default:"User"|make_list|first|upper }}
+      </div>
+      <div class="flex-1 min-w-0" x-show="!collapsed" x-cloak>
+        <p class="text-[12px] font-medium truncate" style="color:var(--text)">Admin</p>
+        <p class="text-[11px] truncate" style="color:var(--text-muted)">
+          {{ request.user.email|default:"User" }}
+        </p>
+      </div>
+      <a href="{% url 'accounts:logout' %}"
+         x-show="!collapsed"
+         class="ft-btn ft-btn-ghost ft-btn-sm w-7 h-7 p-0 flex items-center justify-center"
+         title="Logout"
+         style="color:var(--text-muted)"
+         x-cloak>
+        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+      </a>
+    </div>
+  </aside>
+</div>
