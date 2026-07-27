@@ -23,6 +23,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
 
         <!-- Category 1 -->
+        {% if first_category %}
         <div class="tl-card rounded-xl overflow-hidden flex flex-col">
             <!-- Featured Post -->
             {% for post in first_blogs|slice:"1" %}
@@ -88,8 +89,10 @@
                 </a>
             </div>
         </div>
+        {% endif %}
 
         <!-- Category 2 -->
+        {% if second_category %}
         <div class="tl-card rounded-xl overflow-hidden flex flex-col">
             {% for post in second_blogs|slice:"1" %}
             <a href="{% url 'blog_details' post.slug %}" class="block group overflow-hidden cursor-pointer">
@@ -142,8 +145,10 @@
                 </a>
             </div>
         </div>
+        {% endif %}
 
         <!-- Category 3 -->
+        {% if third_category %}
         <div class="tl-card rounded-xl overflow-hidden flex flex-col">
             {% for post in third_blogs|slice:"1" %}
             <a href="{% url 'blog_details' post.slug %}" class="block group overflow-hidden cursor-pointer">
@@ -196,6 +201,7 @@
                 </a>
             </div>
         </div>
+        {% endif %}
 
         <!-- Popular Sidebar -->
         {% include 'components/home/popular_blogs_sidebar.html' %}
