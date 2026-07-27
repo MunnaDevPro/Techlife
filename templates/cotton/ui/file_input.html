@@ -1,0 +1,79 @@
+{% comment %}
+c-ui.file_input — styled custom drag-and-drop file upload input
+Props: name, label, help, required, disabled, accept, extra_class, id
+{% endcomment %}
+<div class="flex flex-col {{ extra_class }}" style="gap:4px"
+     x-data="{
+        fileName: '',
+        fileSize: '',
+        isHovered: false,
+        handleFile(e) {
+            const file = e.target.files[0];
+            if (file) {
+                this.fileName = file.name;
+                this.fileSize = (file.size / 1024).toFixed(1) + ' KB';
+            } else {
+                this.fileName = '';
+                this.fileSize = '';
+            }
+        }
+     }">
+    {% if label %}
+    <label for="{{ id|default:name }}" class="ft-label">
+        {{ label }}{% if required %}<span style="color:var(--danger);margin-left:2px">*</span>{% endif %}
+    </label>
+    {% endif %}
+
+    <div style="position:relative;border:2px dashed var(--border-strong);border-radius:var(--radius-md);
+                padding:16px;text-align:center;background:var(--surface);cursor:pointer;
+                transition:all .2s ease"
+         :style="isHovered ? 'border-color:var(--primary);background:var(--surface-2)' : ''"
+         @dragover.prevent="isHovered = true"
+         @dragleave.prevent="isHovered = false"
+         @drop.prevent="isHovered = false; $refs.fileInput.files = $event.dataTransfer.files; handleFile({target: $refs.fileInput})"
+         @click="$refs.fileInput.click()">
+        
+        <input type="file" x-ref="fileInput" name="{{ name }}" id="{{ id|default:name }}"
+               {% if accept %}accept="{{ accept }}"{% endif %}
+               {% if required %}required{% endif %}
+               {% if disabled %}disabled{% endif %}
+               @change="handleFile($event)"
+               style="display:none">
+
+        <template x-if="!fileName">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--surface-3);
+                            display:flex;align-items:center;justify-content:center">
+                    <i data-lucide="upload-cloud" style="width:18px;height:18px;color:var(--primary)"></i>
+                </div>
+                <p style="font-size:12px;font-weight:600;color:var(--text);margin:0">
+                    Click to upload <span style="font-weight:400;color:var(--text-muted)">or drag and drop</span>
+                </p>
+                <p style="font-size:10.5px;color:var(--text-disabled);margin:0">
+                    PNG, JPG, WEBP or GIF
+                </p>
+            </div>
+        </template>
+
+        <template x-if="fileName">
+            <div style="display:flex;align-items:center;gap:10px;text-align:left">
+                <div style="width:32px;height:32px;border-radius:var(--radius-sm);background:var(--primary-light);
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <i data-lucide="image" style="width:16px;height:16px;color:var(--primary)"></i>
+                </div>
+                <div style="flex:1;min-width:0">
+                    <p style="font-size:12px;font-weight:600;color:var(--text);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="fileName"></p>
+                    <p style="font-size:10.5px;color:var(--text-muted);margin:0" x-text="fileSize"></p>
+                </div>
+                <button type="button" @click.stop="fileName = ''; fileSize = ''; $refs.fileInput.value = ''"
+                        class="ft-btn ft-btn-ghost ft-btn-sm" style="padding:4px">
+                    <i data-lucide="x" style="width:14px;height:14px"></i>
+                </button>
+            </div>
+        </template>
+    </div>
+
+    {% if help %}
+        <p class="ft-help-text">{{ help }}</p>
+    {% endif %}
+</div>
