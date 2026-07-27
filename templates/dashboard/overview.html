@@ -1,0 +1,59 @@
+{% extends base_template %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header with Quick Actions -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h2 class="text-lg font-bold text-gray-800">Dashboard Overview</h2>
+            <p class="text-[12px] text-gray-500">Real-time stats and content performance</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <c-ui.button variant="secondary" icon="plus" hx-get="{% url 'dashboard:content_posts' %}" hx-target="#main-content" hx-push-url="true">
+                New Post
+            </c-ui.button>
+            <c-ui.button variant="primary" icon="shield" hx-get="{% url 'dashboard:mod_comments' %}" hx-target="#main-content" hx-push-url="true">
+                Review Queue
+            </c-ui.button>
+        </div>
+    </div>
+
+    <!-- KPI Grid (5-column responsive layout) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <c-ui.kpi_card label="Published Posts" value="{{ kpis.total_published_posts }}" icon="file-text" />
+        <c-ui.kpi_card label="Pending Review" value="{{ kpis.pending_review_count }}" icon="clock" />
+        <c-ui.kpi_card label="Verified Users" value="{{ kpis.total_verified_users }}" icon="user-check" />
+        <c-ui.kpi_card label="Active Reports" value="{{ kpis.active_reports_count }}" icon="flag" />
+        <c-ui.kpi_card label="Forum Questions" value="{{ kpis.total_forum_questions }}" icon="message-square" />
+    </div>
+
+    <!-- Charts & Activity Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- 30-Day Activity Chart -->
+        <div class="lg:col-span-2">
+            <c-charts.line_chart title="Posts Published (Last 30 Days)" :labels="chart_labels" :values="chart_values" dataset_label="New Posts" />
+        </div>
+
+        <!-- Recent Activities Feed -->
+        <c-ui.card title="Recent Activity" extra_class="h-full flex flex-col justify-between">
+            <div class="space-y-4 max-h-[380px] overflow-y-auto pr-1">
+                {% if recent_activity %}
+                    {% for activity in recent_activity %}
+                        <div class="flex items-start gap-3">
+                            <div class="p-1.5 bg-gray-50 rounded text-gray-500 flex-shrink-0 mt-0.5">
+                                <i data-lucide="{{ activity.icon }}" class="w-4 h-4 text-gray-500"></i>
+                            </div>
+                            <div class="flex-grow min-w-0">
+                                <p class="text-[14px] text-gray-800 leading-tight">{{ activity.description }}</p>
+                                <span class="text-[12px] text-gray-400 font-normal">{{ activity.timestamp|timesince }} ago</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <c-ui.empty_state icon="activity" title="No recent activities" description="Events will appear here as they occur." />
+                {% endif %}
+            </div>
+        </c-ui.card>
+    </div>
+</div>
+{% endblock %}

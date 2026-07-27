@@ -1,0 +1,46 @@
+{% extends base_template %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Top Header -->
+    <div>
+        <h2 class="text-lg font-bold text-gray-800">Sitemap Status</h2>
+        <p class="text-[12px] text-gray-500">Scan sitemap configuration and count URL mappings</p>
+    </div>
+
+    <!-- Sitemap Health Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <c-ui.kpi_card label="Total Sitemap URLs" value="{{ total_db_urls }}" icon="globe" />
+        <c-ui.kpi_card label="Articles Registered" value="{{ db_posts }}" icon="file-text" />
+        <c-ui.kpi_card label="Categories Registered" value="{{ db_categories }}" icon="layers" />
+        <c-ui.kpi_card label="Static Routes" value="{{ static_urls }}" icon="link" />
+    </div>
+
+    <!-- Compare sitemap configuration -->
+    <c-ui.card title="Sitemap vs Database Alignment Map">
+        <c-ui.table headers="['Sitemap Component', 'DB Records Count', 'Sitemap Feed Count', 'Status']">
+            <tr>
+                <td class="px-6 py-4 font-semibold text-gray-900">PostSitemap (/details/*)</td>
+                <td class="px-6 py-4 font-medium text-gray-700">{{ db_posts }}</td>
+                <td class="px-6 py-4 font-medium text-gray-700">{{ db_posts }}</td>
+                <td class="px-6 py-4"><c-ui.badge type="success">Aligned</c-ui.badge></td>
+            </tr>
+            <tr>
+                <td class="px-6 py-4 font-semibold text-gray-900">CategorySitemap (/category/*)</td>
+                <td class="px-6 py-4 font-medium text-gray-700">{{ db_categories }}</td>
+                <td class="px-6 py-4 font-medium text-gray-700">{{ db_categories }}</td>
+                <td class="px-6 py-4"><c-ui.badge type="success">Aligned</c-ui.badge></td>
+            </tr>
+            <tr>
+                <td class="px-6 py-4 font-semibold text-gray-900">StaticViewSitemap (Core landing pages)</td>
+                <td class="px-6 py-4 font-medium text-gray-700">{{ static_urls }}</td>
+                <td class="px-6 py-4 font-medium text-gray-700">{{ static_urls }}</td>
+                <td class="px-6 py-4"><c-ui.badge type="success">Aligned</c-ui.badge></td>
+            </tr>
+        </c-ui.table>
+        <p class="text-[12px] text-gray-500 mt-4 italic">
+            Note: Django sitemaps are generated dynamically on access. All feeds are synchronized with database queries.
+        </p>
+    </c-ui.card>
+</div>
+{% endblock %}

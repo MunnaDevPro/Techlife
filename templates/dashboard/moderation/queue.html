@@ -1,0 +1,43 @@
+{% extends base_template %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div>
+        <h2 class="text-lg font-bold text-gray-800">Moderation Queue</h2>
+        <p class="text-[12px] text-gray-500">
+            {% if queue_type == "comments" %}
+                Review flagged comment items
+            {% elif queue_type == "forum" %}
+                Review flagged forum questions and answers
+            {% else %}
+                Review all flagged system items
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Review Card or Empty State -->
+    {% if flag_data %}
+        <c-ui.moderation_card 
+            content_type="{{ flag_data.content_type }}"
+            reason="{{ flag_data.reason }}"
+            created_at="{{ flag_data.created_at }}"
+            content="{{ flag_data.content }}"
+            reporter_email="{{ flag_data.reporter_email }}"
+            note="{{ flag_data.note }}"
+            approve_url="{% url 'dashboard:flag_approve' flag_data.flag.pk queue_type %}"
+            remove_url="{% url 'dashboard:flag_remove' flag_data.flag.pk queue_type %}"
+            skip_url="{% url 'dashboard:flag_skip' flag_data.flag.pk queue_type %}" />
+    {% else %}
+        <div class="max-w-2xl mx-auto">
+            <c-ui.card>
+                <c-ui.empty_state 
+                    icon="shield-check" 
+                    title="All clear!" 
+                    description="No pending flagged items in this queue." 
+                    action="<a href='{% url 'dashboard:reset_skip_list' queue_type %}' class='px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[14px] font-semibold transition-colors'>Reset Skip List</a>" />
+            </c-ui.card>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

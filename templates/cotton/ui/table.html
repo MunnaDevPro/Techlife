@@ -1,0 +1,16 @@
+<div class="overflow-x-auto w-full border border-gray-200 rounded-md">
+    <table class="min-w-full divide-y divide-gray-200 text-left text-[14px]">
+        {% if headers %}
+            <thead class="bg-gray-50 text-[12px] font-semibold text-gray-500 uppercase tracking-wider">
+                <tr>
+                    {% for header in headers %}
+                        <th class="px-6 py-3">{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+        {% endif %}
+        <tbody class="bg-white divide-y divide-gray-200 text-gray-700">
+            {{ slot }}
+        </tbody>
+    </table>
+</div>

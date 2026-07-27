@@ -1,0 +1,11 @@
+<div class="bg-white border border-gray-200 rounded-md p-4 {{ extra_class }}">
+    {% if title %}
+        <div class="border-b border-gray-150 pb-3 mb-4 flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-gray-800">{{ title }}</h3>
+            {% if header_action %}{{ header_action }}{% endif %}
+        </div>
+    {% endif %}
+    <div class="text-[14px]">
+        {{ slot }}
+    </div>
+</div>

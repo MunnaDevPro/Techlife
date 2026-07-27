@@ -1,0 +1,143 @@
+{% extends base_template %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+<div class="space-y-6" x-data="{ 
+    showDeleteModal: false, 
+    confirmDeleteId: null,
+    showBulkDeleteModal: false,
+    selectedCount: 0,
+    updateSelectedCount() {
+        this.selectedCount = document.querySelectorAll('.post-select:checked').length;
+    }
+}">
+    <!-- Top Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-lg font-bold text-gray-800">Blog Posts</h2>
+            <p class="text-[12px] text-gray-500">Manage all articles on your site</p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <c-ui.card>
+        <form method="get" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+            <div>
+                <label class="block text-[12px] font-medium text-gray-700 mb-1">Status</label>
+                <select name="status" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    {% for val, label in filter.form.fields.status.choices %}
+                        <option value="{{ val }}" {% if filter.form.status.value == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[12px] font-medium text-gray-700 mb-1">Category</label>
+                <select name="category" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    {% for val, label in filter.form.fields.category.choices %}
+                        <option value="{{ val }}" {% if filter.form.category.value|stringformat:"s" == val|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[12px] font-medium text-gray-700 mb-1">Author</label>
+                <input type="text" name="author" value="{{ filter.form.author.value|default:'' }}" placeholder="Search email/name" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
+            </div>
+            <div>
+                <label class="block text-[12px] font-medium text-gray-700 mb-1">From Date</label>
+                <input type="date" name="created_after" value="{{ filter.form.created_after.value|default:'' }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
+            </div>
+            <div class="flex gap-2">
+                <div class="flex-grow">
+                    <label class="block text-[12px] font-medium text-gray-700 mb-1">To Date</label>
+                    <input type="date" name="created_before" value="{{ filter.form.created_before.value|default:'' }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+                <button type="submit" class="inline-flex items-center justify-center p-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 h-[38px] w-[38px]">
+                    <i data-lucide="search" class="w-5 h-5 text-white"></i>
+                </button>
+            </div>
+        </form>
+    </c-ui.card>
+
+    <!-- Table + Bulk actions wrapper -->
+    <form id="bulk-actions-form" method="post" action="{% url 'dashboard:post_bulk' %}" @change="updateSelectedCount()">
+        {% csrf_token %}
+        <c-ui.card>
+            <!-- Bulk actions toolbar -->
+            <div class="flex items-center justify-between pb-4 border-b border-gray-100 mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-[12px] text-gray-500 font-medium"><span x-text="selectedCount">0</span> selected</span>
+                    <select name="action" class="px-2 py-1 bg-white border border-gray-200 rounded-md text-[13px] focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <option value="">Bulk Actions</option>
+                        <option value="approve">Approve Selected</option>
+                        <option value="reject">Reject Selected</option>
+                        <option value="delete">Delete Selected</option>
+                    </select>
+                    <button type="button" @click="
+                        const act = document.getElementsByName('action')[0].value;
+                        if (act === 'delete') {
+                            showBulkDeleteModal = true;
+                        } else if (act) {
+                            document.getElementById('bulk-actions-form').submit();
+                        }
+                    " class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-[13px] text-gray-700 font-medium">Apply</button>
+                </div>
+            </div>
+
+            <!-- Render Table -->
+            <div class="overflow-x-auto">
+                {% render_table table %}
+            </div>
+        </c-ui.card>
+    </form>
+
+    <!-- Delete Confirmation Modal (Single Post) -->
+    <div x-show="showDeleteModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showDeleteModal = false"></div>
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-md bg-white text-left border border-gray-200 transition-all sm:my-8 sm:w-full sm:max-w-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">Confirm Delete</h3>
+                <p class="text-[14px] text-gray-600">Are you sure you want to delete this post? This action is permanent and cannot be undone.</p>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button @click="showDeleteModal = false" class="px-4 py-2 border border-gray-300 rounded-md text-[14px] hover:bg-gray-50">Cancel</button>
+                    <form :action="'/dashboard/content/posts/' + confirmDeleteId + '/delete/'" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-[14px]">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Delete Confirmation Modal -->
+    <div x-show="showBulkDeleteModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showBulkDeleteModal = false"></div>
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-md bg-white text-left border border-gray-200 transition-all sm:my-8 sm:w-full sm:max-w-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">Confirm Bulk Delete</h3>
+                <p class="text-[14px] text-gray-600">Are you sure you want to delete <span x-text="selectedCount">0</span> selected posts? This action is permanent and cannot be undone.</p>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button @click="showBulkDeleteModal = false" class="px-4 py-2 border border-gray-300 rounded-md text-[14px] hover:bg-gray-50">Cancel</button>
+                    <button type="button" @click="document.getElementById('bulk-actions-form').submit()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-[14px]">Yes, Delete All</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Handle select all checkbox logic
+    document.addEventListener("change", function(e) {
+        if (e.target && e.target.id === "select-all-posts") {
+            const checked = e.target.checked;
+            document.querySelectorAll(".post-select").forEach(cb => {
+                cb.checked = checked;
+            });
+            // Update Selected Count
+            const el = document.querySelector('[x-data]');
+            if (el && el.__x) {
+                el.__x.$data.updateSelectedCount();
+            }
+        }
+    });
+</script>
+{% endblock %}

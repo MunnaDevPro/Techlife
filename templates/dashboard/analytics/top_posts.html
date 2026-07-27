@@ -1,0 +1,68 @@
+{% extends base_template %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Top Header -->
+    <div>
+        <h2 class="text-lg font-bold text-gray-800">Top Performing Articles</h2>
+        <p class="text-[12px] text-gray-500">Ranked by real page views during the selected time period</p>
+    </div>
+
+    <!-- Filters -->
+    <c-ui.card>
+        <form method="get" class="flex flex-col sm:flex-row gap-4 items-end justify-between">
+            <div class="flex flex-col sm:flex-row gap-4 items-end flex-grow">
+                <div class="w-full sm:w-48">
+                    <label class="block text-[12px] font-medium text-gray-700 mb-1">Time Window</label>
+                    <select name="days" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 Days</option>
+                        <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 Days</option>
+                        <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 Days</option>
+                    </select>
+                </div>
+                <div class="w-full sm:w-48">
+                    <label class="block text-[12px] font-medium text-gray-700 mb-1">Category</label>
+                    <select name="category" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if selected_category|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[14px] font-semibold h-[38px] transition-colors flex items-center gap-1.5">
+                <i data-lucide="filter" class="w-4 h-4"></i> Filter
+            </button>
+        </form>
+    </c-ui.card>
+
+    <!-- Top Posts Table -->
+    <c-ui.card>
+        <c-ui.table headers="['Rank', 'Article Title', 'Category', 'Period Views count', 'Lifetime Views', 'Actions']">
+            {% for item in posts %}
+                <tr>
+                    <td class="px-6 py-4 font-bold text-gray-400">#{{ forloop.counter }}</td>
+                    <td class="px-6 py-4 font-semibold text-gray-900 leading-snug">
+                        {{ item.title }}
+                        <span class="block text-[11px] text-gray-400 font-normal mt-0.5">Author: {{ item.author.email }}</span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-700">{{ item.category.name|default:"-" }}</td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[13px] bg-blue-50 text-blue-700 border border-blue-100 font-bold">
+                            {{ item.windowed_views|default:0 }} views
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-500">{{ item.views }} views</td>
+                    <td class="px-6 py-4">
+                        <a hx-get="{% url 'dashboard:post_edit' item.pk %}" hx-target="#main-content" hx-push-url="true" class="cursor-pointer text-blue-600 hover:text-blue-700 font-medium">Manage</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">No views recorded in this category/period. Run compute_daily_rollup manually in terminal or Celery to populate metrics.</td>
+                </tr>
+            {% endfor %}
+        </c-ui.table>
+    </c-ui.card>
+</div>
+{% endblock %}

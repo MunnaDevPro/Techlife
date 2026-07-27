@@ -82,6 +82,7 @@ sitemaps = {
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("dashboard/", include("dashboard.urls", namespace="dashboard")),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots"),
     # path("__reload__/", include("django_browser_reload.urls")),  # Temporarily commented - install django-browser-reload

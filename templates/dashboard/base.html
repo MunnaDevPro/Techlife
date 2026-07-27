@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }} - TechLife Admin</title>
+    <!-- Tailwind CSS (compiled output) -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lRIkbPla_iAJ5g4hPLw75l2H4Y7yWtdLiVy3O/S3B367v7cTf2Gz5n2Kyl7C" crossorigin="anonymous"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --accent: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-[14px]" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <c-layout.shell page_title="{{ page_title }}" active_menu="{{ active_menu }}" active_submenu="{{ active_submenu }}">
+        <div id="main-content">
+            {% block content %}{% endblock %}
+        </div>
+    </c-layout.shell>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons();
+        });
+        document.body.addEventListener('htmx:afterSwap', function() {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

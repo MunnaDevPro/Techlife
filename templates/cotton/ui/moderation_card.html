@@ -1,0 +1,70 @@
+<div x-data="{ 
+    handleShortcut(e) {
+        if (e.key === 'a' || e.key === 'A') {
+            document.getElementById('btn-approve').click();
+        } else if (e.key === 'r' || e.key === 'R') {
+            document.getElementById('btn-remove').click();
+        } else if (e.key === 'ArrowRight') {
+            document.getElementById('btn-skip').click();
+        }
+    }
+}" @keydown.window="handleShortcut($event)" class="bg-white border border-gray-200 rounded-md p-6 max-w-2xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+        <div>
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-medium bg-red-50 text-red-700 border border-red-100 uppercase">
+                {{ content_type }} Flagged
+            </span>
+            <h3 class="text-sm font-semibold text-gray-800 mt-2">Reason: {{ reason }}</h3>
+        </div>
+        <span class="text-[12px] text-gray-400">Reported {{ created_at|timesince }} ago</span>
+    </div>
+
+    <!-- Reported Content Preview -->
+    <div class="bg-gray-50 border border-gray-200 rounded p-4 text-[14px] text-gray-700 space-y-2 max-h-[300px] overflow-y-auto">
+        <p class="font-semibold text-[12px] text-gray-500 uppercase tracking-wider">Content Preview</p>
+        <div class="prose max-w-none text-gray-850">
+            {{ content|safe }}
+        </div>
+    </div>
+
+    <!-- Reporter info and note -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[12px] border-t border-gray-100 pt-4">
+        <div>
+            <p class="text-gray-500 font-semibold">Reported By</p>
+            <p class="text-gray-800 font-medium mt-0.5">{{ reporter_email }}</p>
+        </div>
+        {% if note %}
+            <div>
+                <p class="text-gray-500 font-semibold">Reporter's Note</p>
+                <p class="text-gray-800 mt-0.5 italic">"{{ note }}"</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Action buttons -->
+    <div class="flex items-center justify-between border-t border-gray-100 pt-6">
+        <span class="text-[12px] text-gray-400 font-normal hidden sm:inline">
+            Shortcuts: <kbd class="px-1.5 py-0.5 bg-gray-100 border border-gray-250 rounded font-mono">A</kbd> Keep, 
+            <kbd class="px-1.5 py-0.5 bg-gray-100 border border-gray-250 rounded font-mono">R</kbd> Delete, 
+            <kbd class="px-1.5 py-0.5 bg-gray-100 border border-gray-250 rounded font-mono">→</kbd> Skip
+        </span>
+        <div class="flex items-center gap-3">
+            <form method="post" action="{{ approve_url }}">
+                {% csrf_token %}
+                <button type="submit" id="btn-approve" class="px-4 py-2 border border-gray-300 hover:bg-green-50 hover:text-green-700 rounded-md text-[14px] font-semibold text-gray-700 transition-colors flex items-center gap-1.5">
+                    <i data-lucide="check" class="w-4 h-4 text-green-700"></i> Keep (A)
+                </button>
+            </form>
+            <form method="post" action="{{ remove_url }}">
+                {% csrf_token %}
+                <button type="submit" id="btn-remove" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-[14px] font-semibold transition-colors flex items-center gap-1.5">
+                    <i data-lucide="trash-2" class="w-4 h-4 text-white"></i> Delete (R)
+                </button>
+            </form>
+            <a href="{{ skip_url }}" id="btn-skip" class="px-4 py-2 border border-gray-300 hover:bg-gray-50 rounded-md text-[14px] font-semibold text-gray-700 transition-colors flex items-center gap-1.5">
+                Skip <i data-lucide="arrow-right" class="w-4 h-4 text-gray-500"></i>
+            </a>
+        </div>
+    </div>
+</div>

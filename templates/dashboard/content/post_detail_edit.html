@@ -1,0 +1,176 @@
+{% extends base_template %}
+
+{% block content %}
+<div class="space-y-6" x-data="{ tab: 'content' }">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-lg font-bold text-gray-800">Edit Post</h2>
+            <p class="text-[12px] text-gray-500">Modify article details, SEO info, media assets, and view comments</p>
+        </div>
+        <a hx-get="{% url 'dashboard:content_posts' %}" hx-target="#main-content" hx-push-url="true" class="cursor-pointer px-3 py-1.5 bg-white border border-gray-300 rounded-md text-[14px] text-gray-700 hover:bg-gray-50 font-medium">
+            Back to List
+        </a>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div class="border-b border-gray-200">
+        <nav class="-mb-px flex space-x-6">
+            <button @click="tab = 'content'" :class="tab === 'content' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
+                Content
+            </button>
+            <button @click="tab = 'seo'" :class="tab === 'seo' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
+                SEO
+            </button>
+            <button @click="tab = 'media'" :class="tab === 'media' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
+                Media
+            </button>
+            <button @click="tab = 'history'" :class="tab === 'history' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
+                Revision History
+            </button>
+            <button @click="tab = 'comments'" :class="tab === 'comments' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
+                Comments ({{ comments|length }})
+            </button>
+        </nav>
+    </div>
+
+    <!-- Master Form -->
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Content Tab -->
+        <div x-show="tab === 'content'" class="space-y-4">
+            <c-ui.card>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Title</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <p class="text-red-600 text-[12px] mt-1">{{ form.title.errors.as_text }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Category</label>
+                        {{ form.category }}
+                    </div>
+                    <div>
+                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Subcategory</label>
+                        {{ form.subcategory }}
+                    </div>
+                    <div>
+                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <p class="text-red-600 text-[12px] mt-1">{{ form.description.errors.as_text }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </c-ui.card>
+        </div>
+
+        <!-- SEO Tab -->
+        <div x-show="tab === 'seo'" class="space-y-4" style="display: none;" x-data="{ 
+            metaTitle: '{{ meta_title|escapejs }}', 
+            metaDesc: '{{ meta_description|escapejs }}' 
+        }">
+            <c-ui.card>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Meta Title</label>
+                        <input type="text" name="meta_title" x-model="metaTitle" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <p class="text-[12px] text-gray-500 mt-1"><span x-text="metaTitle.length">0</span> characters</p>
+                    </div>
+                    <div>
+                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Meta Description</label>
+                        <textarea name="meta_description" x-model="metaDesc" rows="3" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+                        <p class="text-[12px] mt-1" :class="(metaDesc.length === 0 || metaDesc.length > 160) ? 'text-red-600 font-semibold' : 'text-green-600'">
+                            <span x-text="metaDesc.length">0</span> / 160 characters
+                            <span x-show="metaDesc.length === 0"> (Must not be empty)</span>
+                            <span x-show="metaDesc.length > 160"> (Exceeds 160 chars limit)</span>
+                        </p>
+                    </div>
+                </div>
+            </c-ui.card>
+        </div>
+
+        <!-- Media Tab -->
+        <div x-show="tab === 'media'" class="space-y-4" style="display: none;">
+            <c-ui.card>
+                <div class="space-y-4">
+                    {% if post.featured_image %}
+                        <div>
+                            <p class="text-[12px] text-gray-500 mb-1">Current Image Preview:</p>
+                            <img src="{{ post.featured_image.url }}" class="max-w-xs h-auto rounded border border-gray-200">
+                        </div>
+                    {% endif %}
+                    <div>
+                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Featured Image Upload</label>
+                        {{ form.featured_image }}
+                        {% if form.featured_image.errors %}
+                            <p class="text-red-600 text-[12px] mt-1">{{ form.featured_image.errors.as_text }}</p>
+                        {% endif %}
+                        <p class="text-[12px] text-gray-500 mt-1">Allowed formats: JPG, PNG, WEBP. Max file size: 5MB.</p>
+                    </div>
+                    <div>
+                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Featured Image URL (Optional)</label>
+                        {{ form.featured_image_url }}
+                    </div>
+                </div>
+            </c-ui.card>
+        </div>
+
+        <!-- Form Submission Actions (visible for Content, SEO, Media tabs) -->
+        <div x-show="tab === 'content' || tab === 'seo' || tab === 'media'" class="flex justify-end gap-3">
+            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[14px] font-medium transition-colors">
+                Save Changes
+            </button>
+        </div>
+    </form>
+
+    <!-- Revision History Tab (Info note) -->
+    <div x-show="tab === 'history'" style="display: none;">
+        <c-ui.card>
+            <div class="text-center py-8">
+                <i data-lucide="history" class="w-8 h-8 text-gray-400 mx-auto mb-2"></i>
+                <h4 class="text-sm font-semibold text-gray-800">Revision History</h4>
+                <p class="text-[12px] text-gray-500 max-w-md mx-auto mt-1">
+                    Audit log history tracking is planned for a future release (will pull from django-simple-history).
+                </p>
+            </div>
+        </c-ui.card>
+    </div>
+
+    <!-- Comments Tab -->
+    <div x-show="tab === 'comments'" style="display: none;" class="space-y-4">
+        <c-ui.card title="Reader Comments">
+            {% if comments %}
+                <div class="divide-y divide-gray-100">
+                    {% for c in comments %}
+                        <div class="py-3 flex items-start justify-between gap-4">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="font-semibold text-gray-800 text-[14px]">{{ c.user.email }}</span>
+                                    <span class="text-[12px] text-gray-400">{{ c.created_at|timesince }} ago</span>
+                                </div>
+                                <p class="text-[14px] text-gray-700">{{ c.content }}</p>
+                            </div>
+                            <form action="{% url 'dashboard:post_comment_delete' post.pk c.pk %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="p-1 hover:bg-red-50 text-red-600 rounded">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <c-ui.empty_state icon="message-square" title="No comments" description="No comments have been posted to this article yet." />
+            {% endif %}
+        </c-ui.card>
+    </div>
+</div>
+
+<!-- Load CKEditor Media assets isolated to this edit template -->
+{{ form.media }}
+
+{% endblock %}

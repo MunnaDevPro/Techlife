@@ -1,0 +1,19 @@
+<div class="bg-white border border-gray-200 rounded-md p-4 flex items-center justify-between">
+    <div>
+        <p class="text-[12px] text-gray-500 font-medium uppercase tracking-wider">{{ label }}</p>
+        <h4 class="text-2xl font-bold text-gray-900 mt-1">{{ value }}</h4>
+        {% if change %}
+            <p class="text-[12px] mt-1 flex items-center gap-1">
+                <span class="{% if trend == 'up' %}text-green-600{% elif trend == 'down' %}text-red-600{% else %}text-gray-500{% endif %} font-semibold">
+                    {{ change }}
+                </span>
+                <span class="text-gray-400">vs last period</span>
+            </p>
+        {% endif %}
+    </div>
+    {% if icon %}
+        <div class="p-3 bg-blue-50 rounded-md text-blue-600">
+            <i data-lucide="{{ icon }}" class="w-5 h-5 text-blue-600"></i>
+        </div>
+    {% endif %}
+</div>

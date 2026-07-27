@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     "django.contrib.sitemaps",
     "django_extensions",
     "import_export",
+    "django_cotton",
+    "django_tables2",
     "accounts",
     "blog_post",
     "comments",
@@ -50,6 +52,7 @@ INSTALLED_APPS = [
     "site_settings",
     "save_post",
     "django_tailwind_cli",
+    "dashboard",
 ]
 
 MIDDLEWARE = [
@@ -82,8 +85,12 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": ["templates"],
-        "APP_DIRS": True,
         "OPTIONS": {
+            "loaders": [
+                "django_cotton.apps.CottonLoader",
+                "django.template.loaders.filesystem.Loader",
+                "django.template.loaders.app_directories.Loader",
+            ],
             "context_processors": [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -190,3 +197,21 @@ EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER)
+
+# Celery Configurations
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "Asia/Dhaka"
+
+# Nightly Scheduler
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    'nightly-post-rollup': {
+        'task': 'dashboard.tasks.run_compute_daily_rollup',
+        'schedule': crontab(hour=1, minute=0),
+    },
+}
+

@@ -1,0 +1,177 @@
+{% extends base_template %}
+
+{% block content %}
+<div class="space-y-6" x-data="{ tab: 'profile' }">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-lg font-bold text-gray-800">User Profile</h2>
+            <p class="text-[12px] text-gray-500">View profile detail, authored content, and assign permissions for {{ target_user.email }}</p>
+        </div>
+        <a hx-get="{% url 'dashboard:users_all' %}" hx-target="#main-content" hx-push-url="true" class="cursor-pointer px-3 py-1.5 bg-white border border-gray-300 rounded-md text-[14px] text-gray-700 hover:bg-gray-50 font-medium">
+            Back to List
+        </a>
+    </div>
+
+    <!-- User Overview Card -->
+    <c-ui.card>
+        <div class="flex flex-col sm:flex-row items-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-xl">
+                {{ target_user.first_name|default:target_user.email|slice:":2"|upper }}
+            </div>
+            <div class="flex-grow text-center sm:text-left">
+                <h3 class="text-base font-bold text-gray-900">{{ target_user.first_name }} {{ target_user.last_name }}</h3>
+                <p class="text-[14px] text-gray-500">{{ target_user.email }}</p>
+                <div class="flex flex-wrap gap-2 mt-2 justify-center sm:justify-start">
+                    {% if target_user.is_verified %}
+                        <c-ui.badge type="success">Verified Account</c-ui.badge>
+                    {% else %}
+                        <c-ui.badge type="warning">Unverified Account</c-ui.badge>
+                    {% endif %}
+                    
+                    {% if target_user.is_superuser %}
+                        <c-ui.badge type="danger">Superuser</c-ui.badge>
+                    {% elif target_user.is_staff %}
+                        <c-ui.badge type="info">Staff Member</c-ui.badge>
+                    {% else %}
+                        <c-ui.badge type="default">Regular User</c-ui.badge>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </c-ui.card>
+
+    <!-- Tabbed navigation -->
+    <div class="border-b border-gray-200">
+        <nav class="-mb-px flex space-x-6">
+            <button @click="tab = 'profile'" :class="tab === 'profile' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
+                Profile Metadata
+            </button>
+            <button @click="tab = 'posts'" :class="tab === 'posts' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
+                Posts Authored ({{ posts|length }})
+            </button>
+            <button @click="tab = 'permissions'" :class="tab === 'permissions' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
+                Permissions & Roles
+            </button>
+        </nav>
+    </div>
+
+    <!-- Profile Metadata Tab -->
+    <div x-show="tab === 'profile'" class="space-y-4">
+        <c-ui.card title="Metadata Details">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[14px]">
+                <div>
+                    <span class="text-gray-400 font-medium block">Phone</span>
+                    <span class="text-gray-800 font-semibold mt-0.5 block">{{ target_user.mobile|default:"-" }}</span>
+                </div>
+                <div>
+                    <span class="text-gray-400 font-medium block">Location</span>
+                    <span class="text-gray-800 font-semibold mt-0.5 block">
+                        {{ target_user.city }}{% if target_user.country %}, {{ target_user.country }}{% endif %}{% if not target_user.city and not target_user.country %}-{% endif %}
+                    </span>
+                </div>
+                <div>
+                    <span class="text-gray-400 font-medium block">Date Joined</span>
+                    <span class="text-gray-800 font-semibold mt-0.5 block">{{ target_user.date_joined|date:"Y-m-d H:i" }}</span>
+                </div>
+                <div>
+                    <span class="text-gray-400 font-medium block">Last Login</span>
+                    <span class="text-gray-800 font-semibold mt-0.5 block">{{ target_user.last_login|date:"Y-m-d H:i"|default:"Never" }}</span>
+                </div>
+            </div>
+        </c-ui.card>
+    </div>
+
+    <!-- Posts Authored Tab -->
+    <div x-show="tab === 'posts'" style="display: none;" class="space-y-4">
+        <c-ui.card title="Articles Published">
+            <c-ui.table headers="['Title', 'Category', 'Status', 'Views', 'Created Date']">
+                {% for p in posts %}
+                    <tr>
+                        <td class="px-6 py-4 font-medium text-gray-900">{{ p.title }}</td>
+                        <td class="px-6 py-4 text-gray-700">{{ p.category.name|default:"-" }}</td>
+                        <td class="px-6 py-4">
+                            {% if p.status == 'published' %}
+                                <c-ui.badge type="success">Published</c-ui.badge>
+                            {% elif p.status == 'pending' or p.status == 'edited' %}
+                                <c-ui.badge type="warning">Review</c-ui.badge>
+                            {% else %}
+                                <c-ui.badge type="danger">Rejected</c-ui.badge>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-gray-700">{{ p.views }}</td>
+                        <td class="px-6 py-4 text-gray-500 text-[12px]">{{ p.created_at|date:"Y-m-d" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">This user hasn't authored any articles yet.</td>
+                    </tr>
+                {% endfor %}
+            </c-ui.table>
+        </c-ui.card>
+    </div>
+
+    <!-- Permissions and Roles Tab -->
+    <div x-show="tab === 'permissions'" style="display: none;" class="space-y-4">
+        <c-ui.card title="Manage Permissions">
+            {% if request.user == target_user %}
+                <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-md text-[13px] text-yellow-700 flex items-start gap-2">
+                    <i data-lucide="alert-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <span class="font-semibold">Self-Editing Prohibited:</span> You cannot modify your own permissions or groups to prevent self-privilege escalation.
+                    </div>
+                </div>
+            {% else %}
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Flag settings -->
+                        <div class="space-y-4">
+                            <h4 class="text-sm font-semibold text-gray-800 border-b border-gray-100 pb-1">System Flags</h4>
+                            
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" name="is_staff" value="true" {% if target_user.is_staff %}checked{% endif %} class="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <div>
+                                    <span class="text-[14px] font-semibold text-gray-900">Staff Access</span>
+                                    <span class="text-[12px] text-gray-500 block">Grants admin login and access to this dashboard panel.</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start gap-3 cursor-pointer {% if not request.user.is_superuser %}opacity-50 pointer-events-none{% endif %}">
+                                <input type="checkbox" name="is_superuser" value="true" {% if target_user.is_superuser %}checked{% endif %} {% if not request.user.is_superuser %}disabled{% endif %} class="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <div>
+                                    <span class="text-[14px] font-semibold text-gray-900">Superuser Privilege</span>
+                                    <span class="text-[12px] text-gray-500 block">Grants full override bypass permissions. (Superusers only)</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Group memberships -->
+                        <div class="space-y-4">
+                            <h4 class="text-sm font-semibold text-gray-800 border-b border-gray-100 pb-1">Django Security Groups</h4>
+                            
+                            <div class="space-y-2">
+                                {% for g in groups %}
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" name="groups" value="{{ g.id }}" {% if g.id in user_group_ids %}checked{% endif %} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                        <span class="text-[14px] font-semibold text-gray-700">{{ g.name }}</span>
+                                    </label>
+                                {% empty %}
+                                    <p class="text-[12px] text-gray-500">No security groups created.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-4 border-t border-gray-100">
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[14px] font-semibold transition-colors">
+                            Save Permissions
+                        </button>
+                    </div>
+                </form>
+            {% endif %}
+        </c-ui.card>
+    </div>
+</div>
+{% endblock %}
