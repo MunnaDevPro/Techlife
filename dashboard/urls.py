@@ -20,6 +20,7 @@ urlpatterns = [
     path("content/posts/<int:pk>/reject/", content.post_reject, name="post_reject"),
     path("content/posts/<int:pk>/delete/", content.post_delete, name="post_delete"),
     path("content/posts/bulk/", content.post_bulk_action, name="post_bulk"),
+    path("content/posts/create/", content.post_create, name="post_create"),
     path("content/posts/<int:pk>/edit/", content.post_detail_edit, name="post_edit"),
     path("content/posts/<int:post_pk>/comments/<int:comment_pk>/delete/", content.post_comment_delete, name="post_comment_delete"),
     

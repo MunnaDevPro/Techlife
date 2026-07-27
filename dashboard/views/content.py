@@ -113,6 +113,54 @@ def post_bulk_action(request):
     return redirect("dashboard:content_posts")
 
 @staff_required
+def post_create(request):
+    """Dashboard-native view to create a new blog post with full section-by-section layout and SEO integration."""
+    if request.method == "POST":
+        form = BlogPostForm(request.POST, request.FILES)
+        meta_title = request.POST.get('meta_title', '')
+        meta_description = request.POST.get('meta_description', '')
+        
+        if 'featured_image' in request.FILES:
+            try:
+                validate_featured_image(request.FILES['featured_image'])
+            except ValidationError as ve:
+                form.add_error('featured_image', ve)
+                
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.meta_title = meta_title
+            post.meta_description = meta_description
+            
+            # Status based on superuser/staff approval rules
+            if request.user.is_superuser:
+                post.status = "published"
+            else:
+                post.status = "pending"
+                
+            post.save()
+            form.save_m2m() # save tags
+            messages.success(request, f"Article '{post.title}' created successfully!")
+            return redirect("dashboard:content_posts")
+        else:
+            messages.error(request, "Failed to create post. Please check errors below.")
+    else:
+        form = BlogPostForm()
+        
+    categories = Category.objects.all().order_by('name')
+    subcategories = SubCategory.objects.select_related('category').all()
+    tags = Tag.objects.all().order_by('name')
+    
+    ctx = get_dashboard_context(request, "Add New Post", "Content", "dashboard:content_posts")
+    ctx.update({
+        "form": form,
+        "categories": categories,
+        "subcategories": subcategories,
+        "tags": tags,
+    })
+    return render(request, "dashboard/content/post_create.html", ctx)
+
+@staff_required
 def post_detail_edit(request, pk):
     """Tabbed view for post detail / edit."""
     post = get_object_or_404(BlogPost, pk=pk)

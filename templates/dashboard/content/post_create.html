@@ -1,0 +1,174 @@
+{% extends base_template %}
+
+{% block content %}
+<div style="display:flex;flex-direction:column;gap:20px" x-data="{
+    metaTitle: '',
+    metaDesc: '',
+    title: '',
+    subtitle: ''
+}">
+
+    <!-- Page Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+            <h2 class="ft-page-title">Add New Blog Post</h2>
+            <p class="ft-page-subtitle">Publish new article directly from admin dashboard</p>
+        </div>
+        <a href="{% url 'dashboard:content_posts' %}" class="ft-btn ft-btn-secondary ft-btn-sm">
+            <i data-lucide="arrow-left"></i> Back to Posts List
+        </a>
+    </div>
+
+    <!-- Master Form -->
+    <form method="post" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:20px">
+        {% csrf_token %}
+
+        <!-- Section 1: Basic Information -->
+        <c-ui.card title="1. Basic Information" subtitle="Article title, subtitle and taxonomy hierarchy">
+            <div style="display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;flex-direction:column;gap:4px">
+                    <label class="ft-label">Post Title <span style="color:var(--danger)">*</span></label>
+                    <input type="text" name="title" x-model="title" @input="if(!metaTitle) metaTitle = title"
+                           required class="ft-input" placeholder="Enter article title...">
+                    {% if form.title.errors %}
+                        <p class="ft-error-text">{{ form.title.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:4px">
+                    <label class="ft-label">Subtitle / Deck</label>
+                    <input type="text" name="subtitle" x-model="subtitle" class="ft-input"
+                           placeholder="Short summary line under title (optional)...">
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                        <label class="ft-label">Category <span style="color:var(--danger)">*</span></label>
+                        <select name="category" required class="ft-input">
+                            <option value="">Select Category...</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if form.category.errors %}
+                            <p class="ft-error-text">{{ form.category.errors.as_text }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                        <label class="ft-label">Subcategory (optional)</label>
+                        <select name="subcategory" class="ft-input">
+                            <option value="">Select Subcategory...</option>
+                            {% for sub in subcategories %}
+                                <option value="{{ sub.id }}">{{ sub.category.name }} → {{ sub.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:4px">
+                    <label class="ft-label">Tags</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;padding:10px;background:var(--surface-2);border-radius:var(--radius-sm);border:1px solid var(--border)">
+                        {% for tag in tags %}
+                            <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer">
+                                <input type="checkbox" name="tags" value="{{ tag.id }}" style="accent-color:var(--primary)">
+                                <span>#{{ tag.name }}</span>
+                            </label>
+                        {% empty %}
+                            <p style="font-size:12px;color:var(--text-muted)">No tags available.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </c-ui.card>
+
+        <!-- Section 2: Article Main Content -->
+        <c-ui.card title="2. Article Main Content" subtitle="Body text with rich formatting">
+            <div style="display:flex;flex-direction:column;gap:4px">
+                <label class="ft-label">Content Body</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <p class="ft-error-text">{{ form.description.errors.as_text }}</p>
+                {% endif %}
+            </div>
+        </c-ui.card>
+
+        <!-- Section 3: Media & Featured Image -->
+        <c-ui.card title="3. Media & Featured Banner" subtitle="Cover image for post card and header">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div style="display:flex;flex-direction:column;gap:4px">
+                    <label class="ft-label">Upload Image File</label>
+                    <input type="file" name="featured_image" accept="image/*" class="ft-input" style="padding:5px 8px">
+                    <p class="ft-help-text">JPG, PNG or WEBP (Max 5MB)</p>
+                    {% if form.featured_image.errors %}
+                        <p class="ft-error-text">{{ form.featured_image.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:4px">
+                    <label class="ft-label">Or Image URL</label>
+                    <input type="url" name="featured_image_url" class="ft-input" placeholder="https://example.com/banner.webp">
+                    <p class="ft-help-text">Direct external image link</p>
+                </div>
+            </div>
+        </c-ui.card>
+
+        <!-- Section 4: Search Engine Optimization (SEO) Configuration -->
+        <c-ui.card title="4. Search Engine Optimization (SEO) Configuration"
+                   subtitle="Custom meta titles, descriptions and Google snippet preview">
+            <div style="display:flex;flex-direction:column;gap:16px">
+                
+                <!-- Google Snippet Live Preview Box -->
+                <div style="padding:14px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:var(--radius-md);display:flex;flex-direction:column;gap:4px">
+                    <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em">Google Search Preview</span>
+                    <p style="font-size:16px;color:#1a0dab;font-weight:500;margin:0;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+                       x-text="metaTitle || title || 'Post Title Preview'">
+                    </p>
+                    <p style="font-size:12px;color:#006621;margin:0">https://yourdomain.com/details/<span x-text="title ? title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'post-slug'"></span>/</p>
+                    <p style="font-size:12px;color:#4d5156;margin:0;line-height:1.4"
+                       x-text="metaDesc || 'Custom meta description will appear here in Google search engine results.'">
+                    </p>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:4px">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <label class="ft-label" style="margin:0">Meta Title</label>
+                        <span style="font-size:11px;font-family:monospace"
+                              :style="metaTitle.length > 60 ? 'color:var(--danger)' : 'color:var(--text-muted)'"
+                              x-text="metaTitle.length + ' / 60 chars'">
+                        </span>
+                    </div>
+                    <input type="text" name="meta_title" x-model="metaTitle" class="ft-input"
+                           placeholder="SEO title tag for browser & search engines...">
+                    <p class="ft-help-text">Optimal length: 50–60 characters.</p>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:4px">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <label class="ft-label" style="margin:0">Meta Description</label>
+                        <span style="font-size:11px;font-family:monospace"
+                              :style="metaDesc.length > 160 ? 'color:var(--danger)' : 'color:var(--text-muted)'"
+                              x-text="metaDesc.length + ' / 160 chars'">
+                        </span>
+                    </div>
+                    <textarea name="meta_description" x-model="metaDesc" rows="3" class="ft-input"
+                              placeholder="SEO meta description tag for search snippets..."
+                              style="resize:vertical"></textarea>
+                    <p class="ft-help-text">Optimal length: 140–160 characters.</p>
+                </div>
+            </div>
+        </c-ui.card>
+
+        <!-- Submit Toolbar -->
+        <div style="display:flex;gap:12px;justify-content:flex-end;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md)">
+            <a href="{% url 'dashboard:content_posts' %}" class="ft-btn ft-btn-secondary">
+                Cancel
+            </a>
+            <button type="submit" class="ft-btn ft-btn-primary">
+                <i data-lucide="check"></i> Save & Publish Article
+            </button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
