@@ -16,8 +16,8 @@
             <div x-data="{ open: {% if active_menu == item.name %}true{% else %}false{% endif %} }" class="space-y-0.5">
                 {% if item.sub_items %}
                     <!-- Has sub items -->
-                    <button @click="open = !open" 
-                       class="w-full flex items-center justify-between py-1 px-1.5 rounded-md text-[14px] text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors {% if active_menu == item.name %}font-semibold{% endif %}">
+                    <button type="button" @click="open = !open" 
+                       class="cursor-pointer w-full flex items-center justify-between py-1 px-1.5 rounded-md text-[14px] text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors {% if active_menu == item.name %}font-semibold{% endif %}">
                         <span class="flex items-center gap-2">
                             <i data-lucide="{{ item.icon }}" class="w-4 h-4 text-gray-500"></i>
                             <span x-show="sidebarOpen">{{ item.name }}</span>
@@ -27,16 +27,16 @@
                     
                     <div x-show="open && sidebarOpen" class="pl-4 space-y-0.5 transition-all duration-300">
                         {% for sub in item.sub_items %}
-                            <a hx-get="{% url sub.url_name %}" hx-target="#main-content" hx-push-url="true"
-                               class="block py-1 px-1.5 rounded-md text-[13px] transition-colors border-l-2 {% if active_submenu == sub.url_name %}bg-blue-50 text-blue-600 border-blue-600 font-medium{% else %}text-gray-600 border-transparent hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <a href="{% url sub.url_name %}" hx-get="{% url sub.url_name %}" hx-target="#main-content" hx-push-url="true"
+                               class="cursor-pointer block py-1 px-1.5 rounded-md text-[13px] transition-colors border-l-2 {% if active_submenu == sub.url_name %}bg-blue-50 text-blue-600 border-blue-600 font-medium{% else %}text-gray-600 border-transparent hover:bg-gray-50 hover:text-gray-900{% endif %}">
                                {{ sub.name }}
                             </a>
                         {% endfor %}
                     </div>
                 {% else %}
                     <!-- No sub items -->
-                    <a hx-get="{% url item.url_name %}" hx-target="#main-content" hx-push-url="true"
-                       class="flex items-center gap-2 py-1 px-1.5 rounded-md text-[14px] transition-colors border-l-2 {% if active_menu == item.name %}bg-blue-50 text-blue-600 border-blue-600 font-semibold{% else %}text-gray-700 border-transparent hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                    <a href="{% url item.url_name %}" hx-get="{% url item.url_name %}" hx-target="#main-content" hx-push-url="true"
+                       class="cursor-pointer flex items-center gap-2 py-1 px-1.5 rounded-md text-[14px] transition-colors border-l-2 {% if active_menu == item.name %}bg-blue-50 text-blue-600 border-blue-600 font-semibold{% else %}text-gray-700 border-transparent hover:bg-gray-50 hover:text-gray-900{% endif %}">
                         <i data-lucide="{{ item.icon }}" class="w-4 h-4 {% if active_menu == item.name %}text-blue-600{% else %}text-gray-500{% endif %}"></i>
                         <span x-show="sidebarOpen">{{ item.name }}</span>
                     </a>
