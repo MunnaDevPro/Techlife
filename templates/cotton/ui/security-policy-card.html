@@ -1,0 +1,30 @@
+﻿<c-vars policy="" ></c-vars>
+
+<c-ui.card title="{{ policy.role|title }} Policy" subtitle="Configured security rules for {{ policy.role }} role.">
+  <form hx-post="{% url 'accounts:admin_security_policies' %}"
+        hx-swap="none"
+        class="space-y-4 pt-2">
+    {% csrf_token %}
+    <input type="hidden" name="role" value="{{ policy.role }}">
+
+    <div class="p-3 rounded-lg border bg-opacity-5 flex items-center justify-between" style="border-color: var(--border); background-color: var(--surface-2);">
+      <div class="space-y-0.5">
+        <span class="text-xs font-semibold" style="color:var(--text)">Require TOTP MFA</span>
+        <p class="text-[11px] text-gray-400">Forces users in this role to configure Google Authenticator MFA at login.</p>
+      </div>
+      <input type="checkbox" name="mfa_required" value="true" {% if policy.mfa_required %}checked{% endif %} class="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4">
+    </div>
+
+    <c-ui.select name="unlock_method" label="Workspace Unlock Method" value="{{ policy.unlock_method }}">
+      <option value="password" {% if policy.unlock_method == 'password' %}selected{% endif %}>Password Only</option>
+      <option value="pin" {% if policy.unlock_method == 'pin' %}selected{% endif %}>Hashed PIN</option>
+      <option value="mfa" {% if policy.unlock_method == 'mfa' %}selected{% endif %}>MFA TOTP Code</option>
+    </c-ui.select>
+
+    <c-ui.input type="number" name="reauth_interval_hours" value="{{ policy.reauth_interval_hours|default:4 }}" label="Re-Auth Interval (Hours)" help="Hours before sensitive actions require re-authentication."></c-ui.input>
+
+    <c-ui.input type="number" name="trusted_device_days" value="{{ policy.trusted_device_days|default:30 }}" label="Trusted Device Duration (Days)"></c-ui.input>
+
+    <c-ui.button type="submit" label="Save Policy" extra_class="w-full"></c-ui.button>
+  </form>
+</c-ui.card>

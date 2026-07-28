@@ -1,0 +1,28 @@
+﻿{% comment %} c-filter-bar component
+   Jira-style chip filter bar above tables.
+   Props:
+   - action: form action URL (default: current page)
+   - method: get (default) | post
+   - extra_class: additional wrapper classes
+   Slots:
+   - default: filter chips (c-select or c-input elements)
+   - actions: submit/reset buttons (optional — defaults provided)
+{% endcomment %}
+
+<form method="{{ method|default:'get' }}"
+      action="{{ action }}"
+      class="flex flex-wrap items-end gap-3 {{ extra_class }}">
+
+  {# Filter chips slot #}
+  {{ slot }}
+
+  {# Action buttons #}
+  <div class="flex items-center gap-2 ml-auto">
+    {% if actions %}
+      {{ actions }}
+    {% else %}
+      <c-ui.button type="submit" variant="primary" size="sm" icon="filter" label="Filter" ></c-ui.button>
+      <c-ui.button href="{{ action|default:'.' }}" variant="secondary" size="sm" label="Reset" ></c-ui.button>
+    {% endif %}
+  </div>
+</form>

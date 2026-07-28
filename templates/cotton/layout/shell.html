@@ -1,24 +1,238 @@
-<!-- Ambient background blobs -->
-<div class="ft-ambient" aria-hidden="true">
+{% comment %} c-layout.shell — TechLife Dashboard Layout Shell
+   Props:
+   - page_title: current page title string
+   - active_menu: active top-level menu key (e.g. 'content', 'users')
+   - active_submenu: active sub-menu key (e.g. 'posts', 'categories')
+   Slot (default): page body content
+{% endcomment %}
+
+{% load static %}
+
+<div class="ft-layout" x-data="{ sidebarOpen: false }">
+
+  {# ── Ambient background ─────────────────────────────────────────────── #}
+  <div class="ft-ambient" aria-hidden="true">
     <div class="ft-ambient-blob ft-amb-indigo"></div>
     <div class="ft-ambient-blob ft-amb-yellow"></div>
     <div class="ft-ambient-blob ft-amb-sky"></div>
     <div class="ft-ambient-blob ft-amb-purple"></div>
-</div>
+  </div>
 
-<!-- Layout wrapper -->
-<div class="ft-layout">
-    <!-- Sidebar -->
-    <c-layout.sidebar :active_menu="active_menu" :active_submenu="active_submenu" />
+  {# ── Mobile overlay ─────────────────────────────────────────────────── #}
+  <div x-show="sidebarOpen" x-cloak
+       @click="sidebarOpen = false"
+       class="fixed inset-0 z-20 bg-black/40 lg:hidden"></div>
 
-    <!-- Main -->
-    <div id="tl-main" class="ft-main">
-        <!-- Topbar -->
-        <c-layout.topbar :page_title="page_title" />
+  {# ── Sidebar ────────────────────────────────────────────────────────── #}
+  <aside class="ft-sidebar"
+         :class="sidebarOpen ? '' : 'max-lg:-translate-x-full'"
+         style="transition:transform 0.22s cubic-bezier(.4,0,.2,1)">
 
-        <!-- Page content -->
-        <main class="ft-page">
-            {{ slot }}
-        </main>
+    {# Brand #}
+    <div class="ft-sidebar-brand">
+      <div class="ft-sidebar-logo">
+        <i data-lucide="zap" style="width:16px;height:16px;color:#fff"></i>
+      </div>
+      <span style="font-size:14px;font-weight:700;color:var(--text)">TechLife</span>
+      <span style="font-size:10px;font-weight:600;background:var(--primary-light);color:var(--primary);border-radius:4px;padding:1px 6px;margin-left:auto">Admin</span>
     </div>
+
+    {# Nav #}
+    <nav class="ft-sidebar-nav" style="padding-bottom:12px">
+
+      {# Overview #}
+      <a href="{% url 'dashboard:overview' %}"
+         class="ft-nav-item {% if active_menu == 'overview' %}active{% endif %}">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Overview</span>
+      </a>
+
+      {# Content #}
+      <div class="ft-nav-section-label">Content</div>
+      <a href="{% url 'dashboard:content_posts' %}"
+         class="ft-nav-item {% if active_submenu == 'posts' %}active{% endif %}">
+        <i data-lucide="file-text"></i>
+        <span>Posts</span>
+      </a>
+      <a href="{% url 'dashboard:content_categories' %}"
+         class="ft-nav-item {% if active_submenu == 'categories' %}active{% endif %}">
+        <i data-lucide="folder"></i>
+        <span>Categories</span>
+      </a>
+      <a href="{% url 'dashboard:content_subcategories' %}"
+         class="ft-nav-item {% if active_submenu == 'subcategories' %}active{% endif %}">
+        <i data-lucide="layers"></i>
+        <span>Subcategories</span>
+      </a>
+      <a href="{% url 'dashboard:content_tags' %}"
+         class="ft-nav-item {% if active_submenu == 'tags' %}active{% endif %}">
+        <i data-lucide="hash"></i>
+        <span>Tags</span>
+      </a>
+      <a href="{% url 'dashboard:content_homepage' %}"
+         class="ft-nav-item {% if active_submenu == 'homepage' %}active{% endif %}">
+        <i data-lucide="home"></i>
+        <span>Homepage Sections</span>
+      </a>
+
+      {# Forum #}
+      <div class="ft-nav-section-label">Forum</div>
+      <a href="{% url 'dashboard:forum_questions' %}"
+         class="ft-nav-item {% if active_submenu == 'questions' %}active{% endif %}">
+        <i data-lucide="message-square"></i>
+        <span>Questions</span>
+      </a>
+      <a href="{% url 'dashboard:forum_answers' %}"
+         class="ft-nav-item {% if active_submenu == 'answers' %}active{% endif %}">
+        <i data-lucide="message-circle"></i>
+        <span>Answers</span>
+      </a>
+
+      {# Moderation #}
+      <div class="ft-nav-section-label">Moderation</div>
+      <a href="{% url 'dashboard:mod_comments' %}"
+         class="ft-nav-item {% if active_submenu == 'comments' %}active{% endif %}">
+        <i data-lucide="shield"></i>
+        <span>Comment Queue</span>
+      </a>
+      <a href="{% url 'dashboard:mod_flagged' %}"
+         class="ft-nav-item {% if active_submenu == 'flagged' %}active{% endif %}">
+        <i data-lucide="flag"></i>
+        <span>Flagged Items</span>
+      </a>
+      <a href="{% url 'dashboard:mod_blocked' %}"
+         class="ft-nav-item {% if active_submenu == 'blocked' %}active{% endif %}">
+        <i data-lucide="ban"></i>
+        <span>Blocked Users</span>
+      </a>
+
+      {# Users #}
+      <div class="ft-nav-section-label">Users</div>
+      <a href="{% url 'dashboard:users_all' %}"
+         class="ft-nav-item {% if active_submenu == 'users' %}active{% endif %}">
+        <i data-lucide="users"></i>
+        <span>All Users</span>
+      </a>
+      <a href="{% url 'dashboard:users_verification' %}"
+         class="ft-nav-item {% if active_submenu == 'verification' %}active{% endif %}">
+        <i data-lucide="user-check"></i>
+        <span>Verification</span>
+      </a>
+      <a href="{% url 'dashboard:users_roles' %}"
+         class="ft-nav-item {% if active_submenu == 'roles' %}active{% endif %}">
+        <i data-lucide="key-round"></i>
+        <span>Roles & Permissions</span>
+      </a>
+
+      {# Analytics #}
+      <div class="ft-nav-section-label">Analytics</div>
+      <a href="{% url 'dashboard:analytics_traffic' %}"
+         class="ft-nav-item {% if active_submenu == 'traffic' %}active{% endif %}">
+        <i data-lucide="trending-up"></i>
+        <span>Traffic</span>
+      </a>
+      <a href="{% url 'dashboard:analytics_posts' %}"
+         class="ft-nav-item {% if active_submenu == 'top_posts' %}active{% endif %}">
+        <i data-lucide="bar-chart-2"></i>
+        <span>Top Posts</span>
+      </a>
+      <a href="{% url 'dashboard:analytics_authors' %}"
+         class="ft-nav-item {% if active_submenu == 'authors' %}active{% endif %}">
+        <i data-lucide="pen-tool"></i>
+        <span>Author Performance</span>
+      </a>
+
+      {# SEO #}
+      <div class="ft-nav-section-label">SEO</div>
+      <a href="{% url 'dashboard:seo_audit' %}"
+         class="ft-nav-item {% if active_submenu == 'seo_audit' %}active{% endif %}">
+        <i data-lucide="search"></i>
+        <span>Meta Audit</span>
+      </a>
+      <a href="{% url 'dashboard:seo_sitemap' %}"
+         class="ft-nav-item {% if active_submenu == 'sitemap' %}active{% endif %}">
+        <i data-lucide="map"></i>
+        <span>Sitemap</span>
+      </a>
+      <a href="{% url 'dashboard:seo_broken' %}"
+         class="ft-nav-item {% if active_submenu == 'broken_links' %}active{% endif %}">
+        <i data-lucide="link-2-off"></i>
+        <span>Broken Links</span>
+      </a>
+
+      {# Settings #}
+      <div class="ft-nav-section-label">Settings</div>
+      <a href="{% url 'dashboard:settings_ads' %}"
+         class="ft-nav-item {% if active_submenu == 'ads' %}active{% endif %}">
+        <i data-lucide="megaphone"></i>
+        <span>Ad Config</span>
+      </a>
+      <a href="{% url 'dashboard:settings_footer' %}"
+         class="ft-nav-item {% if active_submenu == 'footer' %}active{% endif %}">
+        <i data-lucide="layout-panel-bottom"></i>
+        <span>Footer & Branding</span>
+      </a>
+      <a href="{% url 'dashboard:settings_maintenance' %}"
+         class="ft-nav-item {% if active_submenu == 'maintenance' %}active{% endif %}">
+        <i data-lucide="wrench"></i>
+        <span>Maintenance</span>
+      </a>
+
+    </nav>
+
+    {# Bottom user info #}
+    <div style="padding:12px;border-top:1px solid var(--border);flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-light);
+                    display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i data-lucide="user" style="width:14px;height:14px;color:var(--primary)"></i>
+        </div>
+        <div style="min-width:0;flex:1">
+          <p style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+            {{ request.user.get_full_name|default:request.user.username }}
+          </p>
+          <p style="font-size:10px;color:var(--text-muted)">Administrator</p>
+        </div>
+        <a href="{% url 'account_logout' %}" title="Sign out"
+           style="color:var(--text-muted);padding:4px;border-radius:var(--radius-sm);"
+           onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-muted)'">
+          <i data-lucide="log-out" style="width:14px;height:14px"></i>
+        </a>
+      </div>
+    </div>
+
+  </aside>
+
+  {# ── Main Area ──────────────────────────────────────────────────────── #}
+  <div class="ft-main">
+
+    {# Topbar #}
+    <header class="ft-topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        {# Mobile hamburger #}
+        <button type="button" @click="sidebarOpen = !sidebarOpen"
+                class="ft-btn ft-btn-ghost ft-btn-sm ft-btn-icon lg:hidden">
+          <i data-lucide="menu" style="width:16px;height:16px"></i>
+        </button>
+        <h1 style="font-size:14px;font-weight:700;color:var(--text)">{{ page_title }}</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <a href="/" target="_blank" title="View Site"
+           class="ft-btn ft-btn-ghost ft-btn-sm ft-btn-icon">
+          <i data-lucide="external-link" style="width:14px;height:14px"></i>
+        </a>
+        <a href="{% url 'dashboard:notifications' %}"
+           class="ft-btn ft-btn-ghost ft-btn-sm ft-btn-icon">
+          <i data-lucide="bell" style="width:14px;height:14px"></i>
+        </a>
+      </div>
+    </header>
+
+    {# Page content #}
+    <main class="ft-page" style="position:relative;z-index:1">
+      {{ slot }}
+    </main>
+
+  </div>
+
 </div>

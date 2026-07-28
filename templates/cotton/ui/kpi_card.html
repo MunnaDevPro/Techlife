@@ -1,39 +1,26 @@
-{% comment %}
-c-ui.kpi_card
-Props: label, value, icon, change, trend (up|down|neutral), color (primary|accent|warning|danger|neutral)
+{% comment %} c-ui.kpi_card component
+   Props:
+   - label: KPI label string (e.g. "Published Posts")
+   - value: Main metric value (string or integer)
+   - icon: Lucide icon name
+   - color: primary (default) | accent | warning | danger | indigo | neutral
 {% endcomment %}
-{% with c=color|default:'primary' %}
+
 <div class="ft-kpi">
-    {% if icon %}
-    <div class="ft-kpi-icon
-        {% if c == 'accent' %}bg-emerald-50 text-emerald-600
-        {% elif c == 'warning' %}bg-amber-50 text-amber-600
-        {% elif c == 'danger' %}bg-red-50 text-red-600
-        {% elif c == 'neutral' %}bg-gray-100 text-gray-500
-        {% elif c == 'indigo' %}bg-indigo-50 text-indigo-600
-        {% elif c == 'sky' %}bg-sky-50 text-sky-600
-        {% elif c == 'purple' %}bg-purple-50 text-purple-600
-        {% else %}bg-indigo-50 text-indigo-600{% endif %}">
-        <i data-lucide="{{ icon }}"></i>
-    </div>
-    {% endif %}
-    <div style="flex:1;min-width:0">
-        <p style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">
-            {{ label }}
-        </p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-            <h4 style="font-size:22px;font-weight:700;color:var(--text);line-height:1">{{ value }}</h4>
-            {% if change %}
-            <span style="font-size:11px;font-weight:600;
-                color:{% if trend == 'up' %}#10b981{% elif trend == 'down' %}#ef4444{% else %}var(--text-muted){% endif %};
-                display:flex;align-items:center;gap:2px">
-                {% if trend == 'up' %}<i data-lucide="trending-up" style="width:11px;height:11px"></i>
-                {% elif trend == 'down' %}<i data-lucide="trending-down" style="width:11px;height:11px"></i>{% endif %}
-                {{ change }}
-            </span>
-            {% endif %}
-        </div>
-        {% if subtitle %}<p style="font-size:11px;color:var(--text-muted);margin-top:2px">{{ subtitle }}</p>{% endif %}
-    </div>
+  {% if icon %}
+  <div class="ft-kpi-icon
+    {% if color == 'accent' %}bg-[#d1fae5] text-[#065f46]
+    {% elif color == 'warning' %}bg-[#fef3c7] text-[#92400e]
+    {% elif color == 'danger' %}bg-[#fee2e2] text-[#991b1b]
+    {% elif color == 'indigo' %}bg-[#e0e7ff] text-[#3730a3]
+    {% elif color == 'neutral' %}bg-[#f3f4f6] text-[#374151]
+    {% else %}bg-[#e0e7ff] text-[#4338ca]{% endif %}">
+    <i data-lucide="{{ icon }}"></i>
+  </div>
+  {% endif %}
+
+  <div style="flex:1;min-width:0">
+    <p style="font-size:11px;font-weight:500;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ label }}</p>
+    <h4 style="font-size:18px;font-weight:700;color:var(--text);line-height:1.2;margin-top:2px">{{ value }}</h4>
+  </div>
 </div>
-{% endwith %}

@@ -1,21 +1,36 @@
-{% comment %}
-c-ui.empty_state
-Props: icon, title, description, action
+{% comment %} c-ui.empty_state component
+   Alias of c-ui.empty-state with underscore naming for template compatibility.
+   Props:
+   - icon: lucide icon name (default: inbox)
+   - title: heading text (default: No records found)
+   - description: body text (optional)
+   - action_label: CTA button text (optional)
+   - action_href: CTA button link (optional)
+   - action_variant: primary (default) | secondary | accent
+   Slot: custom action content (overrides action_href)
 {% endcomment %}
-<div style="text-align:center;padding:48px 24px">
-    {% if icon %}
-    <div style="width:48px;height:48px;margin:0 auto 14px;background:var(--surface-3);
-                border-radius:50%;display:flex;align-items:center;justify-content:center">
-        <i data-lucide="{{ icon }}" style="width:22px;height:22px;color:var(--text-disabled)"></i>
-    </div>
-    {% endif %}
-    <p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">
-        {{ title|default:"No data available" }}
+
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:64px 16px;text-align:center">
+  {# Icon circle #}
+  <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface-2)">
+    <i data-lucide="{{ icon|default:'inbox' }}" style="width:24px;height:24px;color:var(--text-muted)"></i>
+  </div>
+
+  {# Text #}
+  <div>
+    <p style="font-size:13px;font-weight:600;color:var(--text)">
+      {{ title|default:"No records found" }}
     </p>
-    <p style="font-size:12px;color:var(--text-muted);max-width:300px;margin:0 auto">
-        {{ description|default:"Get started by creating a new entry." }}
-    </p>
-    {% if action %}
-    <div style="margin-top:16px">{{ action }}</div>
+    {% if description %}
+    <p style="font-size:12px;margin-top:4px;max-width:320px;color:var(--text-muted)">{{ description }}</p>
     {% endif %}
+  </div>
+
+  {# Action #}
+  {% if action_label and action_href %}
+    <a href="{{ action_href }}" class="ft-btn ft-btn-{{ action_variant|default:'primary' }} ft-btn-sm" style="margin-top:4px">
+      {{ action_label }}
+    </a>
+  {% endif %}
+  {{ slot }}
 </div>

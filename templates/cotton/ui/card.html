@@ -1,22 +1,56 @@
-{% comment %}
-c-ui.card
-Props: title, subtitle, extra_class, header_action, padding (none|sm|md|lg)
-Slots: default slot = card body
+{% comment %} c-card component
+Props:
+- title: card heading text (optional)
+- subtitle: subheading below title (optional)
+- padding: md (default) | sm | lg | none
+- extra_class: additional CSS classes
+Slots:
+- header: replaces default title/subtitle block
+- actions: top-right action buttons
+- footer: rendered below the card body
+- default (unnamed): card body content
 {% endcomment %}
-<div class="ft-card {{ extra_class }}"
-     {% if padding == 'none' %}style="--cp:0"{% endif %}>
-    {% if title or header_action %}
-    <div class="ft-card-header">
-        <div>
-            <p class="ft-card-title">{{ title }}</p>
-            {% if subtitle %}<p class="ft-card-subtitle">{{ subtitle }}</p>{% endif %}
-        </div>
-        {% if header_action %}
-        <div style="display:flex;align-items:center;gap:8px">{{ header_action }}</div>
-        {% endif %}
+
+{% with pad_map="sm:p-3 md:p-4 lg:p-6 none:p-0" %}
+{% with pad_class=padding|default:"md" %}
+
+<div class="ft-card flex flex-col {{ extra_class }}" style="--card-bg: var(--surface);">
+
+  {# Header row #}
+  {% if title or header or actions %}
+  <div class="flex items-start justify-between gap-3 px-2 pt-2 pb-0">
+    {% if header %}
+    {{ header }}
+    {% elif title %}
+    <div class="min-w-0">
+      <h3 class="text-[13px] font-semibold truncate" style="color:var(--text)">{{ title }}</h3>
+      {% if subtitle %}
+      <p class="text-[11px] mt-0.5" style="color:var(--text-muted)">{{ subtitle }}</p>
+      {% endif %}
     </div>
     {% endif %}
-    <div class="ft-card-body {% if padding == 'none' %}!p-0{% elif padding == 'sm' %}!p-3{% elif padding == 'lg' %}!p-6{% endif %}">
-        {{ slot }}
+    {% if actions %}
+    <div class="flex items-center gap-2 flex-shrink-0">
+      {{ actions }}
     </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {# Body #}
+  <div
+    class="{% if padding == 'none' %}p-0{% elif padding == 'sm' %}p-2{% elif padding == 'lg' %}p-4{% else %}p-3{% endif %} {% if title or header %}pt-2{% endif %}">
+    {{ slot }}
+  </div>
+
+  {# Footer #}
+  {% if footer %}
+  <div class="px-3 py-2.5 border-t"
+    style="border-color:var(--border); background:var(--surface-2); border-radius:0 0 8px 8px;">
+    {{ footer }}
+  </div>
+  {% endif %}
+
 </div>
+{% endwith %}
+{% endwith %}

@@ -1,79 +1,41 @@
-{% comment %}
-c-ui.file_input — styled custom drag-and-drop file upload input
-Props: name, label, help, required, disabled, accept, extra_class, id
+{% comment %} c-ui.file_input component
+   Props:
+   - name: input field name (required)
+   - label: field label text
+   - help: help text below the input (optional)
+   - accept: accepted file types, e.g. "image/*" (optional)
+   - required: "true" to mark as required (optional)
+   - id: element id (defaults to name)
 {% endcomment %}
-<div class="flex flex-col {{ extra_class }}" style="gap:4px"
-     x-data="{
-        fileName: '',
-        fileSize: '',
-        isHovered: false,
-        handleFile(e) {
-            const file = e.target.files[0];
-            if (file) {
-                this.fileName = file.name;
-                this.fileSize = (file.size / 1024).toFixed(1) + ' KB';
-            } else {
-                this.fileName = '';
-                this.fileSize = '';
-            }
-        }
-     }">
-    {% if label %}
-    <label for="{{ id|default:name }}" class="ft-label">
-        {{ label }}{% if required %}<span style="color:var(--danger);margin-left:2px">*</span>{% endif %}
+
+<div style="display:flex;flex-direction:column;gap:4px">
+  {% if label %}
+  <label for="{{ id|default:name }}" class="ft-label">
+    {{ label }}{% if required == "true" %} *{% endif %}
+  </label>
+  {% endif %}
+
+  <div style="position:relative">
+    <label for="{{ id|default:name }}"
+           style="display:flex;align-items:center;gap:10px;padding:7px 11px;
+                  border-radius:var(--radius-sm);border:1px solid var(--border-strong);
+                  background:var(--surface);cursor:pointer;transition:border-color .15s;
+                  font-size:13px;color:var(--text-muted)"
+           onmouseover="this.style.borderColor='var(--primary)'"
+           onmouseout="this.style.borderColor='var(--border-strong)'">
+      <i data-lucide="upload-cloud" style="width:15px;height:15px;color:var(--text-muted);flex-shrink:0"></i>
+      <span id="{{ id|default:name }}-label">Choose file…</span>
     </label>
-    {% endif %}
+    <input type="file"
+           id="{{ id|default:name }}"
+           name="{{ name }}"
+           {% if accept %}accept="{{ accept }}"{% endif %}
+           {% if required == "true" %}required{% endif %}
+           style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%"
+           onchange="document.getElementById('{{ id|default:name }}-label').textContent = this.files[0] ? this.files[0].name : 'Choose file…'">
+  </div>
 
-    <div style="position:relative;border:1px dashed var(--border-strong);border-radius:var(--radius-md);
-                padding:14px;text-align:center;background:var(--surface-2);cursor:pointer;
-                transition:all .18s ease"
-         :style="isHovered ? 'border-color:var(--primary);background:var(--primary-light)' : ''"
-         @dragover.prevent="isHovered = true"
-         @dragleave.prevent="isHovered = false"
-         @drop.prevent="isHovered = false; $refs.fileInput.files = $event.dataTransfer.files; handleFile({target: $refs.fileInput})"
-         @click="$refs.fileInput.click()">
-        
-        <input type="file" x-ref="fileInput" name="{{ name }}" id="{{ id|default:name }}"
-               {% if accept %}accept="{{ accept }}"{% endif %}
-               {% if required %}required{% endif %}
-               {% if disabled %}disabled{% endif %}
-               @change="handleFile($event)"
-               style="display:none">
-
-        <template x-if="!fileName">
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
-                <div style="width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);
-                            display:flex;align-items:center;justify-content:center">
-                    <i data-lucide="upload-cloud" style="width:16px;height:16px;color:var(--primary)"></i>
-                </div>
-                <p style="font-size:12px;font-weight:600;color:var(--text);margin:0">
-                    Click to upload <span style="font-weight:400;color:var(--text-muted)">or drag & drop</span>
-                </p>
-                <p style="font-size:10.5px;color:var(--text-disabled);margin:0">
-                    PNG, JPG, WEBP (Max 5MB)
-                </p>
-            </div>
-        </template>
-
-        <template x-if="fileName">
-            <div style="display:flex;align-items:center;gap:10px;text-align:left">
-                <div style="width:32px;height:32px;border-radius:var(--radius-sm);background:var(--primary-light);
-                            display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                    <i data-lucide="image" style="width:16px;height:16px;color:var(--primary)"></i>
-                </div>
-                <div style="flex:1;min-width:0">
-                    <p style="font-size:12px;font-weight:600;color:var(--text);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="fileName"></p>
-                    <p style="font-size:10.5px;color:var(--text-muted);margin:0" x-text="fileSize"></p>
-                </div>
-                <button type="button" @click.stop="fileName = ''; fileSize = ''; $refs.fileInput.value = ''"
-                        class="ft-btn ft-btn-ghost ft-btn-sm" style="padding:4px">
-                    <i data-lucide="x" style="width:14px;height:14px"></i>
-                </button>
-            </div>
-        </template>
-    </div>
-
-    {% if help %}
-        <p class="ft-help-text">{{ help }}</p>
-    {% endif %}
+  {% if help %}
+  <p class="ft-help-text">{{ help }}</p>
+  {% endif %}
 </div>
