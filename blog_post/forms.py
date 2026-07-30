@@ -1,7 +1,4 @@
 from django import forms
-from django.core.validators import MinLengthValidator
-
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 from tags.models import Tag
 from .models import BlogPost, Category
@@ -22,21 +19,14 @@ class BlogPostForm(forms.ModelForm):
         label="Tags",
     )
     description = forms.CharField(
-        widget=CKEditorUploadingWidget(
+        widget=forms.Textarea(
             attrs={
                 "id": "post_description",
                 "rows": 12,
-                "class": (
-                    "django-ckeditor-widget w-full bg-gray-50 border border-gray-200 "
-                    "rounded-xl px-4 py-3 text-[13px] text-gray-800"
-                ),
+                "class": "ft-input w-full",
+                # CKEditor 5 replaces this textarea on the client side
             }
         ),
-        validators=[
-            MinLengthValidator(
-                2000, message="Description must be at least 2000 characters."
-            )
-        ],
         required=False,
     )
 

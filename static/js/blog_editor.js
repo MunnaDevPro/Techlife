@@ -1,47 +1,47 @@
+/**
+ * blog_editor.js — TechLife CMS Blog Editor
+ * CKEditor 5 Classic Build (CDN) with custom SimpleUploadAdapter
+ * compatible with the existing django-ckeditor-uploader endpoint.
+ *
+ * Instance tracking: window.__ck5Instances = { 'post_description': editorInstance }
+ * Destroy-on-reinit guard: destroys existing instance before creating a new one.
+ */
+
 (function () {
     'use strict';
 
-    var CKEDITOR_CDN_FALLBACK = 'https://cdn.ckeditor.com/4.25.1-lts/full/ckeditor.js';
-    var CKEDITOR_SCRIPT_ID = 'ckeditor-cdn';
+    // ── CKEditor 5 CDN ────────────────────────────────────────────────────────
+    var CK5_CDN_URL = 'https://cdn.ckeditor.com/ckeditor5/43.3.1/classic/ckeditor.js';
+    var CK5_SCRIPT_ID = 'ckeditor5-cdn';
 
-    function getCkeditorUrls(form) {
-        if (!form) {
-            return {};
-        }
-        return {
-            uploadUrl: form.getAttribute('data-ckeditor-upload-url') || '',
-            browseUrl: form.getAttribute('data-ckeditor-browse-url') || '',
-        };
+    // Global instance registry (keyed by textarea id)
+    window.__ck5Instances = window.__ck5Instances || {};
+
+    // ── Upload URL helper ─────────────────────────────────────────────────────
+    function getUploadUrl(form) {
+        if (!form) return '';
+        return form.getAttribute('data-ckeditor-upload-url') || '';
     }
 
-    function loadScript(url, id, onLoad, fallbackUrl) {
+    // ── Script loader ─────────────────────────────────────────────────────────
+    function loadScript(url, id, onLoad) {
         if (!url) {
             if (typeof onLoad === 'function') onLoad(false);
             return;
         }
-
         if (id) {
             var existing = document.getElementById(id);
             if (existing) {
-                if (window.CKEDITOR) {
+                if (window.ClassicEditor) {
                     if (typeof onLoad === 'function') onLoad(true);
                     return;
                 }
                 existing.addEventListener('load', function () {
                     if (typeof onLoad === 'function') onLoad(true);
                 }, { once: true });
-                existing.addEventListener('error', function () {
-                    existing.remove();
-                    if (fallbackUrl && fallbackUrl !== url) {
-                        loadScript(fallbackUrl, id, onLoad);
-                        return;
-                    }
-                    if (typeof onLoad === 'function') onLoad(false);
-                }, { once: true });
                 return;
             }
         }
-
         var script = document.createElement('script');
         if (id) script.id = id;
         script.src = url;
@@ -50,120 +50,217 @@
             if (typeof onLoad === 'function') onLoad(true);
         };
         script.onerror = function () {
-            if (id) {
-                var failed = document.getElementById(id);
-                if (failed) failed.remove();
-            }
-            if (fallbackUrl && fallbackUrl !== url) {
-                loadScript(fallbackUrl, id, onLoad);
-                return;
-            }
+            console.warn('[blog_editor] Failed to load CKEditor 5 from CDN:', url);
             if (typeof onLoad === 'function') onLoad(false);
         };
         document.head.appendChild(script);
     }
 
-    function ensureCkeditor(callback) {
-        if (window.CKEDITOR) {
+    function ensureCK5(callback) {
+        if (window.ClassicEditor) {
             if (typeof callback === 'function') callback();
             return;
         }
-
-        var cdnUrl = window.CKEDITOR_CDN_URL || CKEDITOR_CDN_FALLBACK;
-        var localUrl = window.CKEDITOR_LOCAL_URL || '';
-
-        loadScript(cdnUrl, CKEDITOR_SCRIPT_ID, function () {
-            if (window.CKEDITOR) {
-                if (typeof callback === 'function') callback();
-                return;
-            }
-            if (localUrl) {
-                loadScript(localUrl, CKEDITOR_SCRIPT_ID, function () {
-                    if (typeof callback === 'function') callback();
-                });
-            }
-        }, localUrl || null);
-    }
-
-    function buildEditorConfig(form) {
-        var urls = getCkeditorUrls(form);
-        var uploadUrl = urls.uploadUrl;
-        var browseUrl = urls.browseUrl;
-
-        return {
-            toolbar: [
-                { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
-                { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll'] },
-                { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar', 'PageBreak', 'Smiley', 'Iframe'] },
-                '/',
-                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
-                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-                { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
-                { name: 'colors', items: ['TextColor', 'BGColor'] },
-                { name: 'tools', items: ['Maximize', 'ShowBlocks', 'Preview', 'Print', 'Source'] },
-            ],
-            height: 520,
-            filebrowserUploadUrl: uploadUrl,
-            filebrowserBrowseUrl: browseUrl,
-            filebrowserImageUploadUrl: uploadUrl ? (uploadUrl + '?type=Images') : '',
-            filebrowserImageBrowseUrl: browseUrl ? (browseUrl + '?type=Images') : '',
-            allowedContent: true,
-            extraAllowedContent: 'script[*](*); iframe[*](*); *(*)',
-            entities: false,
-            versionCheck: false,
-            removePlugins: 'exportpdf',
-            contentsCss: [
-                'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap',
-                'body { font-family: Inter, sans-serif; font-size: 14px; line-height: 1.8; color: #1c1c1e; padding: 12px 16px; background: #fff; }' +
-                'p { margin: 0 0 1em 0; }' +
-                'h1,h2,h3,h4,h5,h6 { font-weight: 700; line-height: 1.3; margin: 1.2em 0 0.5em; }' +
-                'a { color: #1e3a6e; }' +
-                'blockquote { border-left: 3px solid #1e3a6e; margin: 1em 0; padding: 0.5em 1em; color: #555; background: #f9fafb; }' +
-                'img { max-width: 100%; height: auto; border-radius: 6px; }'
-            ],
-            bodyClass: 'ckeditor-content'
-        };
-    }
-
-    function initCkeditor() {
-        var textarea = document.getElementById('post_description');
-        if (!textarea) {
-            return;
-        }
-
-        var form = document.getElementById('create-blog-form');
-
-        ensureCkeditor(function () {
-            if (!window.CKEDITOR) {
-                return;
-            }
-
-            if (CKEDITOR.instances.post_description) {
-                CKEDITOR.instances.post_description.destroy(true);
-            }
-
-            CKEDITOR.config.versionCheck = false;
-            CKEDITOR.replace('post_description', buildEditorConfig(form));
+        loadScript(CK5_CDN_URL, CK5_SCRIPT_ID, function (ok) {
+            if (typeof callback === 'function') callback(ok);
         });
     }
 
-    function bindFormValidation() {
-        var form = document.getElementById('create-blog-form');
-        if (!form || form.dataset.editorBound === 'true') {
-            return;
+    // ── Custom Upload Adapter ─────────────────────────────────────────────────
+    // Wraps the existing django-ckeditor-uploader endpoint (/ckeditor/upload/).
+    // CK4 endpoint returns: { url: "...", filename: "..." }
+    // CK5 expects resolve({ default: url }) on success.
+    function DjangoCKUploadAdapter(loader, uploadUrl) {
+        this.loader = loader;
+        this.uploadUrl = uploadUrl;
+    }
+
+    DjangoCKUploadAdapter.prototype.upload = function () {
+        var loader = this.loader;
+        var uploadUrl = this.uploadUrl;
+
+        return loader.file.then(function (file) {
+            return new Promise(function (resolve, reject) {
+                // Get CSRF token from cookie
+                var csrfToken = '';
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var c = cookies[i].trim();
+                    if (c.startsWith('csrftoken=')) {
+                        csrfToken = c.substring('csrftoken='.length);
+                        break;
+                    }
+                }
+
+                var formData = new FormData();
+                formData.append('upload', file);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', uploadUrl + '?type=Images', true);
+                xhr.setRequestHeader('X-CSRFToken', csrfToken);
+
+                xhr.upload.onprogress = function (e) {
+                    if (e.lengthComputable) {
+                        loader.uploadTotal = e.total;
+                        loader.uploaded = e.loaded;
+                    }
+                };
+
+                xhr.onload = function () {
+                    if (xhr.status < 200 || xhr.status >= 300) {
+                        return reject('Upload failed: HTTP ' + xhr.status);
+                    }
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        // django-ckeditor-uploader returns { url: "...", filename: "..." }
+                        // CKEditor 5 SimpleUploadAdapter expects { default: url }
+                        var url = data.url || data.default;
+                        if (url) {
+                            resolve({ default: url });
+                        } else {
+                            reject('Upload response did not contain an image URL.');
+                        }
+                    } catch (e) {
+                        reject('Could not parse upload response.');
+                    }
+                };
+
+                xhr.onerror = function () {
+                    reject('Upload failed due to a network error.');
+                };
+
+                xhr.send(formData);
+            });
+        });
+    };
+
+    DjangoCKUploadAdapter.prototype.abort = function () {
+        if (this.xhr) this.xhr.abort();
+    };
+
+    function uploadAdapterPlugin(uploadUrl) {
+        return function (editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = function (loader) {
+                return new DjangoCKUploadAdapter(loader, uploadUrl);
+            };
+        };
+    }
+
+    // ── Editor Config ─────────────────────────────────────────────────────────
+    function buildEditorConfig(form) {
+        var uploadUrl = getUploadUrl(form);
+        var config = {
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', 'underline', 'strikethrough', '|',
+                    'link', 'bulletedList', 'numberedList', '|',
+                    'blockQuote', 'insertTable', '|',
+                    'imageUpload', 'mediaEmbed', '|',
+                    'outdent', 'indent', '|',
+                    'undo', 'redo', '|',
+                    'findAndReplace', 'sourceEditing'
+                ],
+                shouldNotGroupWhenFull: false
+            },
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                    { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                ]
+            },
+            table: {
+                contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+            },
+            image: {
+                toolbar: [
+                    'imageStyle:inline', 'imageStyle:block', 'imageStyle:side',
+                    '|', 'toggleImageCaption', 'imageTextAlternative'
+                ]
+            },
+            htmlSupport: {
+                allow: [
+                    { name: /./, attributes: true, classes: true, styles: true }
+                ]
+            },
+        };
+
+        // Wire up upload adapter if URL is provided
+        if (uploadUrl) {
+            config.extraPlugins = [uploadAdapterPlugin(uploadUrl)];
         }
 
+        return config;
+    }
+
+    // ── Init CKEditor 5 ───────────────────────────────────────────────────────
+    function initCkeditor() {
+        var textarea = document.getElementById('post_description');
+        if (!textarea) return;
+
+        var form = document.getElementById('create-blog-form');
+
+        ensureCK5(function (ok) {
+            if (!window.ClassicEditor) {
+                console.warn('[blog_editor] ClassicEditor not available.');
+                return;
+            }
+
+            // Destroy existing instance if present (reinit guard)
+            if (window.__ck5Instances['post_description']) {
+                window.__ck5Instances['post_description'].destroy()
+                    .then(function () {
+                        _createEditor(textarea, form);
+                    })
+                    .catch(function (err) {
+                        console.warn('[blog_editor] Destroy error:', err);
+                        _createEditor(textarea, form);
+                    });
+            } else {
+                _createEditor(textarea, form);
+            }
+        });
+    }
+
+    function _createEditor(textarea, form) {
+        var config = buildEditorConfig(form);
+
+        ClassicEditor.create(textarea, config)
+            .then(function (editor) {
+                window.__ck5Instances['post_description'] = editor;
+
+                // Sync data back to textarea on every change (for form validation)
+                editor.model.document.on('change:data', function () {
+                    textarea.value = editor.getData();
+                });
+            })
+            .catch(function (err) {
+                console.error('[blog_editor] CKEditor 5 init error:', err);
+            });
+    }
+
+    // ── Form Validation ───────────────────────────────────────────────────────
+    function bindFormValidation() {
+        var form = document.getElementById('create-blog-form');
+        if (!form || form.dataset.editorBound === 'true') return;
         form.dataset.editorBound = 'true';
 
         form.addEventListener('submit', function (e) {
-            if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances.post_description) {
-                CKEDITOR.instances.post_description.updateElement();
+            // Sync CK5 data to textarea before validation
+            var editor = window.__ck5Instances['post_description'];
+            if (editor) {
+                var data = editor.getData();
+                var desc = document.getElementById('post_description');
+                if (desc) desc.value = data;
             }
 
             var desc = document.getElementById('post_description');
             var errEl = document.getElementById('desc-error');
             var content = (desc ? desc.value : '').trim();
+
             if (!content) {
                 e.preventDefault();
                 if (errEl) errEl.classList.remove('hidden');
@@ -183,12 +280,10 @@
         });
     }
 
+    // ── Tag System ────────────────────────────────────────────────────────────
     function initTagSystem() {
         var tagBox = document.getElementById('tag-box');
-        if (!tagBox || tagBox.dataset.tagsBound === 'true') {
-            return;
-        }
-
+        if (!tagBox || tagBox.dataset.tagsBound === 'true') return;
         tagBox.dataset.tagsBound = 'true';
 
         var selectedTags = {};
@@ -206,8 +301,10 @@
         var chipsEl = document.getElementById('tag-chips');
         var suggestions = document.getElementById('tag-suggestions');
 
-        if (!input || !chipsEl || !suggestions) {
-            return;
+        if (!input || !chipsEl || !suggestions) return;
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
         function renderChips() {
@@ -237,10 +334,6 @@
                     if (cb) cb.checked = true;
                 }
             });
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
         function removeTag(key) {
@@ -278,9 +371,7 @@
             renderChips();
         }
 
-        window.removeTagByKey = function (key) {
-            removeTag(key);
-        };
+        window.removeTagByKey = function (key) { removeTag(key); };
 
         window.addTagFromSuggestion = function (btn) {
             var id = btn.dataset.tagId;
@@ -297,9 +388,7 @@
             input.focus();
         };
 
-        input.addEventListener('focus', function () {
-            suggestions.classList.remove('hidden');
-        });
+        input.addEventListener('focus', function () { suggestions.classList.remove('hidden'); });
 
         document.addEventListener('click', function (e) {
             var box = document.getElementById('tag-box');
@@ -350,19 +439,16 @@
         }
     }
 
+    // ── Image Preview ─────────────────────────────────────────────────────────
     function initImagePreview() {
         var imgInput = document.getElementById('featured_image');
         var imgPreview = document.getElementById('image-preview');
-        if (!imgInput || !imgPreview || imgInput.dataset.previewBound === 'true') {
-            return;
-        }
-
+        if (!imgInput || !imgPreview || imgInput.dataset.previewBound === 'true') return;
         imgInput.dataset.previewBound = 'true';
 
         imgInput.addEventListener('change', function () {
             var file = this.files && this.files[0];
             if (!file) return;
-
             var reader = new FileReader();
             reader.onload = function (e) {
                 imgPreview.src = e.target.result;
@@ -372,6 +458,7 @@
         });
     }
 
+    // ── Boot ──────────────────────────────────────────────────────────────────
     function initBlogEditor() {
         initCkeditor();
         bindFormValidation();

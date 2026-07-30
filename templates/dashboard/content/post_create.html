@@ -20,7 +20,10 @@
     </div>
 
     <!-- Master Form -->
-    <form method="post" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:20px">
+    <form method="post" enctype="multipart/form-data"
+          id="create-blog-form"
+          data-ckeditor-upload-url="{% url 'ckeditor_upload' %}"
+          class="flex flex-col gap-5">
         {% csrf_token %}
 
         <!-- Section 1: Basic Information -->

@@ -35,7 +35,11 @@
     </div>
 
     <!-- Master Form -->
-    <form method="post" enctype="multipart/form-data" class="space-y-6">
+    <form method="post" enctype="multipart/form-data"
+          id="create-blog-form"
+          data-is-edit="true"
+          data-ckeditor-upload-url="{% url 'ckeditor_upload' %}"
+          class="space-y-6">
         {% csrf_token %}
         
         <!-- Content Tab -->
@@ -170,7 +174,5 @@
     </div>
 </div>
 
-<!-- Load CKEditor Media assets isolated to this edit template -->
-{{ form.media }}
-
 {% endblock %}
+
