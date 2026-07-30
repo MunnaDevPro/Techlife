@@ -24,6 +24,4 @@ class Redirect404Middleware:
                     log.save(update_fields=['hit_count', 'referer', 'last_seen'])
             except Exception:
                 pass
-                
-            return redirect(reverse('homepage'))
         return response

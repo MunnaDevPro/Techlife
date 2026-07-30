@@ -8,10 +8,10 @@
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
-        <c-ui.kpi_card label="Total Sitemap URLs" value="{{ total_db_urls }}" icon="globe" color="primary" />
-        <c-ui.kpi_card label="Articles Registered" value="{{ db_posts }}" icon="file-text" color="accent" />
-        <c-ui.kpi_card label="Categories Registered" value="{{ db_categories }}" icon="layers" color="sky" />
-        <c-ui.kpi_card label="Static Routes" value="{{ static_urls }}" icon="link" color="purple" />
+        <c-ui.kpi-widget label="Total Sitemap URLs" value="{{ total_db_urls }}" icon="globe" color="primary"></c-ui.kpi-widget>
+        <c-ui.kpi-widget label="Articles Registered" value="{{ db_posts }}" icon="file-text" color="accent"></c-ui.kpi-widget>
+        <c-ui.kpi-widget label="Categories Registered" value="{{ db_categories }}" icon="layers" color="sky"></c-ui.kpi-widget>
+        <c-ui.kpi-widget label="Static Routes" value="{{ static_urls }}" icon="link" color="purple"></c-ui.kpi-widget>
     </div>
 
     <c-ui.card title="Sitemap vs Database Alignment" subtitle="All feeds synchronized with database">

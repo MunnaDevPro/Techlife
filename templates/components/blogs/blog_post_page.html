@@ -3,72 +3,125 @@
 {% if blogs %}
 
 <!-- ════════════════════════════════════════════════════════
-     ROW 1 — COMPACT HERO (left 1/2) + 2×2 SIDE GRID (right 1/2)
-     Posts 1–5 | Hero is shorter, side has 4 compact cards
+     ROW 1 — COMPACT HERO + 2 CARDS (left) + 2×2 SIDE GRID (right)
+     Posts 1–7 | Hero has 2 cards below it, side has 4 compact cards.
+     All cards use 16:9 video aspect ratio.
 ════════════════════════════════════════════════════════ -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
 
-    <!-- Compact Hero — Post 1 -->
-    {% for blog in blogs|slice:":1" %}
-    <a href="{% url 'blog_details' blog.slug %}"
-       hx-get="{% url 'blog_details' blog.slug %}"
-       hx-target="#container"
-       hx-push-url="true"
-       hx-swap="innerHTML"
-       class="relative rounded-xl overflow-hidden group cursor-pointer block"
-       style="min-height: 240px; max-height: 300px;">
+    <!-- Left Column: Hero + 2 Blog Cards Below -->
+    <div class="flex flex-col gap-3">
+        <!-- Compact Hero — Post 1 -->
+        {% for blog in blogs|slice:":1" %}
+        <a href="{% url 'blog_details' blog.slug %}"
+           hx-get="{% url 'blog_details' blog.slug %}"
+           hx-target="#container"
+           hx-push-url="true"
+           hx-swap="innerHTML"
+           class="relative rounded-xl overflow-hidden group cursor-pointer block"
+           style="min-height: 240px; max-height: 300px;">
 
-        <div class="absolute inset-0">
-            {% if blog.featured_image %}
-              <img src="{{ blog.featured_image.url }}"
-                 alt="{{ blog.title }}"
-                 class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-[1.04]"
-                  width="800" height="450"
-                 loading="eager" fetchpriority="high" decoding="async" />
-            {% elif blog.featured_image_url %}
-              <img src="{{ blog.featured_image_url }}"
-                 alt="{{ blog.title }}"
-                 class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-[1.04]"
-                  width="800" height="450"
-                 loading="eager" fetchpriority="high" decoding="async" />
-            {% else %}
-              <img src="{% static 'image/placeholder-5.png' %}"
-                 alt="{{ blog.title }}"
-                 class="w-full h-full object-cover"
-                  width="800" height="450"
-                 loading="eager" decoding="async" />
-            {% endif %}
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-        </div>
+            <div class="absolute inset-0">
+                {% if blog.featured_image %}
+                  <img src="{{ blog.featured_image.url }}"
+                     alt="{{ blog.title }}"
+                     class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-[1.04]"
+                     width="800" height="450"
+                     loading="eager" fetchpriority="high" decoding="async" />
+                {% elif blog.featured_image_url %}
+                  <img src="{{ blog.featured_image_url }}"
+                     alt="{{ blog.title }}"
+                     class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-[1.04]"
+                     width="800" height="450"
+                     loading="eager" fetchpriority="high" decoding="async" />
+                {% else %}
+                  <img src="{% static 'image/placeholder-5.png' %}"
+                     alt="{{ blog.title }}"
+                     class="w-full h-full object-cover"
+                     width="800" height="450"
+                     loading="eager" decoding="async" />
+                {% endif %}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            </div>
 
-        <!-- Top left: Latest badge -->
-        <div class="absolute top-3 left-3">
-            <span class="inline-flex items-center gap-1 bg-[#1e3a6e] text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">
-                <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
-                Latest
-            </span>
-        </div>
-
-        <div class="absolute inset-0 flex flex-col justify-end p-4">
-            {% if blog.category %}
-            <span class="inline-block text-[10px] font-semibold text-white/80 mb-1">{{ blog.category.name }}</span>
-            {% endif %}
-            <h2 class="text-white font-bold text-base sm:text-lg leading-snug line-clamp-2 mb-2">
-                {{ blog.title }}
-            </h2>
-            <div class="flex items-center gap-3 text-[10px] text-gray-300">
-                <span>{{ blog.created_at|date:"d M, Y" }}</span>
-                <span>·</span>
-                <span class="flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                    {{ blog.views }}
+            <!-- Top left: Latest badge -->
+            <div class="absolute top-3 left-3">
+                <span class="inline-flex items-center gap-1 bg-[#1e3a6e] text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">
+                    <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+                    Latest
                 </span>
             </div>
-        </div>
-    </a>
-    {% endfor %}
 
-    <!-- 2×2 Side Grid — Posts 2–5 -->
+            <div class="absolute inset-0 flex flex-col justify-end p-4">
+                {% if blog.category %}
+                <span class="inline-block text-[10px] font-semibold text-white/80 mb-1">{{ blog.category.name }}</span>
+                {% endif %}
+                <h2 class="text-white font-bold text-base sm:text-lg leading-snug line-clamp-2 mb-2">
+                    {{ blog.title }}
+                </h2>
+                <div class="flex items-center gap-3 text-[10px] text-gray-300">
+                    <span>{{ blog.created_at|date:"d M, Y" }}</span>
+                    <span>·</span>
+                    <span class="flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        {{ blog.views }}
+                    </span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+
+        <!-- 2 Cards under Hero (Posts 6-7) -->
+        {% with below_hero=blogs|slice:"5:7" %}
+        {% if below_hero %}
+        <div class="grid grid-cols-2 gap-3">
+            {% for blog in below_hero %}
+            <a href="{% url 'blog_details' blog.slug %}"
+               hx-get="{% url 'blog_details' blog.slug %}"
+               hx-target="#container"
+               hx-push-url="true"
+               hx-swap="innerHTML"
+               class="tl-card rounded-xl overflow-hidden group cursor-pointer flex flex-col">
+
+                <div class="overflow-hidden" style="aspect-ratio: 16/9;">
+                    {% if blog.featured_image %}
+                    <img src="{{ blog.featured_image.url }}"
+                         alt="{{ blog.title }}"
+                         class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]"
+                         width="300" height="169"
+                         loading="lazy" decoding="async" />
+                    {% elif blog.featured_image_url %}
+                    <img src="{{ blog.featured_image_url }}"
+                         alt="{{ blog.title }}"
+                         class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]"
+                         width="300" height="169"
+                         loading="lazy" decoding="async" />
+                    {% else %}
+                    <img src="{% static 'image/placeholder-5.png' %}"
+                         alt="{{ blog.title }}"
+                         class="w-full h-full object-cover"
+                         width="300" height="169"
+                         loading="lazy" decoding="async" />
+                    {% endif %}
+                </div>
+
+                <div class="p-2.5 flex flex-col flex-1">
+                    {% if blog.category %}
+                    <span class="inline-block text-[9px] font-bold text-[#1e3a6e] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full mb-1.5 w-fit">{{ blog.category.name }}</span>
+                    {% endif %}
+                    <h3 class="font-bold text-[12px] text-gray-800 line-clamp-2 group-hover:text-[#1e3a6e] transition-colors leading-snug flex-1">
+                        {{ blog.title }}
+                    </h3>
+                    <span class="text-[11px] text-gray-500 mt-1.5">{{ blog.created_at|date:"d M, Y" }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Right Column: 2×2 Side Grid — Posts 2–5 -->
     <div class="grid grid-cols-2 gap-3">
         {% for blog in blogs|slice:"1:5" %}
         <a href="{% url 'blog_details' blog.slug %}"
@@ -78,24 +131,24 @@
            hx-swap="innerHTML"
            class="tl-card rounded-xl overflow-hidden group cursor-pointer flex flex-col">
 
-            <div class="overflow-hidden" style="aspect-ratio: 4/3;">
+            <div class="overflow-hidden" style="aspect-ratio: 16/9;">
                 {% if blog.featured_image %}
                 <img src="{{ blog.featured_image.url }}"
                      alt="{{ blog.title }}"
                      class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]"
-                     width="300" height="225"
+                     width="300" height="169"
                      loading="lazy" decoding="async" />
                 {% elif blog.featured_image_url %}
                 <img src="{{ blog.featured_image_url }}"
                      alt="{{ blog.title }}"
                      class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]"
-                     width="300" height="225"
+                     width="300" height="169"
                      loading="lazy" decoding="async" />
                 {% else %}
                 <img src="{% static 'image/placeholder-5.png' %}"
                      alt="{{ blog.title }}"
                      class="w-full h-full object-cover"
-                     width="300" height="225"
+                     width="300" height="169"
                      loading="lazy" decoding="async" />
                 {% endif %}
             </div>
@@ -117,9 +170,9 @@
 
 
 <!-- ════════════════════════════════════════════════════════
-     ROW 2 — 4-COL COMPACT GRID (Posts 6–9)
+     ROW 2 — 4-COL COMPACT GRID (Posts 8–11)
 ════════════════════════════════════════════════════════ -->
-{% with row2=blogs|slice:"5:9" %}
+{% with row2=blogs|slice:"7:11" %}
 {% if row2 %}
 <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
     {% for blog in row2 %}
@@ -179,10 +232,10 @@
 
 
 <!-- ════════════════════════════════════════════════════════
-     ROW 3 — HORIZONTAL LIST CARDS (Posts 10–12)
-     Compact: thumbnail left + text right
+     ROW 3 — HORIZONTAL LIST CARDS (Posts 12+)
+     Compact: thumbnail left + text right (video aspect ratio)
 ════════════════════════════════════════════════════════ -->
-{% with row3=blogs|slice:"9:12" %}
+{% with row3=blogs|slice:"11:12" %}
 {% if row3 %}
 <div class="tl-card rounded-xl overflow-hidden divide-y divide-gray-100 mb-3">
     {% for blog in row3 %}
@@ -194,22 +247,22 @@
        class="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors group cursor-pointer">
 
         <!-- Thumb -->
-        <div class="w-20 h-14 shrink-0 rounded-lg overflow-hidden bg-gray-100">
+        <div class="w-24 shrink-0 rounded-lg overflow-hidden bg-gray-100 aspect-[16/9]">
             {% if blog.featured_image %}
             <img src="{{ blog.featured_image.url }}"
                  alt="{{ blog.title }}"
                  class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]"
-                 width="80" height="56" loading="lazy" decoding="async" />
+                 width="96" height="54" loading="lazy" decoding="async" />
             {% elif blog.featured_image_url %}
             <img src="{{ blog.featured_image_url }}"
                  alt="{{ blog.title }}"
                  class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]"
-                 width="80" height="56" loading="lazy" decoding="async" />
+                 width="96" height="54" loading="lazy" decoding="async" />
             {% else %}
             <img src="{% static 'image/placeholder-5.png' %}"
                  alt="{{ blog.title }}"
                  class="w-full h-full object-cover"
-                 width="80" height="56" loading="lazy" decoding="async" />
+                 width="96" height="54" loading="lazy" decoding="async" />
             {% endif %}
         </div>
 

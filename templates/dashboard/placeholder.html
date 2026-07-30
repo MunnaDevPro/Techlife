@@ -3,10 +3,11 @@
 {% block content %}
 <div class="space-y-6">
     <c-ui.card title="{{ page_title }}">
-        <c-ui.empty_state 
+        <c-ui.empty-state 
             icon="info" 
             title="{{ page_title }} view is currently a placeholder" 
-            description="The implementation of the {{ page_title }} module will follow in subsequent steps." />
+            description="The implementation of the {{ page_title }} module will follow in subsequent steps.">
+        </c-ui.empty-state>
     </c-ui.card>
 </div>
 {% endblock %}

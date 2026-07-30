@@ -21,11 +21,11 @@
 
     <!-- KPI Grid -->
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
-        <c-ui.kpi_card label="Published Posts" value="{{ kpis.total_published_posts }}" icon="file-text" color="primary" />
-        <c-ui.kpi_card label="Pending Review" value="{{ kpis.pending_review_count }}" icon="clock" color="warning" />
-        <c-ui.kpi_card label="Verified Users" value="{{ kpis.total_verified_users }}" icon="user-check" color="accent" />
-        <c-ui.kpi_card label="Active Reports" value="{{ kpis.active_reports_count }}" icon="flag" color="danger" />
-        <c-ui.kpi_card label="Forum Questions" value="{{ kpis.total_forum_questions }}" icon="message-square" color="indigo" />
+        <c-ui.kpi-widget label="Published Posts" value="{{ kpis.total_published_posts }}" icon="file-text" color="primary"></c-ui.kpi-widget>
+        <c-ui.kpi-widget label="Pending Review" value="{{ kpis.pending_review_count }}" icon="clock" color="warning"></c-ui.kpi-widget>
+        <c-ui.kpi-widget label="Verified Users" value="{{ kpis.total_verified_users }}" icon="user-check" color="accent"></c-ui.kpi-widget>
+        <c-ui.kpi-widget label="Active Reports" value="{{ kpis.active_reports_count }}" icon="flag" color="danger"></c-ui.kpi-widget>
+        <c-ui.kpi-widget label="Forum Questions" value="{{ kpis.total_forum_questions }}" icon="message-square" color="indigo"></c-ui.kpi-widget>
     </div>
 
     <!-- Charts & Activity -->
