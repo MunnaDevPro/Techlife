@@ -21,11 +21,9 @@
     </label>
   {% endif %}
 
-  <div class="relative">
+  <div class="ft-input-wrap">
     {% if icon %}
-      <div class="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none">
-        <i data-lucide="{{ icon }}" class="w-3.5 h-3.5" style="color:var(--text-disabled)"></i>
-      </div>
+      <i data-lucide="{{ icon }}" class="ft-input-icon-el"></i>
     {% endif %}
 
     <input

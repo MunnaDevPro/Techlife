@@ -94,12 +94,8 @@
                     value="{{ filter.form.created_before.value|default:'' }}" icon="calendar"></c-ui.input>
 
                 <div class="mt-auto flex gap-2.5 pt-4 border-t" style="border-color:var(--border)">
-                    <a href="{% url 'dashboard:content_posts' %}" class="ft-btn ft-btn-secondary ft-btn-full justify-center">
-                        Reset
-                    </a>
-                    <button type="button" @click="showFilterDrawer = false" class="ft-btn ft-btn-primary ft-btn-full">
-                        Done
-                    </button>
+                    <c-ui.button href="{% url 'dashboard:content_posts' %}" variant="secondary" extra_class="w-full justify-center" label="Reset"></c-ui.button>
+                    <c-ui.button type="button" @click="showFilterDrawer = false" variant="primary" extra_class="w-full justify-center" label="Done"></c-ui.button>
                 </div>
             </form>
         </div>
@@ -118,18 +114,18 @@
                         <span x-text="selectedCount">0</span> selected
                     </span>
                     <div class="flex items-center gap-2">
-                        <select name="action" class="ft-input" style="width:160px;padding:4px 10px">
+                        <c-ui.select name="action" extra_class="w-[160px]">
                             <option value="">Bulk Actions</option>
                             <option value="approve">Approve Selected</option>
                             <option value="reject">Reject Selected</option>
                             <option value="delete">Delete Selected</option>
-                        </select>
-                        <button type="button" class="ft-btn ft-btn-secondary ft-btn-sm"
+                        </c-ui.select>
+                        <c-ui.button type="button" variant="secondary" size="sm" label="Apply"
                             @click="
                                 const act = document.getElementsByName('action')[0].value;
                                 if (act === 'delete') { showBulkDeleteModal = true; }
                                 else if (act) { document.getElementById('bulk-actions-form').submit(); }
-                            ">Apply</button>
+                            "></c-ui.button>
                     </div>
                 </div>
 

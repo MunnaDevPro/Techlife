@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS (compiled output) -->
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <link rel="stylesheet" href="{% static 'css/output.css' %}?v=1.1">
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lRIkbPla_iAJ5g4hPLw75l2H4Y7yWtdLiVy3O/S3B367v7cTf2Gz5n2Kyl7C" crossorigin="anonymous"></script>
     <!-- Alpine.js -->
@@ -269,7 +269,7 @@
         }
         .ft-input {
             display:block; width:100%;
-            padding:7px 11px; border-radius:var(--radius-sm);
+            padding:9px 12px; border-radius:var(--radius-sm);
             border:1px solid var(--border-strong);
             background:var(--surface);
             color:var(--text); font-size:13px; font-family:var(--font-sans);
@@ -280,10 +280,10 @@
             box-shadow:0 0 0 3px rgba(99,102,241,.15);
         }
         .ft-input::placeholder { color:var(--text-disabled); }
-        .ft-input-icon { padding-left:32px; }
+        .ft-input-icon { padding-left:36px; }
         .ft-input-wrap { position:relative; }
         .ft-input-icon-el {
-            position:absolute; left:9px; top:50%; transform:translateY(-50%);
+            position:absolute; left:12px; top:50%; transform:translateY(-50%);
             color:var(--text-disabled); pointer-events:none;
             width:14px; height:14px;
         }

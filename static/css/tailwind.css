@@ -1088,6 +1088,12 @@
   .max-h-\[90vh\] {
     max-height: 90vh;
   }
+  .max-h-\[280px\] {
+    max-height: 280px;
+  }
+  .max-h-\[320px\] {
+    max-height: 320px;
+  }
   .max-h-\[500px\] {
     max-height: 500px;
   }
@@ -1256,6 +1262,12 @@
   .w-\[95\%\] {
     width: 95%;
   }
+  .w-\[140px\] {
+    width: 140px;
+  }
+  .w-\[160px\] {
+    width: 160px;
+  }
   .w-\[300px\] {
     width: 300px;
   }
@@ -1309,6 +1321,9 @@
   }
   .max-w-\[200px\] {
     max-width: 200px;
+  }
+  .max-w-\[280px\] {
+    max-width: 280px;
   }
   .max-w-\[1400px\] {
     max-width: 1400px;
@@ -1516,6 +1531,18 @@
   }
   .grid-cols-7 {
     grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+  .grid-cols-\[1fr_auto\] {
+    grid-template-columns: 1fr auto;
+  }
+  .grid-cols-\[2fr_1fr\] {
+    grid-template-columns: 2fr 1fr;
+  }
+  .grid-cols-\[repeat\(auto-fit\,minmax\(160px\,1fr\)\)\] {
+    grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+  }
+  .grid-cols-\[repeat\(auto-fit\,minmax\(180px\,1fr\)\)\] {
+    grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
   }
   .flex-col {
     flex-direction: column;
@@ -2580,6 +2607,9 @@
   .object-center {
     object-position: center;
   }
+  .\!p-1 {
+    padding: var(--spacing) !important;
+  }
   .p-0 {
     padding: 0px;
   }
@@ -3117,6 +3147,9 @@
       color: color-mix(in oklab, var(--color-amber-400) 80%, transparent);
     }
   }
+  .text-amber-500 {
+    color: var(--color-amber-500);
+  }
   .text-amber-600 {
     color: var(--color-amber-600);
   }
@@ -3362,6 +3395,9 @@
   .opacity-30 {
     opacity: 30%;
   }
+  .opacity-35 {
+    opacity: 35%;
+  }
   .opacity-40 {
     opacity: 40%;
   }
@@ -3400,6 +3436,10 @@
   }
   .shadow-\[0_8px_22px_rgba\(0\,0\,0\,0\.5\)\] {
     --tw-shadow: 0 8px 22px var(--tw-shadow-color, rgba(0,0,0,0.5));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-\[var\(--shadow-dropdown\)\] {
+    --tw-shadow: var(--shadow-dropdown);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .shadow-inner {
@@ -3910,6 +3950,14 @@
     .hover\:bg-gray-100:hover {
       background-color: var(--color-gray-100);
     }
+    .hover\:bg-gray-100\/80:hover {
+      background-color: color-mix(in srgb, oklch(96.7% 0.003 264.542) 80%, transparent);
+    }
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-gray-100\/80:hover {
+        background-color: color-mix(in oklab, var(--color-gray-100) 80%, transparent);
+      }
+    }
     .hover\:bg-gray-200:hover {
       background-color: var(--color-gray-200);
     }
@@ -3944,6 +3992,14 @@
     }
     .hover\:bg-red-50:hover {
       background-color: var(--color-red-50);
+    }
+    .hover\:bg-red-50\/50:hover {
+      background-color: color-mix(in srgb, oklch(97.1% 0.013 17.38) 50%, transparent);
+    }
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-red-50\/50:hover {
+        background-color: color-mix(in oklab, var(--color-red-50) 50%, transparent);
+      }
     }
     .hover\:bg-red-600:hover {
       background-color: var(--color-red-600);
@@ -3993,6 +4049,14 @@
     }
     .hover\:bg-yellow-50:hover {
       background-color: var(--color-yellow-50);
+    }
+    .hover\:bg-yellow-50\/50:hover {
+      background-color: color-mix(in srgb, oklch(98.7% 0.026 102.212) 50%, transparent);
+    }
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-yellow-50\/50:hover {
+        background-color: color-mix(in oklab, var(--color-yellow-50) 50%, transparent);
+      }
     }
     .hover\:font-medium:hover {
       --tw-font-weight: var(--font-weight-medium);
@@ -4625,6 +4689,12 @@
     }
     .md\:grid-cols-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .md\:grid-cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .md\:grid-cols-\[1fr_auto\] {
+      grid-template-columns: 1fr auto;
     }
     .md\:flex-col {
       flex-direction: column;

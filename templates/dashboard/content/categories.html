@@ -9,31 +9,39 @@
     </div>
 
     <!-- Create form -->
-    <c-ui.card title="Add New Category">
-        <form method="post" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+    <c-ui.card title="Add New Category" card_padding="lg">
+        <form method="post" class="flex flex-col gap-6">
             {% csrf_token %}
             <input type="hidden" name="action" value="create">
-            <c-ui.input name="name" label="Name" placeholder="Category name" required="true" icon="tag"></c-ui.input>
-            <c-ui.input name="icon" label="FontAwesome Icon" value="fa-solid fa-layer-group"
-                placeholder="fa-solid fa-layer-group" icon="image"></c-ui.input>
-            <c-ui.input name="description" label="Description" placeholder="Short description (optional)" icon="align-left"></c-ui.input>
-            <c-ui.button type="submit" variant="primary" label="Add Category" icon="plus" extra_class="w-full justify-center"></c-ui.button>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <c-ui.input name="name" label="Name" placeholder="Category name" required="true"
+                    icon="tag"></c-ui.input>
+                <c-ui.input name="icon" label="FontAwesome Icon" value="fa-solid fa-layer-group"
+                    placeholder="fa-solid fa-layer-group" icon="image"></c-ui.input>
+                <c-ui.input name="description" label="Description" placeholder="Short description (optional)"
+                    icon="align-left"></c-ui.input>
+            </div>
+            <div class="flex justify-start">
+                <c-ui.button type="submit" variant="primary" label="Add Category" icon="plus"></c-ui.button>
+            </div>
         </form>
     </c-ui.card>
 
     <!-- Existing categories -->
-    <c-ui.card title="Existing Categories" subtitle="{{ categories|length }} categories">
+    <c-ui.card title="Existing Categories" subtitle="{{ categories|length }} categories" card_padding="lg">
         <c-ui.table :headers="['Name', 'Slug', 'Icon Class', 'Description', 'Posts', 'Actions']">
             {% for cat in categories %}
             <tr>
                 <td>{{ cat.name }}</td>
                 <td>
-                    <code class="text-[11px] px-1.5 py-0.5 rounded" style="background:var(--surface-3);color:var(--text-muted)">
+                    <code class="text-[11px] px-1.5 py-0.5 rounded"
+                        style="background:var(--surface-3);color:var(--text-muted)">
                         {{ cat.slug }}
                     </code>
                 </td>
                 <td>
-                    <code class="text-[11px] px-1.5 py-0.5 rounded" style="background:var(--surface-3);color:var(--text-muted)">
+                    <code class="text-[11px] px-1.5 py-0.5 rounded"
+                        style="background:var(--surface-3);color:var(--text-muted)">
                         {{ cat.font_awesome_icon }}
                     </code>
                 </td>
@@ -43,11 +51,12 @@
                 </td>
                 <td>
                     <form action="{% url 'dashboard:content_categories' %}" method="post"
-                          onsubmit="return confirm('Delete this category?')" class="inline">
+                        onsubmit="return confirm('Delete this category?')" class="inline">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="id" value="{{ cat.id }}">
-                        <c-ui.button type="submit" variant="danger" size="sm" icon="trash-2" label="Delete"></c-ui.button>
+                        <c-ui.button type="submit" variant="danger" size="sm" icon="trash-2"
+                            label="Delete"></c-ui.button>
                     </form>
                 </td>
             </tr>
