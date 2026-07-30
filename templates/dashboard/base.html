@@ -63,15 +63,15 @@
             --warning-light:  #fef3c7;
 
             /* Shadows */
-            --shadow-sm:      0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-md:      0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-            --shadow-dropdown:0 8px 24px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.06);
+            --shadow-sm:      none;
+            --shadow-md:      0 1px 2px rgba(0,0,0,0.05);
+            --shadow-dropdown:0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
 
             /* Radius */
-            --radius-sm:      6px;
-            --radius-md:      10px;
-            --radius-lg:      14px;
-            --radius-xl:      20px;
+            --radius-sm:      4px;
+            --radius-md:      6px;
+            --radius-lg:      8px;
+            --radius-xl:      12px;
 
             /* Sidebar widths */
             --sidebar-w:      220px;
@@ -86,7 +86,7 @@
 
         /* ── Reset / Base ──────────────────────────────────────────── */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { font-family: var(--font-sans); font-size: 14px; }
+        html { font-family: var(--font-sans); font-size: 13px; }
         body { background: var(--page-bg); color: var(--text); min-height: 100vh; }
         [x-cloak] { display: none !important; }
         .scrollbar-hide { -ms-overflow-style:none; scrollbar-width:none; }
@@ -202,16 +202,16 @@
         /* ── Card ──────────────────────────────────────────────────── */
         .ft-card {
             background: var(--surface);
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             border: 1px solid var(--border);
             overflow: hidden;
         }
         .ft-card-header {
-            padding: 14px 16px 10px;
+            padding: 10px 12px 8px;
             border-bottom: 1px solid var(--border);
             display: flex; align-items:center; justify-content:space-between;
         }
-        .ft-card-body { padding: 16px; }
+        .ft-card-body { padding: 12px; }
         .ft-card-title { font-size:13px; font-weight:600; color:var(--text); }
         .ft-card-subtitle { font-size:11px; color:var(--text-muted); margin-top:2px; }
 
@@ -293,7 +293,7 @@
         /* ── Badges ────────────────────────────────────────────────── */
         .ft-badge {
             display:inline-flex; align-items:center; gap:4px;
-            padding:2px 8px; border-radius:99px;
+            padding:2px 6px; border-radius:2px;
             font-size:11px; font-weight:600;
         }
         .ft-badge-neutral  { background:#f3f4f6; color:#374151; }
@@ -305,17 +305,17 @@
 
         /* ── KPI Widget ────────────────────────────────────────────── */
         .ft-kpi {
-            display:flex; align-items:center; gap:12px;
-            padding:14px 16px;
+            display:flex; align-items:center; gap:10px;
+            padding:10px 12px;
             background:var(--surface); border:1px solid var(--border);
-            border-radius:var(--radius-md);
+            border-radius:var(--radius-sm);
         }
         .ft-kpi-icon {
-            width:40px; height:40px; border-radius:var(--radius-sm);
+            width:28px; height:28px; border-radius:var(--radius-sm);
             display:flex; align-items:center; justify-content:center;
             flex-shrink:0;
         }
-        .ft-kpi-icon i, .ft-kpi-icon svg { width:18px; height:18px; }
+        .ft-kpi-icon i, .ft-kpi-icon svg { width:14px; height:14px; }
 
         /* ── Modal ─────────────────────────────────────────────────── */
         .ft-modal-backdrop {
@@ -324,7 +324,7 @@
             display:flex; align-items:center; justify-content:center; padding:16px;
         }
         .ft-modal {
-            background:var(--surface); border-radius:var(--radius-lg);
+            background:var(--surface); border-radius:var(--radius-md);
             border:1px solid var(--border); width:100%; max-width:460px;
             box-shadow:var(--shadow-dropdown);
         }
@@ -335,7 +335,7 @@
         .ft-dropdown {
             position:absolute; z-index:40; min-width:180px;
             background:var(--surface); border:1px solid var(--border);
-            border-radius:var(--radius-md); box-shadow:var(--shadow-dropdown);
+            border-radius:var(--radius-sm); box-shadow:var(--shadow-dropdown);
             padding:4px; overflow:hidden;
         }
         .ft-dropdown-item {
