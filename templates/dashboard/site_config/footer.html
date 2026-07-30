@@ -1,8 +1,7 @@
 {% extends base_template %}
 
 {% block content %}
-<div x-data="{ tab: 'footer', showLogoModal: false }"
-     style="display:flex;flex-direction:column;gap:20px">
+<div x-data="{ tab: 'footer', showLogoModal: false }" class="flex flex-col gap-5">
 
     <div>
         <h2 class="ft-page-title">Footer & Branding</h2>
@@ -26,51 +25,49 @@
         <c-ui.card title="Edit Footer Metadata">
             <form action="{% url 'dashboard:settings_footer' %}" method="post"
                   enctype="multipart/form-data"
-                  style="display:flex;flex-direction:column;gap:14px">
+                  class="flex flex-col gap-3.5">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="save_footer">
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-                    <div style="display:flex;flex-direction:column;gap:4px">
+                <div class="grid grid-cols-2 gap-3.5">
+                    <div class="flex flex-col gap-1">
                         <label class="ft-label">Company Description *</label>
-                        <textarea name="description" rows="3" required class="ft-input"
-                                  style="resize:vertical">{{ footer.description }}</textarea>
+                        <textarea name="description" rows="3" required class="ft-input resize-y">{{ footer.description }}</textarea>
                     </div>
-                    <div style="display:flex;flex-direction:column;gap:4px">
+                    <div class="flex flex-col gap-1">
                         <label class="ft-label">Office Address *</label>
-                        <textarea name="address" rows="3" required class="ft-input"
-                                  style="resize:vertical">{{ footer.address }}</textarea>
+                        <textarea name="address" rows="3" required class="ft-input resize-y">{{ footer.address }}</textarea>
                     </div>
                 </div>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <div class="grid grid-cols-2 gap-3.5">
                     <c-ui.input name="email" type="email" label="Contact Email" required="true"
-                        value="{{ footer.email }}" icon="mail" />
+                        value="{{ footer.email }}" icon="mail"></c-ui.input>
                     <c-ui.input name="phone" type="text" label="Phone Number" required="true"
-                        value="{{ footer.phone }}" icon="phone" />
+                        value="{{ footer.phone }}" icon="phone"></c-ui.input>
                 </div>
 
-                <p class="ft-label" style="margin-top:4px">Social Links</p>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <p class="ft-label mt-1">Social Links</p>
+                <div class="grid grid-cols-2 gap-3.5">
                     <c-ui.input name="facebook_url" type="url" label="Facebook URL"
-                        value="{{ footer.facebook_url }}" icon="external-link" />
+                        value="{{ footer.facebook_url }}" icon="external-link"></c-ui.input>
                     <c-ui.input name="twitter_url" type="url" label="Twitter/X URL"
-                        value="{{ footer.twitter_url }}" icon="external-link" />
+                        value="{{ footer.twitter_url }}" icon="external-link"></c-ui.input>
                     <c-ui.input name="linkedin_url" type="url" label="LinkedIn URL"
-                        value="{{ footer.linkedin_url }}" icon="external-link" />
+                        value="{{ footer.linkedin_url }}" icon="external-link"></c-ui.input>
                     <c-ui.input name="whatsapp_number" type="text" label="WhatsApp Number"
-                        value="{{ footer.whatsapp_number }}" icon="message-circle" />
+                        value="{{ footer.whatsapp_number }}" icon="message-circle"></c-ui.input>
                 </div>
 
-                <p class="ft-label" style="margin-top:4px">Developer Info</p>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <p class="ft-label mt-1">Developer Info</p>
+                <div class="grid grid-cols-2 gap-3.5">
                     <c-ui.input name="developer_company_name" type="text" label="Developer Company Name"
-                        value="{{ footer.developer_company_name }}" icon="code" />
+                        value="{{ footer.developer_company_name }}" icon="code"></c-ui.input>
                     <c-ui.input name="developer_company_url" type="url" label="Developer Website URL"
-                        value="{{ footer.developer_company_url }}" icon="external-link" />
+                        value="{{ footer.developer_company_url }}" icon="external-link"></c-ui.input>
                 </div>
 
-                <div style="display:flex;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--border)">
+                <div class="flex justify-end pt-3 border-t" style="border-color:var(--border)">
                     <button type="submit" class="ft-btn ft-btn-primary">
                         <i data-lucide="save"></i> Save Footer Details
                     </button>
@@ -81,7 +78,7 @@
 
     <!-- Logos Tab -->
     <div x-show="tab === 'logos'">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+        <div class="flex justify-end mb-3">
             <button @click="showLogoModal = true" type="button" class="ft-btn ft-btn-primary ft-btn-sm">
                 <i data-lucide="plus"></i> Add Partner Logo
             </button>
@@ -95,18 +92,18 @@
                     <td>
                         {% if logo.company_image %}
                             <img src="{{ logo.company_image.url }}"
-                                 style="height:32px;max-width:120px;object-fit:contain;
-                                        background:var(--surface-2);border-radius:4px;padding:2px"
+                                 class="h-8 max-w-[120px] object-contain rounded p-0.5"
+                                 style="background:var(--surface-2)"
                                  alt="{{ logo.name }}">
                         {% elif logo.company_image_url %}
-                            <code style="font-size:11px;color:var(--text-muted)">{{ logo.company_image_url }}</code>
+                            <code class="text-[11px]" style="color:var(--text-muted)">{{ logo.company_image_url }}</code>
                         {% else %}
-                            <span style="font-size:11px;color:var(--text-disabled);font-style:italic">No image</span>
+                            <span class="text-[11px] italic" style="color:var(--text-disabled)">No image</span>
                         {% endif %}
                     </td>
                     <td>
                         <form action="{% url 'dashboard:settings_footer' %}" method="post"
-                              onsubmit="return confirm('Delete this logo?')" style="display:inline">
+                              onsubmit="return confirm('Delete this logo?')" class="inline">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="delete_logo">
                             <input type="hidden" name="id" value="{{ logo.pk }}">
@@ -118,8 +115,8 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="3" style="text-align:center;padding:32px;color:var(--text-muted)">
-                        <i data-lucide="image" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                    <td colspan="3" class="text-center py-8" style="color:var(--text-muted)">
+                        <i data-lucide="image" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
                         No partner logos added yet
                     </td>
                 </tr>
@@ -134,26 +131,25 @@
             <div class="ft-card-header">
                 <span class="ft-card-title">Add Partner Logo</span>
                 <button @click="showLogoModal=false" class="ft-btn ft-btn-ghost ft-btn-icon ft-btn-sm">
-                    <i data-lucide="x" style="width:14px;height:14px"></i>
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
                 </button>
             </div>
             <div class="ft-card-body">
                 <form action="{% url 'dashboard:settings_footer' %}" method="post"
                       enctype="multipart/form-data"
-                      style="display:flex;flex-direction:column;gap:12px">
+                      class="flex flex-col gap-3">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="add_logo">
                     <c-ui.input name="logo_name" label="Logo / Company Name" required="true"
-                        placeholder="e.g. Acme Corp" icon="tag" />
-                    <div style="display:flex;flex-direction:column;gap:4px">
+                        placeholder="e.g. Acme Corp" icon="tag"></c-ui.input>
+                    <div class="flex flex-col gap-1">
                         <label class="ft-label">Upload Image</label>
-                        <input type="file" name="company_image" accept="image/*"
-                               style="font-size:13px;color:var(--text);cursor:pointer">
+                        <input type="file" name="company_image" accept="image/*" class="ft-input py-1.5 px-2 cursor-pointer">
                         <p class="ft-help-text">Or provide image URL below</p>
                     </div>
                     <c-ui.input name="company_image_url" label="Image URL (optional)"
-                        type="url" placeholder="https://example.com/logo.png" icon="link" />
-                    <div style="display:flex;gap:8px;justify-content:flex-end;padding-top:10px;border-top:1px solid var(--border)">
+                        type="url" placeholder="https://example.com/logo.png" icon="link"></c-ui.input>
+                    <div class="flex gap-2 justify-end pt-2.5 border-t" style="border-color:var(--border)">
                         <button type="button" @click="showLogoModal=false" class="ft-btn ft-btn-secondary ft-btn-sm">Cancel</button>
                         <button type="submit" class="ft-btn ft-btn-primary ft-btn-sm">
                             <i data-lucide="upload"></i> Add Logo

@@ -13,8 +13,7 @@
             document.getElementById('maintenance-form').submit();
         }
     }
-}"
-style="display:flex;flex-direction:column;gap:20px">
+}" class="flex flex-col gap-5">
 
     <div>
         <h2 class="ft-page-title">Maintenance Controls</h2>
@@ -23,26 +22,23 @@ style="display:flex;flex-direction:column;gap:20px">
 
     <!-- Status Banner -->
     {% if settings.site_under_maintenance %}
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:14px 16px;
-                background:#fef2f2;border-left:3px solid var(--danger);border-radius:var(--radius-sm)">
-        <i data-lucide="alert-octagon" style="width:16px;height:16px;color:var(--danger);flex-shrink:0;margin-top:1px"></i>
-        <div style="font-size:13px;color:#991b1b">
+    <div class="flex items-start gap-2.5 px-4 py-3.5 rounded-[var(--radius-sm)] border-l-[3px]" style="background:#fef2f2;border-left-color:var(--danger)">
+        <i data-lucide="alert-octagon" class="w-4 h-4 flex-shrink-0 mt-0.5" style="color:var(--danger)"></i>
+        <div class="text-[13px]" style="color:#991b1b">
             <strong>Website Under Maintenance:</strong> Public visitors are currently locked out.
         </div>
     </div>
     {% elif settings.forum_under_maintenance %}
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:14px 16px;
-                background:#fefce8;border-left:3px solid var(--warning);border-radius:var(--radius-sm)">
-        <i data-lucide="alert-triangle" style="width:16px;height:16px;color:var(--warning);flex-shrink:0;margin-top:1px"></i>
-        <div style="font-size:13px;color:#92400e">
+    <div class="flex items-start gap-2.5 px-4 py-3.5 rounded-[var(--radius-sm)] border-l-[3px]" style="background:#fefce8;border-left-color:var(--warning)">
+        <i data-lucide="alert-triangle" class="w-4 h-4 flex-shrink-0 mt-0.5" style="color:var(--warning)"></i>
+        <div class="text-[13px]" style="color:#92400e">
             <strong>Forum Locked:</strong> Only the forum subsection is closed for maintenance.
         </div>
     </div>
     {% else %}
-    <div style="display:flex;align-items:flex-start;gap:10px;padding:14px 16px;
-                background:#f0fdf4;border-left:3px solid var(--accent);border-radius:var(--radius-sm)">
-        <i data-lucide="check-circle" style="width:16px;height:16px;color:var(--accent);flex-shrink:0;margin-top:1px"></i>
-        <div style="font-size:13px;color:#065f46">
+    <div class="flex items-start gap-2.5 px-4 py-3.5 rounded-[var(--radius-sm)] border-l-[3px]" style="background:#f0fdf4;border-left-color:var(--accent)">
+        <i data-lucide="check-circle" class="w-4 h-4 flex-shrink-0 mt-0.5" style="color:var(--accent)"></i>
+        <div class="text-[13px]" style="color:#065f46">
             <strong>All Systems Operational:</strong> The website and forum are fully accessible to the public.
         </div>
     </div>
@@ -53,79 +49,67 @@ style="display:flex;flex-direction:column;gap:20px">
         <form id="maintenance-form"
               action="{% url 'dashboard:settings_maintenance' %}"
               method="post"
-              style="display:flex;flex-direction:column;gap:20px">
+              class="flex flex-col gap-5">
             {% csrf_token %}
             <input type="hidden" name="site_under_maintenance" :value="siteMode ? 'true' : 'false'">
             <input type="hidden" name="forum_under_maintenance" :value="forumMode ? 'true' : 'false'">
 
             <!-- Toggles -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="grid grid-cols-2 gap-3.5">
                 <!-- Site toggle -->
-                <div style="padding:16px;background:var(--surface-2);border-radius:var(--radius-md)">
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                <div class="p-4 rounded-[var(--radius-md)]" style="background:var(--surface-2)">
+                    <div class="flex items-center justify-between gap-3">
                         <div>
-                            <p style="font-size:13px;font-weight:700;color:var(--text)">Lock Website</p>
-                            <p style="font-size:11px;color:var(--text-muted);margin-top:2px">Locks homepage and all blog pages.</p>
+                            <p class="text-[13px] font-bold m-0" style="color:var(--text)">Lock Website</p>
+                            <p class="text-[11px] mt-0.5 m-0" style="color:var(--text-muted)">Locks homepage and all blog pages.</p>
                         </div>
                         <!-- Toggle Switch -->
                         <button type="button" @click="siteMode = !siteMode"
                                 :class="siteMode ? 'bg-red-500' : 'bg-gray-200'"
-                                style="position:relative;display:inline-flex;height:24px;width:44px;
-                                       flex-shrink:0;cursor:pointer;border-radius:99px;border:none;transition:background .2s">
-                            <span :class="siteMode ? 'translate-x-5' : 'translate-x-0'"
-                                  style="display:inline-block;width:20px;height:20px;
-                                         transform:translateX(2px);margin-top:2px;
-                                         border-radius:50%;background:white;
-                                         box-shadow:0 1px 3px rgba(0,0,0,.2);
-                                         transition:transform .2s"
-                                  :style="siteMode ? 'transform:translateX(22px)' : 'transform:translateX(2px)'"></span>
+                                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-0 transition-colors duration-200">
+                            <span class="inline-block w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200"
+                                  :style="siteMode ? 'transform:translateX(22px);margin-top:2px' : 'transform:translateX(2px);margin-top:2px'"></span>
                         </button>
                     </div>
-                    <p x-show="siteMode" x-cloak
-                       style="font-size:11px;color:var(--danger);margin-top:10px;font-weight:600">
+                    <p x-show="siteMode" x-cloak class="text-[11px] font-semibold mt-2.5 m-0" style="color:var(--danger)">
                         ⚠ Site will be locked on save
                     </p>
                 </div>
 
                 <!-- Forum toggle -->
-                <div style="padding:16px;background:var(--surface-2);border-radius:var(--radius-md)">
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                <div class="p-4 rounded-[var(--radius-md)]" style="background:var(--surface-2)">
+                    <div class="flex items-center justify-between gap-3">
                         <div>
-                            <p style="font-size:13px;font-weight:700;color:var(--text)">Lock Forum Only</p>
-                            <p style="font-size:11px;color:var(--text-muted);margin-top:2px">Locks forum threads and replies only.</p>
+                            <p class="text-[13px] font-bold m-0" style="color:var(--text)">Lock Forum Only</p>
+                            <p class="text-[11px] mt-0.5 m-0" style="color:var(--text-muted)">Locks forum threads and replies only.</p>
                         </div>
                         <button type="button" @click="forumMode = !forumMode"
                                 :class="forumMode ? 'bg-amber-500' : 'bg-gray-200'"
-                                style="position:relative;display:inline-flex;height:24px;width:44px;
-                                       flex-shrink:0;cursor:pointer;border-radius:99px;border:none;transition:background .2s">
-                            <span style="display:inline-block;width:20px;height:20px;
-                                         border-radius:50%;background:white;
-                                         box-shadow:0 1px 3px rgba(0,0,0,.2);
-                                         transition:transform .2s"
-                                  :style="forumMode ? 'transform:translateX(22px)' : 'transform:translateX(2px)'"></span>
+                                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-0 transition-colors duration-200">
+                            <span class="inline-block w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200"
+                                  :style="forumMode ? 'transform:translateX(22px);margin-top:2px' : 'transform:translateX(2px);margin-top:2px'"></span>
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- Until time -->
-            <div style="max-width:320px;display:flex;flex-direction:column;gap:4px">
+            <div class="flex flex-col gap-1" style="max-width:320px">
                 <label class="ft-label">Maintenance Until (Countdown Timer)</label>
                 <input type="datetime-local" name="maintenance_until" x-model="untilTime" class="ft-input">
                 <p class="ft-help-text">Leaves the timer hidden if blank.</p>
             </div>
 
             {% if settings.custom_message is not None %}
-            <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="flex flex-col gap-1">
                 <label class="ft-label">Custom Message (optional)</label>
-                <textarea name="custom_message" rows="3" class="ft-input"
-                          placeholder="Message shown on maintenance page..."
-                          style="resize:vertical">{{ settings.custom_message }}</textarea>
+                <textarea name="custom_message" rows="3" class="ft-input resize-y"
+                          placeholder="Message shown on maintenance page...">{{ settings.custom_message }}</textarea>
             </div>
             {% endif %}
 
             <!-- Save -->
-            <div style="display:flex;justify-content:flex-end;padding-top:14px;border-top:1px solid var(--border)">
+            <div class="flex justify-end pt-3.5 border-t" style="border-color:var(--border)">
                 <button type="button" @click="triggerSave()" class="ft-btn ft-btn-primary">
                     <i data-lucide="save"></i> Save Changes
                 </button>
@@ -140,11 +124,11 @@ style="display:flex;flex-direction:column;gap:20px">
                 <span class="ft-card-title">Confirm Site Lock</span>
             </div>
             <div class="ft-card-body">
-                <p style="font-size:13px;color:var(--text-secondary)">
+                <p class="text-[13px]" style="color:var(--text-secondary)">
                     You are about to put the <strong>entire website</strong> under maintenance. Public visitors will be locked out immediately. Are you sure?
                 </p>
             </div>
-            <div style="padding:12px 16px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border);background:var(--surface-2)">
+            <div class="flex gap-2 justify-end px-4 py-3 border-t" style="border-color:var(--border);background:var(--surface-2)">
                 <button @click="showConfirmModal=false" class="ft-btn ft-btn-secondary ft-btn-sm">Cancel</button>
                 <button @click="showConfirmModal=false; document.getElementById('maintenance-form').submit()"
                         class="ft-btn ft-btn-danger ft-btn-sm">

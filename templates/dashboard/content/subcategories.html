@@ -1,10 +1,10 @@
 {% extends base_template %}
 
 {% block content %}
-<div x-data="{ showDrawer: false }" style="display:flex;flex-direction:column;gap:20px;position:relative">
+<div x-data="{ showDrawer: false }" class="flex flex-col gap-5 relative">
 
     <!-- Header & Action Button -->
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
             <h2 class="ft-page-title">Subcategories</h2>
             <p class="ft-page-subtitle">Manage subcategories nested under parent categories</p>
@@ -24,13 +24,13 @@
                     <c-ui.badge variant="info">{{ sub.category.name }}</c-ui.badge>
                 </td>
                 <td>
-                    <code style="font-size:11px;background:var(--surface-3);padding:2px 6px;border-radius:4px;color:var(--text-muted)">{{ sub.slug }}</code>
+                    <code class="text-[11px] px-1.5 py-0.5 rounded" style="background:var(--surface-3);color:var(--text-muted)">{{ sub.slug }}</code>
                 </td>
                 <td style="color:var(--text-muted)">{{ sub.description|default:"—" }}</td>
                 <td><c-ui.badge variant="neutral">{{ sub.post_count }}</c-ui.badge></td>
                 <td>
                     <form action="{% url 'dashboard:content_subcategories' %}" method="post"
-                          onsubmit="return confirm('Delete this subcategory?')" style="display:inline">
+                          onsubmit="return confirm('Delete this subcategory?')" class="inline">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="id" value="{{ sub.id }}">
@@ -42,8 +42,8 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted)">
-                    <i data-lucide="inbox" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                <td colspan="6" class="text-center py-8" style="color:var(--text-muted)">
+                    <i data-lucide="inbox" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
                     No subcategories found
                 </td>
             </tr>
@@ -51,8 +51,8 @@
         </c-ui.table>
     </c-ui.card>
 
-    <!-- Right Slide-Over Subcategory Form Modal (Figma / demo_cotton right-drawer style) -->
-    <div x-show="showDrawer" x-cloak class="ft-modal-backdrop" style="justify-content:flex-end;padding:0">
+    <!-- Right Slide-Over Subcategory Form Drawer -->
+    <div x-show="showDrawer" x-cloak class="ft-modal-backdrop justify-end p-0">
         <div x-show="showDrawer"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="translate-x-full"
@@ -61,34 +61,32 @@
              x-transition:leave-start="translate-x-0"
              x-transition:leave-end="translate-x-full"
              @click.away="showDrawer = false"
-             style="width:420px;height:100vh;background:var(--surface);border-left:1px solid var(--border);
-                    display:flex;flex-direction:column;box-shadow:var(--shadow-dropdown)">
-            
+             class="w-[420px] h-screen flex flex-col"
+             style="background:var(--surface);border-left:1px solid var(--border);box-shadow:var(--shadow-dropdown)">
+
             <!-- Drawer Header -->
-            <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-                <div style="display:flex;align-items:center;gap:8px">
-                    <div style="width:28px;height:28px;border-radius:var(--radius-sm);background:var(--primary-light);
-                                display:flex;align-items:center;justify-content:center">
-                        <i data-lucide="layers" style="width:15px;height:15px;color:var(--primary)"></i>
+            <div class="flex items-center justify-between px-5 py-4 border-b flex-shrink-0" style="border-color:var(--border)">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-[var(--radius-sm)] flex items-center justify-center" style="background:var(--primary-light)">
+                        <i data-lucide="layers" class="w-[15px] h-[15px]" style="color:var(--primary)"></i>
                     </div>
                     <div>
-                        <h3 style="font-size:14px;font-weight:700;color:var(--text);margin:0">Add New Subcategory</h3>
-                        <p style="font-size:11px;color:var(--text-muted);margin:0">Create a subcategory nested under a parent</p>
+                        <h3 class="text-[14px] font-bold m-0" style="color:var(--text)">Add New Subcategory</h3>
+                        <p class="text-[11px] m-0" style="color:var(--text-muted)">Create a subcategory nested under a parent</p>
                     </div>
                 </div>
                 <button @click="showDrawer = false" type="button" class="ft-btn ft-btn-ghost ft-btn-icon ft-btn-sm">
-                    <i data-lucide="x" style="width:15px;height:15px"></i>
+                    <i data-lucide="x" class="w-[15px] h-[15px]"></i>
                 </button>
             </div>
 
-            <!-- Drawer Form Body using Cotton components -->
+            <!-- Drawer Form Body -->
             <form method="post" action="{% url 'dashboard:content_subcategories' %}"
                   enctype="multipart/form-data"
-                  style="padding:20px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:16px">
+                  class="flex-1 overflow-y-auto flex flex-col gap-4 p-5">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="create">
 
-                <!-- Cotton Custom Dropdown component -->
                 <c-ui.select name="category_id" label="Parent Category" required="true">
                     <option value="">Select Category...</option>
                     {% for cat in categories %}
@@ -96,17 +94,14 @@
                     {% endfor %}
                 </c-ui.select>
 
-                <!-- Cotton Input component -->
-                <c-ui.input name="name" label="Subcategory Name" placeholder="e.g. Smartwatches & Wearables" required="true" icon="tag" />
+                <c-ui.input name="name" label="Subcategory Name" placeholder="e.g. Smartwatches & Wearables" required="true" icon="tag"></c-ui.input>
 
-                <!-- Cotton Input component for Description -->
-                <c-ui.input name="description" label="Description" placeholder="Short description (optional)" icon="align-left" />
+                <c-ui.input name="description" label="Description" placeholder="Short description (optional)" icon="align-left"></c-ui.input>
 
-                <!-- Cotton Custom File Input component for optional Icon / Image -->
-                <c-ui.file_input name="image" label="Banner / Icon (optional)" help="Upload custom subcategory header graphic" accept="image/*" />
+                <c-ui.file_input name="image" label="Banner / Icon (optional)" help="Upload custom subcategory header graphic" accept="image/*"></c-ui.file_input>
 
-                <div style="margin-top:auto;display:flex;gap:10px;padding-top:16px;border-top:1px solid var(--border)">
-                    <button type="button" @click="showDrawer = false" class="ft-btn ft-btn-secondary ft-btn-full" style="justify-content:center">
+                <div class="mt-auto flex gap-2.5 pt-4 border-t" style="border-color:var(--border)">
+                    <button type="button" @click="showDrawer = false" class="ft-btn ft-btn-secondary ft-btn-full justify-center">
                         Cancel
                     </button>
                     <button type="submit" class="ft-btn ft-btn-primary ft-btn-full">

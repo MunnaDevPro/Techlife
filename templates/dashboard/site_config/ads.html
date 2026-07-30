@@ -5,11 +5,10 @@
     showModal: false,
     adId: '', adTitle: '', adCode: '', adOrder: '', adIsActive: true,
     openCreate() { this.adId=''; this.adTitle=''; this.adCode=''; this.adOrder='1'; this.adIsActive=true; this.showModal=true; }
-}"
-style="display:flex;flex-direction:column;gap:20px">
+}" class="flex flex-col gap-5">
 
     <!-- Header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
             <h2 class="ft-page-title">Advertisement Settings</h2>
             <p class="ft-page-subtitle">Add, edit, or remove banner slot code scripts</p>
@@ -26,10 +25,10 @@ style="display:flex;flex-direction:column;gap:20px">
             <tr>
                 <td>
                     {{ ad.title }}
-                    <span style="display:block;font-size:10px;color:var(--text-muted);margin-top:2px">{{ ad.get_order_display }}</span>
+                    <span class="block text-[10px] mt-0.5" style="color:var(--text-muted)">{{ ad.get_order_display }}</span>
                 </td>
                 <td>
-                    <code style="font-size:11px;background:var(--surface-3);padding:2px 6px;border-radius:4px">{{ ad.order }}</code>
+                    <code class="text-[11px] px-1.5 py-0.5 rounded" style="background:var(--surface-3)">{{ ad.order }}</code>
                 </td>
                 <td>
                     {% if ad.is_active %}
@@ -39,13 +38,13 @@ style="display:flex;flex-direction:column;gap:20px">
                     {% endif %}
                 </td>
                 <td>
-                    <div style="display:flex;gap:8px">
+                    <div class="flex gap-2">
                         <button type="button" class="ft-btn ft-btn-ghost ft-btn-sm"
                             @click="adId='{{ ad.pk }}'; adTitle='{{ ad.title|escapejs }}'; adCode='{{ ad.ad_code|escapejs }}'; adOrder='{{ ad.order }}'; adIsActive={% if ad.is_active %}true{% else %}false{% endif %}; showModal=true">
                             <i data-lucide="edit-2"></i> Edit
                         </button>
                         <form action="{% url 'dashboard:settings_ads' %}" method="post"
-                              onsubmit="return confirm('Delete this advertisement unit?')" style="display:inline">
+                              onsubmit="return confirm('Delete this advertisement unit?')" class="inline">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="{{ ad.pk }}">
@@ -58,8 +57,8 @@ style="display:flex;flex-direction:column;gap:20px">
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4" style="text-align:center;padding:32px;color:var(--text-muted)">
-                    <i data-lucide="layout" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                <td colspan="4" class="text-center py-8" style="color:var(--text-muted)">
+                    <i data-lucide="layout" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
                     No advertisement units registered
                 </td>
             </tr>
@@ -73,43 +72,43 @@ style="display:flex;flex-direction:column;gap:20px">
             <div class="ft-card-header">
                 <span class="ft-card-title" x-text="adId ? 'Edit Advertisement' : 'Add Advertisement'"></span>
                 <button @click="showModal=false" class="ft-btn ft-btn-ghost ft-btn-icon ft-btn-sm">
-                    <i data-lucide="x" style="width:14px;height:14px"></i>
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
                 </button>
             </div>
             <div class="ft-card-body">
                 <form action="{% url 'dashboard:settings_ads' %}" method="post"
-                      style="display:flex;flex-direction:column;gap:14px">
+                      class="flex flex-col gap-3.5">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="save">
                     <input type="hidden" name="id" :value="adId">
 
-                    <div style="display:flex;flex-direction:column;gap:4px">
+                    <div class="flex flex-col gap-1">
                         <label class="ft-label">Ad Unit Title *</label>
                         <input type="text" name="title" x-model="adTitle" required class="ft-input" placeholder="e.g. Top Banner">
                     </div>
 
-                    <div style="display:flex;flex-direction:column;gap:4px">
+                    <div class="flex flex-col gap-1">
                         <label class="ft-label">Position / Layout Order</label>
-                        <select name="order" x-model="adOrder" class="ft-input">
+                        <c-ui.select name="order" :value="adOrder">
                             {% for val, label in positions %}
                                 <option value="{{ val }}">{{ label }} (Order {{ val }})</option>
                             {% endfor %}
-                        </select>
+                        </c-ui.select>
                     </div>
 
-                    <div style="display:flex;flex-direction:column;gap:4px">
+                    <div class="flex flex-col gap-1">
                         <label class="ft-label">HTML / JavaScript Code *</label>
                         <textarea name="ad_code" x-model="adCode" rows="7" required
-                                  class="ft-input" style="font-family:monospace;font-size:12px;resize:vertical"></textarea>
+                                  class="ft-input font-mono text-[12px] resize-y"></textarea>
                     </div>
 
-                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                    <label class="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" name="is_active" value="true" x-model="adIsActive"
-                               style="width:16px;height:16px;accent-color:var(--primary)">
-                        <span style="font-size:13px;font-weight:600;color:var(--text)">Set ad unit to active</span>
+                               class="w-4 h-4 accent-[var(--primary)]">
+                        <span class="text-[13px] font-semibold" style="color:var(--text)">Set ad unit to active</span>
                     </label>
 
-                    <div style="display:flex;gap:8px;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--border)">
+                    <div class="flex gap-2 justify-end pt-3 border-t" style="border-color:var(--border)">
                         <button type="button" @click="showModal=false" class="ft-btn ft-btn-secondary ft-btn-sm">Cancel</button>
                         <button type="submit" class="ft-btn ft-btn-primary ft-btn-sm">
                             <i data-lucide="save"></i> Save Ad Unit
