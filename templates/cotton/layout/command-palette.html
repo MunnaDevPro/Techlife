@@ -1,6 +1,7 @@
 {% comment %} c-command-palette — Global Ctrl/Cmd+K fuzzy search modal
    Ultra-minimal: search pages, menus, submenus, modules, actions, input fields & labels.
    Fully dark/light mode responsive.
+   Items index every real dashboard route from dashboard/urls.py (app_name='dashboard').
 {% endcomment %}
 
 <div x-data="{
@@ -8,62 +9,49 @@
        query: '',
        selectedIndex: 0,
        items: [
-         // ── Overview & Navigation ──
-         { label: 'Dashboard',               href: '/admin-panel/dashboard/',        icon: 'layout-dashboard', group: 'Overview', keywords: 'home overview stats main executive dashboard' },
-         { label: 'Staff Home / Check In',    href: '/staff/home/',                   icon: 'user-check',       group: 'Overview', keywords: 'staff home checkin checkout live timer selfie location' },
-         
-         // ── Operations & Attendance ──
-         { label: 'Attendance Records',      href: '/admin-panel/attendance/',       icon: 'clock',            group: 'Operations', keywords: 'attendance log daily records checkin checkout status type' },
-         { label: 'Daily Attendance Report',  href: '/admin-panel/reports/daily/',    icon: 'file-text',        group: 'Operations', keywords: 'daily report attendance summary date filter branch employee' },
-         { label: 'Monthly Attendance Report',href: '/admin-panel/reports/monthly/',  icon: 'calendar-days',    group: 'Operations', keywords: 'monthly report summary hours total hours overtime' },
-         { label: 'Absence Report',          href: '/admin-panel/reports/absent/',   icon: 'user-x',           group: 'Operations', keywords: 'absence report absent missing attendance leave type filter' },
-         { label: 'Manual Attendance Entry', href: '/admin-panel/attendance/manual-entry/', icon: 'edit-3', group: 'Operations', keywords: 'manual entry add attendance checkin checkout time entry date form' },
-         { label: 'Schedule Settings',        href: '/admin-panel/settings/',         icon: 'settings',         group: 'Operations', keywords: 'office start time office end time late after minutes early checkout overtime start auto location tracking interval shift settings' },
-         { label: 'Roster / Calendar',        href: '/schedule/',                     icon: 'calendar',         group: 'Operations', keywords: 'roster calendar shift month view schedule calendar' },
+         // ── Overview ──
+         { label: 'Dashboard Overview',    href: '{% url "dashboard:overview" %}',              icon: 'layout-dashboard',    group: 'Overview',      keywords: 'home stats overview kpis main dashboard' },
 
-         // ── People & Employee Management ──
-         { label: 'Employee Directory',      href: '/employees/',                    icon: 'users',            group: 'People', keywords: 'employees staff list directory employee id full name phone search' },
-         { label: 'Add New Employee',        href: '/employees/add/',                icon: 'user-plus',        group: 'People', keywords: 'add employee new staff email system role employee id full name department designation assigned branch phone emergency contact join date profile photo welcome email tracking interval overtime tracking project manager password leave override rules' },
-         { label: 'Departments',             href: '/employees/departments/',        icon: 'building',         group: 'People', keywords: 'department list add department dept' },
-         { label: 'Designations',            href: '/employees/designations/',       icon: 'award',            group: 'People', keywords: 'designation job title position rank' },
-         { label: 'Leave Requests (Admin)',  href: '/leave/admin/',                  icon: 'clipboard-check',  group: 'People', keywords: 'leave admin approve leave reject leave requests pending' },
-         { label: 'My Leave Requests',       href: '/leave/my-leave/',               icon: 'calendar-heart',   group: 'People', keywords: 'my leave apply leave leave balance leave status' },
-         { label: 'Leave Balances & Overrides', href: '/admin-panel/leave/balances/', icon: 'sliders',          group: 'People', keywords: 'leave balance yearly allowance leave override rules year filter' },
-         { label: 'Expense Claims (Admin)',  href: '/expense/admin/',                icon: 'receipt',          group: 'People', keywords: 'expense admin claims approve expense receipt' },
-         { label: 'My Expenses',             href: '/expense/my-expenses/',          icon: 'wallet',           group: 'People', keywords: 'my expense submit claim upload receipt amount' },
+         // ── Content ──
+         { label: 'Blog Posts',            href: '{% url "dashboard:content_posts" %}',         icon: 'file-text',           group: 'Content',       keywords: 'posts articles list manage all content blog' },
+         { label: 'Create New Post',       href: '{% url "dashboard:post_create" %}',           icon: 'file-plus',           group: 'Content',       keywords: 'new post create write article publish add blog' },
+         { label: 'Categories',            href: '{% url "dashboard:content_categories" %}',    icon: 'folder',              group: 'Content',       keywords: 'categories taxonomy manage add edit parent' },
+         { label: 'Subcategories',         href: '{% url "dashboard:content_subcategories" %}', icon: 'layers',              group: 'Content',       keywords: 'subcategories nested taxonomy sections child' },
+         { label: 'Tags',                  href: '{% url "dashboard:content_tags" %}',          icon: 'hash',                group: 'Content',       keywords: 'tags keywords label taxonomy hashtag' },
+         { label: 'Homepage Sections',     href: '{% url "dashboard:content_homepage" %}',      icon: 'home',                group: 'Content',       keywords: 'homepage sections featured layout hero banner config' },
 
-         // ── Projects & Work ──
-         { label: 'Projects',                href: '/projects/',                     icon: 'briefcase',        group: 'Work', keywords: 'projects list project budget client status branch' },
-         { label: 'Add New Project',         href: '/projects/create/',              icon: 'folder-plus',      group: 'Work', keywords: 'add project create project project name responsible person planned start planned finish hvac settings' },
-         { label: 'Global Task List',        href: '/projects/tasks/',               icon: 'check-square',     group: 'Work', keywords: 'tasks global tasks task list filter status filter employee' },
-         { label: 'My Tasks',                href: '/staff/my-tasks/',               icon: 'list-todo',        group: 'Work', keywords: 'my tasks assigned tasks task status proof upload' },
-         { label: 'Project Types',           href: '/projects/types/',               icon: 'tag',              group: 'Work', keywords: 'project types category type list' },
-         { label: 'Task Templates',          href: '/projects/templates/',           icon: 'clipboard-list',   group: 'Work', keywords: 'task templates checklist predefined tasks' },
+         // ── Forum ──
+         { label: 'Forum Questions',       href: '{% url "dashboard:forum_questions" %}',       icon: 'message-square',      group: 'Forum',         keywords: 'forum questions list discussion thread q&a' },
+         { label: 'Forum Answers',         href: '{% url "dashboard:forum_answers" %}',         icon: 'message-circle',      group: 'Forum',         keywords: 'forum answers replies discussion comments thread' },
+         { label: 'Reported Forum Posts',  href: '{% url "dashboard:forum_reported" %}',        icon: 'alert-triangle',      group: 'Forum',         keywords: 'reported flagged forum posts abuse spam review' },
 
-         // ── Organization & Admin ──
-         { label: 'Branches',                href: '/branches/',                     icon: 'building-2',       group: 'Organization', keywords: 'branches office locations branch name code address coordinates' },
-         { label: 'Add Branch',              href: '/branches/create/',              icon: 'map-pin',          group: 'Organization', keywords: 'add branch new branch name address latitude longitude geofence radius' },
-         { label: 'Holidays',                href: '/branches/holidays/',            icon: 'sun',              group: 'Organization', keywords: 'holidays public holiday list date branch' },
-         { label: 'Notifications',           href: '/notifications/',               icon: 'bell',             group: 'Organization', keywords: 'notifications alerts unread' },
+         // ── Moderation ──
+         { label: 'Flagged Items',         href: '{% url "dashboard:mod_flagged" %}',           icon: 'flag',                group: 'Moderation',    keywords: 'flagged items moderation reports review queue abuse' },
+         { label: 'Comment Queue',         href: '{% url "dashboard:mod_comments" %}',          icon: 'shield',              group: 'Moderation',    keywords: 'comments moderation review approve reject queue spam' },
+         { label: 'Blocked Users',         href: '{% url "dashboard:mod_blocked" %}',           icon: 'ban',                 group: 'Moderation',    keywords: 'blocked users banned unblock list suspend' },
 
-         // ── System & Administration ──
-         { label: 'System Roles & Access',   href: '/admin-panel/roles/',            icon: 'shield',           group: 'Admin', keywords: 'roles access control system role user roles groups permissions' },
-         { label: 'User Permissions Matrix', href: '/admin-panel/roles/permissions/', icon: 'key',             group: 'Admin', keywords: 'user permissions matrix assign permissions roles' },
-         { label: 'Database Backups',         href: '/backups/',                      icon: 'database',         group: 'Admin', keywords: 'backups create backup restore sql download' },
-         { label: 'Expired Data Cleanup',    href: '/admin-panel/expired-data/',     icon: 'trash-2',          group: 'Admin', keywords: 'expired data cleanup archive clear old records' },
-         { label: 'System Settings',        href: '/admin-panel/settings/',         icon: 'sliders-horizontal', group: 'Admin', keywords: 'system settings schedule settings auto location tracking interval office start time' },
+         // ── Users ──
+         { label: 'All Users',             href: '{% url "dashboard:users_all" %}',             icon: 'users',               group: 'Users',         keywords: 'users directory members list all accounts profiles' },
+         { label: 'Verification Requests', href: '{% url "dashboard:users_verification" %}',    icon: 'user-check',          group: 'Users',         keywords: 'verification pending identity verify approve badge' },
+         { label: 'Roles & Permissions',   href: '{% url "dashboard:users_roles" %}',           icon: 'key-round',           group: 'Users',         keywords: 'roles permissions access control groups admin staff' },
 
-         // ── Input Fields & Labels Shortcuts ──
-         { label: 'Field: Auto Location Tracking Interval', href: '/admin-panel/settings/', icon: 'navigation', group: 'Input Fields & Labels', keywords: 'auto location tracking interval gps sync frequency disabled input label field' },
-         { label: 'Field: Office Start Time & End Time', href: '/admin-panel/settings/', icon: 'clock', group: 'Input Fields & Labels', keywords: 'office start time end time shift timing input label field' },
-         { label: 'Field: Late After & Overtime Mins', href: '/admin-panel/settings/', icon: 'alert-circle', group: 'Input Fields & Labels', keywords: 'late after minutes early checkout overtime starts after input label field' },
-         { label: 'Field: System Role & Employee ID', href: '/employees/add/', icon: 'user-cog', group: 'Input Fields & Labels', keywords: 'system role employee id department designation email input label field' },
-         { label: 'Field: Emergency Contact & Phone', href: '/employees/add/', icon: 'phone', group: 'Input Fields & Labels', keywords: 'emergency contact phone number login id input label field' },
-         { label: 'Field: Leave Allowance Overrides', href: '/admin-panel/leave/balances/', icon: 'calendar-x', group: 'Input Fields & Labels', keywords: 'leave allowance override yearly leave days input label field' },
+         // ── SEO ──
+         { label: 'Meta Audit',            href: '{% url "dashboard:seo_audit" %}',             icon: 'search',              group: 'SEO',           keywords: 'seo meta tags audit missing title description og' },
+         { label: 'Sitemap Status',        href: '{% url "dashboard:seo_sitemap" %}',           icon: 'map',                 group: 'SEO',           keywords: 'sitemap xml urls indexed google search crawl' },
+         { label: 'Broken Links',          href: '{% url "dashboard:seo_broken" %}',            icon: 'link-2-off',          group: 'SEO',           keywords: 'broken links 404 dead links checker crawl error' },
 
-         // ── Account ──
-         { label: 'Change Password',         href: '/accounts/change-password/',     icon: 'lock',             group: 'Account', keywords: 'change password new password security credentials' },
-         { label: 'Logout',                  href: '/accounts/logout/',              icon: 'log-out',          group: 'Account', keywords: 'logout sign out exit' }
+         // ── Analytics ──
+         { label: 'Traffic Overview',      href: '{% url "dashboard:analytics_traffic" %}',     icon: 'trending-up',         group: 'Analytics',     keywords: 'traffic pageviews visitors analytics overview sessions hits' },
+         { label: 'Top Posts',             href: '{% url "dashboard:analytics_posts" %}',       icon: 'bar-chart-2',         group: 'Analytics',     keywords: 'top posts popular articles performance views ranking' },
+         { label: 'Author Performance',    href: '{% url "dashboard:analytics_authors" %}',     icon: 'pen-tool',            group: 'Analytics',     keywords: 'authors writers performance stats contributions output' },
+
+         // ── Settings ──
+         { label: 'Ad Configuration',      href: '{% url "dashboard:settings_ads" %}',          icon: 'megaphone',           group: 'Settings',      keywords: 'ads advertising google adsense banner config placement' },
+         { label: 'Footer & Branding',     href: '{% url "dashboard:settings_footer" %}',       icon: 'layout-panel-bottom', group: 'Settings',      keywords: 'footer logo branding links social settings site' },
+         { label: 'Maintenance Mode',      href: '{% url "dashboard:settings_maintenance" %}',  icon: 'wrench',              group: 'Settings',      keywords: 'maintenance mode downtime offline under construction enable' },
+
+         // ── Notifications ──
+         { label: 'Notifications',         href: '{% url "dashboard:notifications" %}',         icon: 'bell',                group: 'Notifications', keywords: 'notifications alerts unread messages inbox bell' },
        ],
 
        get filtered() {
@@ -143,7 +131,7 @@
                type="text"
                x-model.debounce.80="query"
                @input="selectedIndex = 0"
-               placeholder="Search menus, submenus, fields, labels, modules…"
+               placeholder="Search pages, sections, settings…"
                class="flex-1 bg-transparent outline-none text-[13px] border-0 p-0 ring-0 shadow-none font-normal"
                style="color: var(--text)">
         <button type="button" @click="closePalette()"
