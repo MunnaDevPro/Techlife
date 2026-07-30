@@ -151,7 +151,7 @@ def post_create(request):
     subcategories = SubCategory.objects.select_related('category').all()
     tags = Tag.objects.all().order_by('name')
     
-    ctx = get_dashboard_context(request, "Add New Post", "Content", "dashboard:content_posts")
+    ctx = get_dashboard_context(request, "Add New Post", "Content", "dashboard:post_create")
     ctx.update({
         "form": form,
         "categories": categories,

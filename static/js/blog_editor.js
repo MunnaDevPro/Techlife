@@ -11,7 +11,7 @@
     'use strict';
 
     // ── CKEditor 5 CDN ────────────────────────────────────────────────────────
-    var CK5_CDN_URL = 'https://cdn.ckeditor.com/ckeditor5/43.3.1/classic/ckeditor.js';
+    var CK5_CDN_URL = 'https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js';
     var CK5_SCRIPT_ID = 'ckeditor5-cdn';
 
     // Global instance registry (keyed by textarea id)
@@ -57,11 +57,15 @@
     }
 
     function ensureCK5(callback) {
-        if (window.ClassicEditor) {
+        if (window.CKEditor5 && window.CKEditor5.ClassicEditor) {
+            window.ClassicEditor = window.CKEditor5.ClassicEditor;
             if (typeof callback === 'function') callback();
             return;
         }
         loadScript(CK5_CDN_URL, CK5_SCRIPT_ID, function (ok) {
+            if (window.CKEditor5 && window.CKEditor5.ClassicEditor) {
+                window.ClassicEditor = window.CKEditor5.ClassicEditor;
+            }
             if (typeof callback === 'function') callback(ok);
         });
     }
@@ -153,15 +157,16 @@
             toolbar: {
                 items: [
                     'heading', '|',
-                    'bold', 'italic', 'underline', 'strikethrough', '|',
-                    'link', 'bulletedList', 'numberedList', '|',
-                    'blockQuote', 'insertTable', '|',
-                    'imageUpload', 'mediaEmbed', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+                    'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript', 'removeFormat', '|',
+                    'alignment', '|',
+                    'bulletedList', 'numberedList', 'todoList', '|',
                     'outdent', 'indent', '|',
+                    'link', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
                     'undo', 'redo', '|',
                     'findAndReplace', 'sourceEditing'
                 ],
-                shouldNotGroupWhenFull: false
+                shouldNotGroupWhenFull: true
             },
             heading: {
                 options: [
@@ -173,7 +178,7 @@
                 ]
             },
             table: {
-                contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+                contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableCellProperties', 'tableProperties']
             },
             image: {
                 toolbar: [
