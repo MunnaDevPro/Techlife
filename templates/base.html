@@ -1,4 +1,4 @@
-{% load static %}
+{% load static meta_pixel %}
 
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
@@ -334,6 +334,13 @@
     <noscript>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
     </noscript>
+    {% comment %}
+    ─── Meta Pixel + Conversions API ────────────────────────────────────────────
+    Renders fbq() initialisation + <noscript> fallback.
+    Empty when META_PIXEL_ID is not configured in .env.
+    {% endcomment %}
+    {% meta_pixel %}
+
 </head>
 
 <body id="user_dashboard" class="font-inter leading-normal tracking-normal">
@@ -622,6 +629,14 @@
         });
     })();
     </script>
+
+    {# ─── Meta JS Helper ────────────────────────────────────────────────────
+         Meta.track("Lead", {...}, eventID) — wraps fbq() with auto deduplication
+         Only loaded when META_PIXEL_ID is configured.
+    #}
+    {% if META_PIXEL_ID %}
+    <script src="{% static 'js/meta.js' %}" defer></script>
+    {% endif %}
 
 </body>
 </html>

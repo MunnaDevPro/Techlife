@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     "save_post",
     "django_tailwind_cli",
     "dashboard",
+    "integrations",
+    "integrations.meta",
 ]
 
 MIDDLEWARE = [
@@ -67,6 +69,7 @@ MIDDLEWARE = [
     "blog_post.middleware.Redirect404Middleware",
     "django_htmx.middleware.HtmxMiddleware",
     "maintenance.middleware.MaintenanceMiddleware",
+    "integrations.meta.middleware.MetaPixelMiddleware",
 ]
 
 ROOT_URLCONF = "root.urls"
@@ -104,6 +107,7 @@ TEMPLATES = [
                 "google_add.context_processors.google_adds",
                 "site_settings.context_processors.site_settings",
                 "maintenance.context_processors.maintenance",
+                "integrations.meta.context_processors.meta_pixel",
             ],
         },
     },
@@ -118,6 +122,17 @@ CKEDITOR_CONFIGS = {
         'versionCheck': False,  # ← এই line টা warning বন্ধ করবে
     }
 }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Meta / Facebook Pixel + Conversions API (CAPI)
+# Leave META_PIXEL_ID empty to disable all tracking automatically.
+# META_ACCESS_TOKEN is server-side only — never exposed to frontend.
+# ─────────────────────────────────────────────────────────────────────────────
+META_PIXEL_ID = config("META_PIXEL_ID", default="")
+META_ACCESS_TOKEN = config("META_ACCESS_TOKEN", default="")
+META_TEST_EVENT_CODE = config("META_TEST_EVENT_CODE", default="")
+META_API_VERSION = config("META_API_VERSION", default="v23.0")
 
 
 REST_FRAMEWORK = {
