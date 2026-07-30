@@ -1,7 +1,7 @@
 {% extends base_template %}
 
 {% block content %}
-<div style="display:flex;flex-direction:column;gap:20px">
+<div class="flex flex-col gap-5">
     <div>
         <h2 class="ft-page-title">All Users</h2>
         <p class="ft-page-subtitle">View and manage registered accounts</p>
@@ -9,20 +9,17 @@
 
     <!-- Filters -->
     <c-ui.card title="Filters">
-        <form method="get" style="display:grid;grid-template-columns:1fr;gap:12px">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
             <c-ui.input name="q" label="Search Email" type="text"
-                value="{{ search_q }}" placeholder="Search email..." icon="search" />
-            <div style="display:flex;flex-direction:column;gap:4px">
-                <label class="ft-label">Verification Status</label>
-                <select name="verified" class="ft-input">
-                    <option value="">All Users</option>
-                    <option value="true" {% if verified_filter == 'true' %}selected{% endif %}>Verified Only</option>
-                    <option value="false" {% if verified_filter == 'false' %}selected{% endif %}>Unverified Only</option>
-                </select>
-            </div>
-            <button type="submit" class="ft-btn ft-btn-primary ft-btn-full">
-                <i data-lucide="search"></i> Search
-            </button>
+                value="{{ search_q }}" placeholder="Search email..." icon="search"></c-ui.input>
+            
+            <c-ui.select name="verified" label="Verification Status">
+                <option value="">All Users</option>
+                <option value="true" {% if verified_filter == 'true' %}selected{% endif %}>Verified Only</option>
+                <option value="false" {% if verified_filter == 'false' %}selected{% endif %}>Unverified Only</option>
+            </c-ui.select>
+
+            <c-ui.button type="submit" variant="primary" label="Search" icon="search" extra_class="w-full justify-center"></c-ui.button>
         </form>
     </c-ui.card>
 
@@ -41,18 +38,16 @@
                     {% endif %}
                 </td>
                 <td><c-ui.badge variant="neutral">{{ u.post_count }}</c-ui.badge></td>
-                <td style="font-size:11px;color:var(--text-muted)">{{ u.date_joined|date:"Y-m-d H:i" }}</td>
-                <td style="font-size:11px;color:var(--text-muted)">{{ u.last_login|date:"Y-m-d H:i"|default:"Never" }}</td>
+                <td class="text-[11px]" style="color:var(--text-muted)">{{ u.date_joined|date:"Y-m-d H:i" }}</td>
+                <td class="text-[11px]" style="color:var(--text-muted)">{{ u.last_login|date:"Y-m-d H:i"|default:"Never" }}</td>
                 <td>
-                    <a href="{% url 'dashboard:user_detail' u.pk %}" class="ft-btn ft-btn-ghost ft-btn-sm">
-                        <i data-lucide="user"></i> Details
-                    </a>
+                    <c-ui.button href="{% url 'dashboard:user_detail' u.pk %}" variant="ghost" size="sm" icon="user" label="Details"></c-ui.button>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted)">
-                    <i data-lucide="users" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                <td colspan="7" class="text-center py-8" style="color:var(--text-muted)">
+                    <i data-lucide="users" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
                     No users found matching filters
                 </td>
             </tr>

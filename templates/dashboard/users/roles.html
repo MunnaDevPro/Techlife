@@ -1,7 +1,7 @@
 {% extends base_template %}
 
 {% block content %}
-<div style="display:flex;flex-direction:column;gap:20px">
+<div class="flex flex-col gap-5">
     <div>
         <h2 class="ft-page-title">Security Groups & Roles</h2>
         <p class="ft-page-subtitle">Configure authorization levels and group memberships</p>
@@ -19,8 +19,8 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="3" style="text-align:center;padding:32px;color:var(--text-muted)">
-                    <i data-lucide="shield" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                <td colspan="3" class="text-center py-8" style="color:var(--text-muted)">
+                    <i data-lucide="shield" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
                     No authorization groups found
                 </td>
             </tr>

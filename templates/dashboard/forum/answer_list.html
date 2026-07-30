@@ -1,8 +1,7 @@
 {% extends base_template %}
 
 {% block content %}
-<div x-data="{ showDeleteModal: false, confirmDeleteId: null }"
-     style="display:flex;flex-direction:column;gap:20px">
+<div x-data="{ showDeleteModal: false, confirmDeleteId: null }" class="flex flex-col gap-5">
 
     <div>
         <h2 class="ft-page-title">Forum Answers</h2>
@@ -13,32 +12,28 @@
         <c-ui.table :headers="['Answer Content', 'On Question', 'Author', 'Created', 'Actions']">
             {% for a in answers %}
             <tr>
-                <td style="max-width:280px">
-                    <p style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-secondary)">
+                <td class="max-w-[280px]">
+                    <p class="overflow-hidden text-ellipsis whitespace-nowrap m-0" style="color:var(--text-secondary)">
                         {{ a.content|truncatechars:80 }}
                     </p>
                 </td>
                 <td>
                     <a href="/forum/question/{{ a.question.slug }}/" target="_blank"
-                       style="color:var(--primary);text-decoration:none;font-size:12px"
-                       onmouseover="this.style.textDecoration='underline'"
-                       onmouseout="this.style.textDecoration='none'">
+                       class="text-[12px] hover:underline" style="color:var(--primary)">
                         {{ a.question.title|truncatechars:40 }}
                     </a>
                 </td>
                 <td style="color:var(--text-muted)">{{ a.author.email }}</td>
-                <td style="font-size:11px;color:var(--text-muted)">{{ a.created_at|date:"Y-m-d H:i" }}</td>
+                <td class="text-[11px]" style="color:var(--text-muted)">{{ a.created_at|date:"Y-m-d H:i" }}</td>
                 <td>
-                    <button type="button" class="ft-btn ft-btn-danger ft-btn-sm"
-                        @click="confirmDeleteId={{ a.pk }}; showDeleteModal=true">
-                        <i data-lucide="trash-2"></i> Delete
-                    </button>
+                    <c-ui.button type="button" variant="danger" size="sm" icon="trash-2" label="Delete"
+                        @click="confirmDeleteId={{ a.pk }}; showDeleteModal=true"></c-ui.button>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted)">
-                    <i data-lucide="message-circle" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                <td colspan="5" class="text-center py-8" style="color:var(--text-muted)">
+                    <i data-lucide="message-circle" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
                     No forum answers found
                 </td>
             </tr>
@@ -53,15 +48,15 @@
                 <span class="ft-card-title">Delete Answer</span>
             </div>
             <div class="ft-card-body">
-                <p style="font-size:13px;color:var(--text-secondary)">
+                <p class="text-[13px]" style="color:var(--text-secondary)">
                     Are you sure you want to delete this answer? This action is permanent.
                 </p>
             </div>
-            <div style="padding:12px 16px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border);background:var(--surface-2)">
+            <div class="flex gap-2 justify-end px-4 py-3 border-t" style="border-color:var(--border);background:var(--surface-2)">
                 <button @click="showDeleteModal=false" class="ft-btn ft-btn-secondary ft-btn-sm">Cancel</button>
-                <form :action="'/dashboard/forum/answers/' + confirmDeleteId + '/delete/'" method="post" style="display:inline">
+                <form :action="'/dashboard/forum/answers/' + confirmDeleteId + '/delete/'" method="post" class="inline">
                     {% csrf_token %}
-                    <button type="submit" class="ft-btn ft-btn-danger ft-btn-sm">Delete</button>
+                    <c-ui.button type="submit" variant="danger" size="sm" label="Delete"></c-ui.button>
                 </form>
             </div>
         </div>

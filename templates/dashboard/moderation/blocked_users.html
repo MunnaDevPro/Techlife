@@ -1,7 +1,7 @@
 {% extends base_template %}
 
 {% block content %}
-<div style="display:flex;flex-direction:column;gap:20px">
+<div class="flex flex-col gap-5">
     <div>
         <h2 class="ft-page-title">Blocked Users</h2>
         <p class="ft-page-subtitle">Deactivated or banned accounts</p>
@@ -13,22 +13,20 @@
             <tr>
                 <td>{{ u.email }}</td>
                 <td style="color:var(--text-muted)">{{ u.first_name }} {{ u.last_name }}</td>
-                <td style="color:var(--text-muted);font-size:12px">{{ u.date_joined|date:"Y-m-d H:i" }}</td>
+                <td class="text-[12px]" style="color:var(--text-muted)">{{ u.date_joined|date:"Y-m-d H:i" }}</td>
                 <td><c-ui.badge variant="danger" dot="true">Blocked</c-ui.badge></td>
                 <td>
                     <form action="{% url 'dashboard:user_unblock' u.pk %}" method="post"
-                          onsubmit="return confirm('Unblock this user?')">
+                          onsubmit="return confirm('Unblock this user?')" class="inline">
                         {% csrf_token %}
-                        <button type="submit" class="ft-btn ft-btn-success ft-btn-sm">
-                            <i data-lucide="user-check"></i> Unblock
-                        </button>
+                        <c-ui.button type="submit" variant="accent" size="sm" icon="user-check" label="Unblock"></c-ui.button>
                     </form>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted)">
-                    <i data-lucide="shield-check" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                <td colspan="5" class="text-center py-8" style="color:var(--text-muted)">
+                    <i data-lucide="shield-check" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
                     No blocked users
                 </td>
             </tr>

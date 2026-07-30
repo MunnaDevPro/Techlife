@@ -1,7 +1,7 @@
 {% extends base_template %}
 
 {% block content %}
-<div style="display:flex;flex-direction:column;gap:20px">
+<div class="flex flex-col gap-5">
     <div>
         <h2 class="ft-page-title">Post Tags</h2>
         <p class="ft-page-subtitle">Manage tags assigned to blog posts</p>
@@ -9,13 +9,11 @@
 
     <!-- Create Tag -->
     <c-ui.card title="Add New Tag">
-        <form method="post" style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:flex-end">
+        <form method="post" class="grid grid-cols-[1fr_auto] gap-2.5 items-end">
             {% csrf_token %}
             <input type="hidden" name="action" value="create">
-            <c-ui.input name="name" label="Tag Name" placeholder="e.g. Technology" required="true" icon="hash" />
-            <button type="submit" class="ft-btn ft-btn-primary" style="align-self:flex-end">
-                <i data-lucide="plus"></i> Add Tag
-            </button>
+            <c-ui.input name="name" label="Tag Name" placeholder="e.g. Technology" required="true" icon="hash"></c-ui.input>
+            <c-ui.button type="submit" variant="primary" label="Add Tag" icon="plus"></c-ui.button>
         </form>
     </c-ui.card>
 
@@ -28,25 +26,23 @@
                     <c-ui.badge variant="info">#{{ tag.name }}</c-ui.badge>
                 </td>
                 <td>
-                    <code style="font-size:11px;background:var(--surface-3);padding:2px 6px;border-radius:4px;color:var(--text-muted)">{{ tag.slug }}</code>
+                    <code class="text-[11px] px-1.5 py-0.5 rounded" style="background:var(--surface-3);color:var(--text-muted)">{{ tag.slug }}</code>
                 </td>
                 <td><c-ui.badge variant="neutral">{{ tag.post_count }}</c-ui.badge></td>
                 <td>
                     <form action="{% url 'dashboard:content_tags' %}" method="post"
-                          onsubmit="return confirm('Delete this tag?')">
+                          onsubmit="return confirm('Delete this tag?')" class="inline">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="id" value="{{ tag.id }}">
-                        <button type="submit" class="ft-btn ft-btn-danger ft-btn-sm">
-                            <i data-lucide="trash-2"></i> Delete
-                        </button>
+                        <c-ui.button type="submit" variant="danger" size="sm" icon="trash-2" label="Delete"></c-ui.button>
                     </form>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4" style="text-align:center;padding:32px;color:var(--text-muted)">
-                    <i data-lucide="hash" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                <td colspan="4" class="text-center py-8" style="color:var(--text-muted)">
+                    <i data-lucide="hash" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
                     No tags found
                 </td>
             </tr>

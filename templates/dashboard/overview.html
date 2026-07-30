@@ -1,15 +1,15 @@
 {% extends base_template %}
 
 {% block content %}
-<div style="display:flex;flex-direction:column;gap:20px">
+<div class="flex flex-col gap-5">
 
     <!-- Page header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
             <h2 class="ft-page-title">Dashboard Overview</h2>
             <p class="ft-page-subtitle">Real-time stats and site performance</p>
         </div>
-        <div style="display:flex;gap:8px">
+        <div class="flex gap-2">
             <a href="{% url 'dashboard:content_posts' %}" class="ft-btn ft-btn-secondary ft-btn-sm">
                 <i data-lucide="plus"></i> New Post
             </a>
@@ -20,7 +20,7 @@
     </div>
 
     <!-- KPI Grid -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3">
         <c-ui.kpi-widget label="Published Posts" value="{{ kpis.total_published_posts }}" icon="file-text" color="primary"></c-ui.kpi-widget>
         <c-ui.kpi-widget label="Pending Review" value="{{ kpis.pending_review_count }}" icon="clock" color="warning"></c-ui.kpi-widget>
         <c-ui.kpi-widget label="Verified Users" value="{{ kpis.total_verified_users }}" icon="user-check" color="accent"></c-ui.kpi-widget>
@@ -29,12 +29,12 @@
     </div>
 
     <!-- Charts & Activity -->
-    <div style="display:grid;grid-template-columns:1fr;gap:16px">
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px" class="overview-grid">
+    <div class="grid grid-cols-1 gap-4">
+        <div class="grid grid-cols-[2fr_1fr] gap-4 overview-grid">
 
             <!-- Activity Chart -->
             <c-ui.card title="Posts Published (Last 30 Days)" subtitle="Daily publish activity">
-                <canvas id="overviewChart" style="max-height:280px"></canvas>
+                <canvas id="overviewChart" class="max-h-[280px]"></canvas>
                 <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     const ctx = document.getElementById('overviewChart');
@@ -70,23 +70,23 @@
 
             <!-- Recent Activity -->
             <c-ui.card title="Recent Activity" subtitle="Latest site events">
-                <div style="display:flex;flex-direction:column;gap:12px;max-height:280px;overflow-y:auto" class="scrollbar-hide">
+                <div class="flex flex-col gap-3 max-h-[280px] overflow-y-auto scrollbar-hide">
                     {% if recent_activity %}
                         {% for activity in recent_activity %}
-                        <div style="display:flex;align-items:flex-start;gap:10px">
-                            <div style="padding:6px;background:var(--surface-3);border-radius:var(--radius-sm);flex-shrink:0;margin-top:1px">
-                                <i data-lucide="{{ activity.icon }}" style="width:13px;height:13px;color:var(--text-muted)"></i>
+                        <div class="flex items-start gap-2.5">
+                            <div class="p-1.5 rounded-[var(--radius-sm)] flex-shrink-0 mt-0.5" style="background:var(--surface-3)">
+                                <i data-lucide="{{ activity.icon }}" class="w-3.5 h-3.5" style="color:var(--text-muted)"></i>
                             </div>
-                            <div style="flex:1;min-width:0">
-                                <p style="font-size:12px;color:var(--text);line-height:1.4">{{ activity.description }}</p>
-                                <span style="font-size:10px;color:var(--text-muted)">{{ activity.timestamp|timesince }} ago</span>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[12px] leading-snug m-0" style="color:var(--text)">{{ activity.description }}</p>
+                                <span class="text-[10px]" style="color:var(--text-muted)">{{ activity.timestamp|timesince }} ago</span>
                             </div>
                         </div>
                         {% endfor %}
                     {% else %}
-                        <div style="text-align:center;padding:24px 0;color:var(--text-muted)">
-                            <i data-lucide="activity" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
-                            <p style="font-size:12px">No recent activities</p>
+                        <div class="text-center py-6" style="color:var(--text-muted)">
+                            <i data-lucide="activity" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
+                            <p class="text-[12px] m-0">No recent activities</p>
                         </div>
                     {% endif %}
                 </div>

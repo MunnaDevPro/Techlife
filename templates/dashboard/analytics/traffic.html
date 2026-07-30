@@ -1,24 +1,24 @@
 {% extends base_template %}
 
 {% block content %}
-<div style="display:flex;flex-direction:column;gap:20px">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+<div class="flex flex-col gap-5">
+    <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
             <h2 class="ft-page-title">Traffic Trend Overview</h2>
             <p class="ft-page-subtitle">Real, time-windowed aggregated views</p>
         </div>
-        <form method="get" style="display:flex;align-items:center;gap:8px">
-            <label class="ft-label" style="text-transform:none;margin:0;white-space:nowrap">Time Range:</label>
-            <select name="days" onchange="this.form.submit()" class="ft-input" style="width:140px">
+        <form method="get" class="flex items-center gap-2">
+            <span class="text-[12px] font-medium whitespace-nowrap" style="color:var(--text-secondary)">Time Range:</span>
+            <c-ui.select name="days" onchange="this.form.submit()" extra_class="w-[140px]">
                 <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 Days</option>
                 <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 Days</option>
                 <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 Days</option>
-            </select>
+            </c-ui.select>
         </form>
     </div>
 
     <c-ui.card title="Daily Page Views">
-        <canvas id="trafficChart" style="max-height:320px"></canvas>
+        <canvas id="trafficChart" class="max-h-[320px]"></canvas>
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('trafficChart');

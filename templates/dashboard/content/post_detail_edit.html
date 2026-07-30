@@ -1,36 +1,24 @@
 {% extends base_template %}
 
 {% block content %}
-<div class="space-y-6" x-data="{ tab: 'content' }">
+<div class="flex flex-col gap-5" x-data="{ tab: 'content' }">
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
-            <h2 class="text-lg font-bold text-gray-800">Edit Post</h2>
-            <p class="text-[12px] text-gray-500">Modify article details, SEO info, media assets, and view comments</p>
+            <h2 class="ft-page-title">Edit Post</h2>
+            <p class="ft-page-subtitle">Modify article details, SEO info, media assets, and view comments</p>
         </div>
-        <a hx-get="{% url 'dashboard:content_posts' %}" hx-target="#main-content" hx-push-url="true" class="cursor-pointer px-3 py-1.5 bg-white border border-gray-300 rounded-md text-[14px] text-gray-700 hover:bg-gray-50 font-medium">
-            Back to List
-        </a>
+        <c-ui.button variant="secondary" size="sm" href="{% url 'dashboard:content_posts' %}" icon="arrow-left" label="Back to List"></c-ui.button>
     </div>
 
     <!-- Tab Buttons -->
-    <div class="border-b border-gray-200">
-        <nav class="-mb-px flex space-x-6">
-            <button @click="tab = 'content'" :class="tab === 'content' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
-                Content
-            </button>
-            <button @click="tab = 'seo'" :class="tab === 'seo' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
-                SEO
-            </button>
-            <button @click="tab = 'media'" :class="tab === 'media' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
-                Media
-            </button>
-            <button @click="tab = 'history'" :class="tab === 'history' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
-                Revision History
-            </button>
-            <button @click="tab = 'comments'" :class="tab === 'comments' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
-                Comments ({{ comments|length }})
-            </button>
+    <div class="border-b" style="border-color:var(--border)">
+        <nav class="-mb-px flex gap-6">
+            <c-ui.tab-button label="Content" :active="tab === 'content'" @click="tab = 'content'"></c-ui.tab-button>
+            <c-ui.tab-button label="SEO" :active="tab === 'seo'" @click="tab = 'seo'"></c-ui.tab-button>
+            <c-ui.tab-button label="Media" :active="tab === 'media'" @click="tab = 'media'"></c-ui.tab-button>
+            <c-ui.tab-button label="Revision History" :active="tab === 'history'" @click="tab = 'history'"></c-ui.tab-button>
+            <c-ui.tab-button label="Comments ({{ comments|length }})" :active="tab === 'comments'" @click="tab = 'comments'"></c-ui.tab-button>
         </nav>
     </div>
 
@@ -39,33 +27,40 @@
           id="create-blog-form"
           data-is-edit="true"
           data-ckeditor-upload-url="{% url 'ckeditor_upload' %}"
-          class="space-y-6">
+          class="flex flex-col gap-5">
         {% csrf_token %}
         
         <!-- Content Tab -->
-        <div x-show="tab === 'content'" class="space-y-4">
+        <div x-show="tab === 'content'" class="flex flex-col gap-4">
             <c-ui.card>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Title</label>
-                        {{ form.title }}
-                        {% if form.title.errors %}
-                            <p class="text-red-600 text-[12px] mt-1">{{ form.title.errors.as_text }}</p>
-                        {% endif %}
-                    </div>
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Category</label>
-                        {{ form.category }}
-                    </div>
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Subcategory</label>
-                        {{ form.subcategory }}
-                    </div>
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Description</label>
+                <div class="flex flex-col gap-4">
+                    <c-ui.input name="title" label="Title" value="{{ form.title.value|default:'' }}" required="true"></c-ui.input>
+                    {% if form.title.errors %}
+                        <p class="ft-error-text">{{ form.title.errors.as_text }}</p>
+                    {% endif %}
+
+                    <c-ui.select name="category" label="Category" required="true">
+                        <option value="">Select Category...</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if form.category.value|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </c-ui.select>
+                    {% if form.category.errors %}
+                        <p class="ft-error-text">{{ form.category.errors.as_text }}</p>
+                    {% endif %}
+
+                    <c-ui.select name="subcategory" label="Subcategory">
+                        <option value="">Select Subcategory...</option>
+                        {% for sub in subcategories %}
+                            <option value="{{ sub.id }}" {% if form.subcategory.value|stringformat:"s" == sub.id|stringformat:"s" %}selected{% endif %}>{{ sub.category.name }} → {{ sub.name }}</option>
+                        {% endfor %}
+                    </c-ui.select>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="ft-label">Description</label>
                         {{ form.description }}
                         {% if form.description.errors %}
-                            <p class="text-red-600 text-[12px] mt-1">{{ form.description.errors.as_text }}</p>
+                            <p class="ft-error-text">{{ form.description.errors.as_text }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -73,21 +68,20 @@
         </div>
 
         <!-- SEO Tab -->
-        <div x-show="tab === 'seo'" class="space-y-4" style="display: none;" x-data="{ 
+        <div x-show="tab === 'seo'" x-cloak class="flex flex-col gap-4" x-data="{ 
             metaTitle: '{{ meta_title|escapejs }}', 
             metaDesc: '{{ meta_description|escapejs }}' 
         }">
             <c-ui.card>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Meta Title</label>
-                        <input type="text" name="meta_title" x-model="metaTitle" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                        <p class="text-[12px] text-gray-500 mt-1"><span x-text="metaTitle.length">0</span> characters</p>
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-col gap-1">
+                        <c-ui.input name="meta_title" label="Meta Title" x-model="metaTitle"></c-ui.input>
+                        <p class="text-[11px]" style="color:var(--text-muted)"><span x-text="metaTitle.length">0</span> characters</p>
                     </div>
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Meta Description</label>
-                        <textarea name="meta_description" x-model="metaDesc" rows="3" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
-                        <p class="text-[12px] mt-1" :class="(metaDesc.length === 0 || metaDesc.length > 160) ? 'text-red-600 font-semibold' : 'text-green-600'">
+
+                    <div class="flex flex-col gap-1">
+                        <c-ui.textarea name="meta_description" label="Meta Description" x-model="metaDesc" rows="3"></c-ui.textarea>
+                        <p class="text-[12px] mt-1" :class="(metaDesc.length === 0 || metaDesc.length > 160) ? 'text-red-500 font-semibold' : 'text-green-600'">
                             <span x-text="metaDesc.length">0</span> / 160 characters
                             <span x-show="metaDesc.length === 0"> (Must not be empty)</span>
                             <span x-show="metaDesc.length > 160"> (Exceeds 160 chars limit)</span>
@@ -98,46 +92,39 @@
         </div>
 
         <!-- Media Tab -->
-        <div x-show="tab === 'media'" class="space-y-4" style="display: none;">
+        <div x-show="tab === 'media'" x-cloak class="flex flex-col gap-4">
             <c-ui.card>
-                <div class="space-y-4">
+                <div class="flex flex-col gap-4">
                     {% if post.featured_image %}
-                        <div>
-                            <p class="text-[12px] text-gray-500 mb-1">Current Image Preview:</p>
-                            <img src="{{ post.featured_image.url }}" class="max-w-xs h-auto rounded border border-gray-200">
+                        <div class="flex flex-col gap-1">
+                            <p class="text-[11px]" style="color:var(--text-muted)">Current Image Preview:</p>
+                            <img src="{{ post.featured_image.url }}" class="max-w-xs h-auto rounded border" style="border-color:var(--border)">
                         </div>
                     {% endif %}
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Featured Image Upload</label>
-                        {{ form.featured_image }}
-                        {% if form.featured_image.errors %}
-                            <p class="text-red-600 text-[12px] mt-1">{{ form.featured_image.errors.as_text }}</p>
-                        {% endif %}
-                        <p class="text-[12px] text-gray-500 mt-1">Allowed formats: JPG, PNG, WEBP. Max file size: 5MB.</p>
-                    </div>
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Featured Image URL (Optional)</label>
-                        {{ form.featured_image_url }}
-                    </div>
+
+                    <c-ui.file_input name="featured_image" label="Featured Image Banner" accept="image/*" help="Allowed formats: JPG, PNG, WEBP. Max file size: 5MB."></c-ui.file_input>
+                    {% if form.featured_image.errors %}
+                        <p class="ft-error-text">{{ form.featured_image.errors.as_text }}</p>
+                    {% endif %}
+
+                    <c-ui.input name="featured_image_url" label="Featured Image URL (Optional)" type="url" value="{{ form.featured_image_url.value|default:'' }}"></c-ui.input>
                 </div>
             </c-ui.card>
         </div>
 
         <!-- Form Submission Actions (visible for Content, SEO, Media tabs) -->
         <div x-show="tab === 'content' || tab === 'seo' || tab === 'media'" class="flex justify-end gap-3">
-            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[14px] font-medium transition-colors">
-                Save Changes
-            </button>
+            <c-ui.button type="submit" label="Save Changes"></c-ui.button>
         </div>
     </form>
 
     <!-- Revision History Tab (Info note) -->
-    <div x-show="tab === 'history'" style="display: none;">
+    <div x-show="tab === 'history'" x-cloak>
         <c-ui.card>
             <div class="text-center py-8">
-                <i data-lucide="history" class="w-8 h-8 text-gray-400 mx-auto mb-2"></i>
-                <h4 class="text-sm font-semibold text-gray-800">Revision History</h4>
-                <p class="text-[12px] text-gray-500 max-w-md mx-auto mt-1">
+                <i data-lucide="history" class="w-8 h-8 mx-auto mb-2 opacity-50" style="color:var(--text-muted)"></i>
+                <h4 class="text-sm font-semibold" style="color:var(--text)">Revision History</h4>
+                <p class="text-[12px] max-w-md mx-auto mt-1" style="color:var(--text-muted)">
                     Audit log history tracking is planned for a future release (will pull from django-simple-history).
                 </p>
             </div>
@@ -145,35 +132,30 @@
     </div>
 
     <!-- Comments Tab -->
-    <div x-show="tab === 'comments'" style="display: none;" class="space-y-4">
+    <div x-show="tab === 'comments'" x-cloak class="flex flex-col gap-4">
         <c-ui.card title="Reader Comments">
             {% if comments %}
-                <div class="divide-y divide-gray-100">
+                <div class="divide-y" style="border-color:var(--border)">
                     {% for c in comments %}
                         <div class="py-3 flex items-start justify-between gap-4">
                             <div>
                                 <div class="flex items-center gap-2 mb-1">
-                                    <span class="font-semibold text-gray-800 text-[14px]">{{ c.user.email }}</span>
-                                    <span class="text-[12px] text-gray-400">{{ c.created_at|timesince }} ago</span>
+                                    <span class="font-semibold text-[14px]" style="color:var(--text)">{{ c.user.email }}</span>
+                                    <span class="text-[12px]" style="color:var(--text-muted)">{{ c.created_at|timesince }} ago</span>
                                 </div>
-                                <p class="text-[14px] text-gray-700">{{ c.content }}</p>
+                                <p class="text-[14px]" style="color:var(--text-secondary)">{{ c.content }}</p>
                             </div>
-                            <form action="{% url 'dashboard:post_comment_delete' post.pk c.pk %}" method="post">
+                            <form action="{% url 'dashboard:post_comment_delete' post.pk c.pk %}" method="post" class="inline">
                                 {% csrf_token %}
-                                <button type="submit" class="p-1 hover:bg-red-50 text-red-600 rounded">
-                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                </button>
+                                <c-ui.button type="submit" variant="danger" size="sm" icon="trash-2" extra_class="!p-1"></c-ui.button>
                             </form>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
                 <c-ui.empty-state icon="message-square" title="No comments" description="No comments have been posted to this article yet."></c-ui.empty-state>
-
             {% endif %}
         </c-ui.card>
     </div>
 </div>
-
 {% endblock %}
-

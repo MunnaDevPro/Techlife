@@ -1,16 +1,14 @@
 {% extends base_template %}
 
 {% block content %}
-<div class="space-y-6" x-data="{ tab: 'profile' }">
+<div class="flex flex-col gap-5" x-data="{ tab: 'profile' }">
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
             <h2 class="text-lg font-bold text-gray-800">User Profile</h2>
             <p class="text-[12px] text-gray-500">View profile detail, authored content, and assign permissions for {{ target_user.email }}</p>
         </div>
-        <a hx-get="{% url 'dashboard:users_all' %}" hx-target="#main-content" hx-push-url="true" class="cursor-pointer px-3 py-1.5 bg-white border border-gray-300 rounded-md text-[14px] text-gray-700 hover:bg-gray-50 font-medium">
-            Back to List
-        </a>
+        <c-ui.button hx_get="{% url 'dashboard:users_all' %}" hx_target="#main-content" hx_push_url="true" variant="secondary" size="sm" label="Back to List" class="cursor-pointer"></c-ui.button>
     </div>
 
     <!-- User Overview Card -->
@@ -24,17 +22,17 @@
                 <p class="text-[14px] text-gray-500">{{ target_user.email }}</p>
                 <div class="flex flex-wrap gap-2 mt-2 justify-center sm:justify-start">
                     {% if target_user.is_verified %}
-                        <c-ui.badge type="success">Verified Account</c-ui.badge>
+                        <c-ui.badge variant="success">Verified Account</c-ui.badge>
                     {% else %}
-                        <c-ui.badge type="warning">Unverified Account</c-ui.badge>
+                        <c-ui.badge variant="warning">Unverified Account</c-ui.badge>
                     {% endif %}
                     
                     {% if target_user.is_superuser %}
-                        <c-ui.badge type="danger">Superuser</c-ui.badge>
+                        <c-ui.badge variant="danger">Superuser</c-ui.badge>
                     {% elif target_user.is_staff %}
-                        <c-ui.badge type="info">Staff Member</c-ui.badge>
+                        <c-ui.badge variant="info">Staff Member</c-ui.badge>
                     {% else %}
-                        <c-ui.badge type="default">Regular User</c-ui.badge>
+                        <c-ui.badge variant="neutral">Regular User</c-ui.badge>
                     {% endif %}
                 </div>
             </div>
@@ -42,22 +40,16 @@
     </c-ui.card>
 
     <!-- Tabbed navigation -->
-    <div class="border-b border-gray-200">
-        <nav class="-mb-px flex space-x-6">
-            <button @click="tab = 'profile'" :class="tab === 'profile' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
-                Profile Metadata
-            </button>
-            <button @click="tab = 'posts'" :class="tab === 'posts' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
-                Posts Authored ({{ posts|length }})
-            </button>
-            <button @click="tab = 'permissions'" :class="tab === 'permissions' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="py-2 px-1 border-b-2 font-medium text-[14px]">
-                Permissions & Roles
-            </button>
+    <div class="border-b" style="border-color:var(--border)">
+        <nav class="-mb-px flex gap-6">
+            <c-ui.tab-button label="Profile Metadata" :active="tab === 'profile'" @click="tab = 'profile'"></c-ui.tab-button>
+            <c-ui.tab-button label="Posts Authored ({{ posts|length }})" :active="tab === 'posts'" @click="tab = 'posts'"></c-ui.tab-button>
+            <c-ui.tab-button label="Permissions & Roles" :active="tab === 'permissions'" @click="tab = 'permissions'"></c-ui.tab-button>
         </nav>
     </div>
 
     <!-- Profile Metadata Tab -->
-    <div x-show="tab === 'profile'" class="space-y-4">
+    <div x-show="tab === 'profile'" class="flex flex-col gap-4">
         <c-ui.card title="Metadata Details">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[14px]">
                 <div>
@@ -83,7 +75,7 @@
     </div>
 
     <!-- Posts Authored Tab -->
-    <div x-show="tab === 'posts'" style="display: none;" class="space-y-4">
+    <div x-show="tab === 'posts'" x-cloak class="flex flex-col gap-4">
         <c-ui.card title="Articles Published">
             <c-ui.table headers="['Title', 'Category', 'Status', 'Views', 'Created Date']">
                 {% for p in posts %}
@@ -92,11 +84,11 @@
                         <td class="px-6 py-4 text-gray-700">{{ p.category.name|default:"-" }}</td>
                         <td class="px-6 py-4">
                             {% if p.status == 'published' %}
-                                <c-ui.badge type="success">Published</c-ui.badge>
+                                <c-ui.badge variant="success">Published</c-ui.badge>
                             {% elif p.status == 'pending' or p.status == 'edited' %}
-                                <c-ui.badge type="warning">Review</c-ui.badge>
+                                <c-ui.badge variant="warning">Review</c-ui.badge>
                             {% else %}
-                                <c-ui.badge type="danger">Rejected</c-ui.badge>
+                                <c-ui.badge variant="danger">Rejected</c-ui.badge>
                             {% endif %}
                         </td>
                         <td class="px-6 py-4 text-gray-700">{{ p.views }}</td>
@@ -112,7 +104,7 @@
     </div>
 
     <!-- Permissions and Roles Tab -->
-    <div x-show="tab === 'permissions'" style="display: none;" class="space-y-4">
+    <div x-show="tab === 'permissions'" x-cloak class="flex flex-col gap-4">
         <c-ui.card title="Manage Permissions">
             {% if request.user == target_user %}
                 <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-md text-[13px] text-yellow-700 flex items-start gap-2">
@@ -122,13 +114,13 @@
                     </div>
                 </div>
             {% else %}
-                <form method="post" class="space-y-6">
+                <form method="post" class="flex flex-col gap-5">
                     {% csrf_token %}
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <!-- Flag settings -->
-                        <div class="space-y-4">
-                            <h4 class="text-sm font-semibold text-gray-800 border-b border-gray-100 pb-1">System Flags</h4>
+                        <div class="flex flex-col gap-4">
+                            <h4 class="text-sm font-semibold text-gray-800 border-b pb-1" style="border-color:var(--border)">System Flags</h4>
                             
                             <label class="flex items-start gap-3 cursor-pointer">
                                 <input type="checkbox" name="is_staff" value="true" {% if target_user.is_staff %}checked{% endif %} class="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
@@ -148,26 +140,24 @@
                         </div>
 
                         <!-- Group memberships -->
-                        <div class="space-y-4">
-                            <h4 class="text-sm font-semibold text-gray-800 border-b border-gray-100 pb-1">Django Security Groups</h4>
+                        <div class="flex flex-col gap-4">
+                            <h4 class="text-sm font-semibold text-gray-800 border-b pb-1" style="border-color:var(--border)">Django Security Groups</h4>
                             
-                            <div class="space-y-2">
+                            <div class="flex flex-col gap-2">
                                 {% for g in groups %}
                                     <label class="flex items-center gap-3 cursor-pointer">
                                         <input type="checkbox" name="groups" value="{{ g.id }}" {% if g.id in user_group_ids %}checked{% endif %} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                         <span class="text-[14px] font-semibold text-gray-700">{{ g.name }}</span>
                                     </label>
                                 {% empty %}
-                                    <p class="text-[12px] text-gray-500">No security groups created.</p>
+                                    <p class="text-[12px]" style="color:var(--text-muted)">No security groups created.</p>
                                 {% endfor %}
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex justify-end pt-4 border-t border-gray-100">
-                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[14px] font-semibold transition-colors">
-                            Save Permissions
-                        </button>
+                    <div class="flex justify-end pt-4 border-t" style="border-color:var(--border)">
+                        <c-ui.button type="submit" label="Save Permissions"></c-ui.button>
                     </div>
                 </form>
             {% endif %}

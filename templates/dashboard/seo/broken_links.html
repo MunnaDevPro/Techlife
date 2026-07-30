@@ -1,7 +1,7 @@
 {% extends base_template %}
 
 {% block content %}
-<div style="display:flex;flex-direction:column;gap:20px">
+<div class="flex flex-col gap-5">
     <div>
         <h2 class="ft-page-title">Broken Links & 404 Logs</h2>
         <p class="ft-page-subtitle">Real-time page-not-found redirects recorded by middleware</p>
@@ -12,18 +12,18 @@
             {% for log in logs %}
             <tr>
                 <td>
-                    <code style="font-size:12px;background:var(--surface-3);padding:2px 6px;border-radius:4px">{{ log.path }}</code>
+                    <code class="text-[12px] px-1.5 py-0.5 rounded" style="background:var(--surface-3)">{{ log.path }}</code>
                 </td>
-                <td style="color:var(--text-muted);font-size:12px">{{ log.referer|default:"Direct / Empty" }}</td>
+                <td class="text-[12px]" style="color:var(--text-muted)">{{ log.referer|default:"Direct / Empty" }}</td>
                 <td>
                     <c-ui.badge variant="danger">{{ log.hit_count }} hits</c-ui.badge>
                 </td>
-                <td style="font-size:11px;color:var(--text-muted)">{{ log.last_seen|date:"Y-m-d H:i" }}</td>
+                <td class="text-[11px]" style="color:var(--text-muted)">{{ log.last_seen|date:"Y-m-d H:i" }}</td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4" style="text-align:center;padding:32px;color:var(--text-muted)">
-                    <i data-lucide="check-circle" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4;color:#10b981"></i>
+                <td colspan="4" class="text-center py-8" style="color:var(--text-muted)">
+                    <i data-lucide="check-circle" class="w-7 h-7 mx-auto mb-2 block opacity-40" style="color:#10b981"></i>
                     No broken links recorded yet
                 </td>
             </tr>

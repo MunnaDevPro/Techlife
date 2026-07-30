@@ -196,6 +196,9 @@ def post_detail_edit(request, pk):
         
     comments = Comment.objects.filter(post=post).select_related('user').order_by('-created_at')
     
+    categories = Category.objects.all().order_by('name')
+    subcategories = SubCategory.objects.select_related('category').all()
+    
     ctx = get_dashboard_context(request, "Edit Post", "Content", "dashboard:content_posts")
     ctx.update({
         "post": post,
@@ -203,6 +206,8 @@ def post_detail_edit(request, pk):
         "comments": comments,
         "meta_title": post.meta_title,
         "meta_description": post.meta_description,
+        "categories": categories,
+        "subcategories": subcategories,
     })
     return render(request, "dashboard/content/post_detail_edit.html", ctx)
 

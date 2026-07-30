@@ -1,13 +1,13 @@
 {% extends base_template %}
 
 {% block content %}
-<div style="display:flex;flex-direction:column;gap:20px">
+<div class="flex flex-col gap-5">
     <div>
         <h2 class="ft-page-title">Sitemap Status</h2>
         <p class="ft-page-subtitle">Scan sitemap configuration and URL mappings</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-3">
         <c-ui.kpi-widget label="Total Sitemap URLs" value="{{ total_db_urls }}" icon="globe" color="primary"></c-ui.kpi-widget>
         <c-ui.kpi-widget label="Articles Registered" value="{{ db_posts }}" icon="file-text" color="accent"></c-ui.kpi-widget>
         <c-ui.kpi-widget label="Categories Registered" value="{{ db_categories }}" icon="layers" color="sky"></c-ui.kpi-widget>
@@ -35,7 +35,7 @@
                 <td><c-ui.badge variant="success" dot="true">Aligned</c-ui.badge></td>
             </tr>
         </c-ui.table>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:12px;font-style:italic">
+        <p class="text-[11px] mt-3 italic" style="color:var(--text-muted)">
             Django sitemaps are generated dynamically. All feeds are synchronized with database queries.
         </p>
     </c-ui.card>

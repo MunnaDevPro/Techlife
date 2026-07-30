@@ -1,7 +1,7 @@
 {% extends base_template %}
 
 {% block content %}
-<div style="display:flex;flex-direction:column;gap:20px">
+<div class="flex flex-col gap-5">
 
     <div>
         <h2 class="ft-page-title">Moderation Queue</h2>
@@ -22,16 +22,14 @@
             note="{{ flag_data.note }}"
             approve_url="{% url 'dashboard:flag_approve' flag_data.flag.pk queue_type %}"
             remove_url="{% url 'dashboard:flag_remove' flag_data.flag.pk queue_type %}"
-            skip_url="{% url 'dashboard:flag_skip' flag_data.flag.pk queue_type %}" />
+            skip_url="{% url 'dashboard:flag_skip' flag_data.flag.pk queue_type %}"></c-ui.moderation_card>
     {% else %}
         <c-ui.card>
-            <div style="text-align:center;padding:48px 24px;color:var(--text-muted)">
-                <i data-lucide="shield-check" style="width:40px;height:40px;margin:0 auto 12px;display:block;opacity:.35"></i>
-                <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px">All clear!</p>
-                <p style="font-size:13px;margin-bottom:16px">No pending flagged items in this queue.</p>
-                <a href="{% url 'dashboard:reset_skip_list' queue_type %}" class="ft-btn ft-btn-secondary ft-btn-sm">
-                    <i data-lucide="refresh-cw"></i> Reset Skip List
-                </a>
+            <div class="text-center py-12 px-6" style="color:var(--text-muted)">
+                <i data-lucide="shield-check" class="w-10 h-10 mx-auto mb-3 block opacity-35"></i>
+                <p class="text-[15px] font-bold mb-1" style="color:var(--text)">All clear!</p>
+                <p class="text-[13px] mb-4">No pending flagged items in this queue.</p>
+                <c-ui.button href="{% url 'dashboard:reset_skip_list' queue_type %}" variant="secondary" size="sm" icon="refresh-cw" label="Reset Skip List"></c-ui.button>
             </div>
         </c-ui.card>
     {% endif %}

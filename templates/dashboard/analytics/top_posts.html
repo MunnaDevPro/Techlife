@@ -1,7 +1,7 @@
 {% extends base_template %}
 
 {% block content %}
-<div style="display:flex;flex-direction:column;gap:20px">
+<div class="flex flex-col gap-5">
     <div>
         <h2 class="ft-page-title">Top Performing Articles</h2>
         <p class="ft-page-subtitle">Ranked by real page views during the selected period</p>
@@ -9,27 +9,21 @@
 
     <!-- Filters -->
     <c-ui.card title="Filters">
-        <form method="get" style="display:grid;grid-template-columns:1fr;gap:12px">
-            <div style="display:flex;flex-direction:column;gap:4px">
-                <label class="ft-label">Time Window</label>
-                <select name="days" class="ft-input">
-                    <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 Days</option>
-                    <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 Days</option>
-                    <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 Days</option>
-                </select>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:4px">
-                <label class="ft-label">Category</label>
-                <select name="category" class="ft-input">
-                    <option value="">All Categories</option>
-                    {% for cat in categories %}
-                        <option value="{{ cat.id }}" {% if selected_category|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <button type="submit" class="ft-btn ft-btn-primary ft-btn-full">
-                <i data-lucide="filter"></i> Apply Filter
-            </button>
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <c-ui.select name="days" label="Time Window">
+                <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 Days</option>
+                <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 Days</option>
+                <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 Days</option>
+            </c-ui.select>
+
+            <c-ui.select name="category" label="Category">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if selected_category|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </c-ui.select>
+
+            <c-ui.button type="submit" variant="primary" label="Apply Filter" icon="filter" extra_class="w-full justify-center"></c-ui.button>
         </form>
     </c-ui.card>
 
@@ -38,10 +32,10 @@
         <c-ui.table :headers="['Rank', 'Article', 'Category', 'Period Views', 'Lifetime', 'Actions']">
             {% for item in posts %}
             <tr>
-                <td style="font-weight:700;color:var(--text-muted)">#{{ forloop.counter }}</td>
+                <td class="font-bold" style="color:var(--text-muted)">#{{ forloop.counter }}</td>
                 <td>
                     {{ item.title }}
-                    <span style="display:block;font-size:10px;color:var(--text-muted);margin-top:2px">{{ item.author.email }}</span>
+                    <span class="block text-[10px] mt-0.5" style="color:var(--text-muted)">{{ item.author.email }}</span>
                 </td>
                 <td style="color:var(--text-muted)">{{ item.category.name|default:"—" }}</td>
                 <td>
@@ -49,15 +43,13 @@
                 </td>
                 <td style="color:var(--text-muted)">{{ item.views }}</td>
                 <td>
-                    <a href="{% url 'dashboard:post_edit' item.pk %}" class="ft-btn ft-btn-ghost ft-btn-sm">
-                        <i data-lucide="edit-2"></i> Manage
-                    </a>
+                    <c-ui.button variant="ghost" size="sm" href="{% url 'dashboard:post_edit' item.pk %}" icon="edit-2" label="Manage"></c-ui.button>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted)">
-                    <i data-lucide="bar-chart-2" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                <td colspan="6" class="text-center py-8" style="color:var(--text-muted)">
+                    <i data-lucide="bar-chart-2" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
                     No views recorded yet in this period
                 </td>
             </tr>

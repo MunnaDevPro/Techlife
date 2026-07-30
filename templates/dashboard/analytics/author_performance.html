@@ -1,7 +1,7 @@
 {% extends base_template %}
 
 {% block content %}
-<div style="display:flex;flex-direction:column;gap:20px">
+<div class="flex flex-col gap-5">
     <div>
         <h2 class="ft-page-title">Author Performance Analysis</h2>
         <p class="ft-page-subtitle">Aggregate post performance and writer metrics</p>
@@ -9,23 +9,18 @@
 
     <!-- Filters -->
     <c-ui.card title="Controls">
-        <form method="get" style="display:grid;grid-template-columns:1fr;gap:12px">
-            <div style="display:flex;flex-direction:column;gap:4px">
-                <label class="ft-label">Time Range</label>
-                <select name="days" onchange="this.form.submit()" class="ft-input">
-                    <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 Days</option>
-                    <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 Days</option>
-                    <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 Days</option>
-                </select>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:4px">
-                <label class="ft-label">Sort By</label>
-                <select name="sort" onchange="this.form.submit()" class="ft-input">
-                    <option value="views" {% if sort_by == 'views' %}selected{% endif %}>Total Views</option>
-                    <option value="posts" {% if sort_by == 'posts' %}selected{% endif %}>Articles Published</option>
-                    <option value="avg" {% if sort_by == 'avg' %}selected{% endif %}>Average Views</option>
-                </select>
-            </div>
+        <form method="get" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <c-ui.select name="days" label="Time Range" onchange="this.form.submit()">
+                <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 Days</option>
+                <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 Days</option>
+                <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 Days</option>
+            </c-ui.select>
+
+            <c-ui.select name="sort" label="Sort By" onchange="this.form.submit()">
+                <option value="views" {% if sort_by == 'views' %}selected{% endif %}>Total Views</option>
+                <option value="posts" {% if sort_by == 'posts' %}selected{% endif %}>Articles Published</option>
+                <option value="avg" {% if sort_by == 'avg' %}selected{% endif %}>Average Views</option>
+            </c-ui.select>
         </form>
     </c-ui.card>
 
@@ -34,21 +29,20 @@
         <c-ui.table :headers="['Rank', 'Author', 'Total Views', 'Articles', 'Avg Views/Post']">
             {% for item in authors %}
             <tr>
-                <td style="font-weight:700;color:var(--text-muted)">#{{ forloop.counter }}</td>
+                <td class="font-bold" style="color:var(--text-muted)">#{{ forloop.counter }}</td>
                 <td>
-                    <div style="display:flex;align-items:center;gap:10px">
-                        <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-light);
-                                    display:flex;align-items:center;justify-content:center;
-                                    font-size:12px;font-weight:700;color:var(--primary);flex-shrink:0">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold flex-shrink-0"
+                             style="background:var(--primary-light);color:var(--primary)">
                             {{ item.author.email|slice:":2"|upper }}
                         </div>
                         <div>
-                            <p style="font-weight:600;font-size:13px;color:var(--text)">{{ item.author.first_name }} {{ item.author.last_name }}</p>
-                            <p style="font-size:10px;color:var(--text-muted)">{{ item.author.email }}</p>
+                            <p class="font-semibold text-[13px] m-0" style="color:var(--text)">{{ item.author.first_name }} {{ item.author.last_name }}</p>
+                            <p class="text-[10px] m-0" style="color:var(--text-muted)">{{ item.author.email }}</p>
                         </div>
                     </div>
                 </td>
-                <td style="font-weight:700">{{ item.total_views|default:0 }}</td>
+                <td class="font-bold">{{ item.total_views|default:0 }}</td>
                 <td style="color:var(--text-muted)">{{ item.post_count }} posts</td>
                 <td>
                     <c-ui.badge variant="success">{{ item.avg_views }} avg</c-ui.badge>
@@ -56,8 +50,8 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted)">
-                    <i data-lucide="users" style="width:28px;height:28px;margin:0 auto 8px;display:block;opacity:.4"></i>
+                <td colspan="5" class="text-center py-8" style="color:var(--text-muted)">
+                    <i data-lucide="users" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
                     No author performance data recorded
                 </td>
             </tr>
