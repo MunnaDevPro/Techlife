@@ -488,11 +488,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
-    <script>
-        window.CKEDITOR_CDN_URL = 'https://cdn.ckeditor.com/4.25.1-lts/full/ckeditor.js';
-        window.CKEDITOR_LOCAL_URL = "{% static 'ckeditor/ckeditor/ckeditor.js' %}";
-    </script>
-    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+    <script id="ckeditor5-cdn" src="https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js"></script>
     <script src="{% static 'js/blog_editor.js' %}"></script>
     <script src="{% static 'js/script.js' %}" defer></script>
     <script src="{% static 'js/share_modal.js' %}" defer></script>
@@ -514,15 +510,6 @@
 
         document.body.addEventListener('htmx:afterSwap', (event) => {
             if (window.Alpine) window.Alpine.initTree(event.target);
-        });
-        document.body.addEventListener('htmx:afterSwap', function() {
-            setTimeout(function() {
-                if (typeof CKEDITOR === 'undefined') return;
-                for (var k in CKEDITOR.instances) CKEDITOR.instances[k].destroy(true);
-                document.querySelectorAll('textarea[name="description"]').forEach(function(el) {
-                    if (el.id) CKEDITOR.replace(el.id, { allowedContent: true, versionCheck: false });
-                });
-            }, 300);
         });
         document.body.addEventListener('htmx:afterSwap', (event) => {
             const triggerEl = event.detail?.requestConfig?.elt || lastHtmxTrigger;

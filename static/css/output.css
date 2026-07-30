@@ -681,6 +681,9 @@
   .my-1\.5 {
     margin-block: calc(var(--spacing) * 1.5);
   }
+  .my-2 {
+    margin-block: calc(var(--spacing) * 2);
+  }
   .my-3 {
     margin-block: calc(var(--spacing) * 3);
   }
@@ -1088,6 +1091,9 @@
   .max-h-\[500px\] {
     max-height: 500px;
   }
+  .max-h-\[600px\] {
+    max-height: 600px;
+  }
   .max-h-screen {
     max-height: 100vh;
   }
@@ -1322,6 +1328,9 @@
   .max-w-\[calc\(var\(--thread-content-max-width\)\*2\/3\)\] {
     max-width: calc(var(--thread-content-max-width) * 2 / 3);
   }
+  .max-w-full {
+    max-width: 100%;
+  }
   .max-w-lg {
     max-width: var(--container-lg);
   }
@@ -1497,6 +1506,12 @@
   }
   .resize-y {
     resize: vertical;
+  }
+  .list-decimal {
+    list-style-type: decimal;
+  }
+  .list-disc {
+    list-style-type: disc;
   }
   .appearance-none {
     appearance: none;
@@ -2432,6 +2447,9 @@
   }
   .bg-yellow-100 {
     background-color: var(--color-yellow-100);
+  }
+  .bg-yellow-200 {
+    background-color: var(--color-yellow-200);
   }
   .bg-linear-to-t {
     --tw-gradient-position: to top;
@@ -4180,6 +4198,9 @@
   }
   .focus\:ring-\[\#1877F2\]\/10:focus {
     --tw-ring-color: color-mix(in oklab, #1877F2 10%, transparent);
+  }
+  .focus\:ring-\[var\(--primary\)\]:focus {
+    --tw-ring-color: var(--primary);
   }
   .focus\:ring-blue-100:focus {
     --tw-ring-color: var(--color-blue-100);

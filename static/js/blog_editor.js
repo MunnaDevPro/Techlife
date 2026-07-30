@@ -57,9 +57,13 @@
     }
 
     function ensureCK5(callback) {
+        if (window.ClassicEditor) {
+            if (typeof callback === 'function') callback(true);
+            return;
+        }
         if (window.CKEditor5 && window.CKEditor5.ClassicEditor) {
             window.ClassicEditor = window.CKEditor5.ClassicEditor;
-            if (typeof callback === 'function') callback();
+            if (typeof callback === 'function') callback(true);
             return;
         }
         loadScript(CK5_CDN_URL, CK5_SCRIPT_ID, function (ok) {
@@ -207,6 +211,9 @@
         if (!textarea) return;
 
         var form = document.getElementById('create-blog-form');
+        if (form && form.getAttribute('data-editor') === 'tiptap') {
+            return; // Skip CKEditor initialization
+        }
 
         ensureCK5(function (ok) {
             if (!window.ClassicEditor) {

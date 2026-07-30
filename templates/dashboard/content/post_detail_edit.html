@@ -1,4 +1,5 @@
 {% extends base_template %}
+{% load static %}
 
 {% block content %}
 <div class="flex flex-col gap-5" x-data="{ tab: 'content' }">
@@ -26,7 +27,7 @@
     <form method="post" enctype="multipart/form-data"
           id="create-blog-form"
           data-is-edit="true"
-          data-ckeditor-upload-url="{% url 'ckeditor_upload' %}"
+          data-editor="tiptap"
           class="flex flex-col gap-5">
         {% csrf_token %}
         
@@ -58,7 +59,123 @@
 
                     <div class="flex flex-col gap-1">
                         <label class="ft-label">Description</label>
-                        {{ form.description }}
+                        
+                        <!-- Hidden native field for django form target -->
+                        <div class="hidden">
+                            {{ form.description }}
+                        </div>
+                        
+                        <!-- MS Word-like Tiptap Toolbar & Canvas -->
+                        <div class="flex flex-col border rounded-[var(--radius-md)] overflow-hidden bg-white" style="border-color:var(--border)">
+                            <!-- MS Word-like Tiptap Toolbar -->
+                            <div class="flex flex-wrap items-center gap-1.5 p-2 bg-gray-50 border-b border-gray-200 text-gray-700 select-none">
+                                
+                                <!-- Text Styles / Headings -->
+                                <select id="tiptap-heading-select" class="h-8 px-2 rounded border border-gray-300 bg-white text-[13px] outline-none cursor-pointer focus:ring-1 focus:ring-[var(--primary)]">
+                                    <option value="p">Normal Text</option>
+                                    <option value="1">Heading 1</option>
+                                    <option value="2">Heading 2</option>
+                                    <option value="3">Heading 3</option>
+                                    <option value="4">Heading 4</option>
+                                </select>
+
+                                <div class="w-px h-5 bg-gray-300 mx-1"></div>
+
+                                <!-- Formatting Buttons -->
+                                <button type="button" title="Bold" class="tiptap-bold h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="bold" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Italic" class="tiptap-italic h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="italic" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Underline" class="tiptap-underline h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="underline" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Strikethrough" class="tiptap-strike h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="strikethrough" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Inline Code" class="tiptap-code h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="code" class="w-4 h-4"></i>
+                                </button>
+
+                                <div class="w-px h-5 bg-gray-300 mx-1"></div>
+
+                                <!-- Color Pickers -->
+                                <div class="flex items-center gap-1 hover:bg-gray-200 rounded px-1.5 h-8 cursor-pointer relative" title="Text Color">
+                                    <i data-lucide="baseline" class="w-4 h-4 text-gray-700"></i>
+                                    <input type="color" id="tiptap-text-color" value="#111827" class="w-4 h-4 border-0 p-0 cursor-pointer bg-transparent">
+                                </div>
+                                <div class="flex items-center gap-1 hover:bg-gray-200 rounded px-1.5 h-8 cursor-pointer relative" title="Highlight Color">
+                                    <i data-lucide="highlighter" class="w-4 h-4 text-gray-700"></i>
+                                    <input type="color" id="tiptap-highlight-color" value="#fef08a" class="w-4 h-4 border-0 p-0 cursor-pointer bg-transparent">
+                                </div>
+
+                                <div class="w-px h-5 bg-gray-300 mx-1"></div>
+
+                                <!-- Alignments -->
+                                <button type="button" title="Align Left" class="tiptap-align-left h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="align-left" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Align Center" class="tiptap-align-center h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="align-center" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Align Right" class="tiptap-align-right h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="align-right" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Align Justify" class="tiptap-align-justify h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="align-justify" class="w-4 h-4"></i>
+                                </button>
+
+                                <div class="w-px h-5 bg-gray-300 mx-1"></div>
+
+                                <!-- Lists -->
+                                <button type="button" title="Bullet List" class="tiptap-bullet-list h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="list" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Numbered List" class="tiptap-ordered-list h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="list-ordered" class="w-4 h-4"></i>
+                                </button>
+
+                                <div class="w-px h-5 bg-gray-300 mx-1"></div>
+
+                                <!-- Insert Media / Tables / Links / Blockquotes -->
+                                <button type="button" title="Insert Link" class="tiptap-link h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="link" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Insert Image" class="tiptap-image h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="image" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Insert Table" class="tiptap-table h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="table" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Insert Horizontal Rule" class="tiptap-hr h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="minus" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Blockquote" class="tiptap-blockquote h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="quote" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Code Block" class="tiptap-codeblock h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="terminal" class="w-4 h-4"></i>
+                                </button>
+
+                                <div class="w-px h-5 bg-gray-300 mx-1"></div>
+
+                                <!-- Undo / Redo & Clear -->
+                                <button type="button" title="Undo" class="tiptap-undo h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="undo-2" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Redo" class="tiptap-redo h-8 w-8 rounded flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i data-lucide="redo-2" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" title="Clear Content" class="tiptap-clear h-8 w-8 rounded flex items-center justify-center text-red-500 hover:bg-red-50 transition-colors">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+
+                            <!-- Tiptap Editor Canvas -->
+                            <div id="tiptap-editor-container" class="w-full min-h-[400px]"></div>
+                        </div>
+
                         {% if form.description.errors %}
                             <p class="ft-error-text">{{ form.description.errors.as_text }}</p>
                         {% endif %}
@@ -157,5 +274,7 @@
             {% endif %}
         </c-ui.card>
     </div>
+
+    <script type="module" src="{% static 'js/tiptap_editor.js' %}"></script>
 </div>
 {% endblock %}
