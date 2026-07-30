@@ -2082,6 +2082,9 @@
   .border-b-gray-100 {
     border-bottom-color: var(--color-gray-100);
   }
+  .\!bg-gray-700 {
+    background-color: var(--color-gray-700) !important;
+  }
   .bg-\[\#1e3a6e\] {
     background-color: #1e3a6e;
   }
@@ -3091,6 +3094,9 @@
   }
   .text-\[\#dbeafe\] {
     color: #dbeafe;
+  }
+  .text-\[var\(--primary\)\] {
+    color: var(--primary);
   }
   .text-\[var\(--text\)\] {
     color: var(--text);
@@ -4222,6 +4228,16 @@
     .max-lg\:-translate-x-full {
       --tw-translate-x: -100%;
       translate: var(--tw-translate-x) var(--tw-translate-y);
+    }
+  }
+  @media (width < 48rem) {
+    .max-md\:hidden {
+      display: none;
+    }
+  }
+  @media (width < 40rem) {
+    .max-sm\:hidden {
+      display: none;
     }
   }
   @media (width >= 40rem) {

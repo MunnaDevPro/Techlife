@@ -8,7 +8,21 @@
 
 {% load static %}
 
-<div class="ft-layout" x-data="{ sidebarOpen: false }">
+<div class="ft-layout" x-data="{ 
+    sidebarOpen: false, 
+    activeDropdown: localStorage.getItem('ft_active_dropdown') || 
+      ('{{ active_menu }}' === 'Content' ? 'content' :
+       '{{ active_menu }}' === 'Forum' ? 'forum' :
+       '{{ active_menu }}' === 'Moderation' ? 'moderation' :
+       '{{ active_menu }}' === 'Users' ? 'users' :
+       '{{ active_menu }}' === 'SEO' ? 'seo' :
+       '{{ active_menu }}' === 'Analytics' ? 'analytics' :
+       '{{ active_menu }}' === 'Site Settings' ? 'settings' : ''),
+    toggleDropdown(menu) {
+        this.activeDropdown = this.activeDropdown === menu ? '' : menu;
+        localStorage.setItem('ft_active_dropdown', this.activeDropdown);
+    }
+}">
 
   {# ── Ambient background ─────────────────────────────────────────────── #}
   <div class="ft-ambient" aria-hidden="true">
@@ -42,141 +56,230 @@
 
       {# Overview #}
       <a href="{% url 'dashboard:overview' %}"
-         class="ft-nav-item {% if active_menu == 'overview' %}active{% endif %}">
+         class="ft-nav-item {% if active_menu == 'Overview' %}!bg-gray-700 text-white font-medium{% endif %}">
         <i data-lucide="layout-dashboard"></i>
         <span>Overview</span>
       </a>
 
-      {# Content #}
-      <div class="ft-nav-section-label">Content</div>
-      <a href="{% url 'dashboard:content_posts' %}"
-         class="ft-nav-item {% if active_submenu == 'posts' %}active{% endif %}">
-        <i data-lucide="file-text"></i>
-        <span>Posts</span>
-      </a>
-      <a href="{% url 'dashboard:content_categories' %}"
-         class="ft-nav-item {% if active_submenu == 'categories' %}active{% endif %}">
-        <i data-lucide="folder"></i>
-        <span>Categories</span>
-      </a>
-      <a href="{% url 'dashboard:content_subcategories' %}"
-         class="ft-nav-item {% if active_submenu == 'subcategories' %}active{% endif %}">
-        <i data-lucide="layers"></i>
-        <span>Subcategories</span>
-      </a>
-      <a href="{% url 'dashboard:content_tags' %}"
-         class="ft-nav-item {% if active_submenu == 'tags' %}active{% endif %}">
-        <i data-lucide="hash"></i>
-        <span>Tags</span>
-      </a>
-      <a href="{% url 'dashboard:content_homepage' %}"
-         class="ft-nav-item {% if active_submenu == 'homepage' %}active{% endif %}">
-        <i data-lucide="home"></i>
-        <span>Homepage Sections</span>
-      </a>
+      {# Content / Post Tree #}
+      <div class="mt-2">
+        <button type="button" @click="toggleDropdown('content')"
+                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Content' %}text-[var(--primary)] font-semibold{% endif %}">
+          <div class="flex items-center gap-2">
+            <i data-lucide="file-text"></i>
+            <span>Post</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="activeDropdown === 'content' ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="activeDropdown === 'content'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+          <a href="{% url 'dashboard:post_create' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:post_create' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="plus-circle"></i>
+            <span>Add New Post</span>
+          </a>
+          <a href="{% url 'dashboard:content_posts' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:content_posts' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="file-text"></i>
+            <span>All Posts</span>
+          </a>
+          <a href="{% url 'dashboard:content_categories' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:content_categories' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="folder"></i>
+            <span>Category</span>
+          </a>
+          <a href="{% url 'dashboard:content_subcategories' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:content_subcategories' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="layers"></i>
+            <span>Sub category</span>
+          </a>
+          <a href="{% url 'dashboard:content_tags' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:content_tags' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="hash"></i>
+            <span>Tags</span>
+          </a>
+          <a href="{% url 'dashboard:content_homepage' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:content_homepage' or active_submenu == 'dashboard:content_homepage_sections' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="home"></i>
+            <span>Homepage Sections</span>
+          </a>
+        </div>
+      </div>
 
-      {# Forum #}
-      <div class="ft-nav-section-label">Forum</div>
-      <a href="{% url 'dashboard:forum_questions' %}"
-         class="ft-nav-item {% if active_submenu == 'questions' %}active{% endif %}">
-        <i data-lucide="message-square"></i>
-        <span>Questions</span>
-      </a>
-      <a href="{% url 'dashboard:forum_answers' %}"
-         class="ft-nav-item {% if active_submenu == 'answers' %}active{% endif %}">
-        <i data-lucide="message-circle"></i>
-        <span>Answers</span>
-      </a>
+      {# Forum Tree #}
+      <div class="mt-2">
+        <button type="button" @click="toggleDropdown('forum')"
+                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Forum' %}text-[var(--primary)] font-semibold{% endif %}">
+          <div class="flex items-center gap-2">
+            <i data-lucide="message-square"></i>
+            <span>Forum</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="activeDropdown === 'forum' ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="activeDropdown === 'forum'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+          <a href="{% url 'dashboard:forum_questions' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:forum_questions' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="message-square"></i>
+            <span>Questions</span>
+          </a>
+          <a href="{% url 'dashboard:forum_answers' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:forum_answers' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="message-circle"></i>
+            <span>Answers</span>
+          </a>
+        </div>
+      </div>
 
-      {# Moderation #}
-      <div class="ft-nav-section-label">Moderation</div>
-      <a href="{% url 'dashboard:mod_comments' %}"
-         class="ft-nav-item {% if active_submenu == 'comments' %}active{% endif %}">
-        <i data-lucide="shield"></i>
-        <span>Comment Queue</span>
-      </a>
-      <a href="{% url 'dashboard:mod_flagged' %}"
-         class="ft-nav-item {% if active_submenu == 'flagged' %}active{% endif %}">
-        <i data-lucide="flag"></i>
-        <span>Flagged Items</span>
-      </a>
-      <a href="{% url 'dashboard:mod_blocked' %}"
-         class="ft-nav-item {% if active_submenu == 'blocked' %}active{% endif %}">
-        <i data-lucide="ban"></i>
-        <span>Blocked Users</span>
-      </a>
+      {# Moderation Tree #}
+      <div class="mt-2">
+        <button type="button" @click="toggleDropdown('moderation')"
+                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Moderation' %}text-[var(--primary)] font-semibold{% endif %}">
+          <div class="flex items-center gap-2">
+            <i data-lucide="shield"></i>
+            <span>Moderation</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="activeDropdown === 'moderation' ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="activeDropdown === 'moderation'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+          <a href="{% url 'dashboard:mod_comments' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:mod_comments' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="shield"></i>
+            <span>Comment Queue</span>
+          </a>
+          <a href="{% url 'dashboard:mod_flagged' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:mod_flagged' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="flag"></i>
+            <span>Flagged Items</span>
+          </a>
+          <a href="{% url 'dashboard:mod_blocked' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:mod_blocked' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="ban"></i>
+            <span>Blocked Users</span>
+          </a>
+        </div>
+      </div>
 
-      {# Users #}
-      <div class="ft-nav-section-label">Users</div>
-      <a href="{% url 'dashboard:users_all' %}"
-         class="ft-nav-item {% if active_submenu == 'users' %}active{% endif %}">
-        <i data-lucide="users"></i>
-        <span>All Users</span>
-      </a>
-      <a href="{% url 'dashboard:users_verification' %}"
-         class="ft-nav-item {% if active_submenu == 'verification' %}active{% endif %}">
-        <i data-lucide="user-check"></i>
-        <span>Verification</span>
-      </a>
-      <a href="{% url 'dashboard:users_roles' %}"
-         class="ft-nav-item {% if active_submenu == 'roles' %}active{% endif %}">
-        <i data-lucide="key-round"></i>
-        <span>Roles & Permissions</span>
-      </a>
+      {# Users Tree #}
+      <div class="mt-2">
+        <button type="button" @click="toggleDropdown('users')"
+                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Users' %}text-[var(--primary)] font-semibold{% endif %}">
+          <div class="flex items-center gap-2">
+            <i data-lucide="users"></i>
+            <span>Users</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="activeDropdown === 'users' ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="activeDropdown === 'users'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+          <a href="{% url 'dashboard:users_all' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:users_all' or active_submenu == 'dashboard:user_detail' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="users"></i>
+            <span>All Users</span>
+          </a>
+          <a href="{% url 'dashboard:users_verification' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:users_verification' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="user-check"></i>
+            <span>Verification</span>
+          </a>
+          <a href="{% url 'dashboard:users_roles' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:users_roles' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="key-round"></i>
+            <span>Roles & Permissions</span>
+          </a>
+        </div>
+      </div>
 
-      {# Analytics #}
-      <div class="ft-nav-section-label">Analytics</div>
-      <a href="{% url 'dashboard:analytics_traffic' %}"
-         class="ft-nav-item {% if active_submenu == 'traffic' %}active{% endif %}">
-        <i data-lucide="trending-up"></i>
-        <span>Traffic</span>
-      </a>
-      <a href="{% url 'dashboard:analytics_posts' %}"
-         class="ft-nav-item {% if active_submenu == 'top_posts' %}active{% endif %}">
-        <i data-lucide="bar-chart-2"></i>
-        <span>Top Posts</span>
-      </a>
-      <a href="{% url 'dashboard:analytics_authors' %}"
-         class="ft-nav-item {% if active_submenu == 'authors' %}active{% endif %}">
-        <i data-lucide="pen-tool"></i>
-        <span>Author Performance</span>
-      </a>
+      {# Analytics Tree #}
+      <div class="mt-2">
+        <button type="button" @click="toggleDropdown('analytics')"
+                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Analytics' %}text-[var(--primary)] font-semibold{% endif %}">
+          <div class="flex items-center gap-2">
+            <i data-lucide="trending-up"></i>
+            <span>Analytics</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="activeDropdown === 'analytics' ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="activeDropdown === 'analytics'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+          <a href="{% url 'dashboard:analytics_traffic' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:analytics_traffic' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="trending-up"></i>
+            <span>Traffic</span>
+          </a>
+          <a href="{% url 'dashboard:analytics_posts' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:analytics_posts' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="bar-chart-2"></i>
+            <span>Top Posts</span>
+          </a>
+          <a href="{% url 'dashboard:analytics_authors' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:analytics_authors' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="pen-tool"></i>
+            <span>Author Performance</span>
+          </a>
+        </div>
+      </div>
 
-      {# SEO #}
-      <div class="ft-nav-section-label">SEO</div>
-      <a href="{% url 'dashboard:seo_audit' %}"
-         class="ft-nav-item {% if active_submenu == 'seo_audit' %}active{% endif %}">
-        <i data-lucide="search"></i>
-        <span>Meta Audit</span>
-      </a>
-      <a href="{% url 'dashboard:seo_sitemap' %}"
-         class="ft-nav-item {% if active_submenu == 'sitemap' %}active{% endif %}">
-        <i data-lucide="map"></i>
-        <span>Sitemap</span>
-      </a>
-      <a href="{% url 'dashboard:seo_broken' %}"
-         class="ft-nav-item {% if active_submenu == 'broken_links' %}active{% endif %}">
-        <i data-lucide="link-2-off"></i>
-        <span>Broken Links</span>
-      </a>
+      {# SEO Tree #}
+      <div class="mt-2">
+        <button type="button" @click="toggleDropdown('seo')"
+                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'SEO' %}text-[var(--primary)] font-semibold{% endif %}">
+          <div class="flex items-center gap-2">
+            <i data-lucide="search"></i>
+            <span>SEO</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="activeDropdown === 'seo' ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="activeDropdown === 'seo'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+          <a href="{% url 'dashboard:seo_audit' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:seo_audit' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="search"></i>
+            <span>Meta Audit</span>
+          </a>
+          <a href="{% url 'dashboard:seo_sitemap' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:seo_sitemap' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="map"></i>
+            <span>Sitemap</span>
+          </a>
+          <a href="{% url 'dashboard:seo_broken' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:seo_broken' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="link-2-off"></i>
+            <span>Broken Links</span>
+          </a>
+        </div>
+      </div>
 
-      {# Settings #}
-      <div class="ft-nav-section-label">Settings</div>
-      <a href="{% url 'dashboard:settings_ads' %}"
-         class="ft-nav-item {% if active_submenu == 'ads' %}active{% endif %}">
-        <i data-lucide="megaphone"></i>
-        <span>Ad Config</span>
-      </a>
-      <a href="{% url 'dashboard:settings_footer' %}"
-         class="ft-nav-item {% if active_submenu == 'footer' %}active{% endif %}">
-        <i data-lucide="layout-panel-bottom"></i>
-        <span>Footer & Branding</span>
-      </a>
-      <a href="{% url 'dashboard:settings_maintenance' %}"
-         class="ft-nav-item {% if active_submenu == 'maintenance' %}active{% endif %}">
-        <i data-lucide="wrench"></i>
-        <span>Maintenance</span>
-      </a>
+      {# Settings Tree #}
+      <div class="mt-2">
+        <button type="button" @click="toggleDropdown('settings')"
+                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Site Settings' %}text-[var(--primary)] font-semibold{% endif %}">
+          <div class="flex items-center gap-2">
+            <i data-lucide="wrench"></i>
+            <span>Settings</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
+             :class="activeDropdown === 'settings' ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="activeDropdown === 'settings'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+          <a href="{% url 'dashboard:settings_ads' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:settings_ads' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="megaphone"></i>
+            <span>Ad Config</span>
+          </a>
+          <a href="{% url 'dashboard:settings_footer' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:settings_footer' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="layout-panel-bottom"></i>
+            <span>Footer & Branding</span>
+          </a>
+          <a href="{% url 'dashboard:settings_maintenance' %}"
+             class="ft-nav-item {% if active_submenu == 'dashboard:settings_maintenance' %}!bg-gray-700 text-white font-medium{% endif %}">
+            <i data-lucide="wrench"></i>
+            <span>Maintenance</span>
+          </a>
+        </div>
+      </div>
 
     </nav>
 
@@ -214,8 +317,16 @@
                 class="ft-btn ft-btn-ghost ft-btn-sm ft-btn-icon lg:hidden">
           <i data-lucide="menu" style="width:16px;height:16px"></i>
         </button>
-        <h1 style="font-size:14px;font-weight:700;color:var(--text)">{{ page_title }}</h1>
+        <h1 style="font-size:14px;font-weight:700;color:var(--text)" class="max-sm:hidden">{{ page_title }}</h1>
       </div>
+
+      {# Global Search #}
+      <div class="max-md:hidden w-72">
+        <form action="{% url 'dashboard:content_posts' %}" method="get">
+          <c-ui.input name="search" placeholder="Search posts..." icon="search" value="{{ request.GET.search }}"></c-ui.input>
+        </form>
+      </div>
+
       <div style="display:flex;align-items:center;gap:8px">
         <a href="/" target="_blank" title="View Site"
            class="ft-btn ft-btn-ghost ft-btn-sm ft-btn-icon">
