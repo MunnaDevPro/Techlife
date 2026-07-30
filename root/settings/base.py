@@ -196,6 +196,8 @@ AUTH_USER_MODEL = "accounts.CustomUserModel"
 
 # Django Cotton Configurations
 COTTON_SNAKE_CASED_NAMES = False
+COTTON_ENABLE_CONTEXT_ISOLATION = True
+
 
 
 AUTHENTICATION_BACKENDS = [

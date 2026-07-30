@@ -60,28 +60,28 @@ class BlogPostTable(tables.Table):
         reject_btn = ""
         if record.status in ["pending", "edited"]:
             approve_btn = format_html(
-                '<button hx-post="/dashboard/content/posts/{}/approve/" hx-target="#main-content" class="w-full text-left px-4 py-2 text-[14px] text-green-600 hover:bg-green-50 flex items-center gap-2"><i data-lucide="check" class="w-4 h-4"></i> Approve</button>',
+                '<button hx-post="/dashboard/content/posts/{}/approve/" hx-target="#main-content" class="w-full text-left px-4 py-2 text-[13px] text-green-600 hover:bg-green-50/50 flex items-center gap-2 transition-colors"><i data-lucide="check" class="w-4 h-4"></i> Approve</button>',
                 record.pk
             )
             reject_btn = format_html(
-                '<button hx-post="/dashboard/content/posts/{}/reject/" hx-target="#main-content" class="w-full text-left px-4 py-2 text-[14px] text-yellow-600 hover:bg-yellow-50 flex items-center gap-2"><i data-lucide="x" class="w-4 h-4"></i> Reject</button>',
+                '<button hx-post="/dashboard/content/posts/{}/reject/" hx-target="#main-content" class="w-full text-left px-4 py-2 text-[13px] text-yellow-600 hover:bg-yellow-50/50 flex items-center gap-2 transition-colors"><i data-lucide="x" class="w-4 h-4"></i> Reject</button>',
                 record.pk
             )
 
         delete_btn = format_html(
-            '<button @click="confirmDeleteId = {}; showDeleteModal = true" class="w-full text-left px-4 py-2 text-[14px] text-red-600 hover:bg-red-50 flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Delete</button>',
+            '<button @click="confirmDeleteId = {}; showDeleteModal = true" class="w-full text-left px-4 py-2 text-[13px] text-red-600 hover:bg-red-50/50 flex items-center gap-2 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i> Delete</button>',
             record.pk
         )
 
         return format_html(
             '<div x-data="{{ open: false }}" class="relative inline-block text-left">'
-            '  <button @click="open = !open" class="p-1 rounded hover:bg-gray-100 text-gray-500">'
+            '  <button @click="open = !open" class="p-1 rounded-[var(--radius-sm)] hover:bg-gray-100/80 text-gray-500 transition-colors">'
             '    <i data-lucide="more-horizontal" class="w-5 h-5"></i>'
             '  </button>'
-            '  <div x-show="open" @click.outside="open = false" class="origin-top-right absolute right-0 mt-2 w-44 rounded-md bg-white border border-gray-200 z-20" style="display: none;">'
+            '  <div x-show="open" x-cloak @click.outside="open = false" class="origin-top-right absolute right-0 mt-1.5 w-44 rounded-[var(--radius-sm)] border z-20 shadow-[var(--shadow-dropdown)]" style="background:var(--surface); border-color:var(--border);">'
             '    <div class="py-1">'
-            '      <a hx-get="{}" hx-target="#main-content" hx-push-url="true" class="cursor-pointer block px-4 py-2 text-[14px] text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="edit-3" class="w-4 h-4"></i> Edit</a>'
-            '      <a href="{}" target="_blank" class="block px-4 py-2 text-[14px] text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> View on Site</a>'
+            '      <a hx-get="{}" hx-target="#main-content" hx-push-url="true" class="cursor-pointer block px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"><i data-lucide="edit-3" class="w-4 h-4"></i> Edit</a>'
+            '      <a href="{}" target="_blank" class="block px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"><i data-lucide="external-link" class="w-4 h-4"></i> View on Site</a>'
             '      {}{}'
             '      {}'
             '    </div>'

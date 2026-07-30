@@ -1,53 +1,39 @@
 {% extends base_template %}
 
 {% block content %}
-<div class="space-y-6">
+<div class="flex flex-col gap-5">
     <!-- Top Header -->
     <div>
-        <h2 class="text-lg font-bold text-gray-800">Homepage Sections Configuration</h2>
-        <p class="text-[12px] text-gray-500">Configure which category feeds each homepage section without editing code</p>
+        <h2 class="ft-page-title">Homepage Sections Configuration</h2>
+        <p class="ft-page-subtitle">Configure which category feeds each homepage section without editing code</p>
     </div>
 
     <!-- Section Configurations list -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         {% for cfg in configs %}
             <c-ui.card title="{{ cfg.get_section_key_display }}">
-                <form method="post" action="{% url 'dashboard:content_homepage_sections' %}" class="space-y-4">
+                <form method="post" action="{% url 'dashboard:content_homepage_sections' %}" class="flex flex-col gap-4">
                     {% csrf_token %}
                     <input type="hidden" name="config_id" value="{{ cfg.id }}">
                     
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Section Title Heading</label>
-                        <input type="text" name="title" value="{{ cfg.title }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    </div>
+                    <c-ui.input name="title" label="Section Title Heading" value="{{ cfg.title }}" required="true"></c-ui.input>
 
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Source Category</label>
-                        <select name="category_id" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <option value="">All Categories</option>
-                            {% for cat in categories %}
-                                <option value="{{ cat.id }}" {% if cfg.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                    <c-ui.select name="category_id" label="Source Category">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if cfg.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </c-ui.select>
 
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Display Post Count</label>
-                        <input type="number" name="post_count" value="{{ cfg.post_count }}" min="1" max="20" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    </div>
+                    <c-ui.input name="post_count" label="Display Post Count" type="number" value="{{ cfg.post_count }}" min="1" max="20" required="true"></c-ui.input>
 
-                    <div>
-                        <label class="block text-[12px] font-medium text-gray-700 mb-1">Status</label>
-                        <select name="is_active" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <option value="true" {% if cfg.is_active %}selected{% endif %}>Active</option>
-                            <option value="false" {% if not cfg.is_active %}selected{% endif %}>Inactive</option>
-                        </select>
-                    </div>
+                    <c-ui.select name="is_active" label="Status">
+                        <option value="true" {% if cfg.is_active %}selected{% endif %}>Active</option>
+                        <option value="false" {% if not cfg.is_active %}selected{% endif %}>Inactive</option>
+                    </c-ui.select>
 
-                    <div class="flex justify-end pt-2">
-                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[14px] font-medium transition-colors">
-                            Update Section
-                        </button>
+                    <div class="flex justify-end pt-2 border-t" style="border-color:var(--border)">
+                        <c-ui.button type="submit" label="Update Section"></c-ui.button>
                     </div>
                 </form>
             </c-ui.card>
