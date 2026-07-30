@@ -194,6 +194,10 @@ WHITENOISE_MIMETYPES = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.CustomUserModel"
 
+# Django Cotton Configurations
+COTTON_SNAKE_CASED_NAMES = False
+
+
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
