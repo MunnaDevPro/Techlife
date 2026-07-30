@@ -13,11 +13,12 @@ Slots:
 
 {% with pad_class=card_padding|default:"lg" %}
 
-<div class="ft-card flex flex-col {{ extra_class }}" style="--card-bg: var(--surface);">
+<div class="!p-4 !rounded-md ft-card flex flex-col {{ extra_class }}" style="--card-bg: var(--surface);">
 
   {# Header row #}
   {% if title or header or actions %}
-  <div class="flex items-start justify-between gap-3 {% if pad_class == 'none' %}px-0 pt-0{% elif pad_class == 'sm' %}px-3 pt-3{% elif pad_class == 'lg' %}px-6 pt-6{% else %}px-5 pt-5{% endif %} pb-0">
+  <div
+    class="flex items-start justify-between gap-3 {% if pad_class == 'none' %}px-0 pt-0{% elif pad_class == 'sm' %}px-3 pt-3{% elif pad_class == 'lg' %}px-6 pt-6{% else %}px-5 pt-5{% endif %} pb-0">
     {% if header %}
     {{ header }}
     {% elif title %}
