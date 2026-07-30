@@ -56,9 +56,9 @@
 
       {# Overview #}
       <a href="{% url 'dashboard:overview' %}"
-         class="ft-nav-item {% if active_menu == 'Overview' %}!bg-gray-700 text-white font-medium{% endif %}">
-        <i data-lucide="layout-dashboard"></i>
-        <span>Overview</span>
+         class="ft-nav-item {% if active_menu == 'Overview' %}!bg-gray-700 !text-white font-medium{% endif %}">
+        <i data-lucide="layout-dashboard" class="{% if active_menu == 'Overview' %}!text-white{% endif %}"></i>
+        <span class="{% if active_menu == 'Overview' %}!text-white{% endif %}">Overview</span>
       </a>
 
       {# Content / Post Tree #}
@@ -72,36 +72,36 @@
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
              :class="activeDropdown === 'content' ? 'rotate-180' : ''"></i>
         </button>
-        <div x-show="activeDropdown === 'content'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+        <div x-show="activeDropdown === 'content'" x-collapse class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:post_create' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:post_create' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="plus-circle"></i>
-            <span>Add New Post</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:post_create' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:post_create' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:post_create' %}!text-white{% endif %}">Add New Post</span>
           </a>
           <a href="{% url 'dashboard:content_posts' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:content_posts' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="file-text"></i>
-            <span>All Posts</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_posts' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="file-text" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_posts' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:content_posts' %}!text-white{% endif %}">All Posts</span>
           </a>
           <a href="{% url 'dashboard:content_categories' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:content_categories' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="folder"></i>
-            <span>Category</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_categories' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="folder" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_categories' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:content_categories' %}!text-white{% endif %}">Category</span>
           </a>
           <a href="{% url 'dashboard:content_subcategories' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:content_subcategories' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="layers"></i>
-            <span>Sub category</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_subcategories' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="layers" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_subcategories' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:content_subcategories' %}!text-white{% endif %}">Sub category</span>
           </a>
           <a href="{% url 'dashboard:content_tags' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:content_tags' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="hash"></i>
-            <span>Tags</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_tags' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="hash" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_tags' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:content_tags' %}!text-white{% endif %}">Tags</span>
           </a>
           <a href="{% url 'dashboard:content_homepage' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:content_homepage' or active_submenu == 'dashboard:content_homepage_sections' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="home"></i>
-            <span>Homepage Sections</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_homepage' or active_submenu == 'dashboard:content_homepage_sections' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="home" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_homepage' or active_submenu == 'dashboard:content_homepage_sections' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:content_homepage' or active_submenu == 'dashboard:content_homepage_sections' %}!text-white{% endif %}">Homepage Sections</span>
           </a>
         </div>
       </div>
@@ -117,16 +117,16 @@
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
              :class="activeDropdown === 'forum' ? 'rotate-180' : ''"></i>
         </button>
-        <div x-show="activeDropdown === 'forum'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+        <div x-show="activeDropdown === 'forum'" x-collapse class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:forum_questions' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:forum_questions' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="message-square"></i>
-            <span>Questions</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:forum_questions' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="message-square" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:forum_questions' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:forum_questions' %}!text-white{% endif %}">Questions</span>
           </a>
           <a href="{% url 'dashboard:forum_answers' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:forum_answers' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="message-circle"></i>
-            <span>Answers</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:forum_answers' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:forum_answers' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:forum_answers' %}!text-white{% endif %}">Answers</span>
           </a>
         </div>
       </div>
@@ -142,21 +142,21 @@
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
              :class="activeDropdown === 'moderation' ? 'rotate-180' : ''"></i>
         </button>
-        <div x-show="activeDropdown === 'moderation'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+        <div x-show="activeDropdown === 'moderation'" x-collapse class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:mod_comments' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:mod_comments' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="shield"></i>
-            <span>Comment Queue</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_comments' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="shield" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:mod_comments' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:mod_comments' %}!text-white{% endif %}">Comment Queue</span>
           </a>
           <a href="{% url 'dashboard:mod_flagged' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:mod_flagged' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="flag"></i>
-            <span>Flagged Items</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_flagged' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="flag" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:mod_flagged' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:mod_flagged' %}!text-white{% endif %}">Flagged Items</span>
           </a>
           <a href="{% url 'dashboard:mod_blocked' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:mod_blocked' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="ban"></i>
-            <span>Blocked Users</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_blocked' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="ban" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:mod_blocked' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:mod_blocked' %}!text-white{% endif %}">Blocked Users</span>
           </a>
         </div>
       </div>
@@ -172,21 +172,21 @@
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
              :class="activeDropdown === 'users' ? 'rotate-180' : ''"></i>
         </button>
-        <div x-show="activeDropdown === 'users'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+        <div x-show="activeDropdown === 'users'" x-collapse class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:users_all' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:users_all' or active_submenu == 'dashboard:user_detail' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="users"></i>
-            <span>All Users</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_all' or active_submenu == 'dashboard:user_detail' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="users" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:users_all' or active_submenu == 'dashboard:user_detail' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:users_all' or active_submenu == 'dashboard:user_detail' %}!text-white{% endif %}">All Users</span>
           </a>
           <a href="{% url 'dashboard:users_verification' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:users_verification' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="user-check"></i>
-            <span>Verification</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_verification' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="user-check" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:users_verification' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:users_verification' %}!text-white{% endif %}">Verification</span>
           </a>
           <a href="{% url 'dashboard:users_roles' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:users_roles' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="key-round"></i>
-            <span>Roles & Permissions</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_roles' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="key-round" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:users_roles' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:users_roles' %}!text-white{% endif %}">Roles & Permissions</span>
           </a>
         </div>
       </div>
@@ -202,21 +202,21 @@
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
              :class="activeDropdown === 'analytics' ? 'rotate-180' : ''"></i>
         </button>
-        <div x-show="activeDropdown === 'analytics'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+        <div x-show="activeDropdown === 'analytics'" x-collapse class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:analytics_traffic' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:analytics_traffic' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="trending-up"></i>
-            <span>Traffic</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_traffic' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="trending-up" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:analytics_traffic' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:analytics_traffic' %}!text-white{% endif %}">Traffic</span>
           </a>
           <a href="{% url 'dashboard:analytics_posts' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:analytics_posts' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="bar-chart-2"></i>
-            <span>Top Posts</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_posts' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:analytics_posts' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:analytics_posts' %}!text-white{% endif %}">Top Posts</span>
           </a>
           <a href="{% url 'dashboard:analytics_authors' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:analytics_authors' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="pen-tool"></i>
-            <span>Author Performance</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_authors' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="pen-tool" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:analytics_authors' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:analytics_authors' %}!text-white{% endif %}">Author Performance</span>
           </a>
         </div>
       </div>
@@ -232,21 +232,21 @@
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
              :class="activeDropdown === 'seo' ? 'rotate-180' : ''"></i>
         </button>
-        <div x-show="activeDropdown === 'seo'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+        <div x-show="activeDropdown === 'seo'" x-collapse class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:seo_audit' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:seo_audit' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="search"></i>
-            <span>Meta Audit</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_audit' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="search" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:seo_audit' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:seo_audit' %}!text-white{% endif %}">Meta Audit</span>
           </a>
           <a href="{% url 'dashboard:seo_sitemap' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:seo_sitemap' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="map"></i>
-            <span>Sitemap</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_sitemap' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="map" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:seo_sitemap' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:seo_sitemap' %}!text-white{% endif %}">Sitemap</span>
           </a>
           <a href="{% url 'dashboard:seo_broken' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:seo_broken' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="link-2-off"></i>
-            <span>Broken Links</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_broken' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="link-2-off" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:seo_broken' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:seo_broken' %}!text-white{% endif %}">Broken Links</span>
           </a>
         </div>
       </div>
@@ -262,21 +262,21 @@
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
              :class="activeDropdown === 'settings' ? 'rotate-180' : ''"></i>
         </button>
-        <div x-show="activeDropdown === 'settings'" x-collapse class="pl-4 pr-1 py-1 space-y-1">
+        <div x-show="activeDropdown === 'settings'" x-collapse class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:settings_ads' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:settings_ads' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="megaphone"></i>
-            <span>Ad Config</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:settings_ads' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="megaphone" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:settings_ads' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:settings_ads' %}!text-white{% endif %}">Ad Config</span>
           </a>
           <a href="{% url 'dashboard:settings_footer' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:settings_footer' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="layout-panel-bottom"></i>
-            <span>Footer & Branding</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:settings_footer' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="layout-panel-bottom" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:settings_footer' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:settings_footer' %}!text-white{% endif %}">Footer & Branding</span>
           </a>
           <a href="{% url 'dashboard:settings_maintenance' %}"
-             class="ft-nav-item {% if active_submenu == 'dashboard:settings_maintenance' %}!bg-gray-700 text-white font-medium{% endif %}">
-            <i data-lucide="wrench"></i>
-            <span>Maintenance</span>
+             class="ft-nav-sub-item {% if active_submenu == 'dashboard:settings_maintenance' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="wrench" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:settings_maintenance' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:settings_maintenance' %}!text-white{% endif %}">Maintenance</span>
           </a>
         </div>
       </div>

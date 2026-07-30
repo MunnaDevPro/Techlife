@@ -3068,6 +3068,9 @@
   .whitespace-pre-wrap {
     white-space: pre-wrap;
   }
+  .\!text-white {
+    color: var(--color-white) !important;
+  }
   .text-\[\#0A66C2\] {
     color: #0A66C2;
   }
