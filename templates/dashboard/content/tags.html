@@ -9,45 +9,96 @@
 
     <!-- Create Tag -->
     <c-ui.card title="Add New Tag">
-        <form method="post" class="grid grid-cols-[1fr_auto] gap-2.5 items-end">
+        <form method="post" class="flex items-end gap-3">
             {% csrf_token %}
             <input type="hidden" name="action" value="create">
-            <c-ui.input name="name" label="Tag Name" placeholder="e.g. Technology" required="true" icon="hash"></c-ui.input>
+            <div class="flex-1" style="max-width: 480px;">
+                <c-ui.input name="name" label="Tag Name" placeholder="e.g. Technology" required="true" icon="hash"></c-ui.input>
+            </div>
             <c-ui.button type="submit" variant="primary" label="Add Tag" icon="plus"></c-ui.button>
         </form>
     </c-ui.card>
 
     <!-- Tags List -->
     <c-ui.card title="Existing Tags" subtitle="{{ tags|length }} tags">
-        <c-ui.table :headers="['Name', 'Slug', 'Posts', 'Actions']">
-            {% for tag in tags %}
-            <tr>
-                <td>
-                    <c-ui.badge variant="info">#{{ tag.name }}</c-ui.badge>
-                </td>
-                <td>
-                    <code class="text-[11px] px-1.5 py-0.5 rounded" style="background:var(--surface-3);color:var(--text-muted)">{{ tag.slug }}</code>
-                </td>
-                <td><c-ui.badge variant="neutral">{{ tag.post_count }}</c-ui.badge></td>
-                <td>
-                    <form action="{% url 'dashboard:content_tags' %}" method="post"
-                          onsubmit="return confirm('Delete this tag?')" class="inline">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="id" value="{{ tag.id }}">
-                        <c-ui.button type="submit" variant="danger" size="sm" icon="trash-2" label="Delete"></c-ui.button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" class="text-center py-8" style="color:var(--text-muted)">
-                    <i data-lucide="hash" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
-                    No tags found
-                </td>
-            </tr>
-            {% endfor %}
-        </c-ui.table>
+        <div class="ft-table-wrap">
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Slug</th>
+                        <th>Posts</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tag in tags %}
+                    <tr>
+                        <td>
+                            <c-ui.badge variant="info">#{{ tag.name }}</c-ui.badge>
+                        </td>
+                        <td>
+                            <code class="text-[11px] px-1.5 py-0.5 rounded" style="background: var(--surface-3); color: var(--text-muted);">{{ tag.slug }}</code>
+                        </td>
+                        <td>
+                            <c-ui.badge variant="neutral">{{ tag.post_count }}</c-ui.badge>
+                        </td>
+                        <td>
+                            <button type="button" 
+                                onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'delete-tag-{{ tag.id }}' } }))" 
+                                class="ft-btn ft-btn-danger ft-btn-sm" style="padding: 4px 10px;">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center" style="padding: 40px 14px; color: var(--text-muted);">
+                            <div class="flex flex-col items-center gap-2">
+                                <i data-lucide="hash" class="w-8 h-8 opacity-30"></i>
+                                <span>No tags found</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </c-ui.card>
 </div>
+
+<!-- Delete Confirmation Modals -->
+{% for tag in tags %}
+<c-ui.modal id="delete-tag-{{ tag.id }}" title="Confirm Delete">
+    <div class="!flex !items-start !gap-4">
+        <!-- Icon -->
+        <div class="!flex-shrink-0 !w-10 !h-10 !bg-red-100 !rounded-full !flex !items-center !justify-center !mt-1">
+            <i data-lucide="trash-2" class="!w-5 !h-5 !text-red-600"></i>
+        </div>
+        <!-- Content -->
+        <div class="!flex !flex-col !gap-1.5">
+            <h4 class="!text-[15px] !font-bold !text-gray-900 dark:!text-white">Permanently delete tag?</h4>
+            <p class="!text-[13px] !leading-relaxed !text-gray-500 dark:!text-gray-400">
+                Are you sure you want to delete the tag <strong class="!font-semibold !text-gray-900 dark:!text-white">"#{{ tag.name }}"</strong>? This action cannot be undone and the tag will be permanently removed.
+            </p>
+        </div>
+    </div>
+    <c-slot name="footer">
+        <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'delete-tag-{{ tag.id }}' } }))" 
+            class="!inline-flex !items-center !justify-center !gap-2 !px-4 !py-2 !rounded-md !border !border-gray-300 !bg-white !text-[13px] !font-medium !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !cursor-pointer">
+            Cancel
+        </button>
+        <form action="{% url 'dashboard:content_tags' %}" method="post" class="!inline-flex !m-0">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="{{ tag.id }}">
+            <button type="submit" class="!inline-flex !items-center !justify-center !gap-2 !px-4 !py-2 !rounded-md !bg-red-600 !text-[13px] !font-medium !text-white hover:!bg-red-700 !transition-all !cursor-pointer">
+                Delete
+            </button>
+        </form>
+    </c-slot>
+</c-ui.modal>
+{% endfor %}
+
 {% endblock %}

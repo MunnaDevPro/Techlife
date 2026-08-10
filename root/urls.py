@@ -16,12 +16,16 @@ import os
 
 
 from django.http import HttpResponse
+from django.shortcuts import render
 
 def ads_txt(request):
     return HttpResponse(
         "google.com, pub-7286281628917450, DIRECT, f08c47fec0942fa0",
         content_type="text/plain"
     )
+
+def custom_404(request, exception=None):
+    return render(request, '404.html', status=404)
 
 
 def cached_media_serve(request, path):
@@ -110,3 +114,10 @@ else:
     urlpatterns += [
         re_path(r'^media/(?P<path>.*)$', cached_media_serve),
     ]
+
+# Catch-all route to display custom 404 even in debug mode
+urlpatterns += [
+    re_path(r'^.*$', custom_404),
+]
+
+handler404 = 'root.urls.custom_404'

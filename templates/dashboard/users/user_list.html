@@ -25,10 +25,24 @@
 
     <!-- Users Table -->
     <c-ui.card title="Users" subtitle="{{ users|length }} results">
-        <c-ui.table :headers="['Name', 'Email', 'Verified', 'Posts', 'Joined', 'Last Login', 'Actions']">
+        <c-ui.table>
+            <c-slot name="header">
+                <th>User</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Posts</th>
+                <th>Joined Date</th>
+                <th>Last Login</th>
+                <th>Actions</th>
+            </c-slot>
             {% for u in users %}
             <tr>
-                <td>{{ u.first_name }} {{ u.last_name }}</td>
+                <td>
+                    <div class="flex items-center gap-3">
+                        <img src="{% if u.profile_picture %}{{ u.profile_picture.url }}{% else %}/static/image/default_user_profile.png{% endif %}" alt="User" class="w-8 h-8 rounded-full object-cover bg-gray-100 border border-gray-200">
+                        <span class="font-medium text-sm text-gray-900">{{ u.first_name }} {{ u.last_name }}</span>
+                    </div>
+                </td>
                 <td>{{ u.email }}</td>
                 <td>
                     {% if u.is_verified %}
@@ -40,8 +54,12 @@
                 <td><c-ui.badge variant="neutral">{{ u.post_count }}</c-ui.badge></td>
                 <td class="text-[11px]" style="color:var(--text-muted)">{{ u.date_joined|date:"Y-m-d H:i" }}</td>
                 <td class="text-[11px]" style="color:var(--text-muted)">{{ u.last_login|date:"Y-m-d H:i"|default:"Never" }}</td>
-                <td>
+                <td class="flex items-center gap-2">
                     <c-ui.button href="{% url 'dashboard:user_detail' u.pk %}" variant="ghost" size="sm" icon="user" label="Details"></c-ui.button>
+                    <form action="{% url 'dashboard:user_delete' u.pk %}" method="POST" class="inline" x-data @submit.prevent="window.confirmAction('Permanently delete this user? This action cannot be undone.', () => $el.submit())">
+                        {% csrf_token %}
+                        <c-ui.button type="submit" variant="ghost" size="sm" icon="trash-2" label="Delete" class="!text-red-500 hover:!bg-red-50"></c-ui.button>
+                    </form>
                 </td>
             </tr>
             {% empty %}

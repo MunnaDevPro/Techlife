@@ -10,7 +10,7 @@ from forum.models import Follow_section
 from tags.models import Tag
 
 def questions(request, slug):
-    blogs = BlogPost.objects.all().order_by('-created_at')
+    blogs = BlogPost.objects.filter(status='published').order_by('-created_at')
     particular_question = Question.objects.select_related('author').prefetch_related('answers__author').get(slug=slug)
 
     right_side_questions = Question.objects.select_related('author').prefetch_related('answers').all() 
@@ -61,7 +61,7 @@ def questions(request, slug):
 
 
 def questions_list(request):
-    blogs = BlogPost.objects.all().order_by("-created_at")
+    blogs = BlogPost.objects.filter(status='published').order_by("-created_at")
     questions = Question.objects.select_related('author').prefetch_related('answers').all() 
 
     right_side_questions = Question.objects.select_related('author').prefetch_related('answers').order_by('-created_at').all()
@@ -141,8 +141,7 @@ def create_question(request):
 
 def popular_question(request):
     
-    
-    blogs = BlogPost.objects.all().order_by("-created_at")
+    blogs = BlogPost.objects.filter(status='published').order_by("-created_at")
 
     right_side_questions = Question.objects.select_related('author').prefetch_related('answers').order_by('-created_at').all()
 

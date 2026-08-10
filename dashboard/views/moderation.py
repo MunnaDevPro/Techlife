@@ -40,27 +40,45 @@ def moderation_queue(request):
     """Moderation Queue index showing all flagged items one by one."""
     skipped = request.session.get('skipped_flags', [])
     flag = moderation_service.get_next_flagged_item(exclude_ids=skipped)
-    
-    ctx = get_dashboard_context(request, "Moderation Queue", "Moderation", "dashboard:mod_comments")
+
+    pending_count = ContentFlag.objects.filter(status='pending').count()
+    total_resolved = ContentFlag.objects.filter(status='resolved').count()
+    total_dismissed = ContentFlag.objects.filter(status='dismissed').count()
+    skipped_count = len(skipped)
+
+    ctx = get_dashboard_context(request, "Moderation Queue", "Moderation", "dashboard:mod_flagged")
     ctx.update({
         "flag_data": get_flag_context_data(flag) if flag else None,
         "queue_type": "all",
+        "pending_count": pending_count,
+        "total_resolved": total_resolved,
+        "total_dismissed": total_dismissed,
+        "skipped_count": skipped_count,
     })
     return render(request, "dashboard/moderation/queue.html", ctx)
 
 @staff_required
 def comment_queue(request):
     """Sub-queue showing comments flagged/pending review."""
+    from comments.models import Comment
     skipped = request.session.get('skipped_comment_flags', [])
     comment_ct = ContentType.objects.get_for_model(Comment)
-    
-    # We pass [comment_ct] to filter
+
     flag = moderation_service.get_next_flagged_item(exclude_ids=skipped, content_types=[comment_ct])
-    
+
+    pending_count = ContentFlag.objects.filter(status='pending', content_type=comment_ct).count()
+    total_resolved = ContentFlag.objects.filter(status='resolved', content_type=comment_ct).count()
+    total_dismissed = ContentFlag.objects.filter(status='dismissed', content_type=comment_ct).count()
+    skipped_count = len(skipped)
+
     ctx = get_dashboard_context(request, "Comment Queue", "Moderation", "dashboard:mod_comments")
     ctx.update({
         "flag_data": get_flag_context_data(flag) if flag else None,
         "queue_type": "comments",
+        "pending_count": pending_count,
+        "total_resolved": total_resolved,
+        "total_dismissed": total_dismissed,
+        "skipped_count": skipped_count,
     })
     return render(request, "dashboard/moderation/queue.html", ctx)
 
@@ -74,10 +92,19 @@ def forum_queue(request):
     
     flag = moderation_service.get_next_flagged_item(exclude_ids=skipped, content_types=[q_ct, a_ct])
     
+    pending_count = ContentFlag.objects.filter(status='pending', content_type__in=[q_ct, a_ct]).count()
+    total_resolved = ContentFlag.objects.filter(status='resolved', content_type__in=[q_ct, a_ct]).count()
+    total_dismissed = ContentFlag.objects.filter(status='dismissed', content_type__in=[q_ct, a_ct]).count()
+    skipped_count = len(skipped)
+
     ctx = get_dashboard_context(request, "Reported Forum Topics", "Forum", "dashboard:forum_reported")
     ctx.update({
         "flag_data": get_flag_context_data(flag) if flag else None,
         "queue_type": "forum",
+        "pending_count": pending_count,
+        "total_resolved": total_resolved,
+        "total_dismissed": total_dismissed,
+        "skipped_count": skipped_count,
     })
     return render(request, "dashboard/moderation/queue.html", ctx)
 
@@ -154,9 +181,16 @@ def reset_skip_list(request, queue_type):
 @staff_required
 def blocked_users(request):
     """List blocked/deactivated users and allow unblocking."""
-    users = CustomUserModel.objects.filter(is_active=False).order_by('-date_joined')
+    from accounts.models import CustomUserModel as UserModel
+    users = UserModel.objects.filter(is_active=False).order_by('-date_joined')
+    total_blocked = users.count()
+    total_active = UserModel.objects.filter(is_active=True).count()
     ctx = get_dashboard_context(request, "Blocked Users", "Moderation", "dashboard:mod_blocked")
-    ctx.update({"users": users})
+    ctx.update({
+        "users": users,
+        "total_blocked": total_blocked,
+        "total_active": total_active,
+    })
     return render(request, "dashboard/moderation/blocked_users.html", ctx)
 
 @staff_required

@@ -8,6 +8,14 @@
     confirmDeleteId: null,
     showBulkDeleteModal: false,
     selectedCount: 0,
+    showStatusModal: false,
+    statusModalId: null,
+    statusModalCurrent: 'pending',
+    handleStatusModal(e) {
+        this.statusModalId = e.detail.id;
+        this.statusModalCurrent = e.detail.status;
+        this.showStatusModal = true;
+    },
     updateSelectedCount() {
         this.selectedCount = document.querySelectorAll('.post-select:checked').length;
     },
@@ -15,7 +23,7 @@
         document.querySelectorAll('.post-select').forEach(cb => { cb.checked = checked; });
         this.updateSelectedCount();
     }
-}" class="flex flex-col gap-5 relative">
+}" @open-status-modal.window="handleStatusModal($event)" class="!block !space-y-6 !relative !w-full !max-w-full !overflow-hidden">
 
     <!-- Page Header & Action Buttons -->
     <div class="flex items-center justify-between flex-wrap gap-3">
@@ -23,114 +31,135 @@
             <h2 class="ft-page-title">Blog Posts</h2>
             <p class="ft-page-subtitle">Manage all articles on your site</p>
         </div>
-        <div class="flex items-center gap-2.5">
+        <div class="!flex !items-center !gap-2.5">
             <!-- Filter Button -->
-            <button @click="showFilterDrawer = true" type="button" class="ft-btn ft-btn-secondary ft-btn-sm">
-                <i data-lucide="filter"></i> Filters
+            <button @click="showFilterDrawer = true" type="button" 
+                    class="!inline-flex !items-center !gap-1.5 !px-3 !py-1.5 !rounded-lg !border !border-gray-200 !bg-white !text-[13px] !font-medium !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !shadow-xs hover:!shadow-sm !cursor-pointer">
+                <i data-lucide="filter" class="w-4 h-4"></i> Filters
             </button>
             <!-- Add Blog Post Button -->
-            <a href="{% url 'dashboard:post_create' %}" class="ft-btn ft-btn-primary ft-btn-sm">
-                <i data-lucide="plus"></i> Add New Post
+            <a href="{% url 'dashboard:post_create' %}" 
+               class="!inline-flex !items-center !gap-1.5 !px-3.5 !py-1.5 !rounded-lg !bg-blue-600 !text-[13px] !font-medium !text-white hover:!bg-blue-700 !transition-all !shadow-sm hover:!shadow-md !cursor-pointer">
+                <i data-lucide="plus" class="w-4 h-4"></i> Add New Post
             </a>
         </div>
     </div>
 
     <!-- Slide-over Right Filter Drawer -->
-    <div x-show="showFilterDrawer" x-cloak class="ft-modal-backdrop justify-end p-0">
-        <div x-show="showFilterDrawer"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="translate-x-full"
+    <div x-show="showFilterDrawer" x-cloak 
+         class="fixed inset-0 !top-[52px] z-[9999] bg-black/20 backdrop-blur-sm flex justify-end !mt-0"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+         
+        <div x-show="showFilterDrawer" 
+             x-transition:enter="transition ease-out duration-300 transform"
+             x-transition:enter-start="translate-x-full" 
              x-transition:enter-end="translate-x-0"
-             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave="transition ease-in duration-200 transform" 
              x-transition:leave-start="translate-x-0"
-             x-transition:leave-end="translate-x-full"
+             x-transition:leave-end="translate-x-full" 
              @click.away="showFilterDrawer = false"
-             class="w-[360px] h-screen flex flex-col"
-             style="background:var(--surface);border-left:1px solid var(--border)">
+             class="!w-[360px] !h-full !flex !flex-col !bg-white !border-l !border-gray-200 !shadow-2xl">
 
-            <div class="flex items-center justify-between px-4 py-3 border-b" style="border-color:var(--border)">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="filter" class="w-4 h-4" style="color:var(--primary)"></i>
-                    <h3 class="text-[14px] font-bold" style="color:var(--text)">Filter Articles</h3>
+            <div class="!flex !items-center !justify-between !px-6 !py-5 !border-b !border-gray-100">
+                <div class="!flex !items-center !gap-2.5">
+                    <i data-lucide="filter" class="w-5 h-5 text-blue-600"></i>
+                    <h3 class="!text-base !font-semibold !text-gray-900">Filter Articles</h3>
                 </div>
-                <button @click="showFilterDrawer = false" type="button" class="ft-btn ft-btn-ghost ft-btn-icon ft-btn-sm">
-                    <i data-lucide="x" class="w-[15px] h-[15px]"></i>
+                <button @click="showFilterDrawer = false" type="button"
+                    class="!p-2 !rounded-md !text-gray-400 hover:!text-gray-600 hover:!bg-gray-100 !transition-colors !cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
-            <!-- Instant HTMX Form -->
-            <form id="filter-drawer-form"
-                  hx-get="{% url 'dashboard:content_posts' %}"
-                  hx-target="#table-container"
-                  hx-select="#table-container"
-                  hx-swap="outerHTML"
-                  hx-trigger="change delay:200ms, keyup delay:300ms from:input"
-                  class="flex-1 overflow-y-auto flex flex-col gap-4 p-5">
-
-                <div class="flex flex-col gap-1">
+            <!-- Filter Form -->
+            <form id="filter-drawer-form" hx-get="{% url 'dashboard:content_posts' %}" hx-target="#table-container"
+                hx-select="#table-container" hx-swap="outerHTML" hx-push-url="true"
+                class="!flex-1 !overflow-y-auto scrollbar-thin !flex !flex-col !gap-6 !p-6">
+                
+                <input type="hidden" name="search" value="{{ request.GET.search|default:'' }}">
+                
+                <div class="!flex !flex-col !gap-1.5">
                     <c-ui.select name="status" label="Status" value="{{ filter.form.status.value }}">
                         {% for val, lbl in filter.form.fields.status.choices %}
-                            <option value="{{ val }}">{{ lbl }}</option>
+                        <option value="{{ val }}">{{ lbl }}</option>
                         {% endfor %}
                     </c-ui.select>
                 </div>
 
-                <div class="flex flex-col gap-1">
-                    <c-ui.select name="category" label="Category" value="{{ filter.form.category.value|default:'' }}">
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.select name="category" label="Category" value="{{ filter.form.category.value }}">
                         {% for val, lbl in filter.form.fields.category.choices %}
-                            <option value="{{ val }}">{{ lbl }}</option>
+                        <option value="{{ val }}">{{ lbl }}</option>
                         {% endfor %}
                     </c-ui.select>
                 </div>
 
-                <c-ui.input name="author" label="Author" type="text"
-                    value="{{ filter.form.author.value|default:'' }}"
-                    placeholder="Search email or name" icon="user"></c-ui.input>
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.input name="author" label="Author" placeholder="Search email or name"
+                        value="{{ filter.form.author.value|default:'' }}" icon="user"></c-ui.input>
+                </div>
 
-                <c-ui.input name="created_after" label="From Date" type="date"
-                    value="{{ filter.form.created_after.value|default:'' }}" icon="calendar"></c-ui.input>
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.input name="created_after" label="From Date" type="date"
+                        value="{{ filter.form.created_after.value|default:'' }}" icon="calendar"></c-ui.input>
+                </div>
 
-                <c-ui.input name="created_before" label="To Date" type="date"
-                    value="{{ filter.form.created_before.value|default:'' }}" icon="calendar"></c-ui.input>
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.input name="created_before" label="To Date" type="date"
+                        value="{{ filter.form.created_before.value|default:'' }}" icon="calendar"></c-ui.input>
+                </div>
 
-                <div class="mt-auto flex gap-2.5 pt-4 border-t" style="border-color:var(--border)">
-                    <c-ui.button href="{% url 'dashboard:content_posts' %}" variant="secondary" extra_class="w-full justify-center" label="Reset"></c-ui.button>
-                    <c-ui.button type="button" @click="showFilterDrawer = false" variant="primary" extra_class="w-full justify-center" label="Done"></c-ui.button>
+                <div class="!flex !gap-3 !mt-auto !pt-6 !border-t !border-gray-100">
+                    <a href="{% url 'dashboard:content_posts' %}" 
+                       class="!flex-1 !px-4 !py-2.5 !text-sm !font-medium !text-gray-700 !bg-white !border !border-gray-300 !rounded-md hover:!bg-gray-50 !text-center !transition-colors !cursor-pointer">
+                        Reset
+                    </a>
+                    <button type="submit" @click="showFilterDrawer = false"
+                            class="!flex-1 !px-4 !py-2.5 !text-sm !font-medium !text-white !bg-blue-600 !border !border-transparent !rounded-md hover:!bg-blue-700 !transition-colors !cursor-pointer">
+                        Apply Filters
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Table Container & Bulk Actions -->
-    <div id="table-container">
-        <form id="bulk-actions-form" method="post"
-              action="{% url 'dashboard:post_bulk' %}"
-              @change="updateSelectedCount()">
+    <div id="table-container" class="!block !w-full !max-w-full !overflow-x-auto">
+        <form id="bulk-actions-form" method="post" action="{% url 'dashboard:post_bulk' %}"
+            @change="updateSelectedCount()" class="!block !w-full !max-w-full !overflow-x-auto">
             {% csrf_token %}
-            <c-ui.card>
+            <c-ui.card extra_class="!min-w-0 !w-full !max-w-full !overflow-x-auto">
                 <!-- Bulk toolbar -->
                 <div class="flex items-center justify-between pb-3 mb-3 border-b" style="border-color:var(--border)">
                     <span class="text-[12px]" style="color:var(--text-muted)">
                         <span x-text="selectedCount">0</span> selected
                     </span>
-                    <div class="flex items-center gap-2">
+                    <div class="!flex !items-center !gap-2">
                         <c-ui.select name="action" extra_class="w-[160px]">
                             <option value="">Bulk Actions</option>
-                            <option value="approve">Approve Selected</option>
-                            <option value="reject">Reject Selected</option>
+                            <option value="approve">Mark as Approved</option>
+                            <option value="reject">Mark as Rejected</option>
                             <option value="delete">Delete Selected</option>
                         </c-ui.select>
-                        <c-ui.button type="button" variant="secondary" size="sm" label="Apply"
-                            @click="
-                                const act = document.getElementsByName('action')[0].value;
-                                if (act === 'delete') { showBulkDeleteModal = true; }
-                                else if (act) { document.getElementById('bulk-actions-form').submit(); }
-                            "></c-ui.button>
+                        <button type="button" 
+                                class="!inline-flex !items-center !gap-1.5 !px-3 !py-1.5 !rounded-lg !border !border-gray-200 !bg-white !text-[13px] !font-medium !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !shadow-xs hover:!shadow-sm !cursor-pointer"
+                                @click="
+                                    const act = document.getElementsByName('action')[0].value;
+                                    if (act === 'delete') { showBulkDeleteModal = true; }
+                                    else if (act) { document.getElementById('bulk-actions-form').submit(); }
+                                ">
+                            Apply
+                        </button>
                     </div>
                 </div>
 
                 <!-- Table -->
-                <div class="overflow-x-auto">
+                <div class="!w-full !overflow-x-auto !max-w-full">
                     {% render_table table %}
                 </div>
             </c-ui.card>
@@ -138,46 +167,183 @@
     </div>
 
     <!-- Single Delete Modal -->
-    <div x-show="showDeleteModal" x-cloak class="ft-modal-backdrop">
-        <div class="ft-modal" @click.stop>
-            <div class="ft-card-header">
-                <span class="ft-card-title">Confirm Delete</span>
+    <div x-show="showDeleteModal" x-cloak 
+         class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+         x-transition:enter="transition ease-out duration-500"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="showDeleteModal = false">
+        <div class="!bg-white !rounded-xl !shadow-xl !max-w-md !w-full !overflow-hidden !border !border-gray-100"
+             @click.stop
+             x-transition:enter="transition ease-out duration-500"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95">
+            <div class="!flex !items-center !justify-between !px-5 !py-4 !border-b !border-gray-100">
+                <div class="!flex !items-center !gap-2">
+                    <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+                    <h3 class="!text-sm !font-semibold !text-gray-900">Confirm Delete</h3>
+                </div>
+                <button type="button" @click="showDeleteModal = false"
+                        class="!p-1.5 !rounded-md !text-gray-400 hover:!text-gray-500 hover:!bg-gray-100 !transition-colors !cursor-pointer">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
             </div>
-            <div class="ft-card-body">
-                <p class="text-[13px]" style="color:var(--text-secondary)">
-                    Are you sure? This post will be permanently deleted.
-                </p>
+            <div class="!p-5 !text-[13px] !text-gray-600 !leading-relaxed !flex !gap-3.5 !items-start">
+                <div class="!flex-shrink-0 !w-10 !h-10 !rounded-full !bg-red-50 !flex !items-center !justify-center">
+                    <i data-lucide="trash-2" class="w-5 h-5 text-red-600"></i>
+                </div>
+                <div>
+                    <h4 class="!text-sm !font-semibold !text-gray-900">Permanently delete post?</h4>
+                    <p class="!text-[13px] !text-gray-500 !mt-1">Are you sure you want to delete this post? This action cannot be undone and the post will be permanently removed.</p>
+                </div>
             </div>
-            <div class="flex gap-2 justify-end px-4 py-3 border-t" style="border-color:var(--border);background:var(--surface-2)">
-                <button @click="showDeleteModal = false" class="ft-btn ft-btn-secondary ft-btn-sm">Cancel</button>
+            <div class="!px-5 !py-3.5 !bg-gray-50/50 !border-t !border-gray-100 !flex !items-center !justify-end !gap-2.5">
+                <button @click="showDeleteModal = false" type="button"
+                        class="!inline-flex !items-center !gap-1.5 !px-3.5 !py-2 !rounded-lg !border !border-gray-200 !bg-white !text-[13px] !font-medium !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !shadow-xs hover:!shadow-sm !cursor-pointer">
+                    Cancel
+                </button>
                 <form :action="'/dashboard/content/posts/' + confirmDeleteId + '/delete/'" method="post" class="inline">
                     {% csrf_token %}
-                    <button type="submit" class="ft-btn ft-btn-danger ft-btn-sm">Delete</button>
+                    <button type="submit" 
+                            class="!inline-flex !items-center !gap-1.5 !px-3.5 !py-2 !rounded-lg !bg-red-600 !text-[13px] !font-medium !text-white hover:!bg-red-700 !transition-all !shadow-sm hover:!shadow-md !cursor-pointer">
+                        Delete
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- Bulk Delete Modal -->
-    <div x-show="showBulkDeleteModal" x-cloak class="ft-modal-backdrop">
-        <div class="ft-modal" @click.stop>
-            <div class="ft-card-header">
-                <span class="ft-card-title">Confirm Bulk Delete</span>
+    <div x-show="showBulkDeleteModal" x-cloak 
+         class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+         x-transition:enter="transition ease-out duration-500"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="showBulkDeleteModal = false">
+        <div class="!bg-white !rounded-xl !shadow-xl !max-w-md !w-full !overflow-hidden !border !border-gray-100"
+             @click.stop
+             x-transition:enter="transition ease-out duration-500"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95">
+            <div class="!flex !items-center !justify-between !px-5 !py-4 !border-b !border-gray-100">
+                <div class="!flex !items-center !gap-2">
+                    <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+                    <h3 class="!text-sm !font-semibold !text-gray-900">Confirm Bulk Delete</h3>
+                </div>
+                <button type="button" @click="showBulkDeleteModal = false"
+                        class="!p-1.5 !rounded-md !text-gray-400 hover:!text-gray-500 hover:!bg-gray-100 !transition-colors !cursor-pointer">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
             </div>
-            <div class="ft-card-body">
-                <p class="text-[13px]" style="color:var(--text-secondary)">
-                    Delete <strong x-text="selectedCount"></strong> selected posts? This cannot be undone.
-                </p>
+            <div class="!p-5 !text-[13px] !text-gray-600 !leading-relaxed !flex !gap-3.5 !items-start">
+                <div class="!flex-shrink-0 !w-10 !h-10 !rounded-full !bg-red-50 !flex !items-center !justify-center">
+                    <i data-lucide="trash-2" class="w-5 h-5 text-red-600"></i>
+                </div>
+                <div>
+                    <h4 class="!text-sm !font-semibold !text-gray-900">Bulk delete selected posts?</h4>
+                    <p class="!text-[13px] !text-gray-500 !mt-1">Are you sure you want to delete <strong class="!font-semibold !text-gray-900" x-text="selectedCount"></strong> selected posts? This action cannot be undone and these posts will be permanently removed.</p>
+                </div>
             </div>
-            <div class="flex gap-2 justify-end px-4 py-3 border-t" style="border-color:var(--border);background:var(--surface-2)">
-                <button @click="showBulkDeleteModal = false" class="ft-btn ft-btn-secondary ft-btn-sm">Cancel</button>
+            <div class="!px-5 !py-3.5 !bg-gray-50/50 !border-t !border-gray-100 !flex !items-center !justify-end !gap-2.5">
+                <button @click="showBulkDeleteModal = false" type="button"
+                        class="!inline-flex !items-center !gap-1.5 !px-3.5 !py-2 !rounded-lg !border !border-gray-200 !bg-white !text-[13px] !font-medium !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !shadow-xs hover:!shadow-sm !cursor-pointer">
+                    Cancel
+                </button>
                 <button type="button" @click="document.getElementById('bulk-actions-form').submit()"
-                        class="ft-btn ft-btn-danger ft-btn-sm">Yes, Delete All</button>
+                        class="!inline-flex !items-center !gap-1.5 !px-3.5 !py-2 !rounded-lg !bg-red-600 !text-[13px] !font-medium !text-white hover:!bg-red-700 !transition-all !shadow-sm hover:!shadow-md !cursor-pointer">
+                    Delete All
+                </button>
             </div>
         </div>
     </div>
+    <!-- Status Update Modal -->
+    <template x-teleport="body">
+        <div x-show="showStatusModal" style="display: none;"
+             class="!fixed !inset-0 !z-[99999] !overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="!flex !items-end !justify-center !min-h-screen !px-4 !pt-4 !pb-20 !text-center sm:!block sm:!p-0">
+                <!-- Background overlay -->
+                <div x-show="showStatusModal" 
+                     x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                     x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                     class="!fixed !inset-0 !transition-opacity !bg-gray-900 !bg-opacity-60 !backdrop-blur-sm" aria-hidden="true" @click="showStatusModal = false"></div>
+
+                <span class="hidden sm:!inline-block sm:!align-middle sm:!h-screen" aria-hidden="true">&#8203;</span>
+
+                <!-- Modal panel -->
+                <div x-show="showStatusModal"
+                     x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     class="!inline-block !px-6 !pt-6 !pb-6 !overflow-hidden !text-left !align-bottom !transition-all !transform !bg-white !rounded-2xl !shadow-2xl sm:!my-8 sm:!align-middle sm:!max-w-md sm:!w-full sm:!p-8 !relative !z-[100000] !border !border-gray-100">
+                    
+                    <form method="post" :action="'/dashboard/content/posts/' + statusModalId + '/status/'">
+                        {% csrf_token %}
+                        <div>
+                            <div class="!mt-0 !text-center sm:!mt-0">
+                                <div class="!mx-auto !flex !items-center !justify-center !h-12 !w-12 !rounded-full !bg-blue-100 !mb-4">
+                                    <i data-lucide="activity" class="!h-6 !w-6 !text-blue-600"></i>
+                                </div>
+                                <h3 class="!text-xl !font-extrabold !text-gray-900 !mb-2" id="modal-title">
+                                    Update Post Status
+                                </h3>
+                                <p class="!text-sm !text-gray-500 !mb-6">Change the visibility status of this article.</p>
+                                
+                                <div class="!mt-5 !text-left" x-data="{ open: false, statuses: { 'pending': 'Pending Approval', 'published': 'Published' } }">
+                                    <label class="!block !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !mb-2">Select Status</label>
+                                    
+                                    <div class="!relative">
+                                        <input type="hidden" name="status" :value="statusModalCurrent">
+                                        <button type="button" @click="open = !open" @click.away="open = false"
+                                                class="!w-full !flex !items-center !justify-between !bg-white !border-2 !border-gray-200 hover:!border-blue-500 !rounded-xl !px-4 !py-3.5 !text-[14px] !font-semibold !text-gray-800 focus:!outline-none focus:!ring-4 focus:!ring-blue-500/20 focus:!border-blue-600 !transition-all !cursor-pointer !shadow-sm">
+                                            <span x-text="statuses[statusModalCurrent] || 'Select Status'"></span>
+                                            <svg class="!w-5 !h-5 !text-gray-400 !transition-transform !duration-200" :class="{'!rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </button>
+                                        
+                                        <div x-show="open" x-cloak
+                                             x-transition:enter="transition ease-out duration-150" x-transition:enter-start="transform opacity-0 scale-95 translate-y-[-10px]" x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                                             x-transition:leave="transition ease-in duration-100" x-transition:leave-start="transform opacity-100 scale-100 translate-y-0" x-transition:leave-end="transform opacity-0 scale-95 translate-y-[-10px]"
+                                             class="!absolute !z-[100001] !mt-2 !w-full !bg-white !rounded-xl !shadow-xl !border !border-gray-100 !overflow-hidden">
+                                            <div class="!py-1.5">
+                                                <template x-for="(label, key) in statuses" :key="key">
+                                                    <button type="button" @click="statusModalCurrent = key; open = false"
+                                                            class="!w-full !flex !items-center !px-4 !py-3 !text-[13.5px] !font-medium !transition-colors !cursor-pointer !text-left"
+                                                            :class="statusModalCurrent === key ? '!bg-blue-50 !text-blue-700' : '!text-gray-700 hover:!bg-gray-50'">
+                                                        <div class="!flex-1" x-text="label"></div>
+                                                        <svg x-show="statusModalCurrent === key" class="!w-4 !h-4 !text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="!mt-6 sm:!grid sm:!grid-cols-2 sm:!gap-3 sm:!grid-flow-row-dense">
+                            <button type="submit"
+                                    class="!inline-flex !justify-center !w-full !px-4 !py-2.5 !text-[13.5px] !font-bold !text-white !bg-blue-600 !border !border-transparent !rounded-xl !shadow-sm hover:!bg-blue-700 focus:!outline-none focus:!ring-4 focus:!ring-blue-500/30 sm:!col-start-2 !cursor-pointer !transition-colors">
+                                Save Changes
+                            </button>
+                            <button type="button" @click="showStatusModal = false"
+                                    class="!inline-flex !justify-center !w-full !px-4 !py-2.5 !mt-3 !text-[13.5px] !font-bold !text-gray-700 !bg-white !border-2 !border-gray-200 !rounded-xl !shadow-sm hover:!bg-gray-50 hover:!text-gray-900 hover:!border-gray-300 focus:!outline-none focus:!ring-4 focus:!ring-gray-200 sm:!mt-0 sm:!col-start-1 !cursor-pointer !transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </template>
 
 </div>
-
-{# Alpine handles select-all via x-data.selectAll() — no vanilla script block needed #}
 {% endblock %}

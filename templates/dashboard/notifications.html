@@ -1,0 +1,54 @@
+{% extends base_template %}
+{% load static %}
+
+{% block content %}
+<div class="!max-w-4xl !mx-auto !p-6">
+    <div class="!flex !items-center !justify-between !mb-6">
+        <h2 class="!text-2xl !font-bold !text-gray-900">Notifications Center</h2>
+        <span class="!bg-blue-100 !text-blue-800 !text-xs !font-semibold !px-2.5 !py-0.5 !rounded-full">
+            {{ notifications_list|length }} Notifications
+        </span>
+    </div>
+
+    <div class="!bg-white !rounded-xl !shadow-sm !border !border-gray-100 !overflow-hidden">
+        {% if notifications_list %}
+            <div class="!divide-y !divide-gray-100">
+                {% for notification in notifications_list %}
+                <a href="{{ notification.target_url|default:'#' }}" class="!block !p-4 hover:!bg-gray-50 !transition-colors !group">
+                    <div class="!flex !items-start !gap-4">
+                        <div class="!flex-shrink-0 !mt-1">
+                            <div class="!w-10 !h-10 !rounded-full !bg-blue-50 !flex !items-center !justify-center group-hover:!bg-blue-100 !transition-colors">
+                                <i data-lucide="bell-ring" class="!w-5 !h-5 !text-blue-600"></i>
+                            </div>
+                        </div>
+                        <div class="!flex-1 !min-w-0">
+                            <p class="!text-sm !font-semibold !text-gray-900 !mb-1">
+                                {{ notification.title }}
+                            </p>
+                            <p class="!text-sm !text-gray-600 !mb-2 !leading-relaxed">
+                                {{ notification.message }}
+                            </p>
+                            <p class="!text-xs !font-medium !text-gray-400 !flex !items-center !gap-1.5">
+                                <i data-lucide="clock" class="!w-3.5 !h-3.5"></i>
+                                {{ notification.created_at|timesince }} ago
+                            </p>
+                        </div>
+                        <div class="!flex-shrink-0">
+                            <i data-lucide="chevron-right" class="!w-5 !h-5 !text-gray-300 group-hover:!text-blue-500 !transition-colors"></i>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="!flex !flex-col !items-center !justify-center !py-16 !px-4 !text-center">
+                <div class="!w-16 !h-16 !bg-gray-50 !rounded-full !flex !items-center !justify-center !mb-4">
+                    <i data-lucide="bell-off" class="!w-8 !h-8 !text-gray-400"></i>
+                </div>
+                <h3 class="!text-lg !font-medium !text-gray-900 !mb-2">All caught up!</h3>
+                <p class="!text-gray-500 !max-w-sm">You don't have any new notifications right now. Check back later.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

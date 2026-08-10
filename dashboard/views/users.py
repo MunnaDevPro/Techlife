@@ -44,41 +44,58 @@ def user_detail(request, pk):
     target_user = get_object_or_404(CustomUserModel, pk=pk)
     
     if request.method == "POST":
-        # Block self-permission edits
-        if target_user == request.user:
-            messages.error(request, "Self-permission escalation is prohibited. You cannot edit your own roles/permissions.")
+        form_action = request.POST.get('action')
+
+        if form_action == 'update_profile':
+            target_user.first_name = request.POST.get('first_name', target_user.first_name)
+            target_user.last_name = request.POST.get('last_name', target_user.last_name)
+            target_user.mobile = request.POST.get('mobile', target_user.mobile)
+            target_user.city = request.POST.get('city', target_user.city)
+            target_user.country = request.POST.get('country', target_user.country)
+            
+            if 'profile_picture' in request.FILES:
+                target_user.profile_picture = request.FILES['profile_picture']
+                
+            target_user.save()
+            messages.success(request, f"User {target_user.email} profile updated successfully.")
             return redirect("dashboard:user_detail", pk=pk)
             
-        # Extract fields
-        is_staff = request.POST.get('is_staff') == 'true'
-        is_superuser = request.POST.get('is_superuser') == 'true'
-        group_ids = request.POST.getlist('groups')
-        
-        # Block superuser escalation by non-superusers
-        if is_superuser and not request.user.is_superuser:
-            raise PermissionDenied("Only superusers can grant superuser privileges.")
+        elif form_action == 'update_permissions':
+            # Block self-permission edits
+            if target_user == request.user:
+                messages.error(request, "Self-permission escalation is prohibited. You cannot edit your own roles/permissions.")
+                return redirect("dashboard:user_detail", pk=pk)
+                
+            # Extract fields
+            is_staff = request.POST.get('is_staff') == 'true'
+            is_superuser = request.POST.get('is_superuser') == 'true'
+            group_ids = request.POST.getlist('groups')
             
-        # Update user flags
-        target_user.is_staff = is_staff
-        if request.user.is_superuser:
-            target_user.is_superuser = is_superuser
+            # Block superuser escalation by non-superusers
+            if is_superuser and not request.user.is_superuser:
+                raise PermissionDenied("Only superusers can grant superuser privileges.")
+                
+            # Update user flags
+            target_user.is_staff = is_staff
+            if request.user.is_superuser:
+                target_user.is_superuser = is_superuser
+                
+            target_user.save()
             
-        target_user.save()
-        
-        # Update groups
-        groups = Group.objects.filter(id__in=group_ids)
-        target_user.groups.set(groups)
-        
-        # Audit Log
-        ModerationLog.objects.create(
-            moderator=request.user,
-            action='unban',  # Reuse logs or write permission change
-            target_user=target_user,
-            details=f"Updated permissions: is_staff={is_staff}, is_superuser={target_user.is_superuser}, groups={list(groups.values_list('name', flat=True))}."
-        )
-        
-        messages.success(request, f"User {target_user.email} permissions updated successfully.")
-        return redirect("dashboard:user_detail", pk=pk)
+            # Update groups
+            groups = Group.objects.filter(id__in=group_ids)
+            target_user.groups.set(groups)
+            
+            # Audit Log
+            ModerationLog.objects.create(
+                moderator=request.user,
+                action='unban',  # Reuse logs or write permission change
+                target_user=target_user,
+                details=f"Updated permissions: is_staff={is_staff}, is_superuser={target_user.is_superuser}, groups={list(groups.values_list('name', flat=True))}."
+            )
+            
+            messages.success(request, f"User {target_user.email} permissions updated successfully.")
+            return redirect("dashboard:user_detail", pk=pk)
         
     # Get user posts
     posts = BlogPost.objects.filter(author=target_user).select_related('category').order_by('-created_at')
@@ -134,3 +151,33 @@ def roles_permissions(request):
         "groups": groups,
     })
     return render(request, "dashboard/users/roles.html", ctx)
+
+@require_POST
+@staff_required
+def user_delete(request, pk):
+    """Delete a user permanently."""
+    target_user = get_object_or_404(CustomUserModel, pk=pk)
+    
+    # Prevent self-deletion
+    if target_user == request.user:
+        messages.error(request, "You cannot delete your own account.")
+        return redirect("dashboard:users_all")
+        
+    # Prevent non-superusers from deleting superusers
+    if target_user.is_superuser and not request.user.is_superuser:
+        messages.error(request, "Only a superuser can delete another superuser.")
+        return redirect("dashboard:users_all")
+        
+    email = target_user.email
+    target_user.delete()
+    
+    # Audit Log
+    ModerationLog.objects.create(
+        moderator=request.user,
+        action='ban', # Closest action to deletion
+        details=f"Deleted user account: {email}."
+    )
+    
+    messages.success(request, f"User {email} has been permanently deleted.")
+    return redirect("dashboard:users_all")
+

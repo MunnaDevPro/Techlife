@@ -508,6 +508,7 @@ def update_blog_stat(request, slug, stat_type):
 def create_blog(request):
     categories   = Category.objects.all()
     subcategories = SubCategory.objects.all()
+    all_tags = Tag.objects.all().order_by('name')
     if request.method == 'POST':
         form = BlogPostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -553,6 +554,7 @@ def create_blog(request):
         "is_edit":      False,
         "post":         None,
         "selected_tags": [],
+        "all_tags":     all_tags,
     }
 
     if request.headers.get("HX-Request"):
@@ -566,6 +568,7 @@ def edit_blog(request, slug):
     post = get_object_or_404(BlogPost, slug=slug, author=request.user)
     categories = Category.objects.all()
     subcategories = SubCategory.objects.all()
+    all_tags = Tag.objects.all().order_by('name')
 
     if request.method == 'POST':
         form = BlogPostForm(request.POST, request.FILES, instance=post)
@@ -612,6 +615,7 @@ def edit_blog(request, slug):
         "is_edit": True,
         "post": post,
         "selected_tags": selected_tags,
+        "all_tags": all_tags,
     }
 
     if request.headers.get("HX-Request"):

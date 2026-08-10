@@ -112,6 +112,20 @@ def post_bulk_action(request):
         
     return redirect("dashboard:content_posts")
 
+@require_POST
+@staff_required
+def post_update_status(request, pk):
+    """Update a single post's status via modal."""
+    post = get_object_or_404(BlogPost, pk=pk)
+    status = request.POST.get('status')
+    if status in dict(BlogPost.STATUS_CHOICES):
+        post.status = status
+        post.save(update_fields=['status'])
+        messages.success(request, f"Status for '{post.title[:30]}...' updated to {status.title()}.")
+    else:
+        messages.error(request, "Invalid status selected.")
+    return redirect("dashboard:content_posts")
+
 @staff_required
 def post_create(request):
     """Dashboard-native view to create a new blog post with full section-by-section layout and SEO integration."""
@@ -174,6 +188,7 @@ def post_detail_edit(request, pk):
         form = BlogPostForm(request.POST, request.FILES, instance=post)
         meta_title = request.POST.get('meta_title', '')
         meta_description = request.POST.get('meta_description', '')
+        subtitle = request.POST.get('subtitle', '')
         
         # Validations on image upload
         if 'featured_image' in request.FILES:
@@ -186,7 +201,10 @@ def post_detail_edit(request, pk):
             saved_post = form.save(commit=False)
             saved_post.meta_title = meta_title
             saved_post.meta_description = meta_description
+            if hasattr(saved_post, 'subtitle'):
+                saved_post.subtitle = subtitle
             saved_post.save(skip_auto_status=True)
+            form.save_m2m()
             messages.success(request, "Post updated successfully.")
             return redirect("dashboard:content_posts")
         else:
@@ -198,6 +216,7 @@ def post_detail_edit(request, pk):
     
     categories = Category.objects.all().order_by('name')
     subcategories = SubCategory.objects.select_related('category').all()
+    tags = Tag.objects.all().order_by('name')
     
     ctx = get_dashboard_context(request, "Edit Post", "Content", "dashboard:content_posts")
     ctx.update({
@@ -208,6 +227,7 @@ def post_detail_edit(request, pk):
         "meta_description": post.meta_description,
         "categories": categories,
         "subcategories": subcategories,
+        "tags": tags,
     })
     return render(request, "dashboard/content/post_detail_edit.html", ctx)
 

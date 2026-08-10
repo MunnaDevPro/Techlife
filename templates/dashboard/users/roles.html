@@ -3,29 +3,54 @@
 {% block content %}
 <div class="flex flex-col gap-5">
     <div>
-        <h2 class="ft-page-title">Security Groups & Roles</h2>
-        <p class="ft-page-subtitle">Configure authorization levels and group memberships</p>
+        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Security Groups & Roles</h2>
+        <p class="text-[14px] text-gray-500 mt-1">Configure authorization levels and view group memberships.</p>
     </div>
 
-    <c-ui.card title="Django Authorization Groups">
-        <c-ui.table :headers="['Role Group', 'Members', 'Status']">
-            {% for g in groups %}
-            <tr>
-                <td>
-                    <c-ui.badge variant="primary">{{ g.name }}</c-ui.badge>
-                </td>
-                <td style="color:var(--text-muted)">{{ g.user_count }} users assigned</td>
-                <td><c-ui.badge variant="success" dot="true">Active</c-ui.badge></td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3" class="text-center py-8" style="color:var(--text-muted)">
-                    <i data-lucide="shield" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
-                    No authorization groups found
-                </td>
-            </tr>
-            {% endfor %}
-        </c-ui.table>
+    <c-ui.card title="System Security Roles" subtitle="Manage group access and see assigned users" class="border-gray-200 shadow-sm">
+        <div class="!mt-2">
+            <c-ui.table>
+                <c-slot name="header">
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">Role Name</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">Assigned Users</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">Status</th>
+                </c-slot>
+                {% for g in groups %}
+                <tr class="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
+                    <td class="!py-4 !px-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm">
+                                <i data-lucide="shield" class="w-4.5 h-4.5"></i>
+                            </div>
+                            <span class="font-bold text-gray-900 text-[15px]">{{ g.name|title }}</span>
+                        </div>
+                    </td>
+                    <td class="!py-4 !px-6">
+                        <div class="flex flex-col">
+                            <span class="font-medium text-gray-900 text-[15px]">{{ g.user_count }}</span>
+                            <span class="text-gray-500 text-[12.5px] uppercase tracking-wide font-medium mt-0.5">Active Members</span>
+                        </div>
+                    </td>
+                    <td class="!py-4 !px-6">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 !px-3 !py-1.5 text-[13px] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Active
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="!px-6 !py-16 text-center border-t border-gray-100">
+                        <div class="flex flex-col items-center justify-center text-gray-500">
+                            <div class="bg-gray-50 !p-5 rounded-full mb-4 border border-gray-200">
+                                <i data-lucide="shield-off" class="w-10 h-10 text-gray-400"></i>
+                            </div>
+                            <p class="text-[15px] font-medium text-gray-600">No security roles found in the system.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </c-ui.table>
+        </div>
     </c-ui.card>
 </div>
 {% endblock %}

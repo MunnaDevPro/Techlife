@@ -338,6 +338,13 @@
         }
 
         function syncCheckboxes() {
+            var hiddenInput = document.getElementById('post_tags_hidden');
+            if (hiddenInput) {
+                var tagNames = Object.values(selectedTags).map(function(t) { return t.label; });
+                hiddenInput.value = tagNames.join(',');
+            }
+            
+            // Keep existing behavior just in case
             var allCbs = document.querySelectorAll('#tag-hidden-checkboxes input[type="checkbox"]');
             allCbs.forEach(function (cb) { cb.checked = false; });
             Object.values(selectedTags).forEach(function (tag) {
@@ -479,6 +486,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', initBlogEditor);
-    document.body.addEventListener('htmx:afterSwap', initBlogEditor);
-    document.body.addEventListener('htmx:historyRestore', initBlogEditor);
+    document.addEventListener('htmx:afterSwap', initBlogEditor);
+    document.addEventListener('htmx:historyRestore', initBlogEditor);
 })();

@@ -74,10 +74,26 @@ def sitemap_status(request):
 @staff_required
 def broken_links(request):
     """Broken Links index reading from NotFoundLog database logs."""
+    from django.db.models import Sum
+    from django.utils import timezone
+    import datetime
+
     logs = NotFoundLog.objects.all().order_by('-hit_count')
-    
+
+    total_logs = logs.count()
+    total_hits = logs.aggregate(total=Sum('hit_count'))['total'] or 0
+    top_offender = logs.first()
+
+    today = timezone.now().date()
+    today_logs = NotFoundLog.objects.filter(last_seen__date=today).count()
+
     ctx = get_dashboard_context(request, "Broken Links / 404 Log", "SEO", "dashboard:seo_broken")
     ctx.update({
         "logs": logs,
+        "total_logs": total_logs,
+        "total_hits": total_hits,
+        "top_offender": top_offender,
+        "today_logs": today_logs,
     })
     return render(request, "dashboard/seo/broken_links.html", ctx)
+

@@ -11,11 +11,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS (compiled output) -->
-    <link rel="stylesheet" href="{% static 'css/output.css' %}?v=1.1">
+    <link rel="stylesheet" href="{% static 'css/output.css' %}?v=1.7">
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.12"
         integrity="sha384-ujb1lRIkbPla_iAJ5g4hPLw75l2H4Y7yWtdLiVy3O/S3B367v7cTf2Gz5n2Kyl7C"
         crossorigin="anonymous"></script>
+    <!-- Alpine.js Plugins -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- Lucide Icons -->
@@ -25,7 +27,7 @@
     <!-- CKEditor 5 Super Build (CDN) — used by post create/edit pages -->
     <script id="ckeditor5-cdn" src="https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js"></script>
     <!-- Blog Editor (CKEditor 5 init, upload adapter, tag system) -->
-    <script src="{% static 'js/blog_editor.js' %}"></script>
+    <script defer src="{% static 'js/blog_editor.js' %}?v=1.1"></script>
 
     <style>
         /* ── Design Tokens ─────────────────────────────────────────── */
@@ -120,6 +122,29 @@
             display: none;
         }
 
+        .scrollbar-thin {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.25);
+        }
+
         /* ── Page layout ───────────────────────────────────────────── */
         .ft-layout {
             display: flex;
@@ -193,6 +218,31 @@
 
         .ft-sidebar.collapsed {
             width: var(--sidebar-w-col);
+        }
+
+        .ft-sidebar.collapsed span,
+        .ft-sidebar.collapsed .lucide-chevron-down,
+        .ft-sidebar.collapsed .ft-user-text,
+        .ft-sidebar.collapsed .ft-nav-logout {
+            display: none !important;
+        }
+
+        .ft-sidebar.collapsed .ft-sidebar-brand {
+            padding: 0;
+            justify-content: center;
+        }
+
+        .ft-sidebar.collapsed .ft-nav-item {
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        .ft-sidebar.collapsed .ft-nav-sub-item {
+            display: none !important;
+        }
+
+        .ft-sidebar.collapsed .ft-tree-group {
+            display: none !important;
         }
 
         .ft-sidebar-brand {
@@ -341,14 +391,24 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            margin-left: var(--sidebar-w);
+            margin-left: 0;
+            max-width: 100%;
             transition: margin-left 0.22s cubic-bezier(.4, 0, .2, 1);
             position: relative;
             z-index: 1;
+            min-width: 0;
+        }
+
+        @media (min-width: 1024px) {
+            .ft-main {
+                margin-left: var(--sidebar-w);
+                max-width: calc(100% - var(--sidebar-w));
+            }
         }
 
         .ft-main.sidebar-collapsed {
             margin-left: var(--sidebar-w-col);
+            max-width: calc(100% - var(--sidebar-w-col));
         }
 
         /* ── Topbar ────────────────────────────────────────────────── */
@@ -372,7 +432,7 @@
             background: var(--surface);
             border-radius: var(--radius-sm);
             border: 1px solid var(--border);
-            overflow: hidden;
+            overflow: visible;
         }
 
         .ft-card-header {
@@ -710,6 +770,35 @@
             max-width: 640px;
         }
 
+        /* ── Drawer ────────────────────────────────────────────────── */
+        .ft-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 55;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            box-shadow: var(--shadow-dropdown);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 100%;
+            transition: transform 0.22s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .ft-drawer-sm {
+            width: 320px;
+        }
+
+        .ft-drawer-md {
+            width: 480px;
+        }
+
+        .ft-drawer-lg {
+            width: 640px;
+        }
+
         /* ── Dropdown ──────────────────────────────────────────────── */
         .ft-dropdown {
             position: absolute;
@@ -751,6 +840,8 @@
             flex: 1;
             padding: 20px;
             overflow-y: auto;
+            overflow-x: hidden;
+            max-width: 100%;
         }
 
         .ft-page-title {
@@ -832,6 +923,7 @@
                 transform: translateY(0);
             }
         }
+
         .ck-editor__editable_inline {
             min-height: 420px;
         }
@@ -841,8 +933,8 @@
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
     <!-- ── Dashboard Layout ── -->
-    <c-layout.shell page_title="{{ page_title }}" active_menu="{{ active_menu }}" active_submenu="{{ active_submenu }}">
-        <div id="main-content">
+    <c-layout.shell page_title="{{ page_title }}" active_menu="{{ active_menu }}" active_submenu="{{ active_submenu }}" unread_notifications="{{ unread_notifications }}">
+        <div id="main-content" class="!w-full !max-w-full !overflow-hidden">
             {% block content %}{% endblock %}
         </div>
     </c-layout.shell>
@@ -891,18 +983,49 @@
             });
         },
         close() { this.open = false; }
-    }" x-show="open" x-cloak x-transition.opacity class="ft-modal-backdrop">
-        <div class="ft-modal ft-modal-sm" @click.stop>
-            <div class="ft-card-header">
-                <span class="ft-card-title">Confirm Action</span>
+    }" x-show="open" x-cloak 
+       class="fixed inset-0 z-[10000] flex items-center justify-center p-4 sm:p-0"
+       style="background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px);">
+        
+        <div @click.stop class="!bg-white !rounded-xl !shadow-2xl !w-full !max-w-md !overflow-hidden transform transition-all flex flex-col mx-auto text-left"
+             x-show="open" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+             
+            <!-- Header -->
+            <div class="flex justify-between items-center !px-5 !py-4 border-b border-gray-100">
+                <div class="flex items-center !gap-2 text-red-600 font-semibold !text-[15px]">
+                    <i data-lucide="alert-triangle" class="!w-5 !h-5"></i>
+                    <span>Confirm Action</span>
+                </div>
+                <button @click="close()" class="text-gray-400 hover:text-gray-600 transition-colors !cursor-pointer">
+                    <i data-lucide="x" class="!w-5 !h-5 !cursor-pointer"></i>
+                </button>
             </div>
-            <div class="ft-card-body">
-                <p class="text-[13px] text-[var(--text-secondary)]" x-text="message"></p>
+            
+            <!-- Body -->
+            <div class="!p-6 flex !gap-4 items-start">
+                <div class="flex-shrink-0 !w-12 !h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500 !cursor-pointer">
+                    <i data-lucide="trash-2" class="!w-6 !h-6 !cursor-pointer"></i>
+                </div>
+                <div class="flex flex-col !pt-1">
+                    <h3 class="!text-[16px] font-bold text-gray-900 !mb-1.5">Are you sure?</h3>
+                    <p class="!text-[14px] text-gray-500 leading-relaxed" x-text="message"></p>
+                </div>
             </div>
-            <div class="px-4 py-3 flex gap-2 justify-end border-t bg-[var(--surface-2)]"
-                style="border-color:var(--border)">
-                <button @click="close()" class="ft-btn ft-btn-secondary ft-btn-sm">Cancel</button>
-                <button @click="onConfirmCb && onConfirmCb()" class="ft-btn ft-btn-danger ft-btn-sm">Confirm</button>
+            
+            <!-- Footer -->
+            <div class="!px-6 !py-4 flex justify-end !gap-3 border-t border-gray-100 bg-white">
+                <button @click="close()" class="!px-5 !py-2.5 bg-white border border-gray-200 rounded-lg !text-[14px] font-medium text-gray-700 hover:bg-gray-50 focus:outline-none transition-colors shadow-sm !cursor-pointer">
+                    Cancel
+                </button>
+                <button @click="onConfirmCb && onConfirmCb()" class="!px-5 !py-2.5 bg-[#e11d48] hover:bg-[#be123c] border border-transparent rounded-lg !text-[14px] font-medium text-white focus:outline-none transition-colors shadow-sm !cursor-pointer">
+                    Confirm
+                </button>
             </div>
         </div>
     </div>
@@ -935,7 +1058,12 @@
 
         function initLucide() { if (window.lucide) lucide.createIcons(); }
         document.addEventListener('DOMContentLoaded', initLucide);
-        document.addEventListener('htmx:afterSwap', initLucide);
+        document.addEventListener('htmx:afterSwap', (e) => {
+            initLucide();
+            if (window.Alpine) {
+                Alpine.process(e.target);
+            }
+        });
         document.addEventListener('htmx:afterSettle', initLucide);
     </script>
 </body>
