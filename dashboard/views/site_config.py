@@ -24,22 +24,26 @@ def ads_config(request):
             order = request.POST.get('order')
             is_active = request.POST.get('is_active') == 'true'
             
-            if ad_id:
-                ad = get_object_or_404(Advertisement, pk=ad_id)
-                ad.title = title
-                ad.ad_code = ad_code
-                ad.order = int(order)
-                ad.is_active = is_active
-                ad.save()
-                messages.success(request, "Advertisement updated.")
-            else:
-                Advertisement.objects.create(
-                    title=title,
-                    ad_code=ad_code,
-                    order=int(order),
-                    is_active=is_active
-                )
-                messages.success(request, "Advertisement created.")
+            from django.db import IntegrityError
+            try:
+                if ad_id:
+                    ad = get_object_or_404(Advertisement, pk=ad_id)
+                    ad.title = title
+                    ad.ad_code = ad_code
+                    ad.order = int(order)
+                    ad.is_active = is_active
+                    ad.save()
+                    messages.success(request, "Advertisement updated.")
+                else:
+                    Advertisement.objects.create(
+                        title=title,
+                        ad_code=ad_code,
+                        order=int(order),
+                        is_active=is_active
+                    )
+                    messages.success(request, "Advertisement created.")
+            except IntegrityError:
+                messages.error(request, "An advertisement for this position already exists. Please choose a different position or edit the existing one.")
         elif action == "delete":
             ad_id = request.POST.get('id')
             get_object_or_404(Advertisement, pk=ad_id).delete()
@@ -155,6 +159,8 @@ def maintenance_config(request):
             m_settings.maintenance_until = dateparse.parse_datetime(until_str)
         else:
             m_settings.maintenance_until = None
+            
+        m_settings.custom_message = request.POST.get('custom_message') or None
             
         m_settings.save()
         messages.success(request, f"Maintenance configuration updated. Site Maintenance: {'ON' if site_maintenance else 'OFF'}.")

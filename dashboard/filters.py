@@ -20,8 +20,7 @@ class BlogPostFilter(django_filters.FilterSet):
             return queryset
         return queryset.filter(
             Q(title__icontains=value) |
-            Q(summary__icontains=value) |
-            Q(content__icontains=value)
+            Q(description__icontains=value)
         )
 
     def filter_author(self, queryset, name, value):

@@ -14,6 +14,13 @@ class MaintenanceSettings(models.Model):
         verbose_name="Forum Section",
         help_text="Activates maintenance mode on forum pages only.",
     )
+    
+    custom_message = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name="Custom Message",
+        help_text="Optional message to display on the maintenance screen.",
+    )
 
     # ── Countdown end time ──────────────────────────────────────────
     maintenance_until = models.DateTimeField(

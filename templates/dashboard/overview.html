@@ -4,7 +4,7 @@
 <div class="flex flex-col gap-5">
 
     <!-- Page header -->
-    <div class="flex items-center justify-between flex-wrap gap-3">
+    <div class="flex items-center justify-between flex-wrap gap-3 animate-[fade-in-up_0.4s_ease-out]">
         <div>
             <h2 class="ft-page-title">Dashboard Overview</h2>
             <p class="ft-page-subtitle">Real-time stats and site performance</p>
@@ -20,79 +20,352 @@
     </div>
 
     <!-- KPI Grid -->
-    <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3">
-        <c-ui.kpi-widget label="Published Posts" value="{{ kpis.total_published_posts }}" icon="file-text" color="primary"></c-ui.kpi-widget>
-        <c-ui.kpi-widget label="Pending Review" value="{{ kpis.pending_review_count }}" icon="clock" color="warning"></c-ui.kpi-widget>
-        <c-ui.kpi-widget label="Verified Users" value="{{ kpis.total_verified_users }}" icon="user-check" color="accent"></c-ui.kpi-widget>
-        <c-ui.kpi-widget label="Active Reports" value="{{ kpis.active_reports_count }}" icon="flag" color="danger"></c-ui.kpi-widget>
-        <c-ui.kpi-widget label="Forum Questions" value="{{ kpis.total_forum_questions }}" icon="message-square" color="indigo"></c-ui.kpi-widget>
-    </div>
-
-    <!-- Charts & Activity -->
-    <div class="grid grid-cols-1 gap-4">
-        <div class="grid grid-cols-[2fr_1fr] gap-4 overview-grid">
-
-            <!-- Activity Chart -->
-            <c-ui.card title="Posts Published (Last 30 Days)" subtitle="Daily publish activity">
-                <canvas id="overviewChart" class="max-h-[280px]"></canvas>
-                <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const ctx = document.getElementById('overviewChart');
-                    if (!ctx) return;
-                    new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: {{ chart_labels|safe }},
-                            datasets: [{
-                                label: 'New Posts',
-                                data: {{ chart_values|safe }},
-                                borderColor: '#2187ed',
-                                backgroundColor: 'rgba(33,135,237,0.1)',
-                                borderWidth: 2,
-                                tension: 0.4,
-                                fill: true,
-                                pointBackgroundColor: '#2187ed',
-                                pointRadius: 3,
-                            }]
-                        },
-                        options: {
-                            responsive: true, maintainAspectRatio: true,
-                            plugins: { legend: { display: false } },
-                            scales: {
-                                x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 } } },
-                                y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 } }, beginAtZero: true }
-                            }
-                        }
-                    });
-                });
-                </script>
-            </c-ui.card>
-
-            <!-- Recent Activity -->
-            <c-ui.card title="Recent Activity" subtitle="Latest site events">
-                <div class="flex flex-col gap-3 max-h-[280px] overflow-y-auto scrollbar-hide">
-                    {% if recent_activity %}
-                        {% for activity in recent_activity %}
-                        <div class="flex items-start gap-2.5">
-                            <div class="p-1.5 rounded-[var(--radius-sm)] flex-shrink-0 mt-0.5" style="background:var(--surface-3)">
-                                <i data-lucide="{{ activity.icon }}" class="w-3.5 h-3.5" style="color:var(--text-muted)"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-[12px] leading-snug m-0" style="color:var(--text)">{{ activity.description }}</p>
-                                <span class="text-[10px]" style="color:var(--text-muted)">{{ activity.timestamp|timesince }} ago</span>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="text-center py-6" style="color:var(--text-muted)">
-                            <i data-lucide="activity" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
-                            <p class="text-[12px] m-0">No recent activities</p>
-                        </div>
-                    {% endif %}
-                </div>
-            </c-ui.card>
+    <div class="!grid !grid-cols-2 md:!grid-cols-3 lg:!grid-cols-5 !gap-5 !mb-2">
+        <!-- KPI 1 -->
+        <div class="!bg-white !rounded-md !p-5 !shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:!shadow-[0_8px_20px_-6px_rgba(0,0,0,0.1)] !transition-all !duration-300 !border !border-gray-100 !flex !flex-col !justify-between scroll-animate !opacity-0 data-animate="!animate-[fade-in-up_0.5s_ease-out]"">
+            <div class="!flex !items-center !justify-between !mb-3">
+                <span class="!text-[13px] !font-semibold !text-gray-500 !flex !items-center !gap-1.5"><i data-lucide="file-text" class="!w-4 !h-4 !text-blue-500"></i> Posts</span>
+                <span class="!text-[10px] !font-bold !text-green-600 !bg-green-50 !px-1.5 !py-0.5 !rounded-md">+12%</span>
+            </div>
+            <h3 class="!text-3xl !font-black !text-gray-800">{{ kpis.total_published_posts }}</h3>
+        </div>
+        <!-- KPI 2 -->
+        <div class="!bg-white !rounded-md !p-5 !shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:!shadow-[0_8px_20px_-6px_rgba(0,0,0,0.1)] !transition-all !duration-300 !border !border-gray-100 !flex !flex-col !justify-between scroll-animate !opacity-0 data-animate="!animate-[fade-in-up_0.6s_ease-out]"">
+            <div class="!flex !items-center !justify-between !mb-3">
+                <span class="!text-[13px] !font-semibold !text-gray-500 !flex !items-center !gap-1.5"><i data-lucide="clock" class="!w-4 !h-4 !text-orange-500"></i> Pending</span>
+                <span class="!text-[10px] !font-bold !text-orange-600 !bg-orange-50 !px-1.5 !py-0.5 !rounded-md">Review</span>
+            </div>
+            <h3 class="!text-3xl !font-black !text-gray-800">{{ kpis.pending_review_count }}</h3>
+        </div>
+        <!-- KPI 3 -->
+        <div class="!bg-white !rounded-md !p-5 !shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:!shadow-[0_8px_20px_-6px_rgba(0,0,0,0.1)] !transition-all !duration-300 !border !border-gray-100 !flex !flex-col !justify-between scroll-animate !opacity-0 data-animate="!animate-[fade-in-up_0.7s_ease-out]"">
+            <div class="!flex !items-center !justify-between !mb-3">
+                <span class="!text-[13px] !font-semibold !text-gray-500 !flex !items-center !gap-1.5"><i data-lucide="user-check" class="!w-4 !h-4 !text-green-500"></i> Users</span>
+                <span class="!text-[10px] !font-bold !text-green-600 !bg-green-50 !px-1.5 !py-0.5 !rounded-md">Active</span>
+            </div>
+            <h3 class="!text-3xl !font-black !text-gray-800">{{ kpis.total_verified_users }}</h3>
+        </div>
+        <!-- KPI 5 -->
+        <div class="!bg-white !rounded-md !p-5 !shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:!shadow-[0_8px_20px_-6px_rgba(0,0,0,0.1)] !transition-all !duration-300 !border !border-gray-100 !flex !flex-col !justify-between scroll-animate !opacity-0 data-animate="!animate-[fade-in-up_0.9s_ease-out]"">
+            <div class="!flex !items-center !justify-between !mb-3">
+                <span class="!text-[13px] !font-semibold !text-gray-500 !flex !items-center !gap-1.5"><i data-lucide="message-square" class="!w-4 !h-4 !text-indigo-500"></i> Forum</span>
+                <span class="!text-[10px] !font-bold !text-indigo-600 !bg-indigo-50 !px-1.5 !py-0.5 !rounded-md">Qs</span>
+            </div>
+            <h3 class="!text-3xl !font-black !text-gray-800">{{ kpis.total_forum_questions }}</h3>
+        </div>
+        <!-- KPI 6 -->
+        <div class="!bg-white !rounded-md !p-5 !shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:!shadow-[0_8px_20px_-6px_rgba(0,0,0,0.1)] !transition-all !duration-300 !border !border-gray-100 !flex !flex-col !justify-between scroll-animate !opacity-0 data-animate="!animate-[fade-in-up_1.0s_ease-out]"">
+            <div class="!flex !items-center !justify-between !mb-3">
+                <span class="!text-[13px] !font-semibold !text-gray-500 !flex !items-center !gap-1.5"><i data-lucide="message-circle" class="!w-4 !h-4 !text-violet-500"></i> Forum</span>
+                <span class="!text-[10px] !font-bold !text-violet-600 !bg-violet-50 !px-1.5 !py-0.5 !rounded-md">Ans</span>
+            </div>
+            <h3 class="!text-3xl !font-black !text-gray-800">{{ kpis.total_forum_answers }}</h3>
         </div>
     </div>
 
+    <!-- Charts & Activity Middle Row -->
+    <div class="!grid !grid-cols-1 lg:!grid-cols-3 !gap-5 !mb-2">
+        <!-- Activity Chart (2/3) -->
+        <div class="!col-span-1 lg:!col-span-2 !bg-white !rounded-md !p-6 !shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:!shadow-[0_8px_20px_-6px_rgba(0,0,0,0.1)] !transition-all !duration-300 !border !border-gray-100 scroll-animate !opacity-0 data-animate="!animate-[fade-in-up_1.0s_ease-out]" !flex !flex-col">
+            <div class="!flex !flex-col !mb-4">
+                <h3 class="!text-lg !font-bold !text-gray-900">Posts Published</h3>
+                <span class="!text-[13px] !text-gray-400">Daily publish activity (Last 30 Days)</span>
+            </div>
+            <div class="!relative !w-full !flex-grow !h-[260px]">
+                <canvas id="overviewChart"></canvas>
+            </div>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const ctx = document.getElementById('overviewChart');
+                if (!ctx) return;
+                
+                // gradient for line chart
+                let gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(56, 189, 248, 0.5)');   
+                gradient.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: {{ chart_labels|safe }},
+                        datasets: [{
+                            label: 'New Posts',
+                            data: {{ chart_values|safe }},
+                            borderColor: '#38bdf8',
+                            backgroundColor: gradient,
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#38bdf8',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        animation: { duration: 2000, easing: 'easeOutQuart' },
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { font: { size: 11, family: "'Inter', sans-serif" }, color: '#9ca3af' } },
+                            y: { grid: { color: 'rgba(0,0,0,0.03)', drawBorder: false }, ticks: { font: { size: 11, family: "'Inter', sans-serif" }, color: '#9ca3af' }, beginAtZero: true }
+                        }
+                    }
+                });
+            });
+            </script>
+        </div>
+
+        <!-- Recent Activity (1/3) -->
+        <div class="!col-span-1 !bg-white !rounded-md !p-6 !shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:!shadow-[0_8px_20px_-6px_rgba(0,0,0,0.1)] !transition-all !duration-300 !border !border-gray-100 scroll-animate !opacity-0 data-animate="!animate-[fade-in-up_1.1s_ease-out]" !flex !flex-col">
+            <div class="!flex !items-center !justify-between !mb-5">
+                <h3 class="!text-lg !font-bold !text-gray-900">Recent Activity</h3>
+                <span class="!text-[12px] !font-semibold !text-blue-500 !cursor-pointer hover:!text-blue-600 !transition-colors">View all</span>
+            </div>
+            <div class="!flex !flex-col !gap-4 !overflow-y-auto !scrollbar-thin !pr-2 !h-[250px]">
+                {% if recent_activity %}
+                    {% for activity in recent_activity %}
+                    <div class="!flex !items-start !gap-3 !p-2 -mx-2 !rounded-xl hover:!bg-gray-50/80 !transition-colors !cursor-default group">
+                        <div class="!w-10 !h-10 !rounded-xl !bg-gray-50 group-hover:!bg-white !shadow-sm !flex !items-center !justify-center !flex-shrink-0 !transition-all">
+                            <i data-lucide="{{ activity.icon }}" class="!w-4 !h-4 !text-gray-500 group-hover:!text-blue-500 !transition-colors"></i>
+                        </div>
+                        <div class="!flex-1 !min-w-0 !pt-0.5">
+                            <p class="!text-[13px] !leading-snug !m-0 !font-semibold !text-gray-800 !truncate">{{ activity.title }}</p>
+                            <p class="!text-[11px] !text-gray-500 !mt-0.5 !truncate">{{ activity.description }}</p>
+                        </div>
+                        <span class="!text-[10px] !font-medium !text-gray-400 !whitespace-nowrap !pt-1">{{ activity.timestamp|timesince|slice:":3" }} ago</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="!text-center !py-10 !text-gray-400">
+                        <i data-lucide="activity" class="!w-8 !h-8 !mx-auto !mb-3 !opacity-30"></i>
+                        <p class="!text-[13px]">No recent activities</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Row Charts -->
+    <div class="!grid !grid-cols-1 lg:!grid-cols-3 !gap-5">
+        <!-- Category Bar Chart (2/3) -->
+        <div class="!col-span-1 lg:!col-span-2 !bg-white !rounded-md !p-6 !shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:!shadow-[0_8px_20px_-6px_rgba(0,0,0,0.1)] !transition-all !duration-300 !border !border-gray-100 scroll-animate !opacity-0 data-animate="!animate-[fade-in-up_1.2s_ease-out]" !flex !flex-col">
+            <div class="!flex !flex-col !mb-4">
+                <h3 class="!text-lg !font-bold !text-gray-900">Top Categories</h3>
+                <span class="!text-[13px] !text-gray-400">Most published post categories</span>
+            </div>
+            <div class="!relative !w-full !flex-grow !h-[260px]">
+                <canvas id="categoryChart"></canvas>
+            </div>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const ctx = document.getElementById('categoryChart');
+                if (!ctx) return;
+                
+                // gradient for bar chart
+                let gradientBar = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+                gradientBar.addColorStop(0, 'rgba(99, 102, 241, 0.8)');   
+                gradientBar.addColorStop(1, 'rgba(168, 85, 247, 0.8)');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: {{ category_labels|safe }},
+                        datasets: [{
+                            label: 'Posts',
+                            data: {{ category_values|safe }},
+                            backgroundColor: gradientBar,
+                            borderRadius: { topLeft: 4, topRight: 4 },
+                            barPercentage: 0.5,
+                            maxBarThickness: 45,
+                            borderSkipped: 'bottom'
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        animation: { duration: 2500, easing: 'easeOutBounce' },
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { font: { size: 11, family: "'Inter', sans-serif" }, color: '#9ca3af' } },
+                            y: { grid: { color: 'rgba(0,0,0,0.03)', drawBorder: false, borderDash: [5, 5] }, ticks: { font: { size: 11, family: "'Inter', sans-serif" }, color: '#9ca3af', padding: 10 }, beginAtZero: true }
+                        }
+                    }
+                });
+            });
+            </script>
+            
+            <!-- Extra Category Information -->
+            <div class="!mt-4 !pt-4 !border-t !border-gray-100 !flex !items-center !justify-between">
+                <div class="!flex !flex-col">
+                    <span class="!text-[11px] !font-semibold !text-gray-400 !uppercase !tracking-wider">Top Category</span>
+                    <span class="!text-sm !font-bold !text-gray-800">
+                        {% if category_list %}
+                            {% for cat, count in category_list %}
+                                {% if forloop.first %}{{ cat }} ({{ count }}){% endif %}
+                            {% endfor %}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="!flex !flex-col !text-right">
+                    <span class="!text-[11px] !font-semibold !text-gray-400 !uppercase !tracking-wider">Total Published</span>
+                    <span class="!text-sm !font-bold !text-blue-500">{{ kpis.total_published_posts }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Demographics Chart (1/3) -->
+        <div class="!col-span-1 !bg-white !rounded-md !p-6 !shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:!shadow-[0_8px_20px_-6px_rgba(0,0,0,0.1)] !transition-all !duration-300 !border !border-gray-100 scroll-animate !opacity-0 data-animate="!animate-[fade-in-up_1.3s_ease-out]" !flex !flex-col">
+            <div class="!flex !flex-col !mb-2">
+                <h3 class="!text-lg !font-bold !text-gray-900">User Demographics</h3>
+                <span class="!text-[13px] !text-gray-400">Verified vs Unverified accounts</span>
+            </div>
+            <div class="!relative !w-full !flex-grow !flex !justify-center !items-center !h-[260px]">
+                <canvas id="userChart"></canvas>
+            </div>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const ctx = document.getElementById('userChart');
+                if (!ctx) return;
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: {{ user_labels|safe }},
+                        datasets: [{
+                            data: {{ user_values|safe }},
+                            backgroundColor: ['#22c55e', '#f43f5e'],
+                            borderWidth: 0,
+                            borderRadius: 4,
+                            spacing: 2,
+                            hoverOffset: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        animation: { duration: 2000, easing: 'easeInOutElastic' },
+                        plugins: { 
+                            legend: { position: 'bottom', labels: { font: { size: 12, family: "'Inter', sans-serif" }, padding: 20, usePointStyle: true, pointStyle: 'circle' } }
+                        },
+                        cutout: '75%',
+                        layout: { padding: 10 }
+                    }
+                });
+            });
+            </script>
+            
+            <!-- Extra Demographics Information -->
+            <div class="!mt-4 !pt-4 !border-t !border-gray-100 !grid !grid-cols-2 !gap-4">
+                <div class="!text-center">
+                    <span class="!text-[11px] !font-semibold !text-gray-400 !uppercase !tracking-wider">Verified</span>
+                    <p class="!text-lg !font-bold !text-gray-800 !mt-1">{{ kpis.total_verified_users }}</p>
+                </div>
+                <div class="!text-center">
+                    <span class="!text-[11px] !font-semibold !text-gray-400 !uppercase !tracking-wider">Unverified</span>
+                    <p class="!text-lg !font-bold !text-gray-800 !mt-1">{{ kpis.total_unverified_users }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forum Activity Bottom Row -->
+    <div class="!grid !grid-cols-1 !gap-5 !mb-2">
+        <div class="!bg-white !rounded-md !p-6 !shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:!shadow-[0_8px_20px_-6px_rgba(0,0,0,0.1)] !transition-all !duration-300 !border !border-gray-100 scroll-animate !opacity-0 data-animate="!animate-[fade-in-up_1.4s_ease-out]" !flex !flex-col">
+            <div class="!flex !flex-col !mb-4">
+                <h3 class="!text-lg !font-bold !text-gray-900">Forum Activity</h3>
+                <span class="!text-[13px] !text-gray-400">Questions and Answers per day (Last 30 Days)</span>
+            </div>
+            <div class="!relative !w-full !flex-grow !h-[300px]">
+                <canvas id="forumChart"></canvas>
+            </div>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const ctx = document.getElementById('forumChart');
+                if (!ctx) return;
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: {{ forum_chart_labels|safe }},
+                        datasets: [
+                            {
+                                label: 'Questions',
+                                data: {{ forum_question_values|safe }},
+                                borderColor: '#8b5cf6',
+                                backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                fill: true,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#8b5cf6',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            },
+                            {
+                                label: 'Answers',
+                                data: {{ forum_answer_values|safe }},
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                fill: true,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#10b981',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        animation: { duration: 2000, easing: 'easeOutQuart' },
+                        plugins: { 
+                            legend: { 
+                                display: true, 
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    pointStyle: 'circle',
+                                    padding: 20,
+                                    font: { family: "'Inter', sans-serif", size: 12, weight: '500' },
+                                    color: '#4b5563'
+                                }
+                            } 
+                        },
+                        scales: {
+                            y: { beginAtZero: true, border: { display: false }, grid: { color: 'rgba(0,0,0,0.03)', drawTicks: false }, ticks: { padding: 10, color: '#9ca3af', font: {size: 11, family: 'Inter'} } },
+                            x: { border: { display: false }, grid: { display: false }, ticks: { padding: 10, color: '#9ca3af', font: {size: 11, family: 'Inter'} } }
+                        },
+                        interaction: { intersect: false, mode: 'index' }
+                    }
+                });
+            });
+            </script>
+        </div>
+    </div>
 </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    // Remove the default opacity 0 class
+                    el.classList.remove('!opacity-0');
+                    // Add the Tailwind animation class
+                    el.classList.add(el.dataset.animate);
+                    // Stop observing once animated
+                    observer.unobserve(el);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+
+        document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
+    });
+    </script>
 {% endblock %}
+

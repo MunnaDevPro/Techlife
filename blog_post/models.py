@@ -314,6 +314,7 @@ class compnay_logo(models.Model):
         null=True,
     )
     company_image_url = models.URLField(max_length=500, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return self.name

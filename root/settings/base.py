@@ -90,7 +90,6 @@ TEMPLATES = [
         "DIRS": ["templates"],
         "OPTIONS": {
             "loaders": [
-                "django_cotton.apps.CottonLoader",
                 "django.template.loaders.filesystem.Loader",
                 "django.template.loaders.app_directories.Loader",
             ],

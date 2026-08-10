@@ -13,7 +13,7 @@ import TableRow from 'https://esm.sh/@tiptap/extension-table-row@2.1.13';
 import TableHeader from 'https://esm.sh/@tiptap/extension-table-header@2.1.13';
 import TableCell from 'https://esm.sh/@tiptap/extension-table-cell@2.1.13';
 
-document.addEventListener('DOMContentLoaded', () => {
+function initTiptap() {
     const textarea = document.getElementById('post_description');
     if (!textarea) return;
 
@@ -22,6 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('create-blog-form');
     if (!form) return;
+
+    // Prevent duplicate initializations
+    if (window.tiptapEditor) {
+        try {
+            window.tiptapEditor.destroy();
+        } catch (e) {
+            console.error(e);
+        }
+        window.tiptapEditor = null;
+    }
 
     // Initialize Tiptap Editor
     const editor = new Editor({
@@ -67,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         content: textarea.value,
         editorProps: {
             attributes: {
-                class: 'prose-content min-h-[400px] max-h-[600px] overflow-y-auto outline-none p-4 w-full bg-white focus:ring-0 focus:border-transparent ProseMirror'
+                class: 'prose-content min-h-[400px] resize-y overflow-auto outline-none p-4 w-full bg-white focus:ring-0 focus:border-transparent ProseMirror'
             }
         },
         onUpdate({ editor }) {
@@ -205,4 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     editor.on('transaction', updateActiveStates);
-});
+}
+
+// Bind initialization to DOM load and HTMX swaps
+document.addEventListener('DOMContentLoaded', initTiptap);
+document.addEventListener('htmx:afterSwap', initTiptap);

@@ -1,4 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django import forms
+from forum.models import Question, Answer
 from django.urls import reverse
 from django.db.models import Count
 from django.contrib import messages
@@ -22,6 +24,39 @@ def question_list(request):
         "questions": questions,
     })
     return render(request, "dashboard/forum/question_list.html", ctx)
+
+class QuestionEditForm(forms.ModelForm):
+    content = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'id': 'post_description',
+            'class': '!w-full !min-h-[300px] !p-4 !rounded-xl !border !border-gray-200 !bg-gray-50/50 focus:!bg-white focus:!ring-2 focus:!ring-blue-500/20 focus:!border-blue-500 !transition-all !text-[14px]'
+        })
+    )
+
+    class Meta:
+        model = Question
+        fields = ['title', 'content', 'image']
+
+@staff_required
+def question_edit(request, pk):
+    """Edit a forum question."""
+    question = get_object_or_404(Question, pk=pk)
+    
+    if request.method == "POST":
+        form = QuestionEditForm(request.POST, request.FILES, instance=question)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Question updated successfully.")
+            return redirect("dashboard:forum_questions")
+    else:
+        form = QuestionEditForm(instance=question)
+        
+    ctx = get_dashboard_context(request, f"Edit Question", "Forum", "dashboard:forum_questions")
+    ctx.update({
+        "question": question,
+        "form": form
+    })
+    return render(request, "dashboard/forum/question_edit.html", ctx)
 
 @staff_required
 @require_POST

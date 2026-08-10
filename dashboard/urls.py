@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from dashboard.views import views
 from dashboard.views.overview import overview
 from dashboard.views import content
@@ -12,6 +13,7 @@ from dashboard.views import site_config
 app_name = "dashboard"
 
 urlpatterns = [
+    path("login/", auth_views.LoginView.as_view(template_name="dashboard/login.html"), name="login"),
     path("", overview, name="overview"),
     
     # Content
@@ -20,11 +22,12 @@ urlpatterns = [
     path("content/posts/<int:pk>/reject/", content.post_reject, name="post_reject"),
     path("content/posts/<int:pk>/delete/", content.post_delete, name="post_delete"),
     path("content/posts/bulk/", content.post_bulk_action, name="post_bulk"),
+    path("content/posts/<int:pk>/status/", content.post_update_status, name="post_status_update"),
     path("content/posts/create/", content.post_create, name="post_create"),
     path("content/posts/<int:pk>/edit/", content.post_detail_edit, name="post_edit"),
     path("content/posts/<int:post_pk>/comments/<int:comment_pk>/delete/", content.post_comment_delete, name="post_comment_delete"),
     
-    path("content/pending/", content.subcategory_list_crud, name="content_pending"),
+    path("content/pending/", content.post_list, name="content_pending"),
     path("content/subcategories/", content.subcategory_list_crud, name="content_subcategories"),
     path("content/categories/", content.category_list_crud, name="content_categories"),
     path("content/tags/", content.tag_list_crud, name="content_tags"),
@@ -33,6 +36,7 @@ urlpatterns = [
     
     # Forum
     path("forum/questions/", forum.question_list, name="forum_questions"),
+    path("forum/questions/<int:pk>/edit/", forum.question_edit, name="forum_question_edit"),
     path("forum/questions/<int:pk>/delete/", forum.question_delete, name="question_delete"),
     path("forum/answers/", forum.answer_list, name="forum_answers"),
     path("forum/answers/<int:pk>/delete/", forum.answer_delete, name="answer_delete"),
@@ -53,6 +57,7 @@ urlpatterns = [
     # Users
     path("users/all/", users.user_list, name="users_all"),
     path("users/<int:pk>/", users.user_detail, name="user_detail"),
+    path("users/<int:pk>/delete/", users.user_delete, name="user_delete"),
     path("users/verification/", users.verification_requests, name="users_verification"),
     path("users/<int:pk>/verify/", users.manual_verify_user, name="user_verify"),
     path("users/roles/", users.roles_permissions, name="users_roles"),

@@ -16,39 +16,56 @@
 
     <!-- Subcategories Table List -->
     <c-ui.card title="Existing Subcategories" subtitle="{{ subcategories|length }} subcategories">
-        <c-ui.table :headers="['Name', 'Parent Category', 'Slug', 'Description', 'Posts', 'Actions']">
-            {% for sub in subcategories %}
-            <tr>
-                <td>{{ sub.name }}</td>
-                <td>
-                    <c-ui.badge variant="info">{{ sub.category.name }}</c-ui.badge>
-                </td>
-                <td>
-                    <code class="text-[11px] px-1.5 py-0.5 rounded" style="background:var(--surface-3);color:var(--text-muted)">{{ sub.slug }}</code>
-                </td>
-                <td style="color:var(--text-muted)">{{ sub.description|default:"—" }}</td>
-                <td><c-ui.badge variant="neutral">{{ sub.post_count }}</c-ui.badge></td>
-                <td>
-                    <form action="{% url 'dashboard:content_subcategories' %}" method="post"
-                          onsubmit="return confirm('Delete this subcategory?')" class="inline">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="id" value="{{ sub.id }}">
-                        <button type="submit" class="ft-btn ft-btn-danger ft-btn-sm">
-                            <i data-lucide="trash-2"></i> Delete
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" class="text-center py-8" style="color:var(--text-muted)">
-                    <i data-lucide="inbox" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
-                    No subcategories found
-                </td>
-            </tr>
-            {% endfor %}
-        </c-ui.table>
+        <div class="ft-table-wrap">
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Parent Category</th>
+                        <th>Slug</th>
+                        <th>Description</th>
+                        <th>Posts</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in subcategories %}
+                    <tr>
+                        <td style="font-weight: 500; color: var(--text);">{{ sub.name }}</td>
+                        <td>
+                            <c-ui.badge variant="info">{{ sub.category.name }}</c-ui.badge>
+                        </td>
+                        <td>
+                            <code class="text-[11px] px-1.5 py-0.5 rounded" style="background: var(--surface-3); color: var(--text-muted);">{{ sub.slug }}</code>
+                        </td>
+                        <td style="color: var(--text-muted);">{{ sub.description|default:"—" }}</td>
+                        <td><c-ui.badge variant="neutral">{{ sub.post_count }}</c-ui.badge></td>
+                        <td>
+                            <form action="{% url 'dashboard:content_subcategories' %}" method="post"
+                                  onsubmit="return confirm('Delete this subcategory?')" class="inline-block">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="{{ sub.id }}">
+                                <button type="submit" class="ft-btn ft-btn-danger ft-btn-sm" style="padding: 4px 10px;">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center" style="padding: 40px 14px; color: var(--text-muted);">
+                            <div class="flex flex-col items-center gap-2">
+                                <i data-lucide="layers" class="w-8 h-8 opacity-30"></i>
+                                <span>No subcategories found</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </c-ui.card>
 
     <!-- Right Slide-Over Subcategory Form Drawer -->

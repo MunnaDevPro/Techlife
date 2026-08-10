@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from dashboard.permissions import staff_required
+from notification.models import Notification
 
 SIDEBAR_MENU = [
     {
@@ -89,12 +90,14 @@ SIDEBAR_MENU = [
 ]
 
 def get_dashboard_context(request, page_title, active_menu, active_submenu=None):
+    unread_notifications = Notification.objects.filter(is_read=False).count()
     return {
         "page_title": page_title,
         "active_menu": active_menu,
         "active_submenu": active_submenu,
         "sidebar_menu": SIDEBAR_MENU,
         "base_template": "dashboard/partial.html" if request.htmx else "dashboard/base.html",
+        "unread_notifications": unread_notifications,
     }
 
 # View list:
@@ -220,5 +223,13 @@ def settings_maintenance(request):
 
 @staff_required
 def notifications(request):
+    # If they click 'mark all read' (optional POST, or we just do it on view load)
+    # Actually, a professional approach is to mark them as read when the list is viewed.
+    Notification.objects.filter(is_read=False).update(is_read=True)
+    
+    notifications_list = Notification.objects.all().order_by('-created_at')[:50]
+    
     ctx = get_dashboard_context(request, "Notifications Center", "Notifications")
-    return render(request, "dashboard/placeholder.html", ctx)
+    ctx["notifications_list"] = notifications_list
+    
+    return render(request, "dashboard/notifications.html", ctx)

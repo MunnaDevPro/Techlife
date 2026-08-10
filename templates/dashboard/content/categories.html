@@ -9,11 +9,11 @@
     </div>
 
     <!-- Create form -->
-    <c-ui.card title="Add New Category" card_padding="lg">
-        <form method="post" class="flex flex-col gap-6">
+    <c-ui.card title="Add New Category">
+        <form method="post" class="flex flex-col gap-5">
             {% csrf_token %}
             <input type="hidden" name="action" value="create">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <c-ui.input name="name" label="Name" placeholder="Category name" required="true"
                     icon="tag"></c-ui.input>
                 <c-ui.input name="icon" label="FontAwesome Icon" value="fa-solid fa-layer-group"
@@ -21,55 +21,108 @@
                 <c-ui.input name="description" label="Description" placeholder="Short description (optional)"
                     icon="align-left"></c-ui.input>
             </div>
-            <div class="flex justify-start">
+            <div class="flex justify-end border-t pt-4" style="border-color: var(--border)">
                 <c-ui.button type="submit" variant="primary" label="Add Category" icon="plus"></c-ui.button>
             </div>
         </form>
     </c-ui.card>
 
     <!-- Existing categories -->
-    <c-ui.card title="Existing Categories" subtitle="{{ categories|length }} categories" card_padding="lg">
-        <c-ui.table :headers="['Name', 'Slug', 'Icon Class', 'Description', 'Posts', 'Actions']">
-            {% for cat in categories %}
-            <tr>
-                <td>{{ cat.name }}</td>
-                <td>
-                    <code class="text-[11px] px-1.5 py-0.5 rounded"
-                        style="background:var(--surface-3);color:var(--text-muted)">
-                        {{ cat.slug }}
-                    </code>
-                </td>
-                <td>
-                    <code class="text-[11px] px-1.5 py-0.5 rounded"
-                        style="background:var(--surface-3);color:var(--text-muted)">
-                        {{ cat.font_awesome_icon }}
-                    </code>
-                </td>
-                <td style="color:var(--text-muted)">{{ cat.description|default:"—" }}</td>
-                <td>
-                    <c-ui.badge variant="neutral">{{ cat.post_count }}</c-ui.badge>
-                </td>
-                <td>
-                    <form action="{% url 'dashboard:content_categories' %}" method="post"
-                        onsubmit="return confirm('Delete this category?')" class="inline">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="id" value="{{ cat.id }}">
-                        <c-ui.button type="submit" variant="danger" size="sm" icon="trash-2"
-                            label="Delete"></c-ui.button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" class="text-center py-8" style="color:var(--text-muted)">
-                    <i data-lucide="inbox" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
-                    No categories found
-                </td>
-            </tr>
-            {% endfor %}
-        </c-ui.table>
+    <c-ui.card title="Existing Categories" subtitle="{{ categories|length }} categories">
+        <div class="ft-table-wrap">
+            <table class="ft-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Slug</th>
+                        <th>Icon Class</th>
+                        <th>Description</th>
+                        <th>Posts</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat in categories %}
+                    <tr>
+                        <td>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-lg shadow-sm border border-blue-100 bg-blue-50 text-blue-600">
+                                    <i class="{{ cat.font_awesome_icon|default:'fa-solid fa-layer-group' }} text-[18px]"></i>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-bold" style="color: var(--text);">{{ cat.name }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <code class="text-[11px] px-1.5 py-0.5 rounded"
+                                style="background: var(--surface-3); color: var(--text-muted);">{{ cat.slug }}</code>
+                        </td>
+                        <td>
+                            <code class="text-[11px] px-1.5 py-0.5 rounded"
+                                style="background: var(--surface-3); color: var(--text-muted);">{{ cat.font_awesome_icon }}</code>
+                        </td>
+                        <td style="color: var(--text-muted);">{{ cat.description|default:"—" }}</td>
+                        <td>
+                            <c-ui.badge variant="neutral">{{ cat.post_count }}</c-ui.badge>
+                        </td>
+                        <td>
+                            <button type="button" 
+                                onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'delete-cat-{{ cat.id }}' } }))" 
+                                class="ft-btn ft-btn-danger ft-btn-sm" style="padding: 4px 10px;">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center" style="padding: 40px 14px; color: var(--text-muted);">
+                            <div class="flex flex-col items-center gap-2">
+                                <i data-lucide="inbox" class="w-8 h-8 opacity-30"></i>
+                                <span>No categories found</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </c-ui.card>
 
 </div>
+
+<!-- Delete Confirmation Modals -->
+{% for cat in categories %}
+<c-ui.modal id="delete-cat-{{ cat.id }}" title="Confirm Delete">
+    <div class="!flex !items-start !gap-4">
+        <!-- Icon -->
+        <div class="!flex-shrink-0 !w-10 !h-10 !bg-red-100 !rounded-full !flex !items-center !justify-center !mt-1">
+            <i data-lucide="trash-2" class="!w-5 !h-5 !text-red-600"></i>
+        </div>
+        <!-- Content -->
+        <div class="!flex !flex-col !gap-1.5">
+            <h4 class="!text-[15px] !font-bold !text-gray-900 dark:!text-white">Permanently delete category?</h4>
+            <p class="!text-[13px] !leading-relaxed !text-gray-500 dark:!text-gray-400">
+                Are you sure you want to delete the category <strong class="!font-semibold !text-gray-900 dark:!text-white">"{{ cat.name }}"</strong>? This action cannot be undone and the category will be permanently removed.
+            </p>
+        </div>
+    </div>
+    <c-slot name="footer">
+        <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'delete-cat-{{ cat.id }}' } }))" 
+            class="!inline-flex !items-center !justify-center !gap-2 !px-4 !py-2 !rounded-md !border !border-gray-300 !bg-white !text-[13px] !font-medium !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !cursor-pointer">
+            Cancel
+        </button>
+        <form action="{% url 'dashboard:content_categories' %}" method="post" class="!inline-flex !m-0">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="{{ cat.id }}">
+            <button type="submit" class="!inline-flex !items-center !justify-center !gap-2 !px-4 !py-2 !rounded-md !bg-red-600 !text-[13px] !font-medium !text-white hover:!bg-red-700 !transition-all !cursor-pointer">
+                Delete
+            </button>
+        </form>
+    </c-slot>
+</c-ui.modal>
+{% endfor %}
+
 {% endblock %}

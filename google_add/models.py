@@ -18,7 +18,7 @@ class Advertisement(models.Model):
     ]
     
     title = models.CharField(max_length=200)
-    ad_code = RichTextField()
+    ad_code = models.TextField()
     order = models.PositiveIntegerField(
         choices=POSITION_CHOICES,
         unique=True,

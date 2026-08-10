@@ -1,5 +1,6 @@
 @import "tailwindcss";
-
+@source "./templates";
+@source "./dashboard";
 :root {
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
@@ -106,4 +107,18 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 3;
     }
+}
+
+/* Global Data Table Styles */
+.ft-data-table {
+    @apply w-full text-left border-collapse;
+}
+.ft-data-table th {
+    @apply px-4 py-3 text-[12px] font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200 bg-gray-50;
+}
+.ft-data-table td {
+    @apply px-4 py-3 border-b border-gray-100 text-[13px] text-gray-700 align-middle;
+}
+.ft-data-table tbody tr {
+    @apply hover:bg-gray-50/50 transition-colors;
 }

@@ -3,60 +3,165 @@
 {% block content %}
 <div class="flex flex-col gap-5">
     <div>
-        <h2 class="ft-page-title">Author Performance Analysis</h2>
-        <p class="ft-page-subtitle">Aggregate post performance and writer metrics</p>
+        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Author Performance Analysis</h2>
+        <p class="text-[14px] text-gray-500 mt-1">Discover your top performing authors ranked by page views and published articles.</p>
     </div>
 
     <!-- Filters -->
-    <c-ui.card title="Controls">
-        <form method="get" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <c-ui.select name="days" label="Time Range" onchange="this.form.submit()">
-                <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 Days</option>
-                <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 Days</option>
-                <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 Days</option>
-            </c-ui.select>
+    <div class="bg-white border border-gray-200 rounded-xl !py-5 !px-6 !mt-2 !mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
+                <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-gray-900 text-[15px]">Data Controls</h3>
+                <p class="text-[12px] text-gray-500">Filter and sort author performance data</p>
+            </div>
+        </div>
+        
+        <form id="author-filters-form" method="get" class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto" x-data="{ days: {{ days }}, sort: '{{ sort_by }}' }">
+            <input type="hidden" name="days" x-model="days">
+            <input type="hidden" name="sort" x-model="sort">
+            
+            <!-- Time Range Dropdown -->
+            <div class="relative w-full sm:w-[170px]" x-data="{ open: false }">
+                <button type="button" @click="open = !open" @click.away="open = false" 
+                    class="flex items-center justify-between w-full !pl-4 !pr-3.5 !py-2.5 text-[13.5px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:border-transparent cursor-pointer transition-all hover:bg-gray-50 hover:border-gray-300">
+                    <div class="flex items-center gap-2.5">
+                        <i data-lucide="calendar" class="w-4 h-4 text-gray-400 group-hover:text-[#2563eb] transition-colors"></i>
+                        <span x-text="'Last ' + days + ' Days'">Last {{ days }} Days</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="{'rotate-180': open}"></i>
+                </button>
+                
+                <div x-show="open" x-transition.opacity.duration.200ms style="display: none;"
+                    class="absolute left-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden py-1.5 ring-1 ring-black/5">
+                    <button type="button" @click="days = 7; open = false; document.getElementById('author-filters-form').submit();"
+                        class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
+                        :class="days == 7 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
+                        Last 7 Days
+                    </button>
+                    <button type="button" @click="days = 30; open = false; document.getElementById('author-filters-form').submit();"
+                        class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
+                        :class="days == 30 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
+                        Last 30 Days
+                    </button>
+                    <button type="button" @click="days = 90; open = false; document.getElementById('author-filters-form').submit();"
+                        class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
+                        :class="days == 90 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
+                        Last 90 Days
+                    </button>
+                </div>
+            </div>
 
-            <c-ui.select name="sort" label="Sort By" onchange="this.form.submit()">
-                <option value="views" {% if sort_by == 'views' %}selected{% endif %}>Total Views</option>
-                <option value="posts" {% if sort_by == 'posts' %}selected{% endif %}>Articles Published</option>
-                <option value="avg" {% if sort_by == 'avg' %}selected{% endif %}>Average Views</option>
-            </c-ui.select>
+            <!-- Sort By Dropdown -->
+            <div class="relative w-full sm:w-[200px]" x-data="{ open: false, sortLabels: {'views': 'Total Views', 'posts': 'Articles Published', 'avg': 'Average Views'} }">
+                <button type="button" @click="open = !open" @click.away="open = false" 
+                    class="flex items-center justify-between w-full !pl-4 !pr-3.5 !py-2.5 text-[13.5px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:border-transparent cursor-pointer transition-all hover:bg-gray-50 hover:border-gray-300">
+                    <div class="flex items-center gap-2.5">
+                        <i data-lucide="arrow-down-up" class="w-4 h-4 text-gray-400 group-hover:text-[#2563eb] transition-colors"></i>
+                        <span x-text="sortLabels[sort]">Sort By</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="{'rotate-180': open}"></i>
+                </button>
+                
+                <div x-show="open" x-transition.opacity.duration.200ms style="display: none;"
+                    class="absolute right-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden py-1.5 ring-1 ring-black/5">
+                    <button type="button" @click="sort = 'views'; open = false; document.getElementById('author-filters-form').submit();"
+                        class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
+                        :class="sort == 'views' ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
+                        Total Views
+                    </button>
+                    <button type="button" @click="sort = 'posts'; open = false; document.getElementById('author-filters-form').submit();"
+                        class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
+                        :class="sort == 'posts' ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
+                        Articles Published
+                    </button>
+                    <button type="button" @click="sort = 'avg'; open = false; document.getElementById('author-filters-form').submit();"
+                        class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
+                        :class="sort == 'avg' ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
+                        Average Views
+                    </button>
+                </div>
+            </div>
         </form>
-    </c-ui.card>
+    </div>
 
     <!-- Table -->
-    <c-ui.card title="Author Rankings">
-        <c-ui.table :headers="['Rank', 'Author', 'Total Views', 'Articles', 'Avg Views/Post']">
-            {% for item in authors %}
-            <tr>
-                <td class="font-bold" style="color:var(--text-muted)">#{{ forloop.counter }}</td>
-                <td>
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold flex-shrink-0"
-                             style="background:var(--primary-light);color:var(--primary)">
-                            {{ item.author.email|slice:":2"|upper }}
+    <c-ui.card title="Author Rankings" subtitle="Author performance metrics" class="border-gray-200">
+        <div class="!mt-2 overflow-x-auto">
+            <c-ui.table>
+                <c-slot name="header">
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6 text-center w-24">Rank</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Author</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Total Views</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Articles Published</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Avg Views/Post</th>
+                </c-slot>
+                {% for item in authors %}
+                <tr class="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
+                    <td class="!py-2.5 !px-6 text-center">
+                        {% if forloop.counter == 1 %}
+                            <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-amber-200">1</div>
+                        {% elif forloop.counter == 2 %}
+                            <div class="w-7 h-7 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-gray-300">2</div>
+                        {% elif forloop.counter == 3 %}
+                            <div class="w-7 h-7 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-orange-200">3</div>
+                        {% else %}
+                            <span class="font-bold text-gray-400 text-[13px]">#{{ forloop.counter }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="!py-2.5 !px-6">
+                        <div class="flex items-center gap-3">
+                            {% if item.author.profile_picture %}
+                                <img src="{{ item.author.profile_picture.url }}" alt="{{ item.author.first_name }}" class="w-9 h-9 rounded-full object-cover shadow-sm ring-1 ring-gray-200 flex-shrink-0" />
+                            {% else %}
+                                <div class="w-9 h-9 rounded-full bg-blue-100 text-[#2563eb] flex items-center justify-center text-[13px] font-bold shadow-sm ring-1 ring-blue-200/50 flex-shrink-0">
+                                    {{ item.author.email|slice:":2"|upper }}
+                                </div>
+                            {% endif %}
+                            <div class="flex flex-col">
+                                {% if item.author.first_name or item.author.last_name %}
+                                    <span class="font-bold text-gray-900 text-[14px]">{{ item.author.first_name }} {{ item.author.last_name }}</span>
+                                    <span class="text-gray-500 text-[12px]">{{ item.author.email }}</span>
+                                {% else %}
+                                    <span class="font-bold text-gray-900 text-[14px]">{{ item.author.email }}</span>
+                                {% endif %}
+                            </div>
                         </div>
-                        <div>
-                            <p class="font-semibold text-[13px] m-0" style="color:var(--text)">{{ item.author.first_name }} {{ item.author.last_name }}</p>
-                            <p class="text-[10px] m-0" style="color:var(--text-muted)">{{ item.author.email }}</p>
+                    </td>
+                    <td class="!py-2.5 !px-6">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 !px-3 !py-1 text-[13px] font-bold text-[#2563eb]">
+                            <i data-lucide="trending-up" class="w-3.5 h-3.5 text-blue-500"></i>
+                            {{ item.total_views|default:0 }}
+                        </span>
+                    </td>
+                    <td class="!py-2.5 !px-6">
+                        <div class="flex items-center gap-1.5 text-gray-700 font-medium text-[13.5px]">
+                            <i data-lucide="file-text" class="w-4 h-4 text-gray-400"></i>
+                            {{ item.post_count }} <span class="text-gray-500 text-[12.5px] font-normal">posts</span>
                         </div>
-                    </div>
-                </td>
-                <td class="font-bold">{{ item.total_views|default:0 }}</td>
-                <td style="color:var(--text-muted)">{{ item.post_count }} posts</td>
-                <td>
-                    <c-ui.badge variant="success">{{ item.avg_views }} avg</c-ui.badge>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="text-center py-8" style="color:var(--text-muted)">
-                    <i data-lucide="users" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
-                    No author performance data recorded
-                </td>
-            </tr>
-            {% endfor %}
-        </c-ui.table>
+                    </td>
+                    <td class="!py-2.5 !px-6">
+                        <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 !px-2.5 !py-1 text-[13px] font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+                            {{ item.avg_views }} <span class="text-[11px] font-medium text-emerald-600/80 uppercase">avg</span>
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="!px-6 !py-16 text-center border-t border-gray-100">
+                        <div class="flex flex-col items-center justify-center text-gray-500">
+                            <div class="bg-gray-50 !p-4 rounded-full mb-4 border border-gray-100">
+                                <i data-lucide="users" class="w-10 h-10 text-gray-400"></i>
+                            </div>
+                            <p class="text-[15px] font-medium text-gray-600">No author performance data recorded.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </c-ui.table>
+        </div>
     </c-ui.card>
 </div>
 {% endblock %}

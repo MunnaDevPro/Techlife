@@ -3,35 +3,63 @@
 {% block content %}
 <div class="flex flex-col gap-5">
     <div>
-        <h2 class="ft-page-title">Verification Requests</h2>
-        <p class="ft-page-subtitle">Manually verify users whose emails are stuck</p>
+        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Verification Requests</h2>
+        <p class="text-[14px] text-gray-500 mt-1">Manually verify and activate users pending email confirmation.</p>
     </div>
 
-    <c-ui.card title="Pending Verification" subtitle="{{ users|length }} pending">
-        <c-ui.table :headers="['Email', 'Name', 'Date Joined', 'Status', 'Actions']">
-            {% for u in users %}
-            <tr>
-                <td>{{ u.email }}</td>
-                <td style="color:var(--text-muted)">{{ u.first_name }} {{ u.last_name }}</td>
-                <td class="text-[11px]" style="color:var(--text-muted)">{{ u.date_joined|date:"Y-m-d H:i" }}</td>
-                <td><c-ui.badge variant="warning" dot="true">Unverified</c-ui.badge></td>
-                <td>
-                    <form action="{% url 'dashboard:user_verify' u.pk %}" method="post"
-                          onsubmit="return confirm('Manually verify this user?')" class="inline">
-                        {% csrf_token %}
-                        <c-ui.button type="submit" variant="accent" size="sm" icon="check-circle" label="Verify User"></c-ui.button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="text-center py-8" style="color:var(--text-muted)">
-                    <i data-lucide="check-circle" class="w-7 h-7 mx-auto mb-2 block opacity-40" style="color:#10b981"></i>
-                    All users are verified!
-                </td>
-            </tr>
-            {% endfor %}
-        </c-ui.table>
+    <c-ui.card title="Pending Verification" subtitle="Users awaiting manual approval ({{ users|length }})" class="border-gray-200 shadow-sm">
+        <div class="!mt-2">
+            <c-ui.table>
+                <c-slot name="header">
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">User Account</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">Date Joined</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">Status</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6 text-right">Actions</th>
+                </c-slot>
+                {% for u in users %}
+                <tr class="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
+                    <td class="!py-4 !px-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shadow-sm">
+                                <i data-lucide="user" class="w-4.5 h-4.5"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-gray-900 text-[15px]">{{ u.first_name }} {{ u.last_name }}</span>
+                                <span class="text-gray-500 text-[13px] font-medium mt-0.5">{{ u.email }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="!py-4 !px-6">
+                        <span class="text-gray-600 text-[14px] font-medium">{{ u.date_joined|date:"M j, Y - H:i" }}</span>
+                    </td>
+                    <td class="!py-4 !px-6">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 !px-3 !py-1.5 text-[13px] font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">
+                            <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Unverified
+                        </span>
+                    </td>
+                    <td class="!py-4 !px-6 text-right">
+                        <form action="{% url 'dashboard:user_verify' u.pk %}" method="post" onsubmit="return confirm('Manually verify {{ u.email }}?')" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="inline-flex items-center gap-2 !px-4 !py-2 rounded-lg bg-emerald-600 text-white font-medium text-[13.5px] shadow-sm hover:bg-emerald-700 transition-all cursor-pointer">
+                                <i data-lucide="check-circle" class="w-4 h-4"></i> Verify User
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="!px-6 !py-16 text-center border-t border-gray-100">
+                        <div class="flex flex-col items-center justify-center text-gray-500">
+                            <div class="bg-emerald-50 !p-5 rounded-full mb-4 border border-emerald-100 shadow-sm">
+                                <i data-lucide="check-circle-2" class="w-10 h-10 text-emerald-500"></i>
+                            </div>
+                            <p class="text-[15px] font-medium text-gray-600">Great! All users in the system are fully verified.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </c-ui.table>
+        </div>
     </c-ui.card>
 </div>
 {% endblock %}

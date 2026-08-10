@@ -1,4 +1,4 @@
-﻿{% load static tailwind_cli %}
+{% load static tailwind_cli %}
 {% comment %}
    c-app-shell — Full page shell
    Replaces extends 'base/admin_base.html' / 'base/staff_base.html'
@@ -187,7 +187,7 @@
   {% endif %}
 
   {# ── Main area ──────────────────────────────────────────────────────── #}
-  <div id="ft-main-content" class="ft-main flex flex-col min-h-screen transition-all duration-220 relative">
+  <div id="ft-main-content" class="ft-main flex flex-col min-h-screen transition-all duration-220 relative min-w-0">
 
     {# ── Soft Ambient Mesh Blur Background (Light Yellow, Light Sky Blue, Light Purple, Light Indigo) ── #}
     <div class="ft-ambient-bg pointer-events-none fixed inset-0 overflow-hidden z-0" aria-hidden="true">
@@ -210,7 +210,7 @@
     {% endif %}
 
     {# ── Page content ────────────────────────────────────────────────── #}
-    <main class="flex-1 flex flex-col p-4 overflow-y-auto relative z-10">
+    <main class="flex-1 flex flex-col p-4 overflow-y-auto relative z-10 min-w-0">
       {% if topbar_actions %}
       <div class="flex items-center justify-between gap-3 mb-4 pb-2 border-b" style="border-color:var(--border)">
         <h2 class="text-[16px] font-bold" style="color:var(--text)">{{ page_title }}</h2>

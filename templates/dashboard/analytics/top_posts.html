@@ -3,8 +3,8 @@
 {% block content %}
 <div class="flex flex-col gap-5">
     <div>
-        <h2 class="ft-page-title">Top Performing Articles</h2>
-        <p class="ft-page-subtitle">Ranked by real page views during the selected period</p>
+        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Top Performing Articles</h2>
+        <p class="text-[14px] text-gray-500 mt-1">Discover your most popular posts ranked by real page views.</p>
     </div>
 
     <!-- Filters -->
@@ -28,33 +28,69 @@
     </c-ui.card>
 
     <!-- Table -->
-    <c-ui.card title="Rankings">
-        <c-ui.table :headers="['Rank', 'Article', 'Category', 'Period Views', 'Lifetime', 'Actions']">
-            {% for item in posts %}
-            <tr>
-                <td class="font-bold" style="color:var(--text-muted)">#{{ forloop.counter }}</td>
-                <td>
-                    {{ item.title }}
-                    <span class="block text-[10px] mt-0.5" style="color:var(--text-muted)">{{ item.author.email }}</span>
-                </td>
-                <td style="color:var(--text-muted)">{{ item.category.name|default:"—" }}</td>
-                <td>
-                    <c-ui.badge variant="primary">{{ item.windowed_views|default:0 }} views</c-ui.badge>
-                </td>
-                <td style="color:var(--text-muted)">{{ item.views }}</td>
-                <td>
-                    <c-ui.button variant="ghost" size="sm" href="{% url 'dashboard:post_edit' item.pk %}" icon="edit-2" label="Manage"></c-ui.button>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" class="text-center py-8" style="color:var(--text-muted)">
-                    <i data-lucide="bar-chart-2" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
-                    No views recorded yet in this period
-                </td>
-            </tr>
-            {% endfor %}
-        </c-ui.table>
+    <c-ui.card title="Rankings" subtitle="Top 50 posts by page views" class="border-gray-200 shadow-sm">
+        <div class="!mt-2 overflow-x-auto">
+            <c-ui.table>
+                <c-slot name="header">
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6 text-center w-24">Rank</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Article</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Category</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Period Views</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Lifetime</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Actions</th>
+                </c-slot>
+                {% for item in posts %}
+                <tr class="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
+                    <td class="!py-2.5 !px-6 text-center">
+                        {% if forloop.counter == 1 %}
+                            <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-amber-200">1</div>
+                        {% elif forloop.counter == 2 %}
+                            <div class="w-7 h-7 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-gray-300">2</div>
+                        {% elif forloop.counter == 3 %}
+                            <div class="w-7 h-7 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-orange-200">3</div>
+                        {% else %}
+                            <span class="font-bold text-gray-400 text-[13px]">#{{ forloop.counter }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="!py-2.5 !px-6">
+                        <div class="flex flex-col max-w-[280px] xl:max-w-[350px]">
+                            <span class="font-medium text-gray-700 text-[12.5px] leading-snug line-clamp-2" title="{{ item.title }}">{{ item.title }}</span>
+                        </div>
+                    </td>
+                    <td class="!py-2.5 !px-6">
+                        <span class="inline-flex items-center rounded-md bg-gray-50 !px-2.5 !py-1 text-[12px] font-medium text-gray-600 ring-1 ring-inset ring-gray-500/20">
+                            {{ item.category.name|default:"Uncategorized" }}
+                        </span>
+                    </td>
+                    <td class="!py-2.5 !px-6">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 !px-3 !py-1 text-[13px] font-bold text-[#2563eb]">
+                            <i data-lucide="trending-up" class="w-3.5 h-3.5 text-blue-500"></i>
+                            {{ item.windowed_views|default:0 }}
+                        </span>
+                    </td>
+                    <td class="!py-2.5 !px-6">
+                        <span class="text-gray-500 font-medium text-[13.5px]">{{ item.views }} total</span>
+                    </td>
+                    <td class="!py-2.5 !px-6">
+                        <a href="{% url 'dashboard:post_edit' item.pk %}" class="inline-flex items-center gap-1.5 !px-2.5 !py-1 rounded-md border border-gray-200 bg-white text-gray-700 font-medium text-[12px] shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer">
+                            <i data-lucide="edit-2" class="w-3 h-3 text-gray-400"></i> Manage
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="!px-6 !py-16 text-center border-t border-gray-100">
+                        <div class="flex flex-col items-center justify-center text-gray-500">
+                            <div class="bg-gray-50 !p-4 rounded-full mb-4 border border-gray-100">
+                                <i data-lucide="bar-chart-2" class="w-10 h-10 text-gray-400"></i>
+                            </div>
+                            <p class="text-[15px] font-medium text-gray-600">No views recorded yet in this period.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </c-ui.table>
+        </div>
     </c-ui.card>
 </div>
 {% endblock %}

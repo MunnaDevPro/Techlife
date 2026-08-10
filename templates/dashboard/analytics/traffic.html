@@ -4,52 +4,124 @@
 <div class="flex flex-col gap-5">
     <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
-            <h2 class="ft-page-title">Traffic Trend Overview</h2>
-            <p class="ft-page-subtitle">Real, time-windowed aggregated views</p>
+            <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Traffic & Engagement</h2>
+            <p class="text-[14px] text-gray-500 mt-1">Monitor real-time website visitors and page view trends.</p>
         </div>
-        <form method="get" class="flex items-center gap-2">
-            <span class="text-[12px] font-medium whitespace-nowrap" style="color:var(--text-secondary)">Time Range:</span>
-            <c-ui.select name="days" onchange="this.form.submit()" extra_class="w-[140px]">
-                <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 Days</option>
-                <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 Days</option>
-                <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 Days</option>
-            </c-ui.select>
+        <form id="timeframe-form" method="get" class="relative group min-w-[180px]" x-data="{ open: false, selected: {{ days }} }">
+            <input type="hidden" name="days" x-model="selected">
+            <button type="button" @click="open = !open" @click.away="open = false" 
+                class="flex items-center justify-between w-full !pl-4 !pr-3.5 !py-2.5 text-[14px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:border-transparent cursor-pointer transition-all hover:bg-gray-50 hover:border-gray-300">
+                <div class="flex items-center gap-2.5">
+                    <i data-lucide="calendar" class="w-4.5 h-4.5 text-gray-400 group-hover:text-[#2563eb] transition-colors"></i>
+                    <span x-text="'Last ' + selected + ' Days'">Last {{ days }} Days</span>
+                </div>
+                <i data-lucide="chevron-down" class="w-4.5 h-4.5 text-gray-400 transition-transform duration-200" :class="{'rotate-180': open}"></i>
+            </button>
+            
+            <div x-show="open" x-transition.opacity.duration.200ms style="display: none;"
+                class="absolute right-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden py-1.5 ring-1 ring-black/5">
+                <button type="button" @click="selected = 7; document.getElementById('timeframe-form').submit();"
+                    class="w-full text-left !px-4 !py-2.5 text-[14px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
+                    :class="selected == 7 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
+                    Last 7 Days
+                </button>
+                <button type="button" @click="selected = 30; document.getElementById('timeframe-form').submit();"
+                    class="w-full text-left !px-4 !py-2.5 text-[14px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
+                    :class="selected == 30 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
+                    Last 30 Days
+                </button>
+                <button type="button" @click="selected = 90; document.getElementById('timeframe-form').submit();"
+                    class="w-full text-left !px-4 !py-2.5 text-[14px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
+                    :class="selected == 90 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
+                    Last 90 Days
+                </button>
+            </div>
         </form>
     </div>
 
-    <c-ui.card title="Daily Page Views">
-        <canvas id="trafficChart" class="max-h-[320px]"></canvas>
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('trafficChart');
-            if (!ctx) return;
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: {{ chart_labels|safe }},
-                    datasets: [{
-                        label: 'Page Views',
-                        data: {{ chart_values|safe }},
-                        borderColor: '#2187ed',
-                        backgroundColor: 'rgba(33,135,237,0.08)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#2187ed',
-                        pointRadius: 3,
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 } } },
-                        y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 } }, beginAtZero: true }
+    <c-ui.card title="Overall Traffic Overview" class="border-gray-200 shadow-sm" subtitle="Daily aggregated page views across all posts">
+        <div class="!mt-4 relative">
+            <canvas id="trafficChart" class="max-h-[380px] w-full"></canvas>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const canvas = document.getElementById('trafficChart');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                
+                // Create incredibly smooth premium gradient for the area under the line
+                let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)'); // Vibrant Brand Blue
+                gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: {{ chart_labels|safe }},
+                        datasets: [{
+                            label: 'Page Views',
+                            data: {{ chart_values|safe }},
+                            borderColor: '#2563eb', // Vibrant Brand Blue
+                            backgroundColor: gradient,
+                            borderWidth: 3,
+                            tension: 0.45, // Super smooth curves
+                            fill: true,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#2563eb',
+                            pointBorderWidth: 2,
+                            pointRadius: 0, // Hide points by default for a sleek look
+                            pointHoverRadius: 6, // Reveal them on hover
+                            pointHoverBackgroundColor: '#2563eb',
+                            pointHoverBorderColor: '#ffffff',
+                            pointHoverBorderWidth: 3,
+                            hitRadius: 30, // Larger hit area for easier hovering
+                        }]
+                    },
+                    options: {
+                        responsive: true, 
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                                titleColor: '#9ca3af',
+                                titleFont: { size: 12, family: 'Inter, sans-serif' },
+                                bodyColor: '#ffffff',
+                                bodyFont: { size: 15, weight: 'bold', family: 'Inter, sans-serif' },
+                                padding: 14,
+                                cornerRadius: 10,
+                                displayColors: false,
+                                callbacks: {
+                                    title: function(context) {
+                                        return context[0].label;
+                                    },
+                                    label: function(context) {
+                                        return context.parsed.y + ' Visitors';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { 
+                                grid: { display: false }, // Cleaner x-axis
+                                ticks: { font: { size: 11, family: 'Inter, sans-serif' }, color: '#9ca3af', maxTicksLimit: 10 } 
+                            },
+                            y: { 
+                                grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false, borderDash: [5, 5] }, 
+                                ticks: { font: { size: 11, family: 'Inter, sans-serif' }, color: '#9ca3af', padding: 10 }, 
+                                beginAtZero: true,
+                                border: { display: false },
+                                grace: '5%'
+                            }
+                        }
                     }
-                }
+                });
             });
-        });
-        </script>
+            </script>
+        </div>
     </c-ui.card>
 </div>
 {% endblock %}
