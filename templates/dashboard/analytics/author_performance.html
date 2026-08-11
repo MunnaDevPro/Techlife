@@ -36,17 +36,17 @@
                 
                 <div x-show="open" x-transition.opacity.duration.200ms style="display: none;"
                     class="absolute left-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden py-1.5 ring-1 ring-black/5">
-                    <button type="button" @click="days = 7; open = false; document.getElementById('author-filters-form').submit();"
+                    <button type="button" @click="days = 7; open = false; $nextTick(() => { document.getElementById('author-filters-form').submit(); });"
                         class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
                         :class="days == 7 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
                         Last 7 Days
                     </button>
-                    <button type="button" @click="days = 30; open = false; document.getElementById('author-filters-form').submit();"
+                    <button type="button" @click="days = 30; open = false; $nextTick(() => { document.getElementById('author-filters-form').submit(); });"
                         class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
                         :class="days == 30 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
                         Last 30 Days
                     </button>
-                    <button type="button" @click="days = 90; open = false; document.getElementById('author-filters-form').submit();"
+                    <button type="button" @click="days = 90; open = false; $nextTick(() => { document.getElementById('author-filters-form').submit(); });"
                         class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
                         :class="days == 90 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
                         Last 90 Days
@@ -67,17 +67,17 @@
                 
                 <div x-show="open" x-transition.opacity.duration.200ms style="display: none;"
                     class="absolute right-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden py-1.5 ring-1 ring-black/5">
-                    <button type="button" @click="sort = 'views'; open = false; document.getElementById('author-filters-form').submit();"
+                    <button type="button" @click="sort = 'views'; open = false; $nextTick(() => { document.getElementById('author-filters-form').submit(); });"
                         class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
                         :class="sort == 'views' ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
                         Total Views
                     </button>
-                    <button type="button" @click="sort = 'posts'; open = false; document.getElementById('author-filters-form').submit();"
+                    <button type="button" @click="sort = 'posts'; open = false; $nextTick(() => { document.getElementById('author-filters-form').submit(); });"
                         class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
                         :class="sort == 'posts' ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
                         Articles Published
                     </button>
-                    <button type="button" @click="sort = 'avg'; open = false; document.getElementById('author-filters-form').submit();"
+                    <button type="button" @click="sort = 'avg'; open = false; $nextTick(() => { document.getElementById('author-filters-form').submit(); });"
                         class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
                         :class="sort == 'avg' ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
                         Average Views
