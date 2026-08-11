@@ -11,6 +11,7 @@
             <div class="carousel-container relative h-52 sm:h-64 md:h-80 lg:h-[340px] overflow-hidden">
                 <div
                     class="flex h-full transition-transform duration-700 ease-in-out will-change-transform"
+                    style="width: calc({{ carousel_blogs|length|default:'1' }} * 100%);"
                     :style="`width: ${(totalSlides || 1) * 100}%; transform: translateX(-${(currentSlide * 100) / (totalSlides || 1)}%);`"
                 >
                     {% for blog in carousel_blogs %}
