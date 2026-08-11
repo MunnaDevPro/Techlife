@@ -20,17 +20,17 @@
             
             <div x-show="open" x-transition.opacity.duration.200ms style="display: none;"
                 class="absolute right-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden py-1.5 ring-1 ring-black/5">
-                <button type="button" @click="selected = 7; document.getElementById('timeframe-form').submit();"
+                <button type="button" @click="selected = 7; $nextTick(() => { document.getElementById('timeframe-form').submit(); });"
                     class="w-full text-left !px-4 !py-2.5 text-[14px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
                     :class="selected == 7 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
                     Last 7 Days
                 </button>
-                <button type="button" @click="selected = 30; document.getElementById('timeframe-form').submit();"
+                <button type="button" @click="selected = 30; $nextTick(() => { document.getElementById('timeframe-form').submit(); });"
                     class="w-full text-left !px-4 !py-2.5 text-[14px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
                     :class="selected == 30 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
                     Last 30 Days
                 </button>
-                <button type="button" @click="selected = 90; document.getElementById('timeframe-form').submit();"
+                <button type="button" @click="selected = 90; $nextTick(() => { document.getElementById('timeframe-form').submit(); });"
                     class="w-full text-left !px-4 !py-2.5 text-[14px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
                     :class="selected == 90 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
                     Last 90 Days

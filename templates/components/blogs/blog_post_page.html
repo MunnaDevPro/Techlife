@@ -121,7 +121,7 @@
     </div>
 
     <!-- Right Column: 2×2 Side Grid — Posts 2–5 -->
-    <div class="grid grid-cols-2 gap-3 h-full">
+    <div class="grid grid-cols-2 gap-3">
         {% for blog in blogs|slice:"1:5" %}
         <a href="{% url 'blog_details' blog.slug %}"
            hx-get="{% url 'blog_details' blog.slug %}"
@@ -130,29 +130,29 @@
            hx-swap="innerHTML"
            class="tl-card rounded-xl overflow-hidden group cursor-pointer flex flex-col">
 
-            <div class="overflow-hidden flex-1 relative">
+            <div class="overflow-hidden aspect-[16/9]">
                 {% if blog.featured_image %}
                 <img src="{{ blog.featured_image.url }}"
                      alt="{{ blog.title }}"
-                     class="absolute inset-0 w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]"
+                     class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]"
                      width="300" height="169"
                      loading="lazy" decoding="async" />
                 {% elif blog.featured_image_url %}
                 <img src="{{ blog.featured_image_url }}"
                      alt="{{ blog.title }}"
-                     class="absolute inset-0 w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]"
+                     class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]"
                      width="300" height="169"
                      loading="lazy" decoding="async" />
                 {% else %}
                 <img src="{% static 'image/placeholder-5.png' %}"
                      alt="{{ blog.title }}"
-                     class="absolute inset-0 w-full h-full object-cover"
+                     class="w-full h-full object-cover"
                      width="300" height="169"
                      loading="lazy" decoding="async" />
                 {% endif %}
             </div>
 
-            <div class="p-2.5 flex flex-col">
+            <div class="p-2.5 flex flex-col flex-1">
                 {% if blog.category %}
                 <span class="inline-block text-[9px] font-bold text-[#1e3a6e] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full mb-1.5 w-fit">{{ blog.category.name }}</span>
                 {% endif %}
