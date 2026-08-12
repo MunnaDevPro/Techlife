@@ -1,20 +1,19 @@
 {% comment %} c-select component
-   Props:
-   - name: select name attribute (required)
-   - label: visible label (optional)
-   - value: currently selected value (for comparison)
-   - required: required attribute
-   - disabled: disabled attribute
-   - error: error message string
-   - help: help text
-   - extra_class: additional classes on wrapper
-   - id: select id (defaults to name)
-   - is_django_form: boolean to indicate raw select inside slot
-   Slot: <option> elements or Django select field
-{% endcomment %}
+Props:
+- name: select name attribute (required)
+- label: visible label (optional)
+- value: currently selected value (for comparison)
+- required: required attribute
+- disabled: disabled attribute
+- error: error message string
+- help: help text
+- extra_class: additional classes on wrapper
+- id: select id (defaults to name)
+- is_django_form: boolean to indicate raw select inside slot
+Slot: <option> elements or Django select field
+  {% endcomment %}
 
-<div 
-  x-data="{
+  <div x-data="{
     open: false,
     search: '',
     options: [],
@@ -97,121 +96,97 @@
         this.selectOption(opts[this.activeIndex].value);
       }
     }
-  }"
-  @click.outside="open = false"
-  class="flex flex-col gap-0.5 relative {{ extra_class }}"
->
-  {% if label %}
+  }" @click.outside="open = false" class="flex flex-col gap-0.5 relative {{ extra_class }}">
+    {% if label %}
     <label for="{{ id|default:name }}" class="!text-[13px] !font-semibold !text-gray-700 !mb-1.5 !block">
       {{ label }}{% if required %}<span class="!text-red-500 !ml-0.5">*</span>{% endif %}
     </label>
-  {% endif %}
+    {% endif %}
 
-  <!-- Hidden Native Select Container -->
-  {% if is_django_form %}
+    <!-- Hidden Native Select Container -->
+    {% if is_django_form %}
     <div x-ref="selectContainer" class="absolute inset-0 w-full h-full opacity-0 pointer-events-none -z-10">
       {{ slot }}
     </div>
-  {% else %}
-    <select
-      x-ref="select"
-      name="{{ name }}"
-      id="{{ id|default:name }}"
-      {% if required %}required{% endif %}
-      {% if disabled %}disabled{% endif %}
-      class="absolute inset-0 w-full h-full opacity-0 pointer-events-none -z-10"
-      @change="syncOptions()"
-    >
+    {% else %}
+    <select x-ref="select" name="{{ name }}" id="{{ id|default:name }}" {% if required %}required{% endif %} {% if
+      disabled %}disabled{% endif %} class="absolute inset-0 w-full h-full opacity-0 pointer-events-none -z-10"
+      @change="syncOptions()">
       {{ slot }}
     </select>
-  {% endif %}
+    {% endif %}
 
-  <!-- Custom Trigger Button -->
-  <div class="relative w-full">
-    <button
-      type="button"
-      {% if disabled %}disabled{% endif %}
-      @click="open = !open; if(open) { $nextTick(() => $refs.searchInput.focus()); activeIndex = -1; }"
-      class="!w-full !px-3.5 !py-2.5 !text-[14px] !text-gray-900 !bg-white !border !border-gray-200/80 !rounded-lg focus:!ring-4 focus:!ring-blue-500/15 focus:!border-blue-500 !transition-all !shadow-sm !cursor-pointer !flex !items-center !justify-between {% if error %}!border-red-500 focus:!ring-red-500/15 focus:!border-red-500{% endif %}"
-    >
-      <span x-text="selectedLabel || 'Select option...'" class="truncate"></span>
-      <svg class="w-3 h-3 transition-transform duration-200 text-gray-400" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
-    </button>
+    <!-- Custom Trigger Button -->
+    <div class="relative w-full">
+      <button type="button" {% if disabled %}disabled{% endif %}
+        @click="open = !open; if(open) { $nextTick(() => $refs.searchInput.focus()); activeIndex = -1; }"
+        class="!w-full !px-3.5 !py-2.5 !text-[14px] !text-gray-900 !bg-white !border !border-gray-200/80 !rounded-lg focus:!ring-4 focus:!ring-blue-500/15 focus:!border-blue-500 !transition-all !cursor-pointer !flex !items-center !justify-between {% if error %}!border-red-500 focus:!ring-red-500/15 focus:!border-red-500{% endif %}">
+        <span x-text="selectedLabel || 'Select option...'" class="truncate"></span>
+        <svg class="w-3 h-3 transition-transform duration-200 text-gray-400" :class="open ? 'rotate-180' : ''"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
 
-    <!-- Dropdown Menu -->
-    <div
-      x-show="open"
-      x-transition:enter="transition ease-out duration-150"
-      x-transition:enter-start="opacity-0 translate-y-1"
-      x-transition:enter-end="opacity-100 translate-y-0"
-      x-transition:leave="transition ease-in duration-100"
-      x-transition:leave-start="opacity-100 translate-y-0"
-      x-transition:leave-end="opacity-0 translate-y-1"
-      class="absolute z-[100] w-full mt-1.5 rounded-md overflow-hidden flex flex-col focus:outline-none"
-      style="background: var(--surface) !important; border: 1px solid var(--border) !important; box-shadow: var(--shadow-dropdown) !important; display: none; margin-top: 6px !important; border-radius: 6px !important; overflow: hidden !important;"
-    >
-      <!-- Search Input -->
-      <div style="padding: 10px 12px !important; border-bottom: 1px solid var(--border) !important; background: var(--surface) !important;">
-        <div style="display: flex !important; align-items: center !important; gap: 8px !important; padding: 0 !important;">
-          <i data-lucide="search" class="w-4 h-4 opacity-40" style="color: var(--text) !important;"></i>
-          <input
-            type="text"
-            x-ref="searchInput"
-            x-model="search"
-            @input="activeIndex = -1"
-            @keydown.down.prevent="navigateOptions('down')"
-            @keydown.up.prevent="navigateOptions('up')"
-            @keydown.enter.prevent="selectActive()"
-            @keydown.escape.prevent.stop="open = false"
-            placeholder="Search..."
-            style="width: 100% !important; background: transparent !important; border: none !important; padding: 0 !important; font-size: 13px !important; color: var(--text) !important; outline: none !important; box-shadow: none !important;"
-            @click.stop
-          />
+      <!-- Dropdown Menu -->
+      <div x-show="open" x-transition:enter="transition ease-out duration-150"
+        x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-1"
+        class="absolute z-[100] w-full mt-1.5 rounded-md overflow-hidden flex flex-col focus:outline-none"
+        style="background: var(--surface) !important; border: 1px solid var(--border) !important; box-shadow: var(--shadow-dropdown) !important; display: none; margin-top: 6px !important; border-radius: 6px !important; overflow: hidden !important;">
+        <!-- Search Input -->
+        <div
+          style="padding: 10px 12px !important; border-bottom: 1px solid var(--border) !important; background: var(--surface) !important;">
+          <div
+            style="display: flex !important; align-items: center !important; gap: 8px !important; padding: 0 !important;">
+            <i data-lucide="search" class="w-4 h-4 opacity-40" style="color: var(--text) !important;"></i>
+            <input type="text" x-ref="searchInput" x-model="search" @input="activeIndex = -1"
+              @keydown.down.prevent="navigateOptions('down')" @keydown.up.prevent="navigateOptions('up')"
+              @keydown.enter.prevent="selectActive()" @keydown.escape.prevent.stop="open = false"
+              placeholder="Search..."
+              style="width: 100% !important; background: transparent !important; border: none !important; padding: 0 !important; font-size: 13px !important; color: var(--text) !important; outline: none !important; box-shadow: none !important;"
+              @click.stop />
+          </div>
         </div>
-      </div>
 
-      <!-- Options List -->
-      <div x-ref="listContainer" class="overflow-y-auto scrollbar-thin max-h-60" style="padding: 6px !important; display: flex !important; flex-direction: column !important; gap: 2px !important; max-height: 240px !important; overflow-y: auto !important;">
-        <template x-for="(opt, idx) in filteredOptions" :key="opt.value + '_' + idx">
-          <button
-            type="button"
-            @click="selectOption(opt.value)"
-            class="w-full text-left rounded-md cursor-pointer transition-colors duration-150"
-            :style="
+        <!-- Options List -->
+        <div x-ref="listContainer" class="overflow-y-auto scrollbar-thin max-h-60"
+          style="padding: 6px !important; display: flex !important; flex-direction: column !important; gap: 2px !important; max-height: 240px !important; overflow-y: auto !important;">
+          <template x-for="(opt, idx) in filteredOptions" :key="opt.value + '_' + idx">
+            <button type="button" @click="selectOption(opt.value)"
+              class="w-full text-left rounded-md cursor-pointer transition-colors duration-150" :style="
               'display: flex !important; align-items: center !important; justify-content: space-between !important; padding: 10px 12px !important; font-size: 13px !important; text-align: left !important; border: none !important; width: 100% !important; border-radius: 6px !important; ' +
               (selectedValue === opt.value
                 ? 'background: var(--surface-2) !important; color: var(--text) !important; font-weight: 600 !important;'
                 : activeIndex === idx
                   ? 'background: var(--surface-2) !important; color: var(--text) !important;'
                   : 'background: transparent !important; color: var(--text) !important;')
-            "
-            :data-active="activeIndex === idx"
-            @mouseenter="activeIndex = idx"
-          >
-            <span x-text="opt.label" class="truncate" style="flex: 1 !important; text-align: left !important;"></span>
-            <div x-show="selectedValue === opt.value" class="flex-shrink-0 flex items-center justify-center w-4 h-4" style="color: var(--primary) !important;">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-          </button>
-        </template>
-        
-        <!-- Empty State -->
-        <div x-show="filteredOptions.length === 0" class="flex flex-col items-center justify-center gap-1.5" style="padding: 20px 10px !important; color: var(--text-muted) !important;">
-          <i data-lucide="inbox" class="w-5 h-5 opacity-40"></i>
-          <span style="font-size: 12.5px !important; font-style: italic !important;">No matches found</span>
+            " :data-active="activeIndex === idx" @mouseenter="activeIndex = idx">
+              <span x-text="opt.label" class="truncate" style="flex: 1 !important; text-align: left !important;"></span>
+              <div x-show="selectedValue === opt.value" class="flex-shrink-0 flex items-center justify-center w-4 h-4"
+                style="color: var(--primary) !important;">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </button>
+          </template>
+
+          <!-- Empty State -->
+          <div x-show="filteredOptions.length === 0" class="flex flex-col items-center justify-center gap-1.5"
+            style="padding: 20px 10px !important; color: var(--text-muted) !important;">
+            <i data-lucide="inbox" class="w-5 h-5 opacity-40"></i>
+            <span style="font-size: 12.5px !important; font-style: italic !important;">No matches found</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  {% if error %}
+    {% if error %}
     <p class="ft-error-text">{{ error }}</p>
-  {% endif %}
-  {% if help and not error %}
+    {% endif %}
+    {% if help and not error %}
     <p class="ft-help-text">{{ help }}</p>
-  {% endif %}
-</div>
+    {% endif %}
+  </div>

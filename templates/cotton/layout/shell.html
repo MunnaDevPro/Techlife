@@ -1,9 +1,9 @@
 {% comment %} c-layout.shell — TechLife Dashboard Layout Shell
-   Props:
-   - page_title: current page title string
-   - active_menu: active top-level menu key (e.g. 'content', 'users')
-   - active_submenu: active sub-menu key (e.g. 'posts', 'categories')
-   Slot (default): page body content
+Props:
+- page_title: current page title string
+- active_menu: active top-level menu key (e.g. 'content', 'users')
+- active_submenu: active sub-menu key (e.g. 'posts', 'categories')
+Slot (default): page body content
 {% endcomment %}
 
 {% load static %}
@@ -34,21 +34,19 @@
   </div>
 
   {# ── Mobile overlay ─────────────────────────────────────────────────── #}
-  <div x-show="sidebarOpen" x-cloak
-       @click="sidebarOpen = false"
-       class="fixed inset-0 z-20 bg-black/40 lg:hidden"></div>
+  <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black/40 lg:hidden"></div>
 
   {# ── Sidebar ────────────────────────────────────────────────────────── #}
-  <aside class="ft-sidebar"
-         :class="{'collapsed': desktopCollapsed, 'max-lg:-translate-x-full': !sidebarOpen}"
-         style="transition:transform 0.22s cubic-bezier(.4,0,.2,1), width 0.22s cubic-bezier(.4,0,.2,1)">
+  <aside class="ft-sidebar" :class="{'collapsed': desktopCollapsed, 'max-lg:-translate-x-full': !sidebarOpen}"
+    style="transition:transform 0.22s cubic-bezier(.4,0,.2,1), width 0.22s cubic-bezier(.4,0,.2,1)">
 
     {# Brand #}
     <div class="ft-sidebar-brand">
       <a href="{% url 'homepage' %}" title="TechLife BD - Home" style="display:flex; align-items:center;">
         <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-8 w-auto" loading="eager" />
       </a>
-      <span style="font-size:10px;font-weight:600;background:var(--primary-light);color:var(--primary);border-radius:4px;padding:1px 6px;margin-left:auto">Admin</span>
+      <span
+        style="font-size:10px;font-weight:600;background:var(--primary-light);color:var(--primary);border-radius:4px;padding:1px 6px;margin-left:auto">Admin</span>
     </div>
 
     {# Nav #}
@@ -56,7 +54,7 @@
 
       {# Overview #}
       <a href="{% url 'dashboard:overview' %}"
-         class="ft-nav-item {% if active_menu == 'Overview' %}!bg-gray-700 !text-white font-medium{% endif %}">
+        class="ft-nav-item {% if active_menu == 'Overview' %}!bg-gray-700 !text-white font-medium{% endif %}">
         <i data-lucide="layout-dashboard" class="{% if active_menu == 'Overview' %}!text-white{% endif %}"></i>
         <span class="{% if active_menu == 'Overview' %}!text-white{% endif %}">Overview</span>
       </a>
@@ -64,38 +62,45 @@
       {# Content / Post Tree #}
       <div class="mt-2">
         <button type="button" @click="toggleDropdown('content')"
-                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Content' %}text-[var(--primary)] font-semibold{% endif %}">
+          class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Content' %}text-[var(--primary)] font-semibold{% endif %}">
           <div class="flex items-center gap-2">
             <i data-lucide="file-text"></i>
             <span>Post</span>
           </div>
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
-             :class="activeDropdown === 'content' ? 'rotate-180' : ''"></i>
+            :class="activeDropdown === 'content' ? 'rotate-180' : ''"></i>
         </button>
         <div x-show="activeDropdown === 'content'" x-collapse.duration.500ms class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:post_create' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:post_create' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="plus-circle" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:post_create' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:post_create' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="plus-circle"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:post_create' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:post_create' %}!text-white{% endif %}">Add New Post</span>
           </a>
           <a href="{% url 'dashboard:content_posts' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_posts' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="file-text" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_posts' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_posts' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="file-text"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_posts' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:content_posts' %}!text-white{% endif %}">All Posts</span>
           </a>
           <a href="{% url 'dashboard:content_categories' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_categories' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="folder" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_categories' %}!text-white{% endif %}"></i>
-            <span class="{% if active_submenu == 'dashboard:content_categories' %}!text-white{% endif %}">Category</span>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_categories' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="folder"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_categories' %}!text-white{% endif %}"></i>
+            <span
+              class="{% if active_submenu == 'dashboard:content_categories' %}!text-white{% endif %}">Category</span>
           </a>
           <a href="{% url 'dashboard:content_subcategories' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_subcategories' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="layers" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_subcategories' %}!text-white{% endif %}"></i>
-            <span class="{% if active_submenu == 'dashboard:content_subcategories' %}!text-white{% endif %}">Sub category</span>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_subcategories' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="layers"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_subcategories' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:content_subcategories' %}!text-white{% endif %}">Sub
+              category</span>
           </a>
           <a href="{% url 'dashboard:content_tags' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_tags' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="hash" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_tags' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:content_tags' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="hash"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:content_tags' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:content_tags' %}!text-white{% endif %}">Tags</span>
           </a>
 
@@ -105,23 +110,25 @@
       {# Forum Tree #}
       <div class="mt-2">
         <button type="button" @click="toggleDropdown('forum')"
-                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Forum' %}text-[var(--primary)] font-semibold{% endif %}">
+          class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Forum' %}text-[var(--primary)] font-semibold{% endif %}">
           <div class="flex items-center gap-2">
             <i data-lucide="message-square"></i>
             <span>Forum</span>
           </div>
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
-             :class="activeDropdown === 'forum' ? 'rotate-180' : ''"></i>
+            :class="activeDropdown === 'forum' ? 'rotate-180' : ''"></i>
         </button>
         <div x-show="activeDropdown === 'forum'" x-collapse.duration.500ms class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:forum_questions' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:forum_questions' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="message-square" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:forum_questions' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:forum_questions' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="message-square"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:forum_questions' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:forum_questions' %}!text-white{% endif %}">Questions</span>
           </a>
           <a href="{% url 'dashboard:forum_answers' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:forum_answers' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="message-circle" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:forum_answers' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:forum_answers' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="message-circle"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:forum_answers' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:forum_answers' %}!text-white{% endif %}">Answers</span>
           </a>
         </div>
@@ -130,28 +137,31 @@
       {# Moderation Tree #}
       <div class="mt-2">
         <button type="button" @click="toggleDropdown('moderation')"
-                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Moderation' %}text-[var(--primary)] font-semibold{% endif %}">
+          class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Moderation' %}text-[var(--primary)] font-semibold{% endif %}">
           <div class="flex items-center gap-2">
             <i data-lucide="shield"></i>
             <span>Moderation</span>
           </div>
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
-             :class="activeDropdown === 'moderation' ? 'rotate-180' : ''"></i>
+            :class="activeDropdown === 'moderation' ? 'rotate-180' : ''"></i>
         </button>
         <div x-show="activeDropdown === 'moderation'" x-collapse.duration.500ms class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:mod_comments' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_comments' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="shield" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:mod_comments' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_comments' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="shield"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:mod_comments' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:mod_comments' %}!text-white{% endif %}">Comment Queue</span>
           </a>
           <a href="{% url 'dashboard:mod_flagged' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_flagged' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="flag" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:mod_flagged' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_flagged' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="flag"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:mod_flagged' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:mod_flagged' %}!text-white{% endif %}">Flagged Items</span>
           </a>
           <a href="{% url 'dashboard:mod_blocked' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_blocked' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="ban" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:mod_blocked' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:mod_blocked' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="ban"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:mod_blocked' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:mod_blocked' %}!text-white{% endif %}">Blocked Users</span>
           </a>
         </div>
@@ -160,29 +170,36 @@
       {# Users Tree #}
       <div class="mt-2">
         <button type="button" @click="toggleDropdown('users')"
-                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Users' %}text-[var(--primary)] font-semibold{% endif %}">
+          class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Users' %}text-[var(--primary)] font-semibold{% endif %}">
           <div class="flex items-center gap-2">
             <i data-lucide="users"></i>
             <span>Users</span>
           </div>
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
-             :class="activeDropdown === 'users' ? 'rotate-180' : ''"></i>
+            :class="activeDropdown === 'users' ? 'rotate-180' : ''"></i>
         </button>
         <div x-show="activeDropdown === 'users'" x-collapse.duration.500ms class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:users_all' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_all' or active_submenu == 'dashboard:user_detail' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="users" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:users_all' or active_submenu == 'dashboard:user_detail' %}!text-white{% endif %}"></i>
-            <span class="{% if active_submenu == 'dashboard:users_all' or active_submenu == 'dashboard:user_detail' %}!text-white{% endif %}">All Users</span>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_all' or active_submenu == 'dashboard:user_detail' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="users"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:users_all' or active_submenu == 'dashboard:user_detail' %}!text-white{% endif %}"></i>
+            <span
+              class="{% if active_submenu == 'dashboard:users_all' or active_submenu == 'dashboard:user_detail' %}!text-white{% endif %}">All
+              Users</span>
           </a>
           <a href="{% url 'dashboard:users_verification' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_verification' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="user-check" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:users_verification' %}!text-white{% endif %}"></i>
-            <span class="{% if active_submenu == 'dashboard:users_verification' %}!text-white{% endif %}">Verification</span>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_verification' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="user-check"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:users_verification' %}!text-white{% endif %}"></i>
+            <span
+              class="{% if active_submenu == 'dashboard:users_verification' %}!text-white{% endif %}">Verification</span>
           </a>
           <a href="{% url 'dashboard:users_roles' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_roles' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="key-round" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:users_roles' %}!text-white{% endif %}"></i>
-            <span class="{% if active_submenu == 'dashboard:users_roles' %}!text-white{% endif %}">Roles & Permissions</span>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:users_roles' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="key-round"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:users_roles' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:users_roles' %}!text-white{% endif %}">Roles &
+              Permissions</span>
           </a>
         </div>
       </div>
@@ -190,29 +207,33 @@
       {# Analytics Tree #}
       <div class="mt-2">
         <button type="button" @click="toggleDropdown('analytics')"
-                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Analytics' %}text-[var(--primary)] font-semibold{% endif %}">
+          class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Analytics' %}text-[var(--primary)] font-semibold{% endif %}">
           <div class="flex items-center gap-2">
             <i data-lucide="trending-up"></i>
             <span>Analytics</span>
           </div>
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
-             :class="activeDropdown === 'analytics' ? 'rotate-180' : ''"></i>
+            :class="activeDropdown === 'analytics' ? 'rotate-180' : ''"></i>
         </button>
         <div x-show="activeDropdown === 'analytics'" x-collapse.duration.500ms class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:analytics_traffic' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_traffic' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="trending-up" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:analytics_traffic' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_traffic' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="trending-up"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:analytics_traffic' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:analytics_traffic' %}!text-white{% endif %}">Traffic</span>
           </a>
           <a href="{% url 'dashboard:analytics_posts' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_posts' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:analytics_posts' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_posts' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="bar-chart-2"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:analytics_posts' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:analytics_posts' %}!text-white{% endif %}">Top Posts</span>
           </a>
           <a href="{% url 'dashboard:analytics_authors' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_authors' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="pen-tool" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:analytics_authors' %}!text-white{% endif %}"></i>
-            <span class="{% if active_submenu == 'dashboard:analytics_authors' %}!text-white{% endif %}">Author Performance</span>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:analytics_authors' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="pen-tool"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:analytics_authors' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:analytics_authors' %}!text-white{% endif %}">Author
+              Performance</span>
           </a>
         </div>
       </div>
@@ -220,28 +241,31 @@
       {# SEO Tree #}
       <div class="mt-2">
         <button type="button" @click="toggleDropdown('seo')"
-                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'SEO' %}text-[var(--primary)] font-semibold{% endif %}">
+          class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'SEO' %}text-[var(--primary)] font-semibold{% endif %}">
           <div class="flex items-center gap-2">
             <i data-lucide="search"></i>
             <span>SEO</span>
           </div>
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
-             :class="activeDropdown === 'seo' ? 'rotate-180' : ''"></i>
+            :class="activeDropdown === 'seo' ? 'rotate-180' : ''"></i>
         </button>
         <div x-show="activeDropdown === 'seo'" x-collapse.duration.500ms class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:seo_audit' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_audit' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="search" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:seo_audit' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_audit' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="search"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:seo_audit' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:seo_audit' %}!text-white{% endif %}">Meta Audit</span>
           </a>
           <a href="{% url 'dashboard:seo_sitemap' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_sitemap' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="map" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:seo_sitemap' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_sitemap' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="map"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:seo_sitemap' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:seo_sitemap' %}!text-white{% endif %}">Sitemap</span>
           </a>
           <a href="{% url 'dashboard:seo_broken' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_broken' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="link-2-off" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:seo_broken' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:seo_broken' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="link-2-off"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:seo_broken' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:seo_broken' %}!text-white{% endif %}">Broken Links</span>
           </a>
         </div>
@@ -250,29 +274,34 @@
       {# Settings Tree #}
       <div class="mt-2">
         <button type="button" @click="toggleDropdown('settings')"
-                class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Site Settings' %}text-[var(--primary)] font-semibold{% endif %}">
+          class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Site Settings' %}text-[var(--primary)] font-semibold{% endif %}">
           <div class="flex items-center gap-2">
             <i data-lucide="wrench"></i>
             <span>Settings</span>
           </div>
           <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
-             :class="activeDropdown === 'settings' ? 'rotate-180' : ''"></i>
+            :class="activeDropdown === 'settings' ? 'rotate-180' : ''"></i>
         </button>
         <div x-show="activeDropdown === 'settings'" x-collapse.duration.500ms class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:settings_ads' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:settings_ads' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="megaphone" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:settings_ads' %}!text-white{% endif %}"></i>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:settings_ads' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="megaphone"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:settings_ads' %}!text-white{% endif %}"></i>
             <span class="{% if active_submenu == 'dashboard:settings_ads' %}!text-white{% endif %}">Ad Config</span>
           </a>
           <a href="{% url 'dashboard:settings_footer' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:settings_footer' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="layout-panel-bottom" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:settings_footer' %}!text-white{% endif %}"></i>
-            <span class="{% if active_submenu == 'dashboard:settings_footer' %}!text-white{% endif %}">Footer & Branding</span>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:settings_footer' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="layout-panel-bottom"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:settings_footer' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:settings_footer' %}!text-white{% endif %}">Footer &
+              Branding</span>
           </a>
           <a href="{% url 'dashboard:settings_maintenance' %}"
-             class="ft-nav-sub-item {% if active_submenu == 'dashboard:settings_maintenance' %}!bg-gray-700 !text-white font-medium{% endif %}">
-            <i data-lucide="wrench" class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:settings_maintenance' %}!text-white{% endif %}"></i>
-            <span class="{% if active_submenu == 'dashboard:settings_maintenance' %}!text-white{% endif %}">Maintenance</span>
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:settings_maintenance' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="wrench"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:settings_maintenance' %}!text-white{% endif %}"></i>
+            <span
+              class="{% if active_submenu == 'dashboard:settings_maintenance' %}!text-white{% endif %}">Maintenance</span>
           </a>
         </div>
       </div>
@@ -280,13 +309,14 @@
       {# Notifications Tab #}
       <div class="mt-2">
         <a href="{% url 'dashboard:notifications' %}"
-           class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Notifications' %}!bg-gray-700 !text-white font-medium{% endif %}">
+          class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Notifications' %}!bg-gray-700 !text-white font-medium{% endif %}">
           <div class="flex items-center gap-2">
             <i data-lucide="bell" class="{% if active_menu == 'Notifications' %}!text-white{% endif %}"></i>
             <span class="{% if active_menu == 'Notifications' %}!text-white{% endif %}">Notifications</span>
           </div>
           {% if unread_notifications > 0 %}
-          <span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
+          <span
+            class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
             {{ unread_notifications }}
           </span>
           {% endif %}
@@ -297,13 +327,15 @@
 
     {# Bottom user info #}
     <div class="!p-4 !border-t !border-gray-100 !bg-gray-50/50 !flex-shrink-0">
-      <div class="!flex !items-center !gap-3 !p-2 -mx-2 !rounded-xl hover:!bg-white hover:!shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] !transition-all !cursor-pointer !group">
-        
+      <div
+        class="!flex !items-center !gap-3 !p-2 -mx-2 !rounded-xl hover:!bg-white hover:!shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] !transition-all !cursor-pointer !group">
+
         <!-- Avatar -->
-        <div class="!w-10 !h-10 !rounded-full !bg-gradient-to-tr !from-blue-500 !to-indigo-500 !p-[2px] !flex-shrink-0 !shadow-sm group-hover:!shadow-md !transition-shadow">
-            <div class="!w-full !h-full !bg-white !rounded-full !flex !items-center !justify-center">
-                <i data-lucide="user" class="!w-4 !h-4 !text-blue-600"></i>
-            </div>
+        <div
+          class="!w-10 !h-10 !rounded-full !bg-gradient-to-tr !from-blue-500 !to-indigo-500 !p-[2px] !flex-shrink-0 !shadow-sm group-hover:!shadow-md !transition-shadow">
+          <div class="!w-full !h-full !bg-white !rounded-full !flex !items-center !justify-center">
+            <i data-lucide="user" class="!w-4 !h-4 !text-blue-600"></i>
+          </div>
         </div>
 
         <!-- User Info -->
@@ -316,7 +348,7 @@
 
         <!-- Logout -->
         <a href="{% url 'logout' %}" title="Sign out"
-           class="!text-gray-400 hover:!text-red-500 hover:!bg-red-50 !p-2 !rounded-lg !transition-all !flex-shrink-0 ft-nav-logout">
+          class="!text-gray-400 hover:!text-red-500 hover:!bg-red-50 !p-2 !rounded-lg !transition-all !flex-shrink-0 ft-nav-logout">
           <i data-lucide="log-out" class="!w-4 !h-4"></i>
         </a>
       </div>
@@ -331,8 +363,9 @@
     <header class="ft-topbar">
       <div style="display:flex;align-items:center;gap:12px">
         {# Mobile hamburger #}
-        <button type="button" @click="window.innerWidth < 1024 ? sidebarOpen = !sidebarOpen : (desktopCollapsed = !desktopCollapsed, localStorage.setItem('ft_sidebar_col', desktopCollapsed))"
-                class="ft-btn ft-btn-ghost ft-btn-sm ft-btn-icon">
+        <button type="button"
+          @click="window.innerWidth < 1024 ? sidebarOpen = !sidebarOpen : (desktopCollapsed = !desktopCollapsed, localStorage.setItem('ft_sidebar_col', desktopCollapsed))"
+          class="ft-btn ft-btn-ghost ft-btn-sm ft-btn-icon">
           <i data-lucide="menu" style="width:16px;height:16px"></i>
         </button>
         <h1 style="font-size:14px;font-weight:700;color:var(--text)" class="max-sm:hidden">{{ page_title }}</h1>
@@ -341,17 +374,16 @@
 
 
       <div style="display:flex;align-items:center;gap:8px">
-        <a href="/" target="_blank" title="View Site"
-           class="ft-btn ft-btn-ghost ft-btn-sm ft-btn-icon">
+        <a href="/" target="_blank" title="View Site" class="ft-btn ft-btn-ghost ft-btn-sm ft-btn-icon">
           <i data-lucide="external-link" style="width:14px;height:14px"></i>
         </a>
-        <a href="{% url 'dashboard:notifications' %}"
-           class="ft-btn ft-btn-ghost ft-btn-sm ft-btn-icon relative">
+        <a href="{% url 'dashboard:notifications' %}" class="ft-btn ft-btn-ghost ft-btn-sm ft-btn-icon relative">
           <i data-lucide="bell" style="width:14px;height:14px"></i>
           {% if unread_notifications > 0 %}
-            <span class="absolute -top-1.5 -right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white shadow-sm border-[1.5px] border-white">
-              {{ unread_notifications }}
-            </span>
+          <span
+            class="absolute -top-1.5 -right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white shadow-sm border-[1.5px] border-white">
+            {{ unread_notifications }}
+          </span>
           {% endif %}
         </a>
       </div>
