@@ -38,8 +38,8 @@ def post_list(request):
     filter_set = BlogPostFilter(request.GET, queryset=qs)
     
     table = BlogPostTable(filter_set.qs)
-    # Paginate table to 25 items per page
-    RequestConfig(request, paginate={"per_page": 25}).configure(table)
+    # Paginate table to 10 items per page
+    RequestConfig(request, paginate={"per_page": 10}).configure(table)
     
     ctx = get_dashboard_context(request, "Content Posts", "Content", "dashboard:content_posts")
     ctx.update({

@@ -1,0 +1,147 @@
+{% load django_tables2 %}
+{% load i18n l10n %}
+{% block table-wrapper %}
+<div class="table-container !w-full !max-w-full">
+    {% block table %}
+        <table {% render_attrs table.attrs %}>
+            {% block table.thead %}
+            {% if table.show_header %}
+                <thead {{ table.attrs.thead.as_html }}>
+                    <tr>
+                    {% for column in table.columns %}
+                        <th {{ column.attrs.th.as_html }}>
+                            {% if column.orderable %}
+                                <a href="{% querystring_replace table.prefixed_order_by_field=column.order_by_alias.next %}" class="hover:text-blue-600 transition-colors">{{ column.header }}</a>
+                            {% else %}
+                                {{ column.header }}
+                            {% endif %}
+                        </th>
+                    {% endfor %}
+                    </tr>
+                </thead>
+            {% endif %}
+            {% endblock table.thead %}
+            {% block table.tbody %}
+                <tbody {{ table.attrs.tbody.as_html }}>
+                {% for row in table.paginated_rows %}
+                    {% block table.tbody.row %}
+                    <tr {{ row.attrs.as_html }}>
+                        {% for column, cell in row.items %}
+                            <td {{ column.attrs.td.as_html }}>
+                                {% if column.name == "serial_number" %}
+                                    <span class="!inline-flex !items-center !justify-center !w-6 !h-6 !rounded-full !bg-blue-50 !text-blue-700 !text-[11px] !font-bold !border !border-blue-100">
+                                        {% if table.page %}{{ table.page.start_index|add:forloop.parentloop.counter0 }}{% else %}{{ forloop.parentloop.counter }}{% endif %}
+                                    </span>
+                                {% else %}
+                                    {% if column.localize == None %}{{ cell }}{% else %}{% if column.localize %}{{ cell|localize }}{% else %}{{ cell|unlocalize }}{% endif %}{% endif %}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    {% endblock table.tbody.row %}
+                {% empty %}
+                    {% if table.empty_text %}
+                    {% block table.tbody.empty_text %}
+                    <tr><td colspan="{{ table.columns|length }}" class="!p-8 !text-center !text-gray-500">{{ table.empty_text }}</td></tr>
+                    {% endblock table.tbody.empty_text %}
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            {% endblock table.tbody %}
+            {% block table.tfoot %}
+            {% if table.has_footer %}
+            <tfoot {{ table.attrs.tfoot.as_html }}>
+                <tr>
+                {% for column in table.columns %}
+                    <td {{ column.attrs.tf.as_html }}>{{ column.footer }}</td>
+                {% endfor %}
+                </tr>
+            </tfoot>
+            {% endif %}
+            {% endblock table.tfoot %}
+        </table>
+    {% endblock table %}
+
+    {% block pagination %}
+        {% if table.page and table.paginator.num_pages > 1 %}
+        <div class="!flex !items-center !justify-between !px-4 !py-3 !bg-white !border-t !border-gray-200 sm:!px-6">
+            <div class="!hidden sm:!flex sm:!flex-1 sm:!items-center sm:!justify-between">
+                <div>
+                    <p class="!text-sm !text-gray-700">
+                        Showing
+                        <span class="!font-medium">{{ table.page.start_index }}</span>
+                        to
+                        <span class="!font-medium">{{ table.page.end_index }}</span>
+                        of
+                        <span class="!font-medium">{{ table.paginator.count }}</span>
+                        results
+                    </p>
+                </div>
+                <div>
+                    <nav class="!isolate !inline-flex !-space-x-px !rounded-md !shadow-sm" aria-label="Pagination">
+                        {% if table.page.has_previous %}
+                            {% block pagination.previous %}
+                                <a href="{% querystring_replace table.prefixed_page_field=table.page.previous_page_number %}" class="!relative !inline-flex !items-center !rounded-l-md !px-2 !py-2 !text-gray-400 !ring-1 !ring-inset !ring-gray-300 hover:!bg-gray-50 focus:!z-20 focus:!outline-offset-0">
+                                    <span class="!sr-only">{% trans 'Previous' %}</span>
+                                    <svg class="!h-5 !w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+                                    </svg>
+                                </a>
+                            {% endblock pagination.previous %}
+                        {% endif %}
+                        
+                        {% if table.page.has_previous or table.page.has_next %}
+                        {% block pagination.range %}
+                            {% for p in table.page|table_page_range:table.paginator %}
+                                {% if p == table.page.number %}
+                                    <span aria-current="page" class="!relative !z-10 !inline-flex !items-center !bg-blue-600 !px-4 !py-2 !text-sm !font-semibold !text-white focus:!z-20 focus-visible:!outline focus-visible:!outline-2 focus-visible:!outline-offset-2 focus-visible:!outline-blue-600">{{ p }}</span>
+                                {% elif p == '...' %}
+                                    <span class="!relative !inline-flex !items-center !px-4 !py-2 !text-sm !font-semibold !text-gray-700 !ring-1 !ring-inset !ring-gray-300 focus:!outline-offset-0">{{ p }}</span>
+                                {% else %}
+                                    <a href="{% querystring_replace table.prefixed_page_field=p %}" class="!relative !inline-flex !items-center !px-4 !py-2 !text-sm !font-semibold !text-gray-900 !ring-1 !ring-inset !ring-gray-300 hover:!bg-gray-50 focus:!z-20 focus:!outline-offset-0">{{ p }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        {% endblock pagination.range %}
+                        {% endif %}
+                        
+                        {% if table.page.has_next %}
+                            {% block pagination.next %}
+                                <a href="{% querystring_replace table.prefixed_page_field=table.page.next_page_number %}" class="!relative !inline-flex !items-center !rounded-r-md !px-2 !py-2 !text-gray-400 !ring-1 !ring-inset !ring-gray-300 hover:!bg-gray-50 focus:!z-20 focus:!outline-offset-0">
+                                    <span class="!sr-only">{% trans 'Next' %}</span>
+                                    <svg class="!h-5 !w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                                    </svg>
+                                </a>
+                            {% endblock pagination.next %}
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Mobile Pagination -->
+            <div class="!flex !flex-1 !justify-between sm:!hidden !mt-3 !w-full">
+                {% if table.page.has_previous %}
+                    <a href="{% querystring_replace table.prefixed_page_field=table.page.previous_page_number %}" class="!relative !inline-flex !items-center !rounded-md !border !border-gray-300 !bg-white !px-4 !py-2 !text-sm !font-medium !text-gray-700 hover:!bg-gray-50">
+                        {% trans 'Previous' %}
+                    </a>
+                {% else %}
+                    <span class="!relative !inline-flex !items-center !rounded-md !border !border-gray-200 !bg-gray-50 !px-4 !py-2 !text-sm !font-medium !text-gray-400 cursor-not-allowed">
+                        {% trans 'Previous' %}
+                    </span>
+                {% endif %}
+                
+                {% if table.page.has_next %}
+                    <a href="{% querystring_replace table.prefixed_page_field=table.page.next_page_number %}" class="!relative !ml-3 !inline-flex !items-center !rounded-md !border !border-gray-300 !bg-white !px-4 !py-2 !text-sm !font-medium !text-gray-700 hover:!bg-gray-50">
+                        {% trans 'Next' %}
+                    </a>
+                {% else %}
+                    <span class="!relative !ml-3 !inline-flex !items-center !rounded-md !border !border-gray-200 !bg-gray-50 !px-4 !py-2 !text-sm !font-medium !text-gray-400 cursor-not-allowed">
+                        {% trans 'Next' %}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    {% endblock pagination %}
+</div>
+{% endblock table-wrapper %}

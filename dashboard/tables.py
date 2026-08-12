@@ -14,6 +14,16 @@ class BlogPostTable(tables.Table):
         orderable=False
     )
     
+    serial_number = tables.Column(
+        empty_values=(),
+        verbose_name='S/N',
+        attrs={
+            "th": {"class": "!p-4 !w-12 !text-center !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap"},
+            "td": {"class": "!p-4 !w-12 !text-center !align-middle !whitespace-nowrap"}
+        },
+        orderable=False
+    )
+    
     thumbnail = tables.Column(
         empty_values=(), 
         orderable=False,
@@ -82,7 +92,7 @@ class BlogPostTable(tables.Table):
 
     class Meta:
         model = BlogPost
-        fields = ("selection", "thumbnail", "title", "author", "category", "status", "views", "created_at", "actions")
+        fields = ("selection", "serial_number", "thumbnail", "title", "author", "category", "status", "views", "created_at", "actions")
         attrs = {
             "class": "!min-w-full !w-full !table-auto !divide-y !divide-gray-200 !border-collapse",
             "thead": {"class": "!bg-gray-50/75"},
