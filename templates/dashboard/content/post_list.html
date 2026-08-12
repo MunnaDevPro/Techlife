@@ -28,8 +28,13 @@
     <!-- Page Header & Action Buttons -->
     <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
-            <h2 class="ft-page-title">Blog Posts</h2>
-            <p class="ft-page-subtitle">Manage all articles on your site</p>
+            <div class="!flex !items-center !gap-3">
+                <h2 class="ft-page-title !mb-0">Blog Posts</h2>
+                <span class="!inline-flex !items-center !justify-center !px-2.5 !py-0.5 !rounded-full !bg-blue-50 !text-blue-700 !text-[12px] !font-bold !border !border-blue-100">
+                    {{ table.paginator.count }} Total
+                </span>
+            </div>
+            <p class="ft-page-subtitle !mt-1">Manage all articles on your site</p>
         </div>
         <div class="!flex !items-center !gap-2.5">
             <!-- Filter Button -->
@@ -135,7 +140,7 @@
             {% csrf_token %}
             <c-ui.card extra_class="!min-w-0 !w-full !max-w-full !overflow-x-auto">
                 <!-- Bulk toolbar -->
-                <div class="flex items-center justify-between pb-3 mb-3 border-b" style="border-color:var(--border)">
+                <div class="!flex !items-center !justify-between !pb-6 !mb-6 !border-b" style="border-color:var(--border)">
                     <span class="text-[12px]" style="color:var(--text-muted)">
                         <span x-text="selectedCount">0</span> selected
                     </span>
@@ -160,7 +165,7 @@
 
                 <!-- Table -->
                 <div class="!w-full !overflow-x-auto !max-w-full">
-                    {% render_table table %}
+                    {% render_table table "dashboard/content/custom_table.html" %}
                 </div>
             </c-ui.card>
         </form>
