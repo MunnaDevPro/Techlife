@@ -273,7 +273,7 @@ def category_list_crud(request):
         action = request.POST.get('action')
         if action == "create":
             name = request.POST.get('name', '').strip()
-            icon = request.POST.get('icon', 'fa-solid fa-layer-group')
+            icon = request.POST.get('icon', '').strip() or 'layers'
             desc = request.POST.get('description', '')
             if name:
                 if Category.objects.filter(name__iexact=name).exists():
@@ -286,7 +286,7 @@ def category_list_crud(request):
         elif action == "update":
             cat_id = request.POST.get('id')
             name = request.POST.get('name', '').strip()
-            icon = request.POST.get('icon', 'fa-solid fa-layer-group')
+            icon = request.POST.get('icon', '').strip() or 'layers'
             desc = request.POST.get('description', '')
             if name:
                 if Category.objects.filter(name__iexact=name).exclude(pk=cat_id).exists():
@@ -331,11 +331,28 @@ def subcategory_list_crud(request):
         if action == "create":
             category_id = request.POST.get('category_id')
             name = request.POST.get('name')
+            icon = request.POST.get('icon', '').strip() or 'layers'
             desc = request.POST.get('description', '')
             if category_id and name:
                 category = get_object_or_404(Category, pk=category_id)
-                SubCategory.objects.create(category=category, name=name, description=desc)
+                SubCategory.objects.create(category=category, name=name, font_awesome_icon=icon, description=desc)
                 messages.success(request, "Subcategory created.")
+            else:
+                messages.error(request, "Category and Name are required.")
+        elif action == "update":
+            sub_id = request.POST.get('id')
+            category_id = request.POST.get('category_id')
+            name = request.POST.get('name', '').strip()
+            icon = request.POST.get('icon', '').strip() or 'layers'
+            desc = request.POST.get('description', '')
+            if sub_id and category_id and name:
+                sub = get_object_or_404(SubCategory, pk=sub_id)
+                sub.category = get_object_or_404(Category, pk=category_id)
+                sub.name = name
+                sub.font_awesome_icon = icon
+                sub.description = desc
+                sub.save()
+                messages.success(request, "Subcategory updated.")
             else:
                 messages.error(request, "Category and Name are required.")
         elif action == "delete":
@@ -345,12 +362,20 @@ def subcategory_list_crud(request):
             
         return redirect("dashboard:content_subcategories")
         
-    subcategories = SubCategory.objects.select_related('category').annotate(post_count=Count('posts')).order_by('category__name', 'name')
+    subcategories_qs = SubCategory.objects.select_related('category').annotate(post_count=Count('posts')).order_by('category__name', 'name')
     categories = Category.objects.all()
+    
+    from django.core.paginator import Paginator
+    paginator = Paginator(subcategories_qs, 15)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     ctx = get_dashboard_context(request, "Subcategories", "Content", "dashboard:content_subcategories")
     ctx.update({
-        "subcategories": subcategories,
+        "subcategories": page_obj.object_list,
         "categories": categories,
+        "page_obj": page_obj,
+        "total_subcategories_count": subcategories_qs.count()
     })
     return render(request, "dashboard/content/subcategories.html", ctx)
 
@@ -374,9 +399,18 @@ def tag_list_crud(request):
             
         return redirect("dashboard:content_tags")
         
-    tags = Tag.objects.annotate(post_count=Count('blog_posts')).order_by('name')
+    tags_qs = Tag.objects.annotate(post_count=Count('blog_posts')).order_by('name')
+    from django.core.paginator import Paginator
+    paginator = Paginator(tags_qs, 15)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     ctx = get_dashboard_context(request, "Tags", "Content", "dashboard:content_tags")
-    ctx.update({"tags": tags})
+    ctx.update({
+        "tags": page_obj.object_list,
+        "page_obj": page_obj,
+        "total_tags_count": tags_qs.count()
+    })
     return render(request, "dashboard/content/tags.html", ctx)
 
 # Homepage sections CRUD

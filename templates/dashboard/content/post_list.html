@@ -133,7 +133,7 @@
         <form id="bulk-actions-form" method="post" action="{% url 'dashboard:post_bulk' %}"
             @change="updateSelectedCount()" class="!block !w-full !max-w-full !overflow-x-auto">
             {% csrf_token %}
-            <c-ui.card extra_class="!min-w-0 !w-full !max-w-full !overflow-x-auto">
+            <c-ui.card extra_class="!min-w-0 !w-full !max-w-full !overflow-x-auto" footer="">
                 <!-- Bulk toolbar -->
                 <div class="!flex !items-center !justify-between !pb-6 !mb-6 !border-b"
                     style="border-color:var(--border)">

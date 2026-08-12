@@ -15,7 +15,33 @@ from dashboard.models import ModerationLog
 
 @staff_required
 def user_list(request):
-    """List all users with verification status, post counts, and joins."""
+    """List all users and handle creating new admin/staff/general users."""
+    if request.method == "POST":
+        action = request.POST.get('action')
+        if action == "create":
+            email = request.POST.get('email', '').strip()
+            password = request.POST.get('password')
+            first_name = request.POST.get('first_name', '').strip()
+            last_name = request.POST.get('last_name', '').strip()
+            is_staff = request.POST.get('is_staff') == 'true'
+            is_verified = request.POST.get('is_verified') == 'true'
+            
+            if not email or not password:
+                messages.error(request, "Email and Password are required.")
+            elif CustomUserModel.objects.filter(email=email).exists():
+                messages.error(request, "A user with this email already exists.")
+            else:
+                user = CustomUserModel.objects.create_user(
+                    email=email,
+                    password=password,
+                    first_name=first_name,
+                    last_name=last_name,
+                    is_staff=is_staff,
+                    is_verified=is_verified
+                )
+                messages.success(request, f"User {user.email} created successfully.")
+            return redirect("dashboard:users_all")
+
     qs = CustomUserModel.objects.annotate(post_count=Count('authored_posts')).order_by('-date_joined')
     
     # Filter by verified/unverified status
