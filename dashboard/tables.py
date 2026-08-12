@@ -37,7 +37,7 @@ class BlogPostTable(tables.Table):
     title = tables.Column(
         attrs={
             "th": {"class": "!p-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap"},
-            "td": {"class": "!p-4 !align-middle !text-[12px] !font-normal !text-gray-900 !w-[220px] !max-w-[220px] !block !line-clamp-2 !overflow-hidden !break-words"}
+            "td": {"class": "!p-4 !align-middle !text-[12px] !font-normal !text-gray-900 !w-[220px] !max-w-[220px] !break-words"}
         }
     )
     
@@ -110,7 +110,7 @@ class BlogPostTable(tables.Table):
 
     def render_title(self, record, value):
         detail_url = f"/dashboard/content/posts/{record.pk}/"
-        return format_html('<a href="{}" class="hover:!text-blue-600 transition-colors">{}</a>', detail_url, value)
+        return format_html('<a href="{}" class="hover:!text-blue-600 transition-colors" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-height: 2.8em; line-height: 1.4;">{}</a>', detail_url, value)
 
     def render_thumbnail(self, record):
         detail_url = f"/dashboard/content/posts/{record.pk}/"
