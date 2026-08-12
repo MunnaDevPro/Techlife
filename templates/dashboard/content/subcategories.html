@@ -15,15 +15,15 @@
     </div>
 
     <!-- Subcategories Table List -->
-    <c-ui.card title="Existing Subcategories" subtitle="{{ subcategories|length }} subcategories">
+    <c-ui.card title="Existing Subcategories" subtitle="{{ total_subcategories_count }} subcategories" footer="">
         <div class="ft-table-wrap">
             <table class="ft-table">
                 <thead>
                     <tr>
+                        <th>Icon</th>
                         <th>Name</th>
                         <th>Parent Category</th>
                         <th>Slug</th>
-                        <th>Description</th>
                         <th>Posts</th>
                         <th>Actions</th>
                     </tr>
@@ -31,6 +31,11 @@
                 <tbody>
                     {% for sub in subcategories %}
                     <tr>
+                        <td>
+                            <span class="!flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-100 !bg-gray-50/50 !text-gray-600">
+                                <i data-lucide="{{ sub.font_awesome_icon|default:'layers' }}" class="!w-4.5 !h-4.5"></i>
+                            </span>
+                        </td>
                         <td style="font-weight: 500; color: var(--text);">{{ sub.name }}</td>
                         <td>
                             <c-ui.badge variant="info">{{ sub.category.name }}</c-ui.badge>
@@ -38,19 +43,27 @@
                         <td>
                             <code class="text-[11px] px-1.5 py-0.5 rounded" style="background: var(--surface-3); color: var(--text-muted);">{{ sub.slug }}</code>
                         </td>
-                        <td style="color: var(--text-muted);">{{ sub.description|default:"—" }}</td>
                         <td><c-ui.badge variant="neutral">{{ sub.post_count }}</c-ui.badge></td>
                         <td>
-                            <form action="{% url 'dashboard:content_subcategories' %}" method="post"
-                                  onsubmit="return confirm('Delete this subcategory?')" class="inline-block">
-                                {% csrf_token %}
-                                <input type="hidden" name="action" value="delete">
-                                <input type="hidden" name="id" value="{{ sub.id }}">
-                                <button type="submit" class="ft-btn ft-btn-danger ft-btn-sm" style="padding: 4px 10px;">
-                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                    Delete
+                            <div class="!flex !items-center !gap-1.5">
+                                <button type="button"
+                                    @click="window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'edit-sub-{{ sub.id }}' } }))"
+                                    class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-blue-100 !bg-blue-50 !text-blue-600 hover:!bg-blue-100 hover:!text-blue-700 hover:!border-blue-200 !transition-all !cursor-pointer"
+                                    title="Edit Subcategory">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
                                 </button>
-                            </form>
+                                <form action="{% url 'dashboard:content_subcategories' %}" method="post"
+                                      onsubmit="return confirm('Delete this subcategory?')" class="inline-block">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="{{ sub.id }}">
+                                    <button type="submit"
+                                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-red-100 !bg-red-50 !text-red-600 hover:!bg-red-100 hover:!text-red-700 hover:!border-red-200 !transition-all !cursor-pointer"
+                                        title="Delete Subcategory">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     {% empty %}
@@ -66,63 +79,125 @@
                 </tbody>
             </table>
         </div>
+        {% if page_obj.has_other_pages %}
+        <c-slot name="footer">
+            <div class="!flex !items-center !justify-between !w-full !px-2">
+                <div>
+                    <p class="!text-[13px] !text-gray-500">
+                        Showing <span class="!font-semibold !text-gray-800">{{ page_obj.start_index }}</span> to <span
+                            class="!font-semibold !text-gray-800">{{ page_obj.end_index }}</span> of <span
+                            class="!font-semibold !text-gray-800">{{ total_subcategories_count }}</span> results
+                    </p>
+                </div>
+                <div class="!flex !items-center !gap-1">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}"
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-200 !bg-white !text-gray-600 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !cursor-pointer">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </a>
+                    {% else %}
+                    <span
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-150 !bg-gray-50/50 !text-gray-300 cursor-not-allowed">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </span>
+                    {% endif %}
+
+                    {% for p in page_obj.paginator.page_range %}
+                    {% if p == page_obj.number %}
+                    <span
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !bg-blue-600 !text-[13px] !font-semibold !text-white">{{
+                        p }}</span>
+                    {% else %}
+                    <a href="?page={{ p }}"
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-200 !bg-white !text-[13px] !font-medium !text-gray-600 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !cursor-pointer">{{
+                        p }}</a>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}"
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-200 !bg-white !text-gray-600 hover:!bg-gray-50 hover:text-gray-950 !transition-all !cursor-pointer">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                    {% else %}
+                    <span
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-150 !bg-gray-50/50 !text-gray-300 cursor-not-allowed">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </c-slot>
+        {% endif %}
     </c-ui.card>
 
     <!-- Right Slide-Over Subcategory Form Drawer -->
-    <div x-show="showDrawer" x-cloak class="ft-modal-backdrop justify-end p-0">
+    <div x-show="showDrawer" x-cloak class="fixed inset-0 !top-[52px] z-[9999] bg-black/20 backdrop-blur-sm flex justify-end !mt-0"
+         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
         <div x-show="showDrawer"
-             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter="transition ease-out duration-300 transform"
              x-transition:enter-start="translate-x-full"
              x-transition:enter-end="translate-x-0"
-             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave="transition ease-in duration-200 transform"
              x-transition:leave-start="translate-x-0"
              x-transition:leave-end="translate-x-full"
              @click.away="showDrawer = false"
-             class="w-[420px] h-screen flex flex-col"
-             style="background:var(--surface);border-left:1px solid var(--border);box-shadow:var(--shadow-dropdown)">
+             class="!w-[420px] !h-full !flex !flex-col !bg-white !border-l !border-gray-200 !shadow-2xl">
 
             <!-- Drawer Header -->
-            <div class="flex items-center justify-between px-5 py-4 border-b flex-shrink-0" style="border-color:var(--border)">
-                <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-[var(--radius-sm)] flex items-center justify-center" style="background:var(--primary-light)">
-                        <i data-lucide="layers" class="w-[15px] h-[15px]" style="color:var(--primary)"></i>
+            <div class="!flex !items-center !justify-between !px-6 !py-5 !border-b !border-gray-100 !flex-shrink-0">
+                <div class="!flex !items-center !gap-2.5">
+                    <div class="!w-8 !h-8 !rounded-lg !flex !items-center !justify-center !bg-blue-50">
+                        <i data-lucide="layers" class="w-4 h-4 text-blue-600"></i>
                     </div>
                     <div>
-                        <h3 class="text-[14px] font-bold m-0" style="color:var(--text)">Add New Subcategory</h3>
-                        <p class="text-[11px] m-0" style="color:var(--text-muted)">Create a subcategory nested under a parent</p>
+                        <h3 class="!text-base !font-bold !text-gray-900 !m-0">Add New Subcategory</h3>
+                        <p class="!text-[11px] !text-gray-500 !m-0">Create a subcategory nested under a parent</p>
                     </div>
                 </div>
-                <button @click="showDrawer = false" type="button" class="ft-btn ft-btn-ghost ft-btn-icon ft-btn-sm">
-                    <i data-lucide="x" class="w-[15px] h-[15px]"></i>
+                <button @click="showDrawer = false" type="button" class="!p-1.5 !rounded-lg !text-gray-400 hover:!text-gray-600 hover:!bg-gray-50 !transition-all !cursor-pointer border border-transparent hover:border-gray-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
             <!-- Drawer Form Body -->
             <form method="post" action="{% url 'dashboard:content_subcategories' %}"
                   enctype="multipart/form-data"
-                  class="flex-1 overflow-y-auto flex flex-col gap-4 p-5">
+                  class="!flex-1 !overflow-y-auto scrollbar-thin !flex !flex-col !gap-5 !p-6">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="create">
 
-                <c-ui.select name="category_id" label="Parent Category" required="true">
-                    <option value="">Select Category...</option>
-                    {% for cat in categories %}
-                        <option value="{{ cat.id }}">{{ cat.name }}</option>
-                    {% endfor %}
-                </c-ui.select>
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.select name="category_id" label="Parent Category" required="true">
+                        <option value="">Select Category...</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}">{{ cat.name }}</option>
+                        {% endfor %}
+                    </c-ui.select>
+                </div>
 
-                <c-ui.input name="name" label="Subcategory Name" placeholder="e.g. Smartwatches & Wearables" required="true" icon="tag"></c-ui.input>
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.input name="name" label="Subcategory Name" placeholder="e.g. Smartwatches & Wearables" required="true" icon="tag"></c-ui.input>
+                </div>
 
-                <c-ui.input name="description" label="Description" placeholder="Short description (optional)" icon="align-left"></c-ui.input>
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.input name="description" label="Description" placeholder="Short description (optional)" icon="align-left"></c-ui.input>
+                </div>
 
-                <c-ui.file_input name="image" label="Banner / Icon (optional)" help="Upload custom subcategory header graphic" accept="image/*"></c-ui.file_input>
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.input name="icon" label="Lucide Icon" value="layers" placeholder="e.g. layers, tag, heart" icon="image"></c-ui.input>
+                </div>
 
-                <div class="mt-auto flex gap-2.5 pt-4 border-t" style="border-color:var(--border)">
-                    <button type="button" @click="showDrawer = false" class="ft-btn ft-btn-secondary ft-btn-full justify-center">
+                <div class="!mt-auto !flex !items-center !justify-end !gap-2.5 !pt-5 !border-t !border-gray-100">
+                    <button type="button" @click="showDrawer = false"
+                        class="!px-4 !py-2 !text-[13px] !font-semibold !text-gray-700 !bg-white !border !border-gray-200 !rounded-lg hover:!bg-gray-50 hover:!text-gray-900 !transition-all !cursor-pointer !shadow-sm">
                         Cancel
                     </button>
-                    <button type="submit" class="ft-btn ft-btn-primary ft-btn-full">
-                        <i data-lucide="check"></i> Create Subcategory
+                    <button type="submit"
+                        class="!inline-flex !items-center !justify-center !gap-1.5 !px-4 !py-2 !text-[13px] !font-semibold !text-white !bg-blue-600 hover:!bg-blue-700 !rounded-lg !transition-all !cursor-pointer !shadow-sm">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Add Subcategory
                     </button>
                 </div>
             </form>
@@ -130,4 +205,45 @@
     </div>
 
 </div>
+
+<!-- Edit Subcategory Confirmation Modals -->
+{% for sub in subcategories %}
+<div x-data="{ isSaving: false }" @submit="isSaving = true">
+    <c-ui.modal id="edit-sub-{{ sub.id }}" title="Edit Subcategory">
+        <form action="{% url 'dashboard:content_subcategories' %}" method="post" id="edit-sub-form-{{ sub.id }}"
+            class="!flex !flex-col !gap-4">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update">
+            <input type="hidden" name="id" value="{{ sub.id }}">
+            <div class="!flex !flex-col !gap-4">
+                <c-ui.select name="category_id" label="Parent Category" required="true">
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if cat.id == sub.category.id %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </c-ui.select>
+                <c-ui.input name="name" label="Subcategory Name" value="{{ sub.name }}" placeholder="Subcategory name" required="true"
+                    icon="tag"></c-ui.input>
+                <c-ui.input name="icon" label="Lucide Icon" value="{{ sub.font_awesome_icon|default:'layers' }}"
+                    placeholder="e.g. layers, tag, heart" icon="image"></c-ui.input>
+                <c-ui.input name="description" label="Description" value="{{ sub.description|default:'' }}"
+                    placeholder="Short description (optional)" icon="align-left"></c-ui.input>
+            </div>
+        </form>
+        <c-slot name="footer">
+            <c-ui.button type="button" variant="secondary" size="sm" x-bind:disabled="isSaving"
+                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'edit-sub-{{ sub.id }}' } }))">
+                Cancel
+            </c-ui.button>
+            <c-ui.button type="submit" form="edit-sub-form-{{ sub.id }}" variant="primary" size="sm"
+                extra_class="!ml-2" x-bind:disabled="isSaving">
+                <svg x-show="isSaving" class="animate-spin w-3.5 h-3.5 mr-1.5 inline-block" fill="none" viewBox="0 0 24 24" style="display: none;">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span x-text="isSaving ? 'Saving...' : 'Save Changes'">Save Changes</span>
+            </c-ui.button>
+        </c-slot>
+    </c-ui.modal>
+</div>
+{% endfor %}
 {% endblock %}

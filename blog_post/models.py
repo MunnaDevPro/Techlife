@@ -13,7 +13,7 @@ from imagekit.processors import ResizeToFill, Adjust, ResizeToFit
 class Category(models.Model):
     name = models.CharField(max_length=500, unique=True)
     slug = models.SlugField(unique=True, blank=True)
-    font_awesome_icon = models.CharField(default="fa-solid fa-layer-group", max_length=500, null=True, blank=True, verbose_name="Fontawesome icon", help_text="e.g: fa-solid fa-layer-group", error_messages="Enter valid class of fontawesome icon")
+    font_awesome_icon = models.CharField(default="layers", max_length=500, null=True, blank=True, verbose_name="Lucide icon name", help_text="e.g: layers, tag, heart")
     # description = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
@@ -47,6 +47,7 @@ class SubCategory(models.Model):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(unique=True, blank=True)
     description = models.TextField(blank=True, null=True)
+    font_awesome_icon = models.CharField(default="layers", max_length=500, null=True, blank=True, verbose_name="Lucide icon name")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
