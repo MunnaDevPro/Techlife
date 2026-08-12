@@ -29,7 +29,7 @@
                         {% for column, cell in row.items %}
                             <td {{ column.attrs.td.as_html }}>
                                 {% if column.name == "serial_number" %}
-                                    <span class="!inline-flex !items-center !justify-center !w-6 !h-6 !rounded-full !bg-blue-50 !text-blue-700 !text-[11px] !font-bold !border !border-blue-100">
+                                    <span class="text-[13px] font-medium text-gray-500">
                                         {% if table.page %}{{ table.page.start_index|add:forloop.parentloop.counter0 }}{% else %}{{ forloop.parentloop.counter }}{% endif %}
                                     </span>
                                 {% else %}

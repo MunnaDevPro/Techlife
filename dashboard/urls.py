@@ -24,6 +24,7 @@ urlpatterns = [
     path("content/posts/bulk/", content.post_bulk_action, name="post_bulk"),
     path("content/posts/<int:pk>/status/", content.post_update_status, name="post_status_update"),
     path("content/posts/create/", content.post_create, name="post_create"),
+    path("content/posts/<int:pk>/", content.post_detail, name="post_detail"),
     path("content/posts/<int:pk>/edit/", content.post_detail_edit, name="post_edit"),
     path("content/posts/<int:post_pk>/comments/<int:comment_pk>/delete/", content.post_comment_delete, name="post_comment_delete"),
     

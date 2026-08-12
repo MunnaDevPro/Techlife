@@ -175,6 +175,31 @@ def post_create(request):
     return render(request, "dashboard/content/post_create.html", ctx)
 
 @staff_required
+def post_detail(request, pk):
+    """View showing full A to Z stats and information of a single post."""
+    post = get_object_or_404(BlogPost, pk=pk)
+    comments = Comment.objects.filter(post=post).select_related('user').order_by('-created_at')
+    
+    # Calculate comment analytics
+    comments_count = comments.count()
+    
+    # Gather other statistics
+    likes_count = getattr(post, 'likes', None)
+    if likes_count is not None:
+        likes_count = likes_count.count()
+    else:
+        likes_count = 0
+        
+    ctx = get_dashboard_context(request, "Post Details", "Content", "dashboard:content_posts")
+    ctx.update({
+        "post": post,
+        "comments": comments,
+        "comments_count": comments_count,
+        "likes_count": likes_count,
+    })
+    return render(request, "dashboard/content/post_detail.html", ctx)
+
+@staff_required
 def post_detail_edit(request, pk):
     """Tabbed view for post detail / edit."""
     post = get_object_or_404(BlogPost, pk=pk)
@@ -247,12 +272,32 @@ def category_list_crud(request):
     if request.method == "POST":
         action = request.POST.get('action')
         if action == "create":
-            name = request.POST.get('name')
+            name = request.POST.get('name', '').strip()
             icon = request.POST.get('icon', 'fa-solid fa-layer-group')
             desc = request.POST.get('description', '')
             if name:
-                Category.objects.create(name=name, font_awesome_icon=icon, description=desc)
-                messages.success(request, "Category created successfully.")
+                if Category.objects.filter(name__iexact=name).exists():
+                    messages.error(request, f"Category '{name}' already exists.")
+                else:
+                    Category.objects.create(name=name, font_awesome_icon=icon, description=desc)
+                    messages.success(request, "Category created successfully.")
+            else:
+                messages.error(request, "Category name is required.")
+        elif action == "update":
+            cat_id = request.POST.get('id')
+            name = request.POST.get('name', '').strip()
+            icon = request.POST.get('icon', 'fa-solid fa-layer-group')
+            desc = request.POST.get('description', '')
+            if name:
+                if Category.objects.filter(name__iexact=name).exclude(pk=cat_id).exists():
+                    messages.error(request, f"Category '{name}' already exists.")
+                else:
+                    cat = get_object_or_404(Category, pk=cat_id)
+                    cat.name = name
+                    cat.font_awesome_icon = icon
+                    cat.description = desc
+                    cat.save()
+                    messages.success(request, "Category updated successfully.")
             else:
                 messages.error(request, "Category name is required.")
         elif action == "delete":
@@ -262,9 +307,19 @@ def category_list_crud(request):
             
         return redirect("dashboard:content_categories")
         
-    categories = Category.objects.annotate(post_count=Count('blogpost')).order_by('name')
+    categories_qs = Category.objects.annotate(post_count=Count('blogpost')).order_by('name')
+    
+    from django.core.paginator import Paginator
+    paginator = Paginator(categories_qs, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     ctx = get_dashboard_context(request, "Categories", "Content", "dashboard:content_categories")
-    ctx.update({"categories": categories})
+    ctx.update({
+        "categories": page_obj.object_list,
+        "page_obj": page_obj,
+        "total_categories_count": categories_qs.count(),
+    })
     return render(request, "dashboard/content/categories.html", ctx)
 
 # Subcategories CRUD

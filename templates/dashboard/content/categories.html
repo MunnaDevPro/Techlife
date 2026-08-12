@@ -1,19 +1,33 @@
 {% extends base_template %}
 
 {% block content %}
-<div class="flex flex-col gap-5">
+{% with footer=None %}
+<div class="!block !space-y-6 !relative !w-full !max-w-full">
 
-    <div>
-        <h2 class="ft-page-title">Post Categories</h2>
-        <p class="ft-page-subtitle">Manage categories and their icons</p>
+    <!-- Page Header -->
+    <div class="!flex !items-center !justify-between !flex-wrap !gap-3">
+        <div>
+            <div class="!flex !items-center !gap-3">
+                <h2 class="ft-page-title !mb-0">Post Categories</h2>
+                <span
+                    class="!inline-flex !items-center !justify-center !px-2.5 !py-0.5 !rounded-full !bg-blue-50 !text-blue-700 !text-[12px] !font-bold !border !border-blue-100">
+                    {{ total_categories_count }} Total
+                </span>
+            </div>
+            <p class="ft-page-subtitle !mt-1">Manage categories and their icons</p>
+        </div>
     </div>
 
     <!-- Create form -->
-    <c-ui.card title="Add New Category">
-        <form method="post" class="flex flex-col gap-5">
+    <c-ui.card title="Add New Category" extra_class="!shadow-none" card_padding="sm" footer="">
+        <c-slot name="actions">
+            <c-ui.button type="submit" form="add-category-form" variant="primary" label="Add Category" icon="plus"
+                size="sm"></c-ui.button>
+        </c-slot>
+        <form method="post" id="add-category-form" class="!flex !flex-col !gap-4">
             {% csrf_token %}
             <input type="hidden" name="action" value="create">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
                 <c-ui.input name="name" label="Name" placeholder="Category name" required="true"
                     icon="tag"></c-ui.input>
                 <c-ui.input name="icon" label="FontAwesome Icon" value="fa-solid fa-layer-group"
@@ -21,66 +35,81 @@
                 <c-ui.input name="description" label="Description" placeholder="Short description (optional)"
                     icon="align-left"></c-ui.input>
             </div>
-            <div class="flex justify-end border-t pt-4" style="border-color: var(--border)">
-                <c-ui.button type="submit" variant="primary" label="Add Category" icon="plus"></c-ui.button>
-            </div>
         </form>
     </c-ui.card>
 
     <!-- Existing categories -->
-    <c-ui.card title="Existing Categories" subtitle="{{ categories|length }} categories">
-        <div class="ft-table-wrap">
-            <table class="ft-table">
-                <thead>
+    <c-ui.card extra_class="!shadow-none" card_padding="sm">
+        <div class="!w-full !overflow-x-auto !max-w-full">
+            <table class="!min-w-full !w-full !table-auto !divide-y !divide-gray-200 !border-collapse">
+                <thead class="!bg-gray-50/75">
                     <tr>
-                        <th>Name</th>
-                        <th>Slug</th>
-                        <th>Icon Class</th>
-                        <th>Description</th>
-                        <th>Posts</th>
-                        <th>Actions</th>
+                        <th
+                            class="!py-2 !px-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap">
+                            Name</th>
+                        <th
+                            class="!py-2 !px-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap">
+                            Slug</th>
+                        <th
+                            class="!py-2 !px-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap">
+                            Icon Class</th>
+                        <th
+                            class="!p-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap">
+                            Posts</th>
+                        <th
+                            class="!py-2 !px-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap">
+                            Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="!divide-y !divide-gray-100 !bg-white">
                     {% for cat in categories %}
                     <tr>
-                        <td>
-                            <div class="flex items-center gap-3">
-                                <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-lg shadow-sm border border-blue-100 bg-blue-50 text-blue-600">
-                                    <i class="{{ cat.font_awesome_icon|default:'fa-solid fa-layer-group' }} text-[18px]"></i>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-sm font-bold" style="color: var(--text);">{{ cat.name }}</span>
-                                </div>
+                        <td class="!p-4 !align-middle">
+                            <div class="!flex !items-center !gap-2.5">
+                                <span
+                                    class="!flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-100 !bg-gray-50/50 !text-gray-600">
+                                    <i
+                                        class="{{ cat.font_awesome_icon|default:'fa-solid fa-layer-group' }} !text-[14px]"></i>
+                                </span>
+                                <span class="!text-[13px] !font-semibold !text-gray-900">{{ cat.name }}</span>
                             </div>
                         </td>
-                        <td>
-                            <code class="text-[11px] px-1.5 py-0.5 rounded"
-                                style="background: var(--surface-3); color: var(--text-muted);">{{ cat.slug }}</code>
+                        <td class="!p-4 !align-middle">
+                            <code
+                                class="!text-[11.5px] !px-2 !py-0.5 !rounded !bg-gray-50 !border !border-gray-100 !text-gray-600">{{ cat.slug }}</code>
                         </td>
-                        <td>
-                            <code class="text-[11px] px-1.5 py-0.5 rounded"
-                                style="background: var(--surface-3); color: var(--text-muted);">{{ cat.font_awesome_icon }}</code>
+                        <td class="!p-4 !align-middle !whitespace-nowrap">
+                            <code
+                                class="!text-[11.5px] !px-2 !py-0.5 !rounded !bg-gray-50 !border !border-gray-100 !text-gray-600">{{ cat.font_awesome_icon }}</code>
                         </td>
-                        <td style="color: var(--text-muted);">{{ cat.description|default:"—" }}</td>
-                        <td>
-                            <c-ui.badge variant="neutral">{{ cat.post_count }}</c-ui.badge>
+                        <td class="!p-4 !align-middle">
+                            <span
+                                class="!inline-flex !items-center !px-2.5 !py-0.5 !rounded-full !text-[11.5px] !font-medium !bg-gray-50 !text-gray-600 !border !border-gray-100">{{
+                                cat.post_count }}</span>
                         </td>
-                        <td>
-                            <button type="button" 
-                                onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'delete-cat-{{ cat.id }}' } }))" 
-                                class="ft-btn ft-btn-danger ft-btn-sm" style="padding: 4px 10px;">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                Delete
-                            </button>
+                        <td class="!p-4 !align-middle !whitespace-nowrap">
+                            <div class="!flex !items-center !gap-1.5">
+                                <button type="button"
+                                    @click="window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'edit-cat-{{ cat.id }}' } }))"
+                                    class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-blue-100 !bg-blue-50 !text-blue-600 hover:!bg-blue-100 hover:!text-blue-700 hover:!border-blue-200 !transition-all !cursor-pointer"
+                                    title="Edit Category">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button"
+                                    @click="window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'delete-cat-{{ cat.id }}' } }))"
+                                    class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-red-100 !bg-red-50 !text-red-600 hover:!bg-red-100 hover:!text-red-700 hover:!border-red-200 !transition-all !cursor-pointer"
+                                    title="Delete Category">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center" style="padding: 40px 14px; color: var(--text-muted);">
-                            <div class="flex flex-col items-center gap-2">
-                                <i data-lucide="inbox" class="w-8 h-8 opacity-30"></i>
-                                <span>No categories found</span>
+                        <td colspan="6" class="!p-8 !text-center !text-gray-500">
+                            <div class="!flex !flex-col !items-center !gap-2 !py-6">
+                                <i data-lucide="inbox" class="w-8 h-8 opacity-30 text-gray-400"></i>
+                                <span class="!text-[13px]">No categories found</span>
                             </div>
                         </td>
                     </tr>
@@ -88,9 +117,87 @@
                 </tbody>
             </table>
         </div>
+        {% if page_obj.has_other_pages %}
+        <c-slot name="footer">
+            <div class="!flex !items-center !justify-between !w-full !px-2">
+                <div>
+                    <p class="!text-[13px] !text-gray-500">
+                        Showing <span class="!font-semibold !text-gray-800">{{ page_obj.start_index }}</span> to <span
+                            class="!font-semibold !text-gray-800">{{ page_obj.end_index }}</span> of <span
+                            class="!font-semibold !text-gray-800">{{ total_categories_count }}</span> results
+                    </p>
+                </div>
+                <div class="!flex !items-center !gap-1">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}"
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-200 !bg-white !text-gray-600 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !cursor-pointer">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </a>
+                    {% else %}
+                    <span
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-150 !bg-gray-50/50 !text-gray-300 cursor-not-allowed">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </span>
+                    {% endif %}
+
+                    {% for p in page_obj.paginator.page_range %}
+                    {% if p == page_obj.number %}
+                    <span
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !bg-blue-600 !text-[13px] !font-semibold !text-white">{{
+                        p }}</span>
+                    {% else %}
+                    <a href="?page={{ p }}"
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-200 !bg-white !text-[13px] !font-medium !text-gray-600 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !cursor-pointer">{{
+                        p }}</a>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}"
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-200 !bg-white !text-gray-600 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !cursor-pointer">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                    {% else %}
+                    <span
+                        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-150 !bg-gray-50/50 !text-gray-300 cursor-not-allowed">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </c-slot>
+        {% endif %}
     </c-ui.card>
 
 </div>
+
+<!-- Edit Confirmation Modals -->
+{% for cat in categories %}
+<c-ui.modal id="edit-cat-{{ cat.id }}" title="Edit Category">
+    <form action="{% url 'dashboard:content_categories' %}" method="post" id="edit-cat-form-{{ cat.id }}"
+        class="!flex !flex-col !gap-4">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update">
+        <input type="hidden" name="id" value="{{ cat.id }}">
+        <div class="!flex !flex-col !gap-4">
+            <c-ui.input name="name" label="Name" value="{{ cat.name }}" placeholder="Category name" required="true"
+                icon="tag"></c-ui.input>
+            <c-ui.input name="icon" label="FontAwesome Icon" value="{{ cat.font_awesome_icon }}"
+                placeholder="fa-solid fa-layer-group" icon="image"></c-ui.input>
+            <c-ui.input name="description" label="Description" value="{{ cat.description|default:'' }}"
+                placeholder="Short description (optional)" icon="align-left"></c-ui.input>
+        </div>
+    </form>
+    <c-slot name="footer">
+        <c-ui.button type="button" variant="secondary" size="sm"
+            @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'edit-cat-{{ cat.id }}' } }))">
+            Cancel
+        </c-ui.button>
+        <c-ui.button type="submit" form="edit-cat-form-{{ cat.id }}" variant="primary" size="sm" label="Save Changes"
+            extra_class="!ml-2"></c-ui.button>
+    </c-slot>
+</c-ui.modal>
+{% endfor %}
 
 <!-- Delete Confirmation Modals -->
 {% for cat in categories %}
@@ -102,27 +209,27 @@
         </div>
         <!-- Content -->
         <div class="!flex !flex-col !gap-1.5">
-            <h4 class="!text-[15px] !font-bold !text-gray-900 dark:!text-white">Permanently delete category?</h4>
-            <p class="!text-[13px] !leading-relaxed !text-gray-500 dark:!text-gray-400">
-                Are you sure you want to delete the category <strong class="!font-semibold !text-gray-900 dark:!text-white">"{{ cat.name }}"</strong>? This action cannot be undone and the category will be permanently removed.
+            <h4 class="!text-[15px] !font-bold !text-gray-900">Permanently delete category?</h4>
+            <p class="!text-[13px] !leading-relaxed !text-gray-500">
+                Are you sure you want to delete the category <strong class="!font-semibold !text-gray-900">"{{ cat.name
+                    }}"</strong>? This action cannot be undone and the category will be permanently removed.
             </p>
         </div>
     </div>
     <c-slot name="footer">
-        <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'delete-cat-{{ cat.id }}' } }))" 
-            class="!inline-flex !items-center !justify-center !gap-2 !px-4 !py-2 !rounded-md !border !border-gray-300 !bg-white !text-[13px] !font-medium !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !cursor-pointer">
+        <c-ui.button type="button" variant="secondary" size="sm"
+            @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'delete-cat-{{ cat.id }}' } }))">
             Cancel
-        </button>
-        <form action="{% url 'dashboard:content_categories' %}" method="post" class="!inline-flex !m-0">
+        </c-ui.button>
+        <form action="{% url 'dashboard:content_categories' %}" method="post" class="!inline-flex !m-0 !ml-2">
             {% csrf_token %}
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="id" value="{{ cat.id }}">
-            <button type="submit" class="!inline-flex !items-center !justify-center !gap-2 !px-4 !py-2 !rounded-md !bg-red-600 !text-[13px] !font-medium !text-white hover:!bg-red-700 !transition-all !cursor-pointer">
-                Delete
-            </button>
+            <c-ui.button type="submit" variant="danger" size="sm" label="Delete"></c-ui.button>
         </form>
     </c-slot>
 </c-ui.modal>
 {% endfor %}
 
+{% endwith %}
 {% endblock %}
