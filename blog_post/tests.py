@@ -3,8 +3,11 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from rest_framework import status
+from django.urls import reverse
+
 from blog_post.models import BlogPost, Category
 from blog_post.forms import BlogPostForm
+from blog_post.serializers import BlogPostListSerializer, BlogPostDetailSerializer
 from dashboard.services.content_service import approve_post
 
 User = get_user_model()
@@ -153,3 +156,146 @@ class BlogPostStatusLifecycleTests(TestCase):
 
         approved_post = approve_post(post.id, self.admin_user)
         self.assertEqual(approved_post.status, "published")
+
+
+class BlogPostAutomationMetadataTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="writer@example.com",
+            password="Password123!",
+            first_name="Writer",
+            last_name="User"
+        )
+        self.admin_user = User.objects.create_superuser(
+            email="admin_meta@example.com",
+            password="AdminPassword123!",
+            first_name="Admin",
+            last_name="Meta"
+        )
+        self.category = Category.objects.create(name="AI Tech", slug="ai-tech")
+        self.client = APIClient()
+
+    def test_legacy_post_defaults(self):
+        post = BlogPost.objects.create(
+            title="Legacy Post",
+            description="Legacy post description",
+            author=self.user,
+            category=self.category
+        )
+        self.assertFalse(post.generated_by_ai)
+        self.assertEqual(post.review_decision, "not_reviewed")
+        self.assertEqual(post.image_processing_status, "not_started")
+        self.assertIsNone(post.source_name)
+        self.assertIsNone(post.automation_id)
+
+    def test_source_url_normalization(self):
+        post = BlogPost.objects.create(
+            title="Source URL Test",
+            description="Testing URL normalization",
+            author=self.user,
+            category=self.category,
+            source_url="   EXAMPLE.COM/news/article-123   "
+        )
+        self.assertEqual(post.source_url, "http://example.com/news/article-123")
+
+    def test_score_bounds_validation(self):
+        post_invalid = BlogPost(
+            title="Invalid Score Post",
+            description="Post with invalid score",
+            author=self.user,
+            category=self.category,
+            quality_score=150
+        )
+        with self.assertRaises(ValidationError):
+            post_invalid.clean()
+
+        post_negative = BlogPost(
+            title="Negative Score Post",
+            description="Post with negative score",
+            author=self.user,
+            category=self.category,
+            seo_score=-5
+        )
+        with self.assertRaises(ValidationError):
+            post_negative.clean()
+
+    def test_review_decision_choices_validation(self):
+        post_invalid_decision = BlogPost(
+            title="Invalid Decision Post",
+            description="Post with invalid decision",
+            author=self.user,
+            category=self.category,
+            review_decision="super_approved"
+        )
+        with self.assertRaises(ValidationError):
+            post_invalid_decision.clean()
+
+    def test_automation_id_uniqueness_validation(self):
+        BlogPost.objects.create(
+            title="Pipeline Post 1",
+            description="First pipeline run content",
+            author=self.user,
+            category=self.category,
+            automation_id="job_exec_999"
+        )
+        dup_post = BlogPost(
+            title="Pipeline Post 2",
+            description="Second pipeline run content",
+            author=self.user,
+            category=self.category,
+            automation_id="job_exec_999"
+        )
+        with self.assertRaises(ValidationError):
+            dup_post.clean()
+
+    def test_public_api_does_not_expose_ai_metadata(self):
+        post = BlogPost.objects.create(
+            title="AI Post for Public API",
+            description="AI generated content for public feed",
+            author=self.user,
+            category=self.category,
+            status="published",
+            generated_by_ai=True,
+            ai_model="gpt-4o",
+            reviewer_model="claude-3-5-sonnet",
+            quality_score=95,
+            automation_id="auto_12345",
+            source_name="Tech Crunch"
+        )
+        list_serializer = BlogPostListSerializer(instance=post)
+        detail_serializer = BlogPostDetailSerializer(instance=post)
+
+        forbidden_keys = [
+            'generated_by_ai', 'ai_model', 'reviewer_model',
+            'quality_score', 'factual_accuracy_score', 'language_score',
+            'seo_score', 'automation_id', 'review_decision', 'source_name'
+        ]
+        for key in forbidden_keys:
+            self.assertNotIn(key, list_serializer.data)
+            self.assertNotIn(key, detail_serializer.data)
+
+        # Anonymous public HTTP request
+        response = self.client.get(f"/api/blog/posts/{post.slug}/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for key in forbidden_keys:
+            self.assertNotIn(key, response.data)
+
+    def test_authenticated_dashboard_post_detail_renders_cotton_metadata_card(self):
+        post = BlogPost.objects.create(
+            title="Dashboard Detail Post",
+            description="Dashboard detail view post content",
+            author=self.user,
+            category=self.category,
+            status="published",
+            generated_by_ai=True,
+            ai_model="gemini-1.5-pro",
+            automation_id="auto_exec_777",
+            quality_score=88
+        )
+        self.client.force_login(self.admin_user)
+        url = reverse("dashboard:post_detail", kwargs={"pk": post.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertContains(response, "Source &amp; Automation Metadata", html=True)
+        self.assertContains(response, "AI Generated")
+        self.assertContains(response, "gemini-1.5-pro")
