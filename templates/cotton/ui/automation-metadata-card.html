@@ -1,5 +1,5 @@
 {% comment %} c-ui.automation-metadata-card component
-   Displays source attribution, AI generation details, automated review scores, and image pipeline status for authenticated admin dashboard views.
+   Displays source attribution, AI generation details, automated review scores, and approval gate audit status for authenticated admin dashboard views.
    Props:
    - post: BlogPost instance
 {% endcomment %}
@@ -12,7 +12,7 @@
             </div>
             <div>
                 <h4 class="text-sm font-bold text-gray-900">Source & Automation Metadata</h4>
-                <p class="text-xs text-gray-500">Pipeline audit, AI models, and source attribution</p>
+                <p class="text-xs text-gray-500">Pipeline audit, AI models, and approval gate breakdown</p>
             </div>
         </div>
 
@@ -75,25 +75,33 @@
             </div>
         </div>
 
-        <!-- Scores Breakdown -->
+        <!-- Scores Breakdown & Approval Gates -->
         <div class="p-3 bg-gray-50 rounded-xl border border-gray-100">
             <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mb-2">Quality & Audit Scores</span>
             <div class="space-y-1.5">
                 <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-gray-600">Quality:</span>
-                    <span class="font-bold text-gray-900">{{ post.quality_score|default:"--" }}/100</span>
+                    <span class="text-gray-600">Quality (&ge;90):</span>
+                    <span class="font-bold {% if post.quality_score >= 90 %}text-emerald-600{% else %}text-amber-600{% endif %}">
+                        {{ post.quality_score|default:"--" }}/100
+                    </span>
                 </div>
                 <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-gray-600">Factual:</span>
-                    <span class="font-bold text-gray-900">{{ post.factual_accuracy_score|default:"--" }}/100</span>
+                    <span class="text-gray-600">Factual (&ge;95):</span>
+                    <span class="font-bold {% if post.factual_accuracy_score >= 95 %}text-emerald-600{% else %}text-amber-600{% endif %}">
+                        {{ post.factual_accuracy_score|default:"--" }}/100
+                    </span>
                 </div>
                 <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-gray-600">Language:</span>
-                    <span class="font-bold text-gray-900">{{ post.language_score|default:"--" }}/100</span>
+                    <span class="text-gray-600">Language (&ge;90):</span>
+                    <span class="font-bold {% if post.language_score >= 90 %}text-emerald-600{% else %}text-amber-600{% endif %}">
+                        {{ post.language_score|default:"--" }}/100
+                    </span>
                 </div>
                 <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-gray-600">SEO:</span>
-                    <span class="font-bold text-gray-900">{{ post.seo_score|default:"--" }}/100</span>
+                    <span class="text-gray-600">SEO (&ge;80):</span>
+                    <span class="font-bold {% if post.seo_score >= 80 %}text-emerald-600{% else %}text-amber-600{% endif %}">
+                        {{ post.seo_score|default:"--" }}/100
+                    </span>
                 </div>
             </div>
         </div>

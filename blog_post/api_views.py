@@ -104,6 +104,12 @@ class BlogPostViewSet(viewsets.ModelViewSet):
         
         return queryset.select_related('category', 'subcategory', 'author').prefetch_related('tags')
     
+    def create(self, request, *args, **kwargs):
+        if getattr(request, 'auth', None) == 'Automation':
+            from .automation_services import process_automation_post_creation
+            return process_automation_post_creation(request.data, request.user)
+        return super().create(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
     

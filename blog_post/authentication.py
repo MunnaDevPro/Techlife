@@ -68,4 +68,4 @@ class AutomationAuthentication(BaseAuthentication):
         if user.is_superuser:
             raise exceptions.AuthenticationFailed('Configured automation author account cannot be a superuser.')
 
-        return (user, None)
+        return (user, 'Automation')
