@@ -7,6 +7,7 @@ from rest_framework import status
 
 from blog_post.models import BlogPost, Category, SubCategory, normalize_url
 from blog_post.image_services import download_and_localize_automation_image
+from blog_post.sanitization_services import sanitize_automation_payload, clean_text_string
 
 
 def is_valid_http_url(url_str):
@@ -25,8 +26,9 @@ def is_valid_http_url(url_str):
 def process_automation_post_creation(data, user):
     """
     Ingests automation metadata, performs early idempotency checks,
-    enforces 12+ strict approval gates, securely downloads and converts
-    the source image to a local WebP featured image, and atomically creates published posts.
+    enforces 12+ strict approval gates, sanitizes HTML description and text fields,
+    securely downloads and converts the source image to a local WebP featured image,
+    and atomically creates published posts.
     """
     # 1. Forbidden Fields Check
     forbidden_fields = ['author', 'author_id', 'status', 'views', 'is_featured']
@@ -40,15 +42,15 @@ def process_automation_post_creation(data, user):
 
     # 2. Extract Identifiers & Normalize for Idempotency
     raw_auto_id = data.get('automation_id')
-    auto_id = str(raw_auto_id).strip() if raw_auto_id is not None and str(raw_auto_id).strip() else None
+    auto_id = clean_text_string(str(raw_auto_id)) if raw_auto_id is not None and str(raw_auto_id).strip() else None
 
     raw_src_url = data.get('source_url')
     src_url = normalize_url(raw_src_url) if raw_src_url else None
 
     raw_hash = data.get('original_content_hash')
-    content_hash = str(raw_hash).strip().lower() if raw_hash is not None and str(raw_hash).strip() else None
+    content_hash = clean_text_string(str(raw_hash)).lower() if raw_hash is not None and str(raw_hash).strip() else None
 
-    # Early Idempotency Search before expensive processing or image downloading
+    # Early Idempotency Search before expensive processing, content sanitization, or image downloading
     posts_by_auto_id = list(BlogPost.objects.filter(automation_id=auto_id)) if auto_id else []
     posts_by_url = list(BlogPost.objects.filter(source_url=src_url)) if src_url else []
     posts_by_hash = list(BlogPost.objects.filter(original_content_hash=content_hash)) if content_hash else []
@@ -76,12 +78,12 @@ def process_automation_post_creation(data, user):
     failed_gates = []
 
     # Basic Content Gates
-    title = str(data.get('title') or '').strip()
-    description = str(data.get('description') or '').strip()
+    raw_title = str(data.get('title') or '').strip()
+    raw_description = str(data.get('description') or '').strip()
 
-    if not title:
+    if not raw_title:
         failed_gates.append('title')
-    if not description:
+    if not raw_description:
         failed_gates.append('description')
 
     category_id_or_slug = data.get('category')
@@ -112,8 +114,8 @@ def process_automation_post_creation(data, user):
         failed_gates.append('automation_id')
 
     # Gate: source_name
-    source_name = str(data.get('source_name') or '').strip()
-    if not source_name:
+    raw_source_name = str(data.get('source_name') or '').strip()
+    if not raw_source_name:
         failed_gates.append('source_name')
 
     # Gate: source_url
@@ -125,16 +127,16 @@ def process_automation_post_creation(data, user):
         failed_gates.append('original_content_hash')
 
     # Gate: ai_model & reviewer_model
-    ai_model = str(data.get('ai_model') or '').strip()
+    ai_model = clean_text_string(str(data.get('ai_model') or ''))
     if not ai_model:
         failed_gates.append('ai_model')
 
-    reviewer_model = str(data.get('reviewer_model') or '').strip()
+    reviewer_model = clean_text_string(str(data.get('reviewer_model') or ''))
     if not reviewer_model:
         failed_gates.append('reviewer_model')
 
     # Gate: review_decision
-    review_decision = str(data.get('review_decision') or '').strip()
+    review_decision = clean_text_string(str(data.get('review_decision') or ''))
     if review_decision != 'approved':
         failed_gates.append('review_decision')
 
@@ -169,7 +171,27 @@ def process_automation_post_creation(data, user):
             "message": "Article did not satisfy the automated publishing policy."
         }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    # 4. Source Image Download & Localization
+    # 4. Content & HTML Sanitization (BEFORE image download)
+    san_success, san_err_code, san_err_msg, sanitized_data = sanitize_automation_payload(data)
+    if not san_success:
+        return Response({
+            "status": "rejected",
+            "code": "AUTOMATION_CONTENT_INVALID",
+            "content_error": san_err_code,
+            "message": f"The generated article content could not be safely published: {san_err_msg}"
+        }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+    clean_title = sanitized_data['title']
+    clean_description = sanitized_data['description']
+    clean_subtitle = sanitized_data.get('subtitle')
+    clean_meta_title = sanitized_data.get('meta_title')
+    clean_meta_description = sanitized_data.get('meta_description')
+    clean_source_name = sanitized_data.get('source_name')
+    clean_source_author = sanitized_data.get('source_author')
+    clean_original_title = sanitized_data.get('original_title')
+    clean_review_notes = sanitized_data.get('review_notes')
+
+    # 5. Source Image Download & Localization
     raw_img_url = data.get('source_image_url')
     source_img_url = str(raw_img_url).strip() if raw_img_url else None
 
@@ -177,7 +199,7 @@ def process_automation_post_creation(data, user):
     image_proc_status = "pending"
 
     if source_img_url:
-        temp_slug = slugify(title)
+        temp_slug = slugify(clean_title)
         img_success, path_or_code, err_msg = download_and_localize_automation_image(
             source_img_url, temp_slug, content_hash
         )
@@ -192,11 +214,11 @@ def process_automation_post_creation(data, user):
         featured_image_path = path_or_code
         image_proc_status = "processed"
 
-    # 5. Atomic Creation with File Cleanup Safety
+    # 6. Atomic Creation with File Cleanup Safety
     saved_file_to_cleanup = featured_image_path
     try:
         with transaction.atomic():
-            base_slug = slugify(title)
+            base_slug = slugify(clean_title)
             slug = base_slug
             counter = 1
             while BlogPost.objects.filter(slug=slug).exists():
@@ -204,9 +226,11 @@ def process_automation_post_creation(data, user):
                 counter += 1
 
             post = BlogPost.objects.create(
-                title=title,
-                subtitle=str(data.get('subtitle') or '').strip() or None,
-                description=description,
+                title=clean_title,
+                subtitle=clean_subtitle,
+                description=clean_description,
+                meta_title=clean_meta_title or "",
+                meta_description=clean_meta_description or "",
                 category=category,
                 subcategory=subcategory,
                 author=user,
@@ -214,11 +238,11 @@ def process_automation_post_creation(data, user):
                 slug=slug,
                 featured_image=featured_image_path,
                 image_processing_status=image_proc_status,
-                source_name=source_name,
+                source_name=clean_source_name,
                 source_url=src_url,
-                source_author=str(data.get('source_author') or '').strip() or None,
+                source_author=clean_source_author,
                 source_published_at=data.get('source_published_at'),
-                original_title=str(data.get('original_title') or '').strip() or None,
+                original_title=clean_original_title,
                 original_content_hash=content_hash,
                 automation_id=auto_id,
                 generated_by_ai=True,
@@ -229,7 +253,7 @@ def process_automation_post_creation(data, user):
                 factual_accuracy_score=factual_accuracy_score,
                 language_score=language_score,
                 seo_score=seo_score,
-                review_notes=str(data.get('review_notes') or '').strip(),
+                review_notes=clean_review_notes or '',
                 source_image_url=source_img_url,
                 automation_created_at=data.get('automation_created_at'),
             )

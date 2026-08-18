@@ -87,8 +87,8 @@
                 </div>
 
                 <!-- Rich Description Content -->
-                <div class="!prose !max-w-none !text-gray-700 !leading-relaxed !pt-4 !border-t !border-gray-100">
-                    {{ post.description|safe|default:"<p class='text-gray-400 italic'>No description content provided.</p>" }}
+                <div class="!pt-4 !border-t !border-gray-100">
+                    <c-ui.article-preview :content="post.description"></c-ui.article-preview>
                 </div>
             </c-ui.card>
 
