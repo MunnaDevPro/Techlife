@@ -1,5 +1,5 @@
 {% comment %} c-ui.automation-metadata-card component
-   Displays source attribution, AI generation details, automated review scores, and approval gate audit status for authenticated admin dashboard views.
+   Displays source attribution, AI generation details, automated review scores, local image preview, and approval gate audit status for authenticated admin dashboard views.
    Props:
    - post: BlogPost instance
 {% endcomment %}
@@ -62,17 +62,26 @@
             <span class="font-mono text-[11px] text-gray-700 block truncate">{{ post.automation_id|default:"N/A" }}</span>
         </div>
 
-        <!-- Review & Status -->
+        <!-- Image Pipeline & Local Preview -->
         <div class="p-3 bg-gray-50 rounded-xl border border-gray-100">
-            <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mb-1">Review Decision</span>
-            <div class="mt-0.5">
-                <c-ui.status-pill status="{{ post.review_decision }}" label="{{ post.get_review_decision_display }}"></c-ui.status-pill>
-            </div>
-
-            <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mt-3 mb-1">Image Pipeline Status</span>
-            <div class="mt-0.5">
+            <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mb-1">Image Pipeline Status</span>
+            <div class="mt-0.5 mb-2">
                 <c-ui.status-pill status="{{ post.image_processing_status }}" label="{{ post.get_image_processing_status_display }}"></c-ui.status-pill>
             </div>
+
+            {% if post.source_image_url %}
+                <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mb-1">Original Source Image</span>
+                <a href="{{ post.source_image_url }}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline truncate block font-medium mb-2">
+                    {{ post.source_image_url }}
+                </a>
+            {% endif %}
+
+            {% if post.featured_image %}
+                <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mb-1">Localized Local Preview</span>
+                <div class="mt-1 rounded-lg overflow-hidden border border-gray-200 shadow-sm max-w-[140px]">
+                    <img src="{{ post.featured_image.url }}" alt="Localized Featured Image" class="w-full h-20 object-cover">
+                </div>
+            {% endif %}
         </div>
 
         <!-- Scores Breakdown & Approval Gates -->

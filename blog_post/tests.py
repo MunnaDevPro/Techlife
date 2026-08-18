@@ -426,7 +426,8 @@ class BlogPostAutomationAuthenticationTests(TestCase):
             "description": "Post description content with attempted author override",
             "category": self.category.id,
             "author": other_user.id,
-            "author_id": other_user.id
+            "author_id": other_user.id,
+            "username": "hacker@example.com"
         }
         response = self.client.post("/api/blog/posts/", payload, **headers)
         self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
@@ -594,5 +595,145 @@ class BlogPostAutomationApprovalPublishingTests(TestCase):
         response = self.client.post("/api/blog/posts/", conflict_payload, **self.headers)
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
         self.assertEqual(response.data["code"], "AUTOMATION_IDEMPOTENCY_CONFLICT")
+
+
+from unittest.mock import patch, MagicMock
+from io import BytesIO
+from PIL import Image
+
+
+@override_settings(
+    TECHLIFE_AUTOMATION_TOKEN="secret-img-token-777",
+    TECHLIFE_AUTOMATION_AUTHOR_USERNAME="techlife_desk"
+)
+class BlogPostAutomationImageLocalizationTests(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name="Tech", slug="tech")
+        self.client = APIClient()
+        self.automation_user = User.objects.create_user(
+            email="techlife_desk@techlifebd.com",
+            password="Password123!",
+            first_name="TechLife",
+            last_name="Desk",
+            is_active=True,
+            is_staff=False,
+            is_superuser=False
+        )
+        self.headers = {"HTTP_AUTHORIZATION": "Automation secret-img-token-777"}
+        self.valid_hash = "f" * 64
+
+        # Generate mock 2000x1500 JPEG image bytes
+        bio = BytesIO()
+        img = Image.new("RGB", (2000, 1500), color="blue")
+        img.save(bio, format="JPEG")
+        self.sample_jpeg_bytes = bio.getvalue()
+
+        self.payload = {
+            "title": "Local Image Published Post",
+            "description": "Article with localized source image.",
+            "category": self.category.id,
+            "source_name": "Reuters",
+            "source_url": "https://reuters.com/article/tech-2026",
+            "source_image_url": "https://reuters.com/images/hero.jpg",
+            "original_content_hash": self.valid_hash,
+            "automation_id": "n8n_img_exec_1",
+            "generated_by_ai": True,
+            "ai_model": "gpt-4o",
+            "reviewer_model": "claude-3-5-sonnet",
+            "review_decision": "approved",
+            "quality_score": 95,
+            "factual_accuracy_score": 99,
+            "language_score": 94,
+            "seo_score": 88
+        }
+
+    @patch("socket.getaddrinfo")
+    @patch("requests.Session.get")
+    def test_valid_image_download_resizing_webp_conversion(self, mock_get, mock_getaddrinfo):
+        mock_getaddrinfo.return_value = [
+            (2, 1, 6, "", ("93.184.216.34", 80))
+        ]
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.headers = {"Content-Type": "image/jpeg"}
+        mock_resp.iter_content.return_value = [self.sample_jpeg_bytes]
+        mock_get.return_value = mock_resp
+
+        response = self.client.post("/api/blog/posts/", self.payload, **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        post = BlogPost.objects.get(id=response.data["post_id"])
+        self.assertEqual(post.image_processing_status, "processed")
+        self.assertTrue(post.featured_image.name.endswith(".webp"))
+        self.assertEqual(post.source_image_url, "https://reuters.com/images/hero.jpg")
+
+    @patch("socket.getaddrinfo")
+    def test_blocked_ip_range_returns_422_ssrf(self, mock_getaddrinfo):
+        mock_getaddrinfo.return_value = [
+            (2, 1, 6, "", ("127.0.0.1", 80))
+        ]
+        response = self.client.post("/api/blog/posts/", self.payload, **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        self.assertEqual(response.data["code"], "SOURCE_IMAGE_PROCESSING_FAILED")
+        self.assertEqual(response.data["image_error"], "BLOCKED_IMAGE_HOST")
+
+    @patch("socket.getaddrinfo")
+    def test_cloud_metadata_ip_blocked_ssrf(self, mock_getaddrinfo):
+        mock_getaddrinfo.return_value = [
+            (2, 1, 6, "", ("169.254.169.254", 80))
+        ]
+        response = self.client.post("/api/blog/posts/", self.payload, **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        self.assertEqual(response.data["image_error"], "BLOCKED_IMAGE_HOST")
+
+    @patch("socket.getaddrinfo")
+    @patch("requests.Session.get")
+    def test_redirect_to_blocked_ip_returns_422(self, mock_get, mock_getaddrinfo):
+        mock_getaddrinfo.side_effect = [
+            [(2, 1, 6, "", ("93.184.216.34", 80))], # first hop
+            [(2, 1, 6, "", ("10.0.0.1", 80))]        # redirect hop
+        ]
+        mock_resp = MagicMock()
+        mock_resp.status_code = 302
+        mock_resp.headers = {"Location": "http://10.0.0.1/private-img.jpg"}
+        mock_get.return_value = mock_resp
+
+        response = self.client.post("/api/blog/posts/", self.payload, **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        self.assertEqual(response.data["image_error"], "IMAGE_REDIRECT_BLOCKED")
+
+    @patch("socket.getaddrinfo")
+    @patch("requests.Session.get")
+    def test_oversized_image_returns_422(self, mock_get, mock_getaddrinfo):
+        mock_getaddrinfo.return_value = [
+            (2, 1, 6, "", ("93.184.216.34", 80))
+        ]
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.headers = {"Content-Type": "image/jpeg"}
+        # Yield 10MB chunk (exceeding 8MB default)
+        mock_resp.iter_content.return_value = [b"X" * (9 * 1024 * 1024)]
+        mock_get.return_value = mock_resp
+
+        response = self.client.post("/api/blog/posts/", self.payload, **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        self.assertEqual(response.data["image_error"], "IMAGE_TOO_LARGE")
+
+    @patch("socket.getaddrinfo")
+    @patch("requests.Session.get")
+    def test_corrupt_image_bytes_returns_422(self, mock_get, mock_getaddrinfo):
+        mock_getaddrinfo.return_value = [
+            (2, 1, 6, "", ("93.184.216.34", 80))
+        ]
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.headers = {"Content-Type": "image/jpeg"}
+        mock_resp.iter_content.return_value = [b"NOT_A_VALID_IMAGE_DATA"]
+        mock_get.return_value = mock_resp
+
+        response = self.client.post("/api/blog/posts/", self.payload, **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        self.assertEqual(response.data["image_error"], "INVALID_IMAGE_CONTENT")
+
 
 

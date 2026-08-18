@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from blog_post.models import BlogPost, Category, SubCategory, normalize_url
+from blog_post.image_services import download_and_localize_automation_image
 
 
 def is_valid_http_url(url_str):
@@ -24,7 +25,8 @@ def is_valid_http_url(url_str):
 def process_automation_post_creation(data, user):
     """
     Ingests automation metadata, performs early idempotency checks,
-    enforces 12+ strict approval gates, and atomically creates published posts.
+    enforces 12+ strict approval gates, securely downloads and converts
+    the source image to a local WebP featured image, and atomically creates published posts.
     """
     # 1. Forbidden Fields Check
     forbidden_fields = ['author', 'author_id', 'status', 'views', 'is_featured']
@@ -46,7 +48,7 @@ def process_automation_post_creation(data, user):
     raw_hash = data.get('original_content_hash')
     content_hash = str(raw_hash).strip().lower() if raw_hash is not None and str(raw_hash).strip() else None
 
-    # Idempotency Search before expensive processing
+    # Early Idempotency Search before expensive processing or image downloading
     posts_by_auto_id = list(BlogPost.objects.filter(automation_id=auto_id)) if auto_id else []
     posts_by_url = list(BlogPost.objects.filter(source_url=src_url)) if src_url else []
     posts_by_hash = list(BlogPost.objects.filter(original_content_hash=content_hash)) if content_hash else []
@@ -167,7 +169,31 @@ def process_automation_post_creation(data, user):
             "message": "Article did not satisfy the automated publishing policy."
         }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    # 4. Atomic Creation
+    # 4. Source Image Download & Localization
+    raw_img_url = data.get('source_image_url')
+    source_img_url = str(raw_img_url).strip() if raw_img_url else None
+
+    featured_image_path = None
+    image_proc_status = "pending"
+
+    if source_img_url:
+        temp_slug = slugify(title)
+        img_success, path_or_code, err_msg = download_and_localize_automation_image(
+            source_img_url, temp_slug, content_hash
+        )
+        if not img_success:
+            return Response({
+                "status": "rejected",
+                "code": "SOURCE_IMAGE_PROCESSING_FAILED",
+                "image_error": path_or_code,
+                "message": f"The source image could not be safely processed: {err_msg}"
+            }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+        featured_image_path = path_or_code
+        image_proc_status = "processed"
+
+    # 5. Atomic Creation with File Cleanup Safety
+    saved_file_to_cleanup = featured_image_path
     try:
         with transaction.atomic():
             base_slug = slugify(title)
@@ -186,6 +212,8 @@ def process_automation_post_creation(data, user):
                 author=user,
                 status="published",
                 slug=slug,
+                featured_image=featured_image_path,
+                image_processing_status=image_proc_status,
                 source_name=source_name,
                 source_url=src_url,
                 source_author=str(data.get('source_author') or '').strip() or None,
@@ -202,9 +230,12 @@ def process_automation_post_creation(data, user):
                 language_score=language_score,
                 seo_score=seo_score,
                 review_notes=str(data.get('review_notes') or '').strip(),
-                source_image_url=data.get('source_image_url'),
+                source_image_url=source_img_url,
                 automation_created_at=data.get('automation_created_at'),
             )
+
+            # Post created successfully; clear cleanup tracker
+            saved_file_to_cleanup = None
 
             return Response({
                 "status": "published",
@@ -214,6 +245,12 @@ def process_automation_post_creation(data, user):
             }, status=status.HTTP_201_CREATED)
 
     except Exception as e:
+        if saved_file_to_cleanup:
+            try:
+                from django.core.files.storage import default_storage
+                default_storage.delete(saved_file_to_cleanup)
+            except Exception:
+                pass
         return Response({
             "status": "error",
             "code": "AUTOMATION_CREATION_FAILED",
