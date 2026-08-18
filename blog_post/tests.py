@@ -6,7 +6,8 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from django.urls import reverse
 
-from blog_post.models import BlogPost, Category
+from blog_post.models import BlogPost, Category, SubCategory
+from tags.models import Tag
 from blog_post.forms import BlogPostForm
 from blog_post.serializers import BlogPostListSerializer, BlogPostDetailSerializer
 from dashboard.services.content_service import approve_post
@@ -325,7 +326,8 @@ class BlogPostAutomationAuthenticationTests(TestCase):
         payload = {
             "title": "n8n Automated Post Title",
             "description": "<h2>Comprehensive AI Article</h2><p>This is a long valid article description containing more than 150 characters to pass length validation. It provides clear insights and detailed analysis on modern technology trends, software development, and digital transformation in 2026.</p>",
-            "category": self.category.id,
+            "category_slug": self.category.slug,
+            "tags_list": ["Tag One", "Tag Two", "Tag Three"],
             "source_name": "TechCrunch",
             "source_url": "https://techcrunch.com/2026/08/18/ai-breakthrough",
             "original_content_hash": "a" * 64,
@@ -489,7 +491,8 @@ class BlogPostAutomationApprovalPublishingTests(TestCase):
         self.valid_payload = {
             "title": "Approved AI Published Post",
             "description": "<h2>Comprehensive AI Article</h2><p>This is a long valid article description containing more than 150 characters to pass length validation. It provides clear insights and detailed analysis on modern technology trends, software development, and digital transformation in 2026.</p>",
-            "category": self.category.id,
+            "category_slug": self.category.slug,
+            "tags_list": ["Tag Alpha", "Tag Beta", "Tag Gamma"],
             "source_name": "TechCrunch",
             "source_url": "https://techcrunch.com/2026/08/18/ai-breakthrough",
             "original_content_hash": self.valid_hash,
@@ -631,7 +634,8 @@ class BlogPostAutomationImageLocalizationTests(TestCase):
         self.payload = {
             "title": "Local Image Published Post",
             "description": "<h2>Comprehensive AI Article</h2><p>This is a long valid article description containing more than 150 characters to pass length validation. It provides clear insights and detailed analysis on modern technology trends, software development, and digital transformation in 2026.</p>",
-            "category": self.category.id,
+            "category_slug": self.category.slug,
+            "tags_list": ["Tag Red", "Tag Green", "Tag Blue"],
             "source_name": "Reuters",
             "source_url": "https://reuters.com/article/tech-2026",
             "source_image_url": "https://reuters.com/images/hero.jpg",
@@ -773,7 +777,8 @@ class BlogPostAutomationContentSanitizationTests(TestCase):
             "title": "Clean AI Article Title",
             "subtitle": "Overview of progress",
             "description": self.long_valid_text,
-            "category": self.category.id,
+            "category_slug": self.category.slug,
+            "tags_list": ["Tag One", "Tag Two", "Tag Three"],
             "source_name": "Tech Crunch",
             "source_url": "https://techcrunch.com/article-2026",
             "original_content_hash": self.valid_hash,
@@ -860,6 +865,123 @@ class BlogPostAutomationContentSanitizationTests(TestCase):
         response = self.client.post("/api/blog/posts/", invalid_payload, **self.headers)
         self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
         self.assertFalse(mock_image_download.called)
+
+
+@override_settings(
+    TECHLIFE_AUTOMATION_TOKEN="secret-tax-token-555",
+    TECHLIFE_AUTOMATION_AUTHOR_USERNAME="techlife_desk"
+)
+class BlogPostAutomationTaxonomyResolutionTests(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name="Technology", slug="technology")
+        self.subcategory = SubCategory.objects.create(category=self.category, name="Artificial Intelligence", slug="ai")
+
+        self.other_cat = Category.objects.create(name="Health", slug="health")
+        self.other_subcat = SubCategory.objects.create(category=self.other_cat, name="Fitness", slug="fitness")
+
+        self.existing_tag = Tag.objects.create(name="Machine Learning", slug="machine-learning")
+
+        self.client = APIClient()
+        self.automation_user = User.objects.create_user(
+            email="techlife_desk@techlifebd.com",
+            password="Password123!",
+            first_name="TechLife",
+            last_name="Desk",
+            is_active=True,
+            is_staff=False,
+            is_superuser=False
+        )
+        self.headers = {"HTTP_AUTHORIZATION": "Automation secret-tax-token-555"}
+        self.valid_hash = "d" * 64
+
+        self.valid_description = (
+            "<h2>Taxonomy Resolution Test Article</h2>"
+            "<p>This is a long valid article description containing more than 150 characters to pass length validation. "
+            "We are testing category_slug, subcategory_slug, and tags_list resolution in automation requests.</p>"
+        )
+
+        self.payload = {
+            "title": "Taxonomy Test Title",
+            "description": self.valid_description,
+            "category_slug": "technology",
+            "subcategory_slug": "ai",
+            "tags_list": ["#Machine Learning", "Deep Learning 2026", "Neural Networks"],
+            "source_name": "TechCrunch",
+            "source_url": "https://techcrunch.com/article-tax-1",
+            "original_content_hash": self.valid_hash,
+            "automation_id": "n8n_tax_exec_1",
+            "generated_by_ai": True,
+            "ai_model": "gpt-4o",
+            "reviewer_model": "claude-3-5-sonnet",
+            "review_decision": "approved",
+            "quality_score": 95,
+            "factual_accuracy_score": 99,
+            "language_score": 94,
+            "seo_score": 88
+        }
+
+    def test_successful_taxonomy_and_tag_resolution(self):
+        response = self.client.post("/api/blog/posts/", self.payload, format='json', **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        post = BlogPost.objects.get(id=response.data["post_id"])
+        self.assertEqual(post.category, self.category)
+        self.assertEqual(post.subcategory, self.subcategory)
+        self.assertEqual(post.tags.count(), 3)
+        self.assertIn(self.existing_tag, post.tags.all())
+
+    def test_unknown_category_returns_422(self):
+        payload = self.payload.copy()
+        payload["category_slug"] = "non-existent-category-999"
+        response = self.client.post("/api/blog/posts/", payload, format='json', **self.headers)
+
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        self.assertEqual(response.data["code"], "AUTOMATION_TAXONOMY_INVALID")
+        self.assertEqual(response.data["taxonomy_error"], "UNKNOWN_CATEGORY")
+
+    def test_subcategory_category_mismatch_returns_422(self):
+        payload = self.payload.copy()
+        payload["category_slug"] = "technology"
+        payload["subcategory_slug"] = "fitness"  # belongs to Health, not Technology
+        response = self.client.post("/api/blog/posts/", payload, format='json', **self.headers)
+
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        self.assertEqual(response.data["code"], "AUTOMATION_TAXONOMY_INVALID")
+        self.assertEqual(response.data["taxonomy_error"], "SUBCATEGORY_CATEGORY_MISMATCH")
+
+    def test_direct_taxonomy_id_forbidden_returns_422(self):
+        payload = self.payload.copy()
+        payload["category_id"] = self.category.id
+        response = self.client.post("/api/blog/posts/", payload, format='json', **self.headers)
+
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        self.assertEqual(response.data["code"], "AUTOMATION_TAXONOMY_INVALID")
+        self.assertEqual(response.data["taxonomy_error"], "DIRECT_TAXONOMY_ID_FORBIDDEN")
+
+    def test_too_few_tags_returns_422(self):
+        payload = self.payload.copy()
+        payload["tags_list"] = ["Tag1", "Tag2"]  # only 2 tags
+        response = self.client.post("/api/blog/posts/", payload, format='json', **self.headers)
+
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        self.assertEqual(response.data["taxonomy_error"], "TOO_FEW_TAGS")
+
+    def test_too_many_new_tags_returns_422(self):
+        payload = self.payload.copy()
+        payload["tags_list"] = ["NewTag1", "NewTag2", "NewTag3", "NewTag4"]  # 4 new tags
+        response = self.client.post("/api/blog/posts/", payload, format='json', **self.headers)
+
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        self.assertEqual(response.data["taxonomy_error"], "TOO_MANY_NEW_TAGS")
+
+    def test_reserved_tag_returns_422(self):
+        payload = self.payload.copy()
+        payload["tags_list"] = ["Machine Learning", "Deep Learning", "news"]
+        response = self.client.post("/api/blog/posts/", payload, format='json', **self.headers)
+
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        self.assertEqual(response.data["taxonomy_error"], "RESERVED_TAG")
+
 
 
 

@@ -8,6 +8,7 @@ from rest_framework import status
 from blog_post.models import BlogPost, Category, SubCategory, normalize_url
 from blog_post.image_services import download_and_localize_automation_image
 from blog_post.sanitization_services import sanitize_automation_payload, clean_text_string
+from blog_post.taxonomy_services import resolve_automation_taxonomy, get_or_create_tag_safely
 
 
 def is_valid_http_url(url_str):
@@ -26,9 +27,9 @@ def is_valid_http_url(url_str):
 def process_automation_post_creation(data, user):
     """
     Ingests automation metadata, performs early idempotency checks,
-    enforces 12+ strict approval gates, sanitizes HTML description and text fields,
-    securely downloads and converts the source image to a local WebP featured image,
-    and atomically creates published posts.
+    enforces 12+ strict approval gates, resolves Category/SubCategory/Tags against taxonomy,
+    sanitizes HTML description and text fields, securely downloads/converts the source image,
+    and atomically creates published posts with attached tags.
     """
     # 1. Forbidden Fields Check
     forbidden_fields = ['author', 'author_id', 'status', 'views', 'is_featured']
@@ -50,7 +51,7 @@ def process_automation_post_creation(data, user):
     raw_hash = data.get('original_content_hash')
     content_hash = clean_text_string(str(raw_hash)).lower() if raw_hash is not None and str(raw_hash).strip() else None
 
-    # Early Idempotency Search before expensive processing, content sanitization, or image downloading
+    # Early Idempotency Search before expensive processing, taxonomy resolution, or image downloading
     posts_by_auto_id = list(BlogPost.objects.filter(automation_id=auto_id)) if auto_id else []
     posts_by_url = list(BlogPost.objects.filter(source_url=src_url)) if src_url else []
     posts_by_hash = list(BlogPost.objects.filter(original_content_hash=content_hash)) if content_hash else []
@@ -85,24 +86,6 @@ def process_automation_post_creation(data, user):
         failed_gates.append('title')
     if not raw_description:
         failed_gates.append('description')
-
-    category_id_or_slug = data.get('category')
-    category = None
-    if category_id_or_slug:
-        if isinstance(category_id_or_slug, int) or (isinstance(category_id_or_slug, str) and category_id_or_slug.isdigit()):
-            category = Category.objects.filter(id=int(category_id_or_slug)).first()
-        else:
-            category = Category.objects.filter(slug=str(category_id_or_slug)).first()
-    if not category:
-        failed_gates.append('category')
-
-    subcategory_val = data.get('subcategory')
-    subcategory = None
-    if subcategory_val:
-        if isinstance(subcategory_val, int) or (isinstance(subcategory_val, str) and subcategory_val.isdigit()):
-            subcategory = SubCategory.objects.filter(id=int(subcategory_val)).first()
-        else:
-            subcategory = SubCategory.objects.filter(slug=str(subcategory_val)).first()
 
     # Gate: generated_by_ai
     gen_ai = data.get('generated_by_ai')
@@ -171,7 +154,20 @@ def process_automation_post_creation(data, user):
             "message": "Article did not satisfy the automated publishing policy."
         }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    # 4. Content & HTML Sanitization (BEFORE image download)
+    # 4. Taxonomy Resolution (Category, SubCategory, Tags)
+    tax_success, tax_err_code, tax_err_msg, resolved_tax = resolve_automation_taxonomy(data)
+    if not tax_success:
+        return Response({
+            "status": "rejected",
+            "code": "AUTOMATION_TAXONOMY_INVALID",
+            "taxonomy_error": tax_err_code,
+            "message": tax_err_msg
+        }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+    category = resolved_tax['category']
+    subcategory = resolved_tax['subcategory']
+
+    # 5. Content & HTML Sanitization (BEFORE image download)
     san_success, san_err_code, san_err_msg, sanitized_data = sanitize_automation_payload(data)
     if not san_success:
         return Response({
@@ -191,7 +187,7 @@ def process_automation_post_creation(data, user):
     clean_original_title = sanitized_data.get('original_title')
     clean_review_notes = sanitized_data.get('review_notes')
 
-    # 5. Source Image Download & Localization
+    # 6. Source Image Download & Localization
     raw_img_url = data.get('source_image_url')
     source_img_url = str(raw_img_url).strip() if raw_img_url else None
 
@@ -214,7 +210,7 @@ def process_automation_post_creation(data, user):
         featured_image_path = path_or_code
         image_proc_status = "processed"
 
-    # 6. Atomic Creation with File Cleanup Safety
+    # 7. Atomic Creation with File Cleanup & Tag Attachment Safety
     saved_file_to_cleanup = featured_image_path
     try:
         with transaction.atomic():
@@ -257,6 +253,14 @@ def process_automation_post_creation(data, user):
                 source_image_url=source_img_url,
                 automation_created_at=data.get('automation_created_at'),
             )
+
+            # Resolve & Attach Tags atomically
+            final_tags = list(resolved_tax['reused_tags'])
+            for new_spec in resolved_tax['new_tags_to_create']:
+                t_obj = get_or_create_tag_safely(new_spec['name'], new_spec['slug'])
+                final_tags.append(t_obj)
+
+            post.tags.set(final_tags)
 
             # Post created successfully; clear cleanup tracker
             saved_file_to_cleanup = None
