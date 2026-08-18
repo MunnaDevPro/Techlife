@@ -125,7 +125,9 @@ class BlogPostCreateSerializer(serializers.ModelSerializer):
             slug = f"{base_slug}-{counter}"
             counter += 1
         
-        author = validated_data.pop('author', user)
+        validated_data.pop('author', None)
+        validated_data.pop('author_id', None)
+        author = user
         # Create blog post
         blog_post = BlogPost.objects.create(
             author=author,

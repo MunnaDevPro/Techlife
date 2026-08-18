@@ -133,6 +133,12 @@ META_ACCESS_TOKEN = config("META_ACCESS_TOKEN", default="")
 META_TEST_EVENT_CODE = config("META_TEST_EVENT_CODE", default="")
 META_API_VERSION = config("META_API_VERSION", default="v23.0")
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Automation API Credentials & Settings (n8n / Pipeline Publishing)
+# ─────────────────────────────────────────────────────────────────────────────
+TECHLIFE_AUTOMATION_TOKEN = config("TECHLIFE_AUTOMATION_TOKEN", default="")
+TECHLIFE_AUTOMATION_AUTHOR_USERNAME = config("TECHLIFE_AUTOMATION_AUTHOR_USERNAME", default="techlife_desk")
+
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [

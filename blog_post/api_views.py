@@ -1,5 +1,6 @@
 # api_views.py
 from rest_framework import viewsets, generics, status, permissions
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -8,6 +9,8 @@ from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.core.paginator import Paginator
+
+from .authentication import AutomationAuthentication
 
 from .models import (
     Category, SubCategory, BlogPost, BlogAdditionalImage, 
@@ -44,7 +47,9 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
         
         return queryset
 
+
 class BlogPostViewSet(viewsets.ModelViewSet):
+    authentication_classes = [AutomationAuthentication, SessionAuthentication, BasicAuthentication]
     queryset = BlogPost.objects.filter(status="published")
     lookup_field = 'slug'
     
