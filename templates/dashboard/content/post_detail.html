@@ -35,7 +35,7 @@
                 <p class="text-[11px] font-medium truncate" style="color:var(--text-muted)">STATUS</p>
                 <div class="flex items-baseline gap-2 mt-0.5">
                     <span class="text-sm font-semibold tracking-tight">
-                        <c-ui.status-pill status="{% if post.status == 'published' %}approved{% else %}pending{% endif %}" label="{{ post.get_status_display }}"></c-ui.status-pill>
+                        <c-ui.status-pill status="{{ post.status }}" label="{{ post.get_status_display }}"></c-ui.status-pill>
                     </span>
                 </div>
             </div>

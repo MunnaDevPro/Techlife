@@ -1,4 +1,4 @@
-# serializers.py
+import hashlib
 from rest_framework import serializers
 from .models import (
     Category, SubCategory, BlogPost, BlogAdditionalImage, 
@@ -77,10 +77,40 @@ class BlogPostCreateSerializer(serializers.ModelSerializer):
         model = BlogPost
         fields = [
             'id', 'title', 'subtitle', 'description', 'featured_image',
-            'featured_image_url', 'category', 'subcategory', 'tags_list'
+            'featured_image_url', 'category', 'subcategory', 'tags_list',
+            'status', 'slug'
         ]
         read_only_fields = ['author', 'slug', 'status']
-    
+
+    def validate(self, attrs):
+        title = attrs.get('title', getattr(self.instance, 'title', '') if self.instance else '')
+        description = attrs.get('description', getattr(self.instance, 'description', '') if self.instance else '')
+        if title:
+            raw_content = (title + str(description or '')).encode("utf-8")
+            c_hash = hashlib.md5(raw_content).hexdigest()
+            qs = BlogPost.objects.filter(content_hash=c_hash)
+            if self.instance and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise serializers.ValidationError({"non_field_errors": ["A blog post with duplicate content already exists."]})
+
+        featured_image = attrs.get('featured_image')
+        if featured_image and hasattr(featured_image, 'read'):
+            try:
+                featured_image.seek(0)
+                img_bytes = featured_image.read()
+                featured_image.seek(0)
+                img_hash = hashlib.md5(img_bytes).hexdigest()
+                img_qs = BlogPost.objects.filter(image_hash=img_hash)
+                if self.instance and self.instance.pk:
+                    img_qs = img_qs.exclude(pk=self.instance.pk)
+                if img_qs.exists():
+                    raise serializers.ValidationError({"featured_image": ["A blog post with a duplicate image already exists."]})
+            except Exception:
+                pass
+
+        return attrs
+
     def create(self, validated_data):
         tags_list = validated_data.pop('tags_list', [])
         user = self.context['request'].user
@@ -95,9 +125,10 @@ class BlogPostCreateSerializer(serializers.ModelSerializer):
             slug = f"{base_slug}-{counter}"
             counter += 1
         
+        author = validated_data.pop('author', user)
         # Create blog post
         blog_post = BlogPost.objects.create(
-            author=user,
+            author=author,
             slug=slug,
             **validated_data
         )

@@ -1,3 +1,4 @@
+import hashlib
 from django import forms
 
 from tags.models import Tag
@@ -39,6 +40,36 @@ class BlogPostForm(forms.ModelForm):
             "subcategory",
             "tags",
         ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        title = cleaned_data.get("title") or getattr(self.instance, "title", "")
+        description = cleaned_data.get("description") or getattr(self.instance, "description", "")
+        if title:
+            raw_content = (title + str(description or "")).encode("utf-8")
+            c_hash = hashlib.md5(raw_content).hexdigest()
+            qs = BlogPost.objects.filter(content_hash=c_hash)
+            if self.instance and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise forms.ValidationError("A blog post with duplicate content already exists.")
+
+        featured_image = cleaned_data.get("featured_image")
+        if featured_image and hasattr(featured_image, "read"):
+            try:
+                featured_image.seek(0)
+                img_bytes = featured_image.read()
+                featured_image.seek(0)
+                img_hash = hashlib.md5(img_bytes).hexdigest()
+                img_qs = BlogPost.objects.filter(image_hash=img_hash)
+                if self.instance and self.instance.pk:
+                    img_qs = img_qs.exclude(pk=self.instance.pk)
+                if img_qs.exists():
+                    raise forms.ValidationError("A blog post with a duplicate image already exists.")
+            except Exception:
+                pass
+
+        return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=commit)

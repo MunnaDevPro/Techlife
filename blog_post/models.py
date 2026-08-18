@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from accounts.models import CustomUserModel
 from tags.models import Tag
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFill, Adjust, ResizeToFit
 
@@ -145,62 +146,69 @@ class BlogPost(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     tags = models.ManyToManyField(Tag, blank=True, related_name="blog_posts")
+
+    def clean(self):
+        super().clean()
+        if self.title:
+            raw_content = (self.title + str(self.description or '')).encode("utf-8")
+            c_hash = hashlib.md5(raw_content).hexdigest()
+            qs = BlogPost.objects.filter(content_hash=c_hash)
+            if self.pk:
+                qs = qs.exclude(pk=self.pk)
+            if qs.exists():
+                raise ValidationError("A blog post with duplicate content already exists.")
+
+        if self.featured_image:
+            try:
+                self.featured_image.file.seek(0)
+                img_bytes = self.featured_image.file.read()
+                self.featured_image.file.seek(0)
+                img_hash = hashlib.md5(img_bytes).hexdigest()
+                img_qs = BlogPost.objects.filter(image_hash=img_hash)
+                if self.pk:
+                    img_qs = img_qs.exclude(pk=self.pk)
+                if img_qs.exists():
+                    raise ValidationError("A blog post with a duplicate image already exists.")
+            except Exception:
+                pass
+
     def save(self, *args, **kwargs):
-            """
-            Custom save method with import support
-            """
-            # Check if being imported (skip auto status logic during import)
-            skip_auto_status = kwargs.pop('skip_auto_status', False)
-            
-            # Check if this is a new instance
-            is_new = self.pk is None
-            
-            # Generate slug if not provided
-            if not self.slug:
-                base_slug = slugify(self.title)
-                slug = base_slug
-                counter = 1
-                while BlogPost.objects.filter(slug=slug).exclude(pk=self.pk).exists():
-                    slug = f"{base_slug}-{counter}"
-                    counter += 1
-                self.slug = slug
+        """
+        Save post preserving explicitly provided status (defaults to 'pending')
+        and without auto-publishing non-duplicate posts.
+        """
+        # Accept kwargs.pop for backwards compatibility if callers pass skip_auto_status
+        kwargs.pop('skip_auto_status', False)
 
-            # Generate hash for text content
-            raw_content = (self.title + str(self.description)).encode("utf-8")
-            self.content_hash = hashlib.md5(raw_content).hexdigest()
+        # Generate slug if not provided
+        if not self.slug:
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while BlogPost.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
 
-            # Only check duplicates if NOT importing and is new post
-            if not skip_auto_status and is_new:
-                # If duplicate content exists, prevent auto-publish
-                if (
-                    BlogPost.objects.filter(content_hash=self.content_hash)
-                    .exclude(pk=self.pk)
-                    .exists()
-                ):
-                    self.status = "pending"
-                else:
-                    self.status = "published"
+        # Default status to pending if not explicitly provided
+        if not self.status:
+            self.status = "pending"
 
-            # Generate hash for image if uploaded
-            if self.featured_image:
-                try:
-                    self.featured_image.file.seek(0)  # Reset pointer
-                    img_bytes = self.featured_image.file.read()
-                    self.image_hash = hashlib.md5(img_bytes).hexdigest()
-                    self.featured_image.file.seek(0)  # Reset again
-                    
-                    # Check duplicate image only for new posts (not during import)
-                    if not skip_auto_status and is_new:
-                        if (
-                            BlogPost.objects.filter(image_hash=self.image_hash)
-                            .exclude(pk=self.pk)
-                            .exists()
-                        ):
-                            self.status = "pending"
-                except Exception as e:
-                    print(f"Image hash generation error: {e}")
+        # Generate hash for text content
+        raw_content = (self.title + str(self.description or '')).encode("utf-8")
+        self.content_hash = hashlib.md5(raw_content).hexdigest()
 
-            super().save(*args, **kwargs)
+        # Generate hash for image if uploaded
+        if self.featured_image:
+            try:
+                self.featured_image.file.seek(0)  # Reset pointer
+                img_bytes = self.featured_image.file.read()
+                self.image_hash = hashlib.md5(img_bytes).hexdigest()
+                self.featured_image.file.seek(0)  # Reset again
+            except Exception as e:
+                print(f"Image hash generation error: {e}")
+
+        super().save(*args, **kwargs)
 
     @property
     def total_reactions(self):
