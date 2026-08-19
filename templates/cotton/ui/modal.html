@@ -8,7 +8,7 @@
    - static: true = don't close on backdrop click
    Slots:
    - body (default): modal content
-   - footer: action buttons area
+   - modal_footer: action buttons area
 {% endcomment %}
 
 <div x-data="{
@@ -71,10 +71,10 @@
       </div>
 
       {# Footer #}
-      {% if footer %}
+      {% if modal_footer %}
       <div class="!px-6 !py-4 !border-t !flex !items-center !justify-end !gap-3 !flex-shrink-0"
            style="border-color:var(--border); background:var(--surface-2); border-radius:0 0 8px 8px;">
-        {{ footer }}
+        {{ modal_footer }}
       </div>
       {% endif %}
     </div>
