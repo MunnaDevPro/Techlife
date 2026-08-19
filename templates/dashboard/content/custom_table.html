@@ -3,13 +3,13 @@
 {% block table-wrapper %}
 <div class="table-container !w-full !max-w-full">
     {% block table %}
-        <table {% render_attrs table.attrs %}>
+        <table class="!min-w-full !w-full !table-auto !divide-y !divide-gray-200 !border-collapse" {% render_attrs table.attrs %}>
             {% block table.thead %}
             {% if table.show_header %}
-                <thead {{ table.attrs.thead.as_html }}>
+                <thead class="!bg-gray-50/75" {{ table.attrs.thead.as_html }}>
                     <tr>
                     {% for column in table.columns %}
-                        <th {{ column.attrs.th.as_html }}>
+                        <th class="!py-2 !px-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap" {{ column.attrs.th.as_html }}>
                             {% if column.orderable %}
                                 <a href="{% querystring_replace table.prefixed_order_by_field=column.order_by_alias.next %}" class="hover:text-blue-600 transition-colors">{{ column.header }}</a>
                             {% else %}
@@ -22,12 +22,12 @@
             {% endif %}
             {% endblock table.thead %}
             {% block table.tbody %}
-                <tbody {{ table.attrs.tbody.as_html }}>
+                <tbody class="!divide-y !divide-gray-100 !bg-white" {{ table.attrs.tbody.as_html }}>
                 {% for row in table.paginated_rows %}
                     {% block table.tbody.row %}
-                    <tr {{ row.attrs.as_html }}>
+                    <tr class="hover:!bg-gray-50/50 !transition-colors group" {{ row.attrs.as_html }}>
                         {% for column, cell in row.items %}
-                            <td {{ column.attrs.td.as_html }}>
+                            <td class="!p-4 !align-middle" {{ column.attrs.td.as_html }}>
                                 {% if column.name == "serial_number" %}
                                     <span class="text-[13px] font-medium text-gray-500">
                                         {% if table.page %}{{ table.page.start_index|add:forloop.parentloop.counter0 }}{% else %}{{ forloop.parentloop.counter }}{% endif %}

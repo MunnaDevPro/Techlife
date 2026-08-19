@@ -103,7 +103,7 @@
                     <input type="hidden" name="tags" :value="activeTags.join(',')">
 
                     <div class="relative w-full">
-                        <div class="!flex !flex-wrap !items-center !gap-2 !p-2 min-h-[46px] !bg-white !border !border-gray-200/80 !rounded-lg focus-within:!ring-4 focus-within:!ring-blue-500/15 focus-within:!border-blue-500 !transition-all !shadow-sm">
+                        <div class="!flex !flex-wrap !items-center !gap-2 !p-2 min-h-[46px] !bg-white !border !border-gray-200 !rounded-lg focus-within:!ring-4 focus-within:!ring-blue-500/15 focus-within:!border-blue-500 !transition-all !shadow-sm hover:!border-gray-300">
                             <!-- Tag Pills -->
                             <template x-for="(tag, index) in activeTags" :key="tag + '_' + index">
                                 <span
