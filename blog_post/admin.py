@@ -12,6 +12,7 @@ from blog_post.models import (
     Like,
     SubCategory,
     compnay_logo,
+    AutomationPublishLog,
 )
 from django.utils.html import format_html
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
@@ -418,3 +419,83 @@ class PostViewIpAdmin(ModelAdmin):
     search_fields = ("post__title", "user__email", "ip_address")
     list_filter = ("viewed_at",)
     ordering = ("-viewed_at",)
+
+
+# ============================================
+# AUTOMATION PUBLISH LOG ADMIN (PRIVATE OPERATIONAL AUDIT)
+# ============================================
+
+@admin.register(AutomationPublishLog)
+class AutomationPublishLogAdmin(ModelAdmin):
+    list_display = (
+        "created_at",
+        "event_type",
+        "automation_id",
+        "result_code",
+        "http_status",
+        "duration_ms",
+        "source_name",
+        "post",
+    )
+    list_filter = (
+        "event_type",
+        "http_status",
+        "review_decision",
+        "created_at",
+    )
+    search_fields = (
+        "automation_id",
+        "source_name",
+        "source_url",
+        "result_code",
+        "error_summary",
+    )
+    date_hierarchy = "created_at"
+    ordering = ("-created_at",)
+
+    readonly_fields = (
+        "automation_id",
+        "source_name",
+        "source_url",
+        "post",
+        "event_type",
+        "result_code",
+        "http_status",
+        "duration_ms",
+        "image_status",
+        "review_decision",
+        "quality_score",
+        "factual_accuracy_score",
+        "language_score",
+        "seo_score",
+        "error_summary",
+        "created_at",
+    )
+
+    fieldsets = (
+        ("Request Identification", {
+            "fields": ("created_at", "automation_id", "event_type", "result_code", "http_status", "duration_ms"),
+        }),
+        ("Source & Article Link", {
+            "fields": ("source_name", "source_url", "post"),
+        }),
+        ("Pipeline Metrics & Review", {
+            "fields": (
+                "image_status",
+                "review_decision",
+                "quality_score",
+                "factual_accuracy_score",
+                "language_score",
+                "seo_score",
+            ),
+        }),
+        ("Error Diagnostics (Sanitized)", {
+            "fields": ("error_summary",),
+        }),
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser

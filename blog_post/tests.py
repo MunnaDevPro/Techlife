@@ -1,3 +1,4 @@
+import hashlib
 from django.test import TestCase, override_settings
 from django.core.management import call_command
 from django.core.exceptions import ValidationError
@@ -981,6 +982,234 @@ class BlogPostAutomationTaxonomyResolutionTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
         self.assertEqual(response.data["taxonomy_error"], "RESERVED_TAG")
+
+
+from django.conf import settings
+from blog_post.models import AutomationPublishLog
+from blog_post.automation_services import get_asia_dhaka_day_range
+from datetime import timedelta
+import zoneinfo
+
+
+class AutomationGuardrailTests(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.category = Category.objects.create(name="Tech", slug="tech")
+        self.subcategory = SubCategory.objects.create(name="AI", slug="ai", category=self.category)
+        self.existing_tag = Tag.objects.create(name="Automation", slug="automation")
+        Tag.objects.create(name="Deep Learning", slug="deep-learning")
+        Tag.objects.create(name="Neural Nets", slug="neural-nets")
+
+        self.automation_user = User.objects.create_user(
+            email="techlife_desk@techlifebd.com",
+            password="securepassword123",
+            first_name="TechLife",
+            last_name="Desk",
+            is_active=True,
+            is_staff=False,
+            is_superuser=False
+        )
+
+        self.staff_user = User.objects.create_user(
+            email="admin_staff@techlifebd.com",
+            password="staffpassword123",
+            first_name="Admin",
+            last_name="Staff",
+            is_active=True,
+            is_staff=True,
+            is_superuser=True
+        )
+
+        self.valid_hash = "a" * 64
+        self.valid_description = (
+            "<h2>Comprehensive AI Article</h2><p>This is a long valid article description containing more than 150 characters to pass length validation. "
+            "It provides clear insights and detailed analysis on modern technology trends, software development, and digital transformation in 2026.</p>"
+        )
+
+        self.valid_payload = {
+            "title": "Guardrail Test Article Title",
+            "description": self.valid_description,
+            "category_slug": self.category.slug,
+            "tags_list": ["Tag Alpha", "Tag Beta", "Tag Gamma"],
+            "source_name": "TechCrunch",
+            "source_url": "https://techcrunch.com/2026/08/18/ai-breakthrough",
+            "original_content_hash": self.valid_hash,
+            "automation_id": "auto_guard_100",
+            "generated_by_ai": True,
+            "ai_model": "gpt-4o",
+            "reviewer_model": "claude-3-5-sonnet",
+            "review_decision": "approved",
+            "quality_score": 95,
+            "factual_accuracy_score": 98,
+            "language_score": 92,
+            "seo_score": 85,
+            "review_notes": "All facts verified."
+        }
+
+        self.token = "valid_test_automation_token_123"
+        settings.TECHLIFE_AUTOMATION_TOKEN = self.token
+        settings.TECHLIFE_AUTOMATION_AUTHOR_USERNAME = "techlife_desk"
+        settings.TECHLIFE_AUTOMATION_ENABLED = True
+        settings.TECHLIFE_AUTOMATION_DAILY_POST_LIMIT = 4
+        settings.TECHLIFE_AUTOMATION_HOURLY_REQUEST_LIMIT = 20
+        settings.TECHLIFE_AUTOMATION_TIMEZONE = "Asia/Dhaka"
+
+        self.headers = {
+            "HTTP_AUTHORIZATION": f"Automation {self.token}"
+        }
+
+    def test_automation_disabled_returns_503(self):
+        settings.TECHLIFE_AUTOMATION_ENABLED = False
+        response = self.client.post("/api/blog/posts/", self.valid_payload, format='json', **self.headers)
+
+        self.assertEqual(response.status_code, status.HTTP_503_SERVICE_UNAVAILABLE)
+        self.assertEqual(response.data["status"], "disabled")
+        self.assertEqual(response.data["code"], "AUTOMATION_DISABLED")
+
+        # Verify audit log recorded disabled event
+        log = AutomationPublishLog.objects.filter(automation_id="auto_guard_100").first()
+        self.assertIsNotNone(log)
+        self.assertEqual(log.event_type, "disabled")
+        self.assertEqual(log.http_status, 503)
+
+    def test_daily_four_post_limit_enforced(self):
+        # Create 4 published logs today in Asia/Dhaka
+        local_start, local_end = get_asia_dhaka_day_range()
+        for i in range(4):
+            AutomationPublishLog.objects.create(
+                automation_id=f"auto_pub_{i}",
+                event_type="published",
+                http_status=201,
+                result_code="AUTOMATION_POST_PUBLISHED"
+            )
+
+        # 5th request should be throttled by 4-post daily limit
+        response = self.client.post("/api/blog/posts/", self.valid_payload, format='json', **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["status"], "throttled")
+        self.assertEqual(response.data["code"], "DAILY_PUBLISH_LIMIT_REACHED")
+        self.assertEqual(response.data["daily_limit"], 4)
+        self.assertEqual(response.data["published_today"], 4)
+
+    def test_rejected_requests_do_not_count_towards_daily_limit(self):
+        # Create 3 published logs and 5 rejected logs today
+        for i in range(3):
+            AutomationPublishLog.objects.create(
+                automation_id=f"pub_{i}",
+                event_type="published",
+                http_status=201,
+            )
+        for i in range(5):
+            AutomationPublishLog.objects.create(
+                automation_id=f"rej_{i}",
+                event_type="rejected",
+                http_status=422,
+            )
+
+        # 4th valid request should publish successfully (because rejected logs don't count)
+        response = self.client.post("/api/blog/posts/", self.valid_payload, format='json', **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["status"], "published")
+
+    def test_idempotent_replay_does_not_consume_quota(self):
+        # Publish first post successfully
+        resp1 = self.client.post("/api/blog/posts/", self.valid_payload, format='json', **self.headers)
+        self.assertEqual(resp1.status_code, status.HTTP_201_CREATED)
+        post_id = resp1.data["post_id"]
+
+        # Fill remaining 3 quota slots with published logs
+        for i in range(3):
+            AutomationPublishLog.objects.create(
+                automation_id=f"slot_{i}",
+                event_type="published",
+                http_status=201,
+            )
+
+        # Retrying the first request (existing automation_id) should return HTTP 200 replay even though daily limit is full
+        resp_retry = self.client.post("/api/blog/posts/", self.valid_payload, format='json', **self.headers)
+        self.assertEqual(resp_retry.status_code, status.HTTP_200_OK)
+        self.assertTrue(resp_retry.data["idempotent_replay"])
+        self.assertEqual(resp_retry.data["post_id"], post_id)
+
+    def test_manual_posts_excluded_from_automation_limit(self):
+        # Create 10 manual posts created via standard ORM / UI views
+        for i in range(10):
+            BlogPost.objects.create(
+                title=f"Manual Post {i}",
+                slug=f"manual-post-{i}",
+                description="Manual post content",
+                category=self.category,
+                subcategory=self.subcategory,
+                author=self.staff_user,
+                status="published"
+            )
+
+        # Automation endpoint should still allow publishing up to daily_limit (4)
+        response = self.client.post("/api/blog/posts/", self.valid_payload, format='json', **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_hourly_throttle_enforced(self):
+        # Create 20 request logs in the last 30 minutes
+        for i in range(20):
+            AutomationPublishLog.objects.create(
+                automation_id=f"hourly_{i}",
+                event_type="request_received",
+                http_status=422,
+            )
+
+        # 21st request within the hour should be rate limited
+        response = self.client.post("/api/blog/posts/", self.valid_payload, format='json', **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(response.data["code"], "AUTOMATION_REQUEST_RATE_LIMITED")
+
+    def test_bangladesh_midnight_boundary_resets_quota(self):
+        local_start, local_end = get_asia_dhaka_day_range()
+        yesterday_dt = local_start - timedelta(hours=2)
+
+        # Create 4 published logs yesterday in Asia/Dhaka
+        for i in range(4):
+            log = AutomationPublishLog.objects.create(
+                automation_id=f"yest_{i}",
+                event_type="published",
+                http_status=201,
+            )
+            log.created_at = yesterday_dt
+            log.save()
+
+        # Today's new request should succeed (201) because quota reset at Dhaka midnight
+        response = self.client.post("/api/blog/posts/", self.valid_payload, format='json', **self.headers)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_log_privacy_and_secret_non_storage(self):
+        # Send a request with authorization header and sensitive string in error
+        payload = self.valid_payload.copy()
+        payload["quality_score"] = 50  # Fail gate to trigger log entry
+
+        self.client.post("/api/blog/posts/", payload, format='json', **self.headers)
+
+        log = AutomationPublishLog.objects.order_by('-created_at').first()
+        self.assertIsNotNone(log)
+        # Ensure secret token / Authorization headers are NOT saved in database log
+        self.assertNotIn(self.token, log.error_summary)
+        self.assertNotIn("Authorization", log.error_summary)
+
+    def test_dashboard_overview_access_and_cotton_rendering(self):
+        self.client.force_login(self.staff_user)
+        response = self.client.get("/dashboard/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("automation_ops", response.context)
+        self.assertEqual(response.context["automation_ops"]["daily_limit"], 4)
+        self.assertContains(response, "Automation Operations")
+
+    def test_public_non_exposure(self):
+        # Ensure public post list API does NOT expose AutomationPublishLog fields or logs
+        response = self.client.get("/api/blog/posts/")
+        self.assertEqual(response.status_code, 200)
+        content_str = str(response.content)
+        self.assertNotIn("AutomationPublishLog", content_str)
+        self.assertNotIn("error_summary", content_str)
+
 
 
 

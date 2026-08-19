@@ -452,6 +452,57 @@ class HomepageConfig(models.Model):
 
     def __str__(self):
         return f"{self.get_section_key_display()} - {self.category or 'All'} ({self.post_count} posts)"
+
+
+class AutomationPublishLog(models.Model):
+    EVENT_TYPE_CHOICES = (
+        ("request_received", "Request Received"),
+        ("idempotent_replay", "Idempotent Replay"),
+        ("published", "Published"),
+        ("rejected", "Rejected"),
+        ("conflict", "Conflict"),
+        ("throttled", "Throttled"),
+        ("disabled", "Disabled"),
+        ("processing_failed", "Processing Failed"),
+    )
+
+    automation_id = models.CharField(max_length=255, null=True, blank=True, db_index=True)
+    source_name = models.CharField(max_length=255, null=True, blank=True)
+    source_url = models.URLField(max_length=1000, null=True, blank=True)
+    post = models.ForeignKey(
+        'BlogPost',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='automation_logs'
+    )
+    event_type = models.CharField(max_length=50, choices=EVENT_TYPE_CHOICES)
+    result_code = models.CharField(max_length=100, null=True, blank=True, db_index=True)
+    http_status = models.PositiveSmallIntegerField()
+    duration_ms = models.PositiveIntegerField(null=True, blank=True)
+
+    image_status = models.CharField(max_length=100, null=True, blank=True)
+    review_decision = models.CharField(max_length=50, null=True, blank=True)
+
+    quality_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    factual_accuracy_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    language_score = models.PositiveSmallIntegerField(null=True, blank=True)
+    seo_score = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    error_summary = models.TextField(blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Automation Publish Log'
+        verbose_name_plural = 'Automation Publish Logs'
+        indexes = [
+            models.Index(fields=['event_type', 'created_at']),
+        ]
+
+    def __str__(self):
+        return f"[{self.event_type}] {self.automation_id or 'No ID'} ({self.http_status}) - {self.created_at}"
+
     
 
 

@@ -12,6 +12,7 @@ def overview(request):
     category_data = overview_service.get_posts_by_category()
     user_data = overview_service.get_user_stats()
     recent_activity = overview_service.get_recent_activity()
+    automation_ops = overview_service.get_automation_operations_stats()
     
     ctx = get_dashboard_context(request, "Overview", "Overview")
     ctx.update({
@@ -27,5 +28,6 @@ def overview(request):
         "user_labels": json.dumps(user_data["labels"]),
         "user_values": json.dumps(user_data["values"]),
         "recent_activity": recent_activity,
+        "automation_ops": automation_ops,
     })
     return render(request, "dashboard/overview.html", ctx)
