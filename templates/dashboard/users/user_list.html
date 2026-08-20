@@ -4,7 +4,10 @@
 <div x-data="{ showDrawer: false }" class="flex flex-col gap-5">
     <div class="!flex !items-center !justify-between !mb-5 !flex-wrap !gap-4">
         <div>
-            <h2 class="ft-page-title !mb-0">All Users</h2>
+            <h2 class="ft-page-title !mb-0 flex items-center gap-2">
+                All Users 
+                <span class="bg-blue-50 text-blue-600 !px-3 !py-1 rounded-full text-[12.5px] font-medium border border-blue-100 leading-none">{{ total_users }} Total</span>
+            </h2>
             <p class="ft-page-subtitle !mt-1">View and manage registered accounts</p>
         </div>
         <button @click="showDrawer = true"
@@ -14,12 +17,25 @@
     </div>
 
     <!-- Users Table -->
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm">
         <!-- Compact Toolbar (Header) -->
         <style>
-            #user-filter-form input, #user-filter-form select { box-shadow: none !important; }
+            #user-filter-form input { 
+                box-shadow: none !important; 
+                font-size: 12.5px !important;
+                padding-top: 6px !important;
+                padding-bottom: 6px !important;
+                padding-left: 32px !important;
+            }
+            #user-filter-form select {
+                box-shadow: none !important; 
+                font-size: 11.5px !important;
+                padding-top: 6px !important;
+                padding-bottom: 6px !important;
+                padding-left: 12px !important;
+            }
         </style>
-        <div class="border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3" style="padding: 14px 24px;">
+        <div class="border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style="padding: 14px 24px;">
             <div>
                 <h3 class="text-[15px] font-bold text-gray-900 m-0">Users</h3>
                 <p class="text-[12px] text-gray-400 mt-0.5">{{ users|length }} results</p>
@@ -51,12 +67,11 @@
                 <thead>
                     <tr class="!bg-gray-50/50 !border-b !border-gray-100">
                         <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !w-16 !text-center">SL</th>
-                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider">User</th>
-                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider">Email</th>
+                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !text-left">User</th>
+                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !text-left">Email</th>
                         <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !text-center !w-28">Status</th>
                         <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !text-center !w-24">Posts</th>
-                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !w-32">Joined Date</th>
-                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !w-32">Last Login</th>
+                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap !text-left !w-32">Joined Date</th>
                         <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !text-center !w-32">Actions</th>
                     </tr>
                 </thead>
@@ -68,14 +83,14 @@
                             <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-200 text-gray-500 font-semibold text-[11px]">{{ forloop.counter }}</span>
                         </td>
                         <!-- User -->
-                        <td class="!px-6 !py-3 !align-middle">
-                            <div class="flex items-center gap-3">
+                        <td class="!px-6 !py-3 !align-middle !text-left">
+                            <a href="{% url 'dashboard:user_detail' u.pk %}" class="flex items-center gap-3 group/user">
                                 <img src="{% if u.profile_picture %}{{ u.profile_picture.url }}{% else %}/static/image/default_user_profile.png{% endif %}" alt="User" class="w-8 h-8 rounded-full object-cover bg-gray-100 border border-gray-200 shrink-0">
-                                <span class="text-[13.5px] font-medium text-gray-800 leading-tight">{{ u.first_name }} {{ u.last_name }}</span>
-                            </div>
+                                <span class="text-[13.5px] font-medium text-gray-800 group-hover/user:text-blue-600 leading-tight transition-colors">{{ u.first_name }} {{ u.last_name }}</span>
+                            </a>
                         </td>
                         <!-- Email -->
-                        <td class="!px-6 !py-3 !align-middle">
+                        <td class="!px-6 !py-3 !align-middle !text-left">
                             <span class="text-[12.5px] text-gray-600 font-medium">{{ u.email }}</span>
                         </td>
                         <!-- Status -->
@@ -91,22 +106,15 @@
                             <span class="inline-flex items-center px-3 py-1 rounded-md text-[11px] font-medium bg-transparent text-gray-600">{{ u.post_count }}</span>
                         </td>
                         <!-- Joined Date -->
-                        <td class="!px-6 !py-3 !align-middle !whitespace-nowrap">
+                        <td class="!px-6 !py-3 !align-middle !whitespace-nowrap !text-left">
                             <span class="text-[12.5px] text-gray-500 font-medium">{{ u.date_joined|date:"Y-m-d" }}</span>
-                        </td>
-                        <!-- Last Login -->
-                        <td class="!px-6 !py-3 !align-middle !whitespace-nowrap">
-                            <span class="text-[12.5px] text-gray-500 font-medium">{{ u.last_login|date:"Y-m-d H:i"|default:"Never" }}</span>
                         </td>
                         <!-- Actions -->
                         <td class="!px-6 !py-3 !align-middle !text-center !whitespace-nowrap">
                             <div class="flex items-center justify-center gap-2">
-                                <a href="{% url 'dashboard:user_detail' u.pk %}" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-gray-600 hover:text-gray-900 rounded-lg transition-colors">
-                                    <i data-lucide="user" class="w-3.5 h-3.5"></i> Details
-                                </a>
                                 <form action="{% url 'dashboard:user_delete' u.pk %}" method="POST" class="inline" x-data @submit.prevent="window.confirmAction('Permanently delete this user? This action cannot be undone.', () => $el.submit())">
                                     {% csrf_token %}
-                                    <button type="submit" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-red-600 hover:text-red-700 rounded-lg transition-colors">
+                                    <button type="submit" class="inline-flex items-center justify-center gap-1.5 !px-3.5 !py-1.5 text-[12px] font-semibold text-red-600 bg-white border border-red-200 hover:border-red-300 hover:bg-red-50 hover:text-red-700 active:bg-red-100 active:scale-95 rounded-lg transition-all !cursor-pointer">
                                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete
                                     </button>
                                 </form>
@@ -115,7 +123,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="8" class="!py-16 text-center">
+                        <td colspan="7" class="!py-16 text-center">
                             <div class="flex flex-col items-center justify-center gap-3">
                                 <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center">
                                     <i data-lucide="users" class="w-6 h-6 text-gray-400"></i>

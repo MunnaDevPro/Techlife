@@ -7,8 +7,12 @@
         <p class="text-[14px] text-gray-500 mt-1">Manually verify and activate users pending email confirmation.</p>
     </div>
 
-    <c-ui.card title="Pending Verification" subtitle="Users awaiting manual approval ({{ users|length }})" class="border-gray-200 shadow-sm">
-        <div class="!mt-2">
+    <style>
+        .verification-card { box-shadow: none !important; }
+        .verification-card > .flex-1 { padding: 0 !important; }
+    </style>
+    <c-ui.card title="Pending Verification" subtitle="Users awaiting manual approval ({{ users|length }})" extra_class="verification-card !border-gray-200">
+        <div>
             <c-ui.table>
                 <c-slot name="header">
                     <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">User Account</th>

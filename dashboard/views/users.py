@@ -61,6 +61,7 @@ def user_list(request):
         "users": qs,
         "search_q": search_q,
         "verified_filter": verified_filter,
+        "total_users": CustomUserModel.objects.count(),
     })
     return render(request, "dashboard/users/user_list.html", ctx)
 
