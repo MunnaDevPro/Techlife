@@ -14,23 +14,22 @@
 <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden">
 
   {# Header #}
-  <div style="padding:14px 16px;border-bottom:1px solid var(--border);background:var(--surface-2);
-              display:flex;align-items:center;justify-content:space-between;gap:12px">
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="width:32px;height:32px;border-radius:var(--radius-sm);background:#fee2e2;
-                  display:flex;align-items:center;justify-content:center">
-        <i data-lucide="flag" style="width:15px;height:15px;color:#dc2626"></i>
+  <div class="p-4 sm:p-5 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:align-middle sm:justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-md bg-red-100 flex items-center justify-center shrink-0">
+        <i data-lucide="flag" class="w-4 h-4 text-red-600"></i>
       </div>
       <div>
-        <h3 style="font-size:13px;font-weight:700;color:var(--text)">Flagged {{ content_type }}</h3>
-        <p style="font-size:11px;color:var(--text-muted)">
+        <h3 class="text-[13.5px] font-bold text-gray-900">Flagged {{ content_type }}</h3>
+        <p class="text-[11.5px] text-gray-500 mt-0.5">
           Reported: {{ created_at }}
           {% if reporter_email %} — by {{ reporter_email }}{% endif %}
         </p>
       </div>
     </div>
-    <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;
-                 background:#fee2e2;color:#991b1b">Pending Review</span>
+    <span class="inline-flex items-center self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-red-100 text-red-700 whitespace-nowrap">
+        Pending Review
+    </span>
   </div>
 
   {# Body #}
@@ -73,21 +72,23 @@
   </div>
 
   {# Actions #}
-  <div style="padding:12px 16px;border-top:1px solid var(--border);background:var(--surface-2);
-              display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+  <div class="p-4 sm:p-5 border-t border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row gap-2.5 sm:justify-end">
     <a href="{{ skip_url }}"
-       class="ft-btn ft-btn-secondary ft-btn-sm">
+       class="ft-btn ft-btn-secondary ft-btn-sm w-full sm:w-auto flex justify-center">
       <i data-lucide="skip-forward" style="width:13px;height:13px"></i> Skip
     </a>
-    <a href="{{ remove_url }}"
-       class="ft-btn ft-btn-danger ft-btn-sm"
-       onclick="return confirm('Remove this content? This action cannot be undone.')">
-      <i data-lucide="trash-2" style="width:13px;height:13px"></i> Remove Content
-    </a>
-    <a href="{{ approve_url }}"
-       class="ft-btn ft-btn-success ft-btn-sm">
-      <i data-lucide="check-circle" style="width:13px;height:13px"></i> Approve (Keep)
-    </a>
+    <form action="{{ remove_url }}" method="post" class="inline w-full sm:w-auto flex justify-center" onsubmit="return confirm('Remove this content? This action cannot be undone.')">
+        {% csrf_token %}
+        <button type="submit" class="ft-btn ft-btn-danger ft-btn-sm w-full sm:w-auto flex justify-center">
+          <i data-lucide="trash-2" style="width:13px;height:13px"></i> Remove Content
+        </button>
+    </form>
+    <form action="{{ approve_url }}" method="post" class="inline w-full sm:w-auto flex justify-center">
+        {% csrf_token %}
+        <button type="submit" class="ft-btn ft-btn-success ft-btn-sm w-full sm:w-auto flex justify-center">
+          <i data-lucide="check-circle" style="width:13px;height:13px"></i> Approve (Keep)
+        </button>
+    </form>
   </div>
 
 </div>

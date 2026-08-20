@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django import forms
 from forum.models import Question, Answer
 from django.urls import reverse
+from django.core.paginator import Paginator
 from django.db.models import Count
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
@@ -17,11 +18,18 @@ from dashboard.models import ModerationLog
 def question_list(request):
     """List forum questions with answer counts."""
     # Annotate answer counts and prefetch author
-    questions = Question.objects.select_related('author').annotate(answer_count=Count('answers')).order_by('-created_at')
+    questions_list = Question.objects.select_related('author').annotate(answer_count=Count('answers')).order_by('-created_at')
+    
+    paginator = Paginator(questions_list, 15)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
     ctx = get_dashboard_context(request, "Forum Questions", "Forum", "dashboard:forum_questions")
     ctx.update({
-        "questions": questions,
+        "questions": page_obj,
+        "page_obj": page_obj,
+        "is_paginated": page_obj.has_other_pages(),
+        "paginator": paginator,
     })
     return render(request, "dashboard/forum/question_list.html", ctx)
 
@@ -85,11 +93,18 @@ def question_delete(request, pk):
 @staff_required
 def answer_list(request):
     """List forum answers."""
-    answers = Answer.objects.select_related('author', 'question').order_by('-created_at')
+    answers_list = Answer.objects.select_related('author', 'question').order_by('-created_at')
+    
+    paginator = Paginator(answers_list, 15)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
     ctx = get_dashboard_context(request, "Forum Answers", "Forum", "dashboard:forum_answers")
     ctx.update({
-        "answers": answers,
+        "answers": page_obj,
+        "page_obj": page_obj,
+        "is_paginated": page_obj.has_other_pages(),
+        "paginator": paginator,
     })
     return render(request, "dashboard/forum/answer_list.html", ctx)
 

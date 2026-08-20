@@ -7,99 +7,143 @@
             <h2 class="ft-page-title !mb-0">All Users</h2>
             <p class="ft-page-subtitle !mt-1">View and manage registered accounts</p>
         </div>
-        <button @click="showDrawer = true" class="!inline-flex !items-center !justify-center !gap-1.5 !px-4 !py-2.5 !text-sm !font-semibold !text-white !bg-blue-600 hover:!bg-blue-700 !rounded-lg !transition-all !cursor-pointer !shadow-sm">
+        <button @click="showDrawer = true"
+            class="!inline-flex !items-center !justify-center !gap-1.5 !px-4 !py-2.5 !text-sm !font-semibold !text-white !bg-blue-600 hover:!bg-blue-700 !rounded-lg !transition-all !cursor-pointer !shadow-sm">
             <i data-lucide="plus" class="w-4 h-4"></i> Add User
         </button>
     </div>
 
     <!-- Users Table -->
-    <c-ui.card title="Users" subtitle="{{ users|length }} results" extra_class="!shadow-none" card_padding="sm" footer="">
-        <!-- Compact Toolbar -->
-        <div class="!flex !items-center !justify-between !mb-5 !flex-wrap !gap-3">
-            <h3 class="!text-sm !font-bold !text-gray-800 !m-0">User Accounts</h3>
-            <form method="get" class="!flex !items-center !gap-2.5">
-                <div class="!w-60">
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+        <!-- Compact Toolbar (Header) -->
+        <style>
+            #user-filter-form input, #user-filter-form select { box-shadow: none !important; }
+        </style>
+        <div class="border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3" style="padding: 14px 24px;">
+            <div>
+                <h3 class="text-[15px] font-bold text-gray-900 m-0">Users</h3>
+                <p class="text-[12px] text-gray-400 mt-0.5">{{ users|length }} results</p>
+            </div>
+            <form id="user-filter-form" method="get" class="flex items-center flex-wrap gap-2">
+                <div class="w-52">
                     <c-ui.input name="q" value="{{ search_q }}" placeholder="Search email..." icon="search" size="sm"></c-ui.input>
                 </div>
-                <div class="!w-40">
+                <div class="w-[140px]">
                     <c-ui.select name="verified" size="sm">
                         <option value="">All Statuses</option>
                         <option value="true" {% if verified_filter == 'true' %}selected{% endif %}>Verified</option>
                         <option value="false" {% if verified_filter == 'false' %}selected{% endif %}>Unverified</option>
                     </c-ui.select>
                 </div>
-                <button type="submit" class="!inline-flex !items-center !justify-center !px-3.5 !py-2 !text-[12px] !font-semibold !text-white !bg-blue-600 hover:!bg-blue-700 !rounded-lg !transition-all !cursor-pointer !shadow-sm">
+                <button type="submit" class="inline-flex items-center justify-center !px-4 !py-2 text-[12px] font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 active:scale-95 rounded-lg transition-all cursor-pointer">
                     <i data-lucide="search" class="w-3.5 h-3.5 mr-1"></i> Search
                 </button>
                 {% if search_q or verified_filter %}
-                <a href="{% url 'dashboard:users_all' %}" class="!inline-flex !items-center !justify-center !px-3.5 !py-2 !text-[12px] !font-semibold !text-gray-700 !bg-white !border !border-gray-200 hover:!bg-gray-50 !rounded-lg !transition-all !cursor-pointer !shadow-sm">
+                <a href="{% url 'dashboard:users_all' %}" class="inline-flex items-center justify-center !px-4 !py-2 text-[12px] font-semibold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 active:bg-gray-100 active:scale-95 rounded-lg transition-all cursor-pointer">
                     Clear
                 </a>
                 {% endif %}
             </form>
         </div>
-        <c-ui.table>
-            <c-slot name="header">
-                <th>User</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Posts</th>
-                <th>Joined Date</th>
-                <th>Last Login</th>
-                <th>Actions</th>
-            </c-slot>
-            {% for u in users %}
-            <tr>
-                <td>
-                    <div class="flex items-center gap-3">
-                        <img src="{% if u.profile_picture %}{{ u.profile_picture.url }}{% else %}/static/image/default_user_profile.png{% endif %}" alt="User" class="w-8 h-8 rounded-full object-cover bg-gray-100 border border-gray-200">
-                        <span class="font-medium text-sm text-gray-900">{{ u.first_name }} {{ u.last_name }}</span>
-                    </div>
-                </td>
-                <td>{{ u.email }}</td>
-                <td>
-                    {% if u.is_verified %}
-                        <c-ui.badge variant="success" dot="true">Verified</c-ui.badge>
-                    {% else %}
-                        <c-ui.badge variant="warning" dot="true">Unverified</c-ui.badge>
-                    {% endif %}
-                </td>
-                <td><c-ui.badge variant="neutral">{{ u.post_count }}</c-ui.badge></td>
-                <td class="text-[11px]" style="color:var(--text-muted)">{{ u.date_joined|date:"Y-m-d H:i" }}</td>
-                <td class="text-[11px]" style="color:var(--text-muted)">{{ u.last_login|date:"Y-m-d H:i"|default:"Never" }}</td>
-                <td class="flex items-center gap-2">
-                    <c-ui.button href="{% url 'dashboard:user_detail' u.pk %}" variant="ghost" size="sm" icon="user" label="Details"></c-ui.button>
-                    <form action="{% url 'dashboard:user_delete' u.pk %}" method="POST" class="inline" x-data @submit.prevent="window.confirmAction('Permanently delete this user? This action cannot be undone.', () => $el.submit())">
-                        {% csrf_token %}
-                        <c-ui.button type="submit" variant="ghost" size="sm" icon="trash-2" label="Delete" class="!text-red-500 hover:!bg-red-50"></c-ui.button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" class="text-center py-8" style="color:var(--text-muted)">
-                    <i data-lucide="users" class="w-7 h-7 mx-auto mb-2 block opacity-40"></i>
-                    No users found matching filters
-                </td>
-            </tr>
-            {% endfor %}
-        </c-ui.table>
-    </c-ui.card>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[1000px]">
+                <thead>
+                    <tr class="!bg-gray-50/50 !border-b !border-gray-100">
+                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !w-16 !text-center">SL</th>
+                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider">User</th>
+                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider">Email</th>
+                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !text-center !w-28">Status</th>
+                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !text-center !w-24">Posts</th>
+                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !w-32">Joined Date</th>
+                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !w-32">Last Login</th>
+                        <th class="!px-6 !py-3 !text-[12px] !font-bold !text-gray-500 !uppercase !tracking-wider !text-center !w-32">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for u in users %}
+                    <tr class="hover:bg-slate-50/70 transition-colors duration-150 group">
+                        <!-- SL -->
+                        <td class="!px-6 !py-3 !align-middle !text-center">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-200 text-gray-500 font-semibold text-[11px]">{{ forloop.counter }}</span>
+                        </td>
+                        <!-- User -->
+                        <td class="!px-6 !py-3 !align-middle">
+                            <div class="flex items-center gap-3">
+                                <img src="{% if u.profile_picture %}{{ u.profile_picture.url }}{% else %}/static/image/default_user_profile.png{% endif %}" alt="User" class="w-8 h-8 rounded-full object-cover bg-gray-100 border border-gray-200 shrink-0">
+                                <span class="text-[13.5px] font-medium text-gray-800 leading-tight">{{ u.first_name }} {{ u.last_name }}</span>
+                            </div>
+                        </td>
+                        <!-- Email -->
+                        <td class="!px-6 !py-3 !align-middle">
+                            <span class="text-[12.5px] text-gray-600 font-medium">{{ u.email }}</span>
+                        </td>
+                        <!-- Status -->
+                        <td class="!px-6 !py-3 !align-middle !text-center">
+                            {% if u.is_verified %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-medium bg-transparent text-green-700"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Verified</span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-medium bg-transparent text-yellow-700"><span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>Unverified</span>
+                            {% endif %}
+                        </td>
+                        <!-- Posts -->
+                        <td class="!px-6 !py-3 !align-middle !text-center">
+                            <span class="inline-flex items-center px-3 py-1 rounded-md text-[11px] font-medium bg-transparent text-gray-600">{{ u.post_count }}</span>
+                        </td>
+                        <!-- Joined Date -->
+                        <td class="!px-6 !py-3 !align-middle !whitespace-nowrap">
+                            <span class="text-[12.5px] text-gray-500 font-medium">{{ u.date_joined|date:"Y-m-d" }}</span>
+                        </td>
+                        <!-- Last Login -->
+                        <td class="!px-6 !py-3 !align-middle !whitespace-nowrap">
+                            <span class="text-[12.5px] text-gray-500 font-medium">{{ u.last_login|date:"Y-m-d H:i"|default:"Never" }}</span>
+                        </td>
+                        <!-- Actions -->
+                        <td class="!px-6 !py-3 !align-middle !text-center !whitespace-nowrap">
+                            <div class="flex items-center justify-center gap-2">
+                                <a href="{% url 'dashboard:user_detail' u.pk %}" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-gray-600 hover:text-gray-900 rounded-lg transition-colors">
+                                    <i data-lucide="user" class="w-3.5 h-3.5"></i> Details
+                                </a>
+                                <form action="{% url 'dashboard:user_delete' u.pk %}" method="POST" class="inline" x-data @submit.prevent="window.confirmAction('Permanently delete this user? This action cannot be undone.', () => $el.submit())">
+                                    {% csrf_token %}
+                                    <button type="submit" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-red-600 hover:text-red-700 rounded-lg transition-colors">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="!py-16 text-center">
+                            <div class="flex flex-col items-center justify-center gap-3">
+                                <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center">
+                                    <i data-lucide="users" class="w-6 h-6 text-gray-400"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <h4 class="text-sm font-semibold text-gray-900">No users found</h4>
+                                    <p class="text-[13px] text-gray-500">No users match your current filter criteria.</p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <!-- Right Slide-Over User Form Drawer -->
-    <div x-show="showDrawer" x-cloak class="fixed inset-0 !top-[52px] z-[9999] bg-black/20 backdrop-blur-sm flex justify-end !mt-0"
-         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-        <div x-show="showDrawer"
-             x-transition:enter="transition ease-out duration-300 transform"
-             x-transition:enter-start="translate-x-full"
-             x-transition:enter-end="translate-x-0"
-             x-transition:leave="transition ease-in duration-200 transform"
-             x-transition:leave-start="translate-x-0"
-             x-transition:leave-end="translate-x-full"
-             @click.away="showDrawer = false"
-             class="!w-[420px] !h-full !flex !flex-col !bg-white !border-l !border-gray-200 !shadow-2xl">
+    <div x-show="showDrawer" x-cloak
+        class="fixed inset-0 !top-[52px] z-[9999] bg-black/20 backdrop-blur-sm flex justify-end !mt-0"
+        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div x-show="showDrawer" x-transition:enter="transition ease-out duration-300 transform"
+            x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="translate-x-full" @click.away="showDrawer = false"
+            class="!w-[420px] !h-full !flex !flex-col !bg-white !border-l !border-gray-200 !shadow-2xl">
 
             <!-- Drawer Header -->
             <div class="!flex !items-center !justify-between !px-6 !py-5 !border-b !border-gray-100 !flex-shrink-0">
@@ -112,23 +156,26 @@
                         <p class="!text-[11px] !text-gray-500 !m-0">Register a new user account</p>
                     </div>
                 </div>
-                <button @click="showDrawer = false" type="button" class="!p-1.5 !rounded-lg !text-gray-400 hover:!text-gray-600 hover:!bg-gray-50 !transition-all !cursor-pointer border border-transparent hover:border-gray-100">
+                <button @click="showDrawer = false" type="button"
+                    class="!p-1.5 !rounded-lg !text-gray-400 hover:!text-gray-600 hover:!bg-gray-50 !transition-all !cursor-pointer border border-transparent hover:border-gray-100">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
             <!-- Drawer Form Body -->
             <form method="post" action="{% url 'dashboard:users_all' %}"
-                  class="!flex-1 !overflow-y-auto scrollbar-thin !flex !flex-col !gap-5 !p-6">
+                class="!flex-1 !overflow-y-auto scrollbar-thin !flex !flex-col !gap-5 !p-6">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="create">
 
                 <div class="!flex !flex-col !gap-1.5">
-                    <c-ui.input name="email" label="Email Address" type="email" placeholder="e.g. user@example.com" required="true" icon="mail"></c-ui.input>
+                    <c-ui.input name="email" label="Email Address" type="email" placeholder="e.g. user@example.com"
+                        required="true" icon="mail"></c-ui.input>
                 </div>
 
                 <div class="!flex !flex-col !gap-1.5">
-                    <c-ui.input name="password" label="Password" type="password" placeholder="Min. 8 characters" required="true" icon="lock"></c-ui.input>
+                    <c-ui.input name="password" label="Password" type="password" placeholder="Min. 8 characters"
+                        required="true" icon="lock"></c-ui.input>
                 </div>
 
                 <div class="!flex !grid !grid-cols-2 !gap-3">
