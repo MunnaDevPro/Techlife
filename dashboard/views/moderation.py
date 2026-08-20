@@ -182,7 +182,12 @@ def reset_skip_list(request, queue_type):
 def blocked_users(request):
     """List blocked/deactivated users and allow unblocking."""
     from accounts.models import CustomUserModel as UserModel
-    users = UserModel.objects.filter(is_active=False).order_by('-date_joined')
+    
+    sort_param = request.GET.get('sort', '-date_joined')
+    if sort_param not in ['date_joined', '-date_joined']:
+        sort_param = '-date_joined'
+        
+    users = UserModel.objects.filter(is_active=False).order_by(sort_param)
     total_blocked = users.count()
     total_active = UserModel.objects.filter(is_active=True).count()
     ctx = get_dashboard_context(request, "Blocked Users", "Moderation", "dashboard:mod_blocked")

@@ -4,210 +4,62 @@
 <div class="flex flex-col gap-6">
 
     <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div class="flex items-center justify-between flex-wrap gap-3 animate-[fade-in-up_0.4s_ease-out]">
         <div>
-            <div class="flex items-center gap-2.5 mb-1">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-sm">
-                    <i data-lucide="shield-alert" class="w-4 h-4 text-white"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-900 tracking-tight">
-                    {% if queue_type == "comments" %}Comment Queue
-                    {% elif queue_type == "forum" %}Forum Reports
-                    {% else %}Moderation Queue{% endif %}
-                </h2>
-            </div>
-            <p class="text-[13.5px] text-gray-500 ml-10">
+            <h2 class="ft-page-title">
+                {% if queue_type == "comments" %}Comment Queue
+                {% elif queue_type == "forum" %}Forum Reports
+                {% else %}Moderation Queue{% endif %}
+            </h2>
+            <p class="ft-page-subtitle">
                 {% if queue_type == "comments" %}Review flagged comment items one by one
                 {% elif queue_type == "forum" %}Review flagged forum questions and answers
                 {% else %}Review all flagged system items{% endif %}
             </p>
         </div>
         {% if pending_count > 0 %}
-        <div class="flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-xl self-start sm:self-auto" style="padding: 10px 16px;">
-            <span class="relative flex h-2.5 w-2.5">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"></span>
-            </span>
-            <span class="text-[13px] font-semibold text-orange-700">{{ pending_count }} Pending</span>
-        </div>
+        <c-ui.badge variant="warning" size="md">
+            {{ pending_count }} Pending
+        </c-ui.badge>
         {% else %}
-        <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-xl self-start sm:self-auto" style="padding: 10px 16px;">
-            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
-            <span class="text-[13px] font-semibold text-emerald-700">All Clear</span>
-        </div>
+        <c-ui.badge variant="success" size="md">
+            All Clear
+        </c-ui.badge>
         {% endif %}
     </div>
 
     <!-- KPI Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-
-        <!-- Pending -->
-        <div class="bg-white border border-gray-200 rounded-2xl flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden" style="padding: 20px;">
-            <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-            <div class="flex items-center justify-between relative z-10">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-sm">
-                    <i data-lucide="flag" class="w-5 h-5 text-white"></i>
-                </div>
-                <span class="text-[10.5px] font-semibold text-orange-600 bg-orange-50 border border-orange-100 rounded-full uppercase tracking-wider" style="padding: 2px 8px;">Pending</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">Awaiting Review</p>
-                <h3 class="text-3xl font-bold text-gray-900 mt-1 tracking-tight">{{ pending_count }}</h3>
-            </div>
-        </div>
-
-        <!-- Skipped -->
-        <div class="bg-white border border-gray-200 rounded-2xl flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden" style="padding: 20px;">
-            <div class="absolute inset-0 bg-gradient-to-br from-slate-500/5 to-gray-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-            <div class="flex items-center justify-between relative z-10">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-500 to-gray-600 flex items-center justify-center shadow-sm">
-                    <i data-lucide="skip-forward" class="w-5 h-5 text-white"></i>
-                </div>
-                <span class="text-[10.5px] font-semibold text-slate-600 bg-slate-50 border border-slate-200 rounded-full uppercase tracking-wider" style="padding: 2px 8px;">Skipped</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">This Session</p>
-                <h3 class="text-3xl font-bold text-gray-900 mt-1 tracking-tight">{{ skipped_count }}</h3>
-            </div>
-        </div>
-
-        <!-- Resolved -->
-        <div class="bg-white border border-gray-200 rounded-2xl flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden" style="padding: 20px;">
-            <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-rose-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-            <div class="flex items-center justify-between relative z-10">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-sm">
-                    <i data-lucide="trash-2" class="w-5 h-5 text-white"></i>
-                </div>
-                <span class="text-[10.5px] font-semibold text-red-600 bg-red-50 border border-red-100 rounded-full uppercase tracking-wider" style="padding: 2px 8px;">Removed</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">Content Removed</p>
-                <h3 class="text-3xl font-bold text-gray-900 mt-1 tracking-tight">{{ total_resolved }}</h3>
-            </div>
-        </div>
-
-        <!-- Dismissed -->
-        <div class="bg-white border border-gray-200 rounded-2xl flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden" style="padding: 20px;">
-            <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-            <div class="flex items-center justify-between relative z-10">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-sm">
-                    <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
-                </div>
-                <span class="text-[10.5px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-full uppercase tracking-wider" style="padding: 2px 8px;">Approved</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">Flags Dismissed</p>
-                <h3 class="text-3xl font-bold text-gray-900 mt-1 tracking-tight">{{ total_dismissed }}</h3>
-            </div>
-        </div>
-
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-[fade-in-up_0.5s_ease-out]">
+        <c-ui.kpi-widget label="Awaiting Review" value="{{ pending_count }}" icon="flag" color="warning"></c-ui.kpi-widget>
+        <c-ui.kpi-widget label="This Session" value="{{ skipped_count }}" icon="skip-forward" color="neutral"></c-ui.kpi-widget>
+        <c-ui.kpi-widget label="Content Removed" value="{{ total_resolved }}" icon="trash-2" color="danger"></c-ui.kpi-widget>
+        <c-ui.kpi-widget label="Flags Dismissed" value="{{ total_dismissed }}" icon="check-circle-2" color="accent"></c-ui.kpi-widget>
     </div>
 
     <!-- Moderation Card OR Empty State -->
     {% if flag_data %}
-
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-
-        <!-- Card Header -->
-        <div class="border-b border-gray-100 flex items-center justify-between" style="padding: 20px 24px;">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-400 to-rose-500 flex items-center justify-center shadow-sm">
-                    <i data-lucide="flag" class="w-4.5 h-4.5 text-white"></i>
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <h3 class="text-[15px] font-bold text-gray-900">Flagged {{ flag_data.content_type }}</h3>
-                        <span class="text-[10.5px] font-bold text-red-700 bg-red-100 border border-red-200 rounded-full" style="padding: 2px 10px;">Pending Review</span>
-                    </div>
-                    <p class="text-[12px] text-gray-400 mt-0.5">
-                        Reported on {{ flag_data.created_at|date:"Y-m-d H:i" }}
-                        {% if flag_data.reporter_email %} &nbsp;·&nbsp; by <span class="font-medium text-gray-500">{{ flag_data.reporter_email }}</span>{% endif %}
-                    </p>
-                </div>
-            </div>
-            <div class="flex items-center gap-1.5 bg-orange-50 border border-orange-200 rounded-lg" style="padding: 6px 12px;">
-                <i data-lucide="eye" class="w-3.5 h-3.5 text-orange-500"></i>
-                <span class="text-[12px] font-semibold text-orange-700">Under Review</span>
-            </div>
-        </div>
-
-        <!-- Body -->
-        <div class="flex flex-col gap-5" style="padding: 24px;">
-
-            <!-- Reason -->
-            <div class="flex items-start gap-3 bg-red-50 border-l-4 border-red-500 rounded-r-xl" style="padding: 14px 16px;">
-                <i data-lucide="alert-circle" class="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5"></i>
-                <div>
-                    <p class="text-[11.5px] font-bold text-red-800 uppercase tracking-wider mb-1">Reason for Flag</p>
-                    <p class="text-[13px] text-red-700 font-medium">{{ flag_data.reason }}</p>
-                </div>
-            </div>
-
-            <!-- Content under review -->
-            {% if flag_data.content %}
-            <div>
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Content Under Review</p>
-                <div class="bg-gray-50 border border-gray-200 rounded-xl text-[13px] text-gray-700 leading-relaxed" style="padding: 14px 16px; max-height: 200px; overflow-y: auto;">
-                    {{ flag_data.content }}
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Moderator Note -->
-            {% if flag_data.note %}
-            <div class="bg-blue-50 border border-blue-200 rounded-xl flex items-start gap-2.5" style="padding: 12px 16px;">
-                <i data-lucide="sticky-note" class="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5"></i>
-                <div>
-                    <p class="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-1">Moderator Note</p>
-                    <p class="text-[12.5px] text-blue-800">{{ flag_data.note }}</p>
-                </div>
-            </div>
-            {% endif %}
-
-        </div>
-
-        <!-- Actions Footer -->
-        <div class="bg-gray-50/60 border-t border-gray-100 flex items-center justify-between gap-3 flex-wrap" style="padding: 16px 24px;">
-            <a href="{% url 'dashboard:flag_skip' flag_data.flag.pk queue_type %}" class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white text-gray-600 font-semibold text-[13px] hover:bg-gray-50 hover:border-gray-300 transition-all" style="padding: 9px 16px;">
-                <i data-lucide="skip-forward" class="w-3.5 h-3.5"></i> Skip for Now
-            </a>
-            <div class="flex items-center gap-2">
-                <form action="{% url 'dashboard:flag_approve' flag_data.flag.pk queue_type %}" method="post" class="inline">
-                    {% csrf_token %}
-                    <button type="submit"
-                            class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 text-white font-semibold text-[13px] hover:bg-emerald-700 transition-all shadow-sm cursor-pointer"
-                            style="padding: 9px 18px;">
-                        <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Approve &amp; Keep
-                    </button>
-                </form>
-                <form action="{% url 'dashboard:flag_remove' flag_data.flag.pk queue_type %}" method="post" class="inline"
-                      onsubmit="return confirm('Remove this content? This action cannot be undone.')">
-                    {% csrf_token %}
-                    <button type="submit"
-                            class="inline-flex items-center gap-2 rounded-xl bg-red-600 text-white font-semibold text-[13px] hover:bg-red-700 transition-all shadow-sm cursor-pointer"
-                            style="padding: 9px 18px;">
-                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Remove Content
-                    </button>
-                </form>
-            </div>
-        </div>
-
-
-    </div>
-
+        <c-ui.moderation_card
+            content_type="{{ flag_data.content_type }}"
+            reason="{{ flag_data.reason }}"
+            created_at="{{ flag_data.created_at|date:'Y-m-d H:i' }}"
+            content="{{ flag_data.content }}"
+            reporter_email="{{ flag_data.reporter_email }}"
+            note="{{ flag_data.note }}"
+            approve_url="{% url 'dashboard:flag_approve' flag_data.flag.pk queue_type %}"
+            remove_url="{% url 'dashboard:flag_remove' flag_data.flag.pk queue_type %}"
+            skip_url="{% url 'dashboard:flag_skip' flag_data.flag.pk queue_type %}">
+        </c-ui.moderation_card>
     {% else %}
-    <!-- Empty State -->
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center" style="padding: 64px 32px;">
-        <div class="w-20 h-20 rounded-full bg-emerald-50 border-2 border-emerald-100 flex items-center justify-center mb-5">
-            <i data-lucide="shield-check" class="w-10 h-10 text-emerald-500"></i>
-        </div>
-        <h3 class="text-[18px] font-bold text-gray-800 mb-2">All Clear!</h3>
-        <p class="text-[13.5px] text-gray-400 max-w-sm mb-6">No pending flagged items in this queue. Everything has been reviewed.</p>
-        <a href="{% url 'dashboard:reset_skip_list' queue_type %}"
-           class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white text-gray-600 font-semibold text-[13px] hover:bg-gray-50 hover:border-gray-300 transition-all" style="padding: 9px 18px;">
-            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Reset Skip List
-        </a>
-    </div>
+        <c-ui.card>
+            <c-ui.empty-state
+                icon="shield-check"
+                title="All Clear!"
+                description="No pending flagged items in this queue. Everything has been reviewed."
+                action_label="Reset Skip List"
+                action_href="{% url 'dashboard:reset_skip_list' queue_type %}"
+                action_variant="secondary">
+            </c-ui.empty-state>
+        </c-ui.card>
     {% endif %}
 
 </div>

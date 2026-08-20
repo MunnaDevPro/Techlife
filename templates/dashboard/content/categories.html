@@ -3,7 +3,7 @@
 {% block content %}
 {% with footer=None %}
 <div x-data="{ showDrawer: false }" class="!block !space-y-6 !relative !w-full !max-w-full">
- 
+
     <!-- Page Header -->
     <div class="!flex !items-center !justify-between !flex-wrap !gap-3">
         <div>
@@ -16,7 +16,8 @@
             </div>
             <p class="ft-page-subtitle !mt-1">Manage categories and their icons</p>
         </div>
-        <button @click="showDrawer = true" class="!inline-flex !items-center !justify-center !gap-1.5 !px-4 !py-2.5 !text-sm !font-semibold !text-white !bg-blue-600 hover:!bg-blue-700 !rounded-lg !transition-all !cursor-pointer !shadow-sm">
+        <button @click="showDrawer = true"
+            class="!inline-flex !items-center !justify-center !gap-1.5 !px-4 !py-2.5 !text-sm !font-semibold !text-white !bg-blue-600 hover:!bg-blue-700 !rounded-lg !transition-all !cursor-pointer !shadow-sm">
             <i data-lucide="plus" class="w-4 h-4"></i> Add Category
         </button>
     </div>
@@ -54,7 +55,8 @@
                     {% for cat in categories %}
                     <tr class="hover:!bg-gray-50/50 !transition-colors group">
                         <td class="!p-4 !align-middle">
-                            <span class="!text-[13px] !font-medium !text-gray-500">{{ forloop.counter0|add:page_obj.start_index }}</span>
+                            <span class="!text-[13px] !font-medium !text-gray-500">{{
+                                forloop.counter0|add:page_obj.start_index }}</span>
                         </td>
                         <td class="!p-4 !align-middle">
                             <span
@@ -160,87 +162,88 @@
         </c-slot>
     </c-ui.card>
 
-{% for cat in categories %}
-<div x-data="{ isSaving: false }" @submit="isSaving = true">
-    <c-ui.modal id="edit-cat-{{ cat.id }}" title="Edit Category">
-        <form action="{% url 'dashboard:content_categories' %}" method="post" id="edit-cat-form-{{ cat.id }}"
-            class="!flex !flex-col !gap-4">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="update">
-            <input type="hidden" name="id" value="{{ cat.id }}">
-            <div class="!flex !flex-col !gap-4">
-                <c-ui.input name="name" label="Name" value="{{ cat.name }}" placeholder="Category name" required="true"
-                    icon="tag"></c-ui.input>
-                <c-ui.input name="icon" label="Lucide Icon" value="{{ cat.font_awesome_icon }}"
-                    placeholder="e.g. layers, tag, heart" icon="image"></c-ui.input>
-                <c-ui.input name="description" label="Description" value="{{ cat.description|default:'' }}"
-                    placeholder="Short description (optional)" icon="align-left"></c-ui.input>
+    {% for cat in categories %}
+    <div x-data="{ isSaving: false }" @submit="isSaving = true">
+        <c-ui.modal id="edit-cat-{{ cat.id }}" title="Edit Category">
+            <form action="{% url 'dashboard:content_categories' %}" method="post" id="edit-cat-form-{{ cat.id }}"
+                class="!flex !flex-col !gap-4">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update">
+                <input type="hidden" name="id" value="{{ cat.id }}">
+                <div class="!flex !flex-col !gap-4">
+                    <c-ui.input name="name" label="Name" value="{{ cat.name }}" placeholder="Category name"
+                        required="true" icon="tag"></c-ui.input>
+                    <c-ui.input name="icon" label="Lucide Icon" value="{{ cat.font_awesome_icon }}"
+                        placeholder="e.g. layers, tag, heart" icon="image"></c-ui.input>
+                    <c-ui.input name="description" label="Description" value="{{ cat.description|default:'' }}"
+                        placeholder="Short description (optional)" icon="align-left"></c-ui.input>
+                </div>
+            </form>
+            <c-slot name="modal_footer">
+                <c-ui.button type="button" variant="secondary" size="sm" x-bind:disabled="isSaving"
+                    @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'edit-cat-{{ cat.id }}' } }))">
+                    Cancel
+                </c-ui.button>
+                <c-ui.button type="submit" form="edit-cat-form-{{ cat.id }}" variant="primary" size="sm"
+                    extra_class="!ml-2" x-bind:disabled="isSaving">
+                    <svg x-show="isSaving" class="animate-spin w-3.5 h-3.5 mr-1.5 inline-block" fill="none"
+                        viewBox="0 0 24 24" style="display: none;">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
+                        </path>
+                    </svg>
+                    <span x-text="isSaving ? 'Saving...' : 'Save Changes'">Save Changes</span>
+                </c-ui.button>
+            </c-slot>
+        </c-ui.modal>
+    </div>
+    {% endfor %}
+
+    <!-- Delete Confirmation Modals -->
+    {% for cat in categories %}
+    <c-ui.modal id="delete-cat-{{ cat.id }}" title="Confirm Delete">
+        <div class="!flex !items-start !gap-4">
+            <!-- Icon -->
+            <div class="!flex-shrink-0 !w-10 !h-10 !bg-red-100 !rounded-full !flex !items-center !justify-center !mt-1">
+                <i data-lucide="trash-2" class="!w-5 !h-5 !text-red-600"></i>
             </div>
-        </form>
+            <!-- Content -->
+            <div class="!flex !flex-col !gap-1.5">
+                <h4 class="!text-[15px] !font-bold !text-gray-900">Permanently delete category?</h4>
+                <p class="!text-[13px] !leading-relaxed !text-gray-500">
+                    Are you sure you want to delete the category <strong class="!font-semibold !text-gray-900">"{{
+                        cat.name
+                        }}"</strong>? This action cannot be undone and the category will be permanently removed.
+                </p>
+            </div>
+        </div>
         <c-slot name="modal_footer">
-            <c-ui.button type="button" variant="secondary" size="sm" x-bind:disabled="isSaving"
-                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'edit-cat-{{ cat.id }}' } }))">
+            <c-ui.button type="button" variant="secondary" size="sm"
+                @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'delete-cat-{{ cat.id }}' } }))">
                 Cancel
             </c-ui.button>
-            <c-ui.button type="submit" form="edit-cat-form-{{ cat.id }}" variant="primary" size="sm"
-                extra_class="!ml-2" x-bind:disabled="isSaving">
-                <svg x-show="isSaving" class="animate-spin w-3.5 h-3.5 mr-1.5 inline-block" fill="none" viewBox="0 0 24 24" style="display: none;">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                </svg>
-                <span x-text="isSaving ? 'Saving...' : 'Save Changes'">Save Changes</span>
-            </c-ui.button>
+            <form action="{% url 'dashboard:content_categories' %}" method="post" class="!inline-flex !m-0 !ml-2">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="id" value="{{ cat.id }}">
+                <c-ui.button type="submit" variant="danger" size="sm" label="Delete"></c-ui.button>
+            </form>
         </c-slot>
     </c-ui.modal>
-</div>
-{% endfor %}
-
-<!-- Delete Confirmation Modals -->
-{% for cat in categories %}
-<c-ui.modal id="delete-cat-{{ cat.id }}" title="Confirm Delete">
-    <div class="!flex !items-start !gap-4">
-        <!-- Icon -->
-        <div class="!flex-shrink-0 !w-10 !h-10 !bg-red-100 !rounded-full !flex !items-center !justify-center !mt-1">
-            <i data-lucide="trash-2" class="!w-5 !h-5 !text-red-600"></i>
-        </div>
-        <!-- Content -->
-        <div class="!flex !flex-col !gap-1.5">
-            <h4 class="!text-[15px] !font-bold !text-gray-900">Permanently delete category?</h4>
-            <p class="!text-[13px] !leading-relaxed !text-gray-500">
-                Are you sure you want to delete the category <strong class="!font-semibold !text-gray-900">"{{ cat.name
-                    }}"</strong>? This action cannot be undone and the category will be permanently removed.
-            </p>
-        </div>
-    </div>
-    <c-slot name="modal_footer">
-        <c-ui.button type="button" variant="secondary" size="sm"
-            @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'delete-cat-{{ cat.id }}' } }))">
-            Cancel
-        </c-ui.button>
-        <form action="{% url 'dashboard:content_categories' %}" method="post" class="!inline-flex !m-0 !ml-2">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="delete">
-            <input type="hidden" name="id" value="{{ cat.id }}">
-            <c-ui.button type="submit" variant="danger" size="sm" label="Delete"></c-ui.button>
-        </form>
-    </c-slot>
-</c-ui.modal>
-{% endfor %}
+    {% endfor %}
 
     <!-- Right Slide-Over Category Form Drawer -->
-    <div x-show="showDrawer" x-cloak class="fixed inset-0 !top-[52px] z-[9999] bg-black/20 backdrop-blur-sm flex justify-end !mt-0"
-         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-        <div x-show="showDrawer"
-             x-transition:enter="transition ease-out duration-300 transform"
-             x-transition:enter-start="translate-x-full"
-             x-transition:enter-end="translate-x-0"
-             x-transition:leave="transition ease-in duration-200 transform"
-             x-transition:leave-start="translate-x-0"
-             x-transition:leave-end="translate-x-full"
-             @click.away="showDrawer = false"
-             class="!w-[420px] !h-full !flex !flex-col !bg-white !border-l !border-gray-200 !shadow-2xl">
+    <div x-show="showDrawer" x-cloak
+        class="fixed inset-0 !top-[52px] z-[9999] bg-black/20 backdrop-blur-sm flex justify-end !mt-0"
+        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div x-show="showDrawer" x-transition:enter="transition ease-out duration-300 transform"
+            x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="translate-x-full" @click.away="showDrawer = false"
+            class="!w-[420px] !h-full !flex !flex-col !bg-white !border-l !border-gray-200 !shadow-2xl">
 
             <!-- Drawer Header -->
             <div class="!flex !items-center !justify-between !px-6 !py-5 !border-b !border-gray-100 !flex-shrink-0">
@@ -253,27 +256,31 @@
                         <p class="!text-[11px] !text-gray-500 !m-0">Create a main post category</p>
                     </div>
                 </div>
-                <button @click="showDrawer = false" type="button" class="!p-1.5 !rounded-lg !text-gray-400 hover:!text-gray-600 hover:!bg-gray-50 !transition-all !cursor-pointer border border-transparent hover:border-gray-100">
+                <button @click="showDrawer = false" type="button"
+                    class="!p-1.5 !rounded-lg !text-gray-400 hover:!text-gray-600 hover:!bg-gray-50 !transition-all !cursor-pointer border border-transparent hover:border-gray-100">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
             <!-- Drawer Form Body -->
             <form method="post" action="{% url 'dashboard:content_categories' %}"
-                  class="!flex-1 !overflow-y-auto scrollbar-thin !flex !flex-col !gap-5 !p-6">
+                class="!flex-1 !overflow-y-auto scrollbar-thin !flex !flex-col !gap-5 !p-6">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="create">
 
                 <div class="!flex !flex-col !gap-1.5">
-                    <c-ui.input name="name" label="Category Name" placeholder="e.g. Technology" required="true" icon="tag"></c-ui.input>
+                    <c-ui.input name="name" label="Category Name" placeholder="e.g. Technology" required="true"
+                        icon="tag"></c-ui.input>
                 </div>
 
                 <div class="!flex !flex-col !gap-1.5">
-                    <c-ui.input name="icon" label="Lucide Icon" value="layers" placeholder="e.g. layers, tag, heart" icon="image"></c-ui.input>
+                    <c-ui.input name="icon" label="Lucide Icon" value="layers" placeholder="e.g. layers, tag, heart"
+                        icon="image"></c-ui.input>
                 </div>
 
                 <div class="!flex !flex-col !gap-1.5">
-                    <c-ui.input name="description" label="Description" placeholder="Short description (optional)" icon="align-left"></c-ui.input>
+                    <c-ui.input name="description" label="Description" placeholder="Short description (optional)"
+                        icon="align-left"></c-ui.input>
                 </div>
 
                 <div class="!mt-auto !flex !items-center !justify-end !gap-2.5 !pt-5 !border-t !border-gray-100">
