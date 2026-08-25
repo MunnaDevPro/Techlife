@@ -8,22 +8,32 @@
     </div>
 
     <!-- Filters -->
-    <c-ui.card title="Filters">
-        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-            <c-ui.select name="days" label="Time Window">
-                <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 Days</option>
-                <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 Days</option>
-                <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 Days</option>
-            </c-ui.select>
+    <c-ui.card title="Filters" padding="sm" class="mb-5 border-gray-200 shadow-sm">
+        <form method="get" class="flex flex-col sm:flex-row items-end gap-4 !mt-1">
+            <div class="w-full sm:w-[180px]">
+                <c-ui.select name="days" label="Time Window" is_django_form="true">
+                    <select name="days" class="w-full">
+                        <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 Days</option>
+                        <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 Days</option>
+                        <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 Days</option>
+                    </select>
+                </c-ui.select>
+            </div>
 
-            <c-ui.select name="category" label="Category">
-                <option value="">All Categories</option>
-                {% for cat in categories %}
-                    <option value="{{ cat.id }}" {% if selected_category|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
-                {% endfor %}
-            </c-ui.select>
+            <div class="w-full sm:w-[240px]">
+                <c-ui.select name="category" label="Category" is_django_form="true">
+                    <select name="category" class="w-full">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if selected_category|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </c-ui.select>
+            </div>
 
-            <c-ui.button type="submit" variant="primary" label="Apply Filter" icon="filter" extra_class="w-full justify-center"></c-ui.button>
+            <div class="w-full sm:flex-1 sm:max-w-[150px]">
+                <c-ui.button type="submit" variant="primary" label="Apply Filter" icon="filter" extra_class="w-full"></c-ui.button>
+            </div>
         </form>
     </c-ui.card>
 
@@ -32,38 +42,54 @@
         <div class="!mt-2 overflow-x-auto">
             <c-ui.table>
                 <c-slot name="header">
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6 text-center w-24">Rank</th>
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Article</th>
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Category</th>
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Period Views</th>
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Lifetime</th>
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Actions</th>
+                    <th
+                        class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6 text-center w-24">
+                        Rank</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">
+                        Article</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">
+                        Category</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">
+                        Period Views</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">
+                        Lifetime</th>
+                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">
+                        Actions</th>
                 </c-slot>
                 {% for item in posts %}
                 <tr class="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
                     <td class="!py-2.5 !px-6 text-center">
                         {% if forloop.counter == 1 %}
-                            <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-amber-200">1</div>
+                        <div
+                            class="w-7 h-7 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-amber-200">
+                            1</div>
                         {% elif forloop.counter == 2 %}
-                            <div class="w-7 h-7 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-gray-300">2</div>
+                        <div
+                            class="w-7 h-7 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-gray-300">
+                            2</div>
                         {% elif forloop.counter == 3 %}
-                            <div class="w-7 h-7 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-orange-200">3</div>
+                        <div
+                            class="w-7 h-7 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-[13px] mx-auto shadow-sm ring-1 ring-orange-200">
+                            3</div>
                         {% else %}
-                            <span class="font-bold text-gray-400 text-[13px]">#{{ forloop.counter }}</span>
+                        <span class="font-bold text-gray-400 text-[13px]">#{{ forloop.counter }}</span>
                         {% endif %}
                     </td>
                     <td class="!py-2.5 !px-6">
                         <div class="flex flex-col max-w-[280px] xl:max-w-[350px]">
-                            <span class="font-medium text-gray-700 text-[12.5px] leading-snug line-clamp-2" title="{{ item.title }}">{{ item.title }}</span>
+                            <span class="font-medium text-gray-700 text-[12.5px] leading-snug line-clamp-2"
+                                title="{{ item.title }}">{{ item.title }}</span>
                         </div>
                     </td>
                     <td class="!py-2.5 !px-6">
-                        <span class="inline-flex items-center rounded-md bg-gray-50 !px-2.5 !py-1 text-[12px] font-medium text-gray-600 ring-1 ring-inset ring-gray-500/20">
+                        <span
+                            class="inline-flex items-center rounded-md bg-gray-50 !px-2.5 !py-1 text-[12px] font-medium text-gray-600 ring-1 ring-inset ring-gray-500/20">
                             {{ item.category.name|default:"Uncategorized" }}
                         </span>
                     </td>
                     <td class="!py-2.5 !px-6">
-                        <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 !px-3 !py-1 text-[13px] font-bold text-[#2563eb]">
+                        <span
+                            class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 !px-3 !py-1 text-[13px] font-bold text-[#2563eb]">
                             <i data-lucide="trending-up" class="w-3.5 h-3.5 text-blue-500"></i>
                             {{ item.windowed_views|default:0 }}
                         </span>
@@ -72,7 +98,8 @@
                         <span class="text-gray-500 font-medium text-[13.5px]">{{ item.views }} total</span>
                     </td>
                     <td class="!py-2.5 !px-6">
-                        <a href="{% url 'dashboard:post_edit' item.pk %}" class="inline-flex items-center gap-1.5 !px-2.5 !py-1 rounded-md border border-gray-200 bg-white text-gray-700 font-medium text-[12px] shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer">
+                        <a href="{% url 'dashboard:post_edit' item.pk %}"
+                            class="inline-flex items-center gap-1.5 !px-2.5 !py-1 rounded-md border border-gray-200 bg-white text-gray-700 font-medium text-[12px] shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer">
                             <i data-lucide="edit-2" class="w-3 h-3 text-gray-400"></i> Manage
                         </a>
                     </td>

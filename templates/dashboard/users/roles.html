@@ -1,45 +1,71 @@
 {% extends base_template %}
 
 {% block content %}
-<div class="flex flex-col gap-5">
-    <div>
-        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Security Groups & Roles</h2>
-        <p class="text-[14px] text-gray-500 mt-1">Configure authorization levels and view group memberships.</p>
+<div class="flex flex-col gap-5" x-data="{ editUrl: '', roleName: '' }">
+    <!-- Header -->
+    <div class="!flex !items-center !justify-between !mb-5 !flex-wrap !gap-4">
+        <div>
+            <h2 class="ft-page-title !mb-0">Security Groups & Roles</h2>
+            <p class="ft-page-subtitle !mt-1">Configure authorization levels and view group memberships.</p>
+        </div>
     </div>
 
-    <c-ui.card title="System Security Roles" subtitle="Manage group access and see assigned users" class="border-gray-200 shadow-sm">
-        <div class="!mt-2">
+    <c-ui.card padding="none" extra_class="!shadow-none !border-gray-200 !overflow-hidden">
+        <c-slot name="header">
+            <div class="w-full !px-4 !pt-2 !pb-0.5">
+                <h3 class="!text-[14.5px] !font-bold !tracking-tight !text-gray-900">System Security Roles</h3>
+                <p class="!text-[12.5px] !text-gray-500 leading-none mt-0.5">Manage group access and see assigned users</p>
+            </div>
+        </c-slot>
             <c-ui.table>
                 <c-slot name="header">
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">Role Name</th>
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">Assigned Users</th>
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">Status</th>
+                    <th class="!text-gray-500 !font-bold bg-gray-50 !uppercase !tracking-wider !text-[12px] !py-3 !px-6 !text-left">Role Name</th>
+                    <th class="!text-gray-500 !font-bold bg-gray-50 !uppercase !tracking-wider !text-[12px] !py-3 !px-6 !text-center">Permissions</th>
+                    <th class="!text-gray-500 !font-bold bg-gray-50 !uppercase !tracking-wider !text-[12px] !py-3 !px-6 !text-center">Assigned Users</th>
+                    <th class="!text-gray-500 !font-bold bg-gray-50 !uppercase !tracking-wider !text-[12px] !py-3 !px-6 !text-center">Status</th>
+                    <th class="!text-gray-500 !font-bold bg-gray-50 !uppercase !tracking-wider !text-[12px] !py-3 !px-6 !text-center">Actions</th>
                 </c-slot>
                 {% for g in groups %}
                 <tr class="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
-                    <td class="!py-4 !px-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm">
-                                <i data-lucide="shield" class="w-4.5 h-4.5"></i>
-                            </div>
-                            <span class="font-bold text-gray-900 text-[15px]">{{ g.name|title }}</span>
+                    <td class="!py-4 !px-6 !text-left !align-middle">
+                        <span class="font-medium text-gray-800 text-[15px]">{{ g.name|title }}</span>
+                    </td>
+                    <td class="!py-4 !px-6 !text-center !align-middle">
+                        <span class="inline-flex items-center justify-center bg-gray-100 text-gray-600 rounded-md px-2.5 py-1 text-[12px] font-medium">{{ g.permissions_count }}</span>
+                    </td>
+                    <td class="!py-4 !px-6 !text-center !align-middle">
+                        <div class="flex items-center justify-center">
+                            {% if g.user_count > 0 %}
+                                <div class="flex items-center -space-x-2">
+                                    {% for u in g.user_set.all|slice:":3" %}
+                                        <div class="relative z-10 hover:z-20 transition-transform duration-200 hover:-translate-y-0.5 cursor-pointer" title="{{ u.first_name }} {{ u.last_name }}">
+                                            <c-ui.avatar src="{% if u.profile_picture %}{{ u.profile_picture.url }}{% endif %}" initials="{{ u.first_name|first|default:'U' }}{{ u.last_name|first|default:'' }}" size="sm" extra_class="!border-2 !border-white ring-1 ring-gray-900/5"></c-ui.avatar>
+                                        </div>
+                                    {% endfor %}
+                                    {% if g.user_count > 3 %}
+                                        <div class="relative z-10 flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 border-2 border-white text-[11px] font-semibold text-gray-500 ring-1 ring-gray-900/5 hover:bg-gray-100 transition-colors cursor-pointer" title="{{ g.user_count|add:'-3' }} more users">
+                                            +{{ g.user_count|add:"-3" }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="inline-flex items-center gap-2 rounded-full bg-gray-50/50 border border-dashed border-gray-300 text-gray-400" style="padding: 6px 16px;">
+                                    <i data-lucide="users" class="w-3.5 h-3.5 opacity-70"></i>
+                                    <span class="text-[11px] font-semibold tracking-wider uppercase">Empty</span>
+                                </div>
+                            {% endif %}
                         </div>
                     </td>
-                    <td class="!py-4 !px-6">
-                        <div class="flex flex-col">
-                            <span class="font-medium text-gray-900 text-[15px]">{{ g.user_count }}</span>
-                            <span class="text-gray-500 text-[12.5px] uppercase tracking-wide font-medium mt-0.5">Active Members</span>
-                        </div>
+                    <td class="!py-4 !px-6 !text-center !align-middle">
+                        <c-ui.status-pill status="active"></c-ui.status-pill>
                     </td>
-                    <td class="!py-4 !px-6">
-                        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 !px-3 !py-1.5 text-[13px] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Active
-                        </span>
+                    <td class="!py-4 !px-6 !text-center !align-middle">
+                        <c-ui.button type="button" @click="editUrl = '{% url 'dashboard:role_edit' g.pk %}'; roleName = '{{ g.name|escapejs }}'.toLowerCase(); $nextTick(() => { document.querySelector('#editRoleForm select').dispatchEvent(new Event('change', {bubbles: true})) }); $dispatch('open-modal', {id: 'edit-role-modal'})" variant="secondary" size="sm" icon="edit" extra_class="!px-3 !py-1.5 !text-[12px]"></c-ui.button>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="3" class="!px-6 !py-16 text-center border-t border-gray-100">
+                    <td colspan="5" class="!px-6 !py-16 text-center border-t border-gray-100">
                         <div class="flex flex-col items-center justify-center text-gray-500">
                             <div class="bg-gray-50 !p-5 rounded-full mb-4 border border-gray-200">
                                 <i data-lucide="shield-off" class="w-10 h-10 text-gray-400"></i>
@@ -50,7 +76,51 @@
                 </tr>
                 {% endfor %}
             </c-ui.table>
-        </div>
     </c-ui.card>
+    
+    <!-- Edit Role Modal -->
+    <c-ui.modal id="edit-role-modal" size="sm">
+        <div class="!flex !gap-3 !items-start !mb-4">
+            <div class="!flex-shrink-0 !w-10 !h-10 !rounded-full !bg-blue-50 !flex !items-center !justify-center !text-blue-500">
+                <i data-lucide="edit" class="!w-5 !h-5"></i>
+            </div>
+            <div class="!flex !flex-col !pt-0.5">
+                <h3 class="!text-[14.5px] !font-bold !text-gray-900 !mb-1">Edit Role Name</h3>
+                <p class="!text-[13px] !text-gray-500 !leading-relaxed">Change the display name of this security role.</p>
+            </div>
+        </div>
+        
+        <form :action="editUrl" method="POST" id="editRoleForm" class="!pt-2 !pb-4">
+            {% csrf_token %}
+            <style>
+                .no-shadow-select button { box-shadow: none !important; }
+            </style>
+            <c-ui.select name="name" label="Role Name" required="true" is_django_form="true" extra_class="no-shadow-select">
+                <select name="name" x-model="roleName" @change="syncOptions()" class="w-full">
+                    <option value="" disabled>Select a role...</option>
+                    <option value="admin">Admin</option>
+                    <option value="editor">Editor</option>
+                    <option value="moderator">Moderator</option>
+                    <option value="manager">Manager</option>
+                    <option value="staff">Staff</option>
+                    <option value="support">Support</option>
+                    <option value="user">User</option>
+                    <option value="customer">Customer</option>
+                </select>
+            </c-ui.select>
+        </form>
+        
+        <c-slot name="modal_footer">
+            <div class="!w-full !flex !justify-end !gap-2 !m-0 !p-0">
+                <button type="button" @click="$dispatch('close-modal', {id: 'edit-role-modal'})" class="!px-4 !py-2 !bg-white !border !border-gray-200 !rounded-lg !text-[13px] !font-medium !text-gray-700 hover:!bg-gray-50 !transition-colors !shadow-sm !cursor-pointer">
+                    Cancel
+                </button>
+                <button type="submit" form="editRoleForm" class="!px-4 !py-2 !bg-blue-600 hover:!bg-blue-700 !border-transparent !rounded-lg !text-[13px] !font-medium !text-white !transition-colors !shadow-sm !cursor-pointer">
+                    Save Changes
+                </button>
+            </div>
+        </c-slot>
+    </c-ui.modal>
+    
 </div>
 {% endblock %}

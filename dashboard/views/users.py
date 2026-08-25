@@ -172,12 +172,16 @@ def manual_verify_user(request, pk):
 @staff_required
 def roles_permissions(request):
     """Roles/Permissions index showing Groups and user memberships."""
-    groups = Group.objects.annotate(user_count=Count('user')).order_by('name')
+    groups = Group.objects.annotate(
+        user_count=Count('user', distinct=True),
+        permissions_count=Count('permissions', distinct=True)
+    ).order_by('name')
     ctx = get_dashboard_context(request, "Roles & Permissions", "Users", "dashboard:users_roles")
     ctx.update({
         "groups": groups,
     })
     return render(request, "dashboard/users/roles.html", ctx)
+
 
 @require_POST
 @staff_required
@@ -208,3 +212,58 @@ def user_delete(request, pk):
     messages.success(request, f"User {email} has been permanently deleted.")
     return redirect("dashboard:users_all")
 
+@require_POST
+@staff_required
+def user_toggle_active(request, pk):
+    """Toggle a user's active status (suspend/activate)."""
+    target_user = get_object_or_404(CustomUserModel, pk=pk)
+    
+    if target_user == request.user:
+        messages.error(request, "You cannot suspend your own account.")
+        return redirect(request.META.get('HTTP_REFERER', "dashboard:users_all"))
+        
+    if target_user.is_superuser and not request.user.is_superuser:
+        messages.error(request, "Only a superuser can suspend another superuser.")
+        return redirect(request.META.get('HTTP_REFERER', "dashboard:users_all"))
+        
+    target_user.is_active = not target_user.is_active
+    target_user.save()
+    
+    # Audit Log
+    ModerationLog.objects.create(
+        moderator=request.user,
+        action='ban' if not target_user.is_active else 'unban',
+        target_user=target_user,
+        details=f"{'Suspended' if not target_user.is_active else 'Activated'} user account."
+    )
+    
+    status_msg = "activated" if target_user.is_active else "suspended"
+    messages.success(request, f"User {target_user.email} has been {status_msg}.")
+    return redirect(request.META.get('HTTP_REFERER', "dashboard:users_all"))
+
+@require_POST
+@staff_required
+def role_edit(request, pk):
+    """Edit a role (Group) name via a modal."""
+    group = get_object_or_404(Group, pk=pk)
+    
+    new_name = request.POST.get('name', '').strip()
+    if new_name:
+        if Group.objects.filter(name__iexact=new_name).exclude(pk=pk).exists():
+            messages.error(request, f"A role named '{new_name}' already exists.")
+        else:
+            old_name = group.name
+            group.name = new_name
+            group.save()
+            
+            # Audit log
+            ModerationLog.objects.create(
+                moderator=request.user,
+                action='approve', # generic
+                details=f"Renamed role from '{old_name}' to '{new_name}'."
+            )
+            messages.success(request, f"Role successfully renamed to '{new_name}'.")
+    else:
+        messages.error(request, "Role name cannot be empty.")
+        
+    return redirect("dashboard:users_roles")
