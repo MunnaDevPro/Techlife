@@ -8,7 +8,7 @@ from django.urls import reverse
 def create_post_notification(sender, instance, created, **kwargs):
     # Whenever a new blog post is created and its status is pending, notify admins
     if created and instance.status == 'pending':
-        target_url = reverse('dashboard:content_posts')
+        target_url = reverse('dashboard:post_detail', kwargs={'pk': instance.id})
         Notification.objects.create(
             title="New Post Requires Review",
             message=f"'{instance.title}' was submitted and is pending approval.",

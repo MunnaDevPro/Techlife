@@ -363,8 +363,35 @@ def api_config(request):
         action = request.POST.get("action")
         if action == "regenerate_token":
             import secrets
+            import os
+            
             new_token = f"techlife_auto_{secrets.token_urlsafe(24)}"
-            messages.success(request, f"Generated new automation token recommendation: {new_token}. Update TECHLIFE_AUTOMATION_TOKEN in your environment.")
+            
+            env_path = os.path.join(settings.BASE_DIR, '.env')
+            if os.path.exists(env_path):
+                with open(env_path, 'r') as f:
+                    lines = f.readlines()
+            else:
+                lines = []
+                
+            token_found = False
+            for i, line in enumerate(lines):
+                if line.startswith('TECHLIFE_AUTOMATION_TOKEN='):
+                    lines[i] = f'TECHLIFE_AUTOMATION_TOKEN={new_token}\n'
+                    token_found = True
+                    break
+                    
+            if not token_found:
+                if lines and not lines[-1].endswith('\n'):
+                    lines.append('\n')
+                lines.append(f'TECHLIFE_AUTOMATION_TOKEN={new_token}\n')
+                
+            with open(env_path, 'w') as f:
+                f.writelines(lines)
+                
+            settings.TECHLIFE_AUTOMATION_TOKEN = new_token
+            
+            messages.success(request, f"Generated and saved new automation token! Your .env file has been updated successfully.")
         return redirect("dashboard:api_config")
 
     token = getattr(settings, "TECHLIFE_AUTOMATION_TOKEN", "secret-test-token-12345")

@@ -4,136 +4,190 @@
 <div x-data="{
     showToken: false,
     tokenValue: '{{ automation_token }}',
-    copiedNotice: '',
 
     copyToClipboard(text, msg) {
-        navigator.clipboard.writeText(text);
-        this.copiedNotice = msg;
-        setTimeout(() => { this.copiedNotice = ''; }, 2500);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                window.dispatchEvent(new CustomEvent('new-toast', { detail: { message: msg, type: 'success' } }));
+            }).catch(err => {
+                window.dispatchEvent(new CustomEvent('new-toast', { detail: { message: 'Failed to copy', type: 'error' } }));
+            });
+        } else {
+            let textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                window.dispatchEvent(new CustomEvent('new-toast', { detail: { message: msg, type: 'success' } }));
+            } catch (err) {
+                window.dispatchEvent(new CustomEvent('new-toast', { detail: { message: 'Failed to copy', type: 'error' } }));
+            }
+            textArea.remove();
+        }
     }
 }" class="space-y-6">
 
     <!-- Page Header & Action Bar -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <div class="flex items-center gap-2.5 mb-1">
-                <i data-lucide="key-round" class="w-6 h-6 text-purple-600 shrink-0"></i>
-                <h2 class="text-2xl font-bold text-gray-900 tracking-tight">API Tokens & Configuration</h2>
-            </div>
-            <p class="text-sm text-gray-500">Manage authentication tokens, publishing limits, and ingestion audit logs</p>
+    <div class="!flex !flex-col sm:!flex-row sm:!items-center sm:!justify-between !gap-4 !w-full">
+        <div class="!min-w-0">
+            <h2 class="!text-[20px] !font-bold !text-gray-900 !tracking-tight !leading-tight">API Tokens & Configuration</h2>
+            <p class="!text-[13px] !text-gray-500 !leading-tight !mt-0.5">Manage authentication tokens, publishing limits, and ingestion audit logs</p>
         </div>
 
         <c-ui.button href="{% url 'dashboard:api_docs' %}" variant="secondary" icon="book-open" label="View API Docs"></c-ui.button>
     </div>
 
-    <!-- Notification Toast -->
-    <div x-show="copiedNotice" x-cloak x-transition
-         class="fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium">
-        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i>
-        <span x-text="copiedNotice"></span>
-    </div>
+
 
     <!-- Configuration Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 !mt-6">
 
         <!-- Automation Ingestion Token Card -->
         <div class="md:col-span-7">
-            <c-ui.card title="Automation Ingestion Token" subtitle="Authorization header used by n8n or Python automation scripts" padding="lg" class="h-full flex flex-col justify-between">
-                <c-slot name="actions">
-                    <c-ui.badge variant="success" label="Active" dot="true" size="md"></c-ui.badge>
-                </c-slot>
+            <div class="!bg-white !rounded-xl !border !border-gray-200/80 !flex !flex-col !h-full" style="box-shadow: none;">
+                
+                <div class="!flex !items-center !justify-between !gap-3 !px-4 !py-3.5 !border-b !border-gray-100/80">
+                    <div class="!min-w-0">
+                        <h3 class="!text-[15px] !font-bold !tracking-tight !text-gray-900 !truncate">Automation Ingestion Token</h3>
+                        <p class="!text-[12.5px] !text-gray-500 !mt-0.5">Authorization header used by n8n or Python automation scripts</p>
+                    </div>
+                    <div class="!shrink-0">
+                        <c-ui.badge variant="success" label="Active" dot="true" size="sm"></c-ui.badge>
+                    </div>
+                </div>
 
-                <div class="space-y-4">
-                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center justify-between gap-3">
-                        <code class="text-sm font-mono font-bold text-gray-800 truncate"
-                              x-text="showToken ? tokenValue : '••••••••••••••••••••••••••••••••'"></code>
+                <div class="!p-4 !space-y-3.5">
+                    <div class="!bg-gray-50 !border !border-gray-200/80 !rounded-xl !py-2.5 !px-4 !flex !items-center !justify-between !gap-3 shadow-inner">
+                        <code class="!text-[14px] !font-mono !font-bold !truncate !tracking-wider"
+                              :class="showToken && !tokenValue ? '!text-amber-600' : '!text-gray-800'"
+                              x-text="showToken ? (tokenValue || 'Not configured in .env') : '••••••••••••••••••••••••••••••••'"></code>
                         
-                        <div class="flex items-center gap-2 shrink-0">
-                            <button type="button" @click="showToken = !showToken" class="p-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-100 transition-colors" title="Toggle Visibility">
-                                <i :data-lucide="showToken ? 'eye-off' : 'eye'" class="w-4 h-4"></i>
+                        <div class="!flex !items-center !gap-2 !shrink-0">
+                            <button type="button" @click="showToken = !showToken" class="!p-2 !rounded-lg !bg-white !border !border-gray-200/80 !text-gray-500 hover:!bg-gray-100 hover:!text-gray-800 !transition-colors !cursor-pointer !flex !items-center !justify-center shadow-sm" title="Toggle Visibility">
+                                <span x-show="!showToken"><i data-lucide="eye" class="!w-4 !h-4"></i></span>
+                                <span x-show="showToken" x-cloak><i data-lucide="eye-off" class="!w-4 !h-4"></i></span>
                             </button>
                             
-                            <c-ui.button type="button" variant="primary" size="sm" label="Copy Header" @click="copyToClipboard('Authorization: Automation ' + tokenValue, 'Header copied to clipboard!')"></c-ui.button>
+                            <button type="button" class="ft-btn ft-btn-primary ft-btn-sm" @click="copyToClipboard('Authorization: Automation ' + tokenValue, 'Token copied')">Copy Header</button>
                         </div>
                     </div>
 
-                    <p class="text-xs text-gray-500">Pass this token in request headers as: <code class="bg-gray-100 px-1.5 py-0.5 rounded text-gray-800 font-mono">Authorization: Automation &lt;TOKEN&gt;</code></p>
+                    <p class="!text-[12.5px] !text-gray-500 !mt-4">Pass this token in request headers as: <code class="!bg-gray-100 !border !border-gray-200/60 !px-2 !py-0.5 !rounded-md !text-gray-700 !font-mono !text-[12px]">Authorization: Automation &lt;TOKEN&gt;</code></p>
                 </div>
 
-                <c-slot name="card_footer">
-                    <form action="{% url 'dashboard:api_config' %}" method="post" class="inline">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="regenerate_token">
-                        <c-ui.button type="submit" variant="ghost" size="sm" icon="refresh-cw" label="Generate New Token Recommendation" onclick="return confirm('Generate a new token recommendation? Note: Update your .env file with the generated token.')"></c-ui.button>
-                    </form>
-                </c-slot>
-            </c-ui.card>
+                <div class="!px-4 !py-3.5 !border-t !border-gray-100/80 !bg-gray-50/40 !rounded-b-xl !mt-auto">
+                    <c-ui.button type="button" variant="ghost" size="sm" icon="refresh-cw" label="Generate New Token Recommendation" @click="$dispatch('open-modal', {id: 'confirm-regen'})"></c-ui.button>
+                    
+                    <c-ui.modal id="confirm-regen" title="Regenerate Token" size="sm">
+                        <div class="!space-y-4">
+                            <p class="!text-[13.5px] !text-gray-600 !leading-relaxed">
+                                Are you sure you want to generate a new token recommendation?
+                            </p>
+                            
+                            <div class="!bg-emerald-50 !rounded-xl !p-4 !flex !gap-3 !items-start shadow-sm">
+                                <i data-lucide="info" class="!w-5 !h-5 !text-emerald-600 !shrink-0 !mt-0.5"></i>
+                                <div class="!text-[13px] !text-emerald-900 !font-medium !leading-relaxed">
+                                    <p>Note: The newly generated token will automatically be saved to your <code class="!bg-emerald-200/60 !px-1.5 !py-0.5 !rounded !text-emerald-950 !font-mono !text-[12px]">.env</code> file for immediate use.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <c-slot name="modal_footer">
+                            <c-ui.button type="button" variant="ghost" label="Cancel" @click="$dispatch('close-modal')"></c-ui.button>
+                            <form action="{% url 'dashboard:api_config' %}" method="post" class="!inline !m-0">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="regenerate_token">
+                                <c-ui.button type="submit" variant="primary" label="Regenerate Token"></c-ui.button>
+                            </form>
+                        </c-slot>
+                    </c-ui.modal>
+                </div>
+            </div>
         </div>
 
         <!-- Ingestion Guardrails & Limits Card -->
         <div class="md:col-span-5">
-            <c-ui.card title="Ingestion Guardrails & Limits" subtitle="System publishing rate limits and author mapping" padding="lg" class="h-full">
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
-                        <span class="text-sm font-medium text-gray-700">Hourly Request Limit</span>
-                        <c-ui.badge variant="info" label="{{ hourly_limit }} req/hr" size="md"></c-ui.badge>
-                    </div>
+            <div class="!bg-white !rounded-xl !border !border-gray-200/80 !flex !flex-col !h-full" style="box-shadow: none;">
+                
+                <div class="!px-4 !py-3.5 !border-b !border-gray-100/80">
+                    <h3 class="!text-[15px] !font-bold !tracking-tight !text-gray-900 !truncate">Ingestion Guardrails & Limits</h3>
+                    <p class="!text-[12.5px] !text-gray-500 !mt-0.5">System publishing rate limits and author mapping</p>
+                </div>
 
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
-                        <span class="text-sm font-medium text-gray-700">Daily Publish Limit (BD Time)</span>
-                        <c-ui.badge variant="success" label="{{ daily_limit }} posts/day" size="md"></c-ui.badge>
-                    </div>
+                <div class="!p-4 !flex-1 !flex !flex-col !justify-center">
+                    <div class="!bg-white !border !border-gray-200/80 !rounded-xl !divide-y !divide-gray-100 shadow-sm overflow-hidden">
+                        <div class="!flex !items-center !justify-between !p-3.5 !px-4 hover:!bg-gray-50 !transition-colors">
+                            <span class="!text-[13px] !font-medium !text-gray-700">Hourly Request Limit</span>
+                            <c-ui.badge variant="info" label="{{ hourly_limit }} req/hr" size="sm"></c-ui.badge>
+                        </div>
 
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
-                        <span class="text-sm font-medium text-gray-700">Default Automation Author</span>
-                        <c-ui.badge variant="primary" label="{{ author_username }}" size="md"></c-ui.badge>
+                        <div class="!flex !items-center !justify-between !p-3.5 !px-4 hover:!bg-gray-50 !transition-colors">
+                            <span class="!text-[13px] !font-medium !text-gray-700">Daily Publish Limit (BD Time)</span>
+                            <c-ui.badge variant="success" label="{{ daily_limit }} posts/day" size="sm"></c-ui.badge>
+                        </div>
+
+                        <div class="!flex !items-center !justify-between !p-3.5 !px-4 hover:!bg-gray-50 !transition-colors">
+                            <span class="!text-[13px] !font-medium !text-gray-700">Default Automation Author</span>
+                            <c-ui.badge variant="primary" label="{{ author_username }}" size="sm"></c-ui.badge>
+                        </div>
                     </div>
                 </div>
-            </c-ui.card>
+            </div>
         </div>
 
     </div>
 
     <!-- Execution Audit Logs Table -->
-    <c-ui.card title="Automation Execution Audit Logs" subtitle="Recent {{ recent_logs|length }} execution events (Total: {{ total_logs_count }})">
-        <c-ui.table>
-            <c-slot name="header">
-                <th class="text-left text-xs font-bold text-gray-500 uppercase tracking-wider py-3.5 px-6">Timestamp & Event</th>
-                <th class="text-left text-xs font-bold text-gray-500 uppercase tracking-wider py-3.5 px-6">Automation ID & Source</th>
-                <th class="text-center text-xs font-bold text-gray-500 uppercase tracking-wider py-3.5 px-6 w-28">Status</th>
-                <th class="text-right text-xs font-bold text-gray-500 uppercase tracking-wider py-3.5 px-6 w-28">Latency</th>
-            </c-slot>
+    <div class="!bg-white !rounded-xl !border !border-gray-200/80 !flex !flex-col !mt-6" style="box-shadow: none;">
+        <div class="!px-5 !py-4 !border-b !border-gray-100/80">
+            <h3 class="!text-[15px] !font-bold !tracking-tight !text-gray-900 !truncate">Automation Execution Audit Logs</h3>
+            <p class="!text-[12.5px] !text-gray-500 !mt-0.5">Recent {{ recent_logs|length }} execution events (Total: {{ total_logs_count }})</p>
+        </div>
+        
+        <div class="!p-0 !overflow-x-auto">
+            <c-ui.table extra_class="!w-full !border-0">
+                <c-slot name="header">
+                    <th class="!text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !py-3 !px-5 !bg-gray-50/50">Timestamp & Event</th>
+                    <th class="!text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !py-3 !px-5 !bg-gray-50/50">Automation ID & Source</th>
+                    <th class="!text-center !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !py-3 !px-5 !bg-gray-50/50 !w-28">Status</th>
+                    <th class="!text-right !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !py-3 !px-5 !bg-gray-50/50 !w-28">Latency</th>
+                </c-slot>
 
-            {% for log in recent_logs %}
-            <tr class="hover:bg-gray-50 transition-colors">
-                <td class="py-3.5 px-6 align-middle">
-                    <p class="text-sm font-bold text-gray-900">{{ log.created_at|date:"Y-m-d H:i:s" }}</p>
-                    <span class="text-xs font-medium text-gray-500">{{ log.event_type }}</span>
-                </td>
-                <td class="py-3.5 px-6 align-middle">
-                    <code class="text-xs font-bold text-purple-700 font-mono">{{ log.automation_id|default:"-" }}</code>
-                    <p class="text-xs text-gray-500 mt-0.5">{{ log.source_name|default:"Unknown Source" }}</p>
-                </td>
-                <td class="py-3.5 px-6 align-middle text-center">
-                    {% if log.http_status == 201 or log.http_status == 200 %}
-                        <c-ui.badge variant="success" label="HTTP {{ log.http_status }}" size="sm"></c-ui.badge>
-                    {% elif log.http_status == 422 %}
-                        <c-ui.badge variant="warning" label="HTTP 422" size="sm"></c-ui.badge>
-                    {% else %}
-                        <c-ui.badge variant="danger" label="HTTP {{ log.http_status }}" size="sm"></c-ui.badge>
-                    {% endif %}
-                </td>
-                <td class="py-3.5 px-6 align-middle text-right">
-                    <span class="text-xs font-mono font-semibold text-gray-600">{{ log.duration_ms|default:"0" }} ms</span>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" class="py-12 text-center text-gray-500 text-sm">No automation execution logs recorded yet.</td>
-            </tr>
-            {% endfor %}
-        </c-ui.table>
-    </c-ui.card>
+                {% for log in recent_logs %}
+                <tr class="hover:!bg-gray-50/60 !transition-colors !border-b !border-gray-100/80 last:!border-0">
+                    <td class="!py-3 !px-5 !align-middle">
+                        <p class="!text-[13px] !font-bold !text-gray-900">{{ log.created_at|date:"Y-m-d H:i:s" }}</p>
+                        <span class="!text-[11.5px] !font-medium !text-gray-500">{{ log.event_type }}</span>
+                    </td>
+                    <td class="!py-3 !px-5 !align-middle">
+                        <code class="!text-[11px] !font-bold !text-purple-700 !bg-purple-50 !px-1.5 !py-0.5 !rounded !font-mono">{{ log.automation_id|default:"-" }}</code>
+                        <p class="!text-[12px] !text-gray-500 !mt-1">{{ log.source_name|default:"Unknown Source" }}</p>
+                    </td>
+                    <td class="!py-3 !px-5 !align-middle !text-center">
+                        {% if log.http_status == 201 or log.http_status == 200 %}
+                            <c-ui.badge variant="success" label="HTTP {{ log.http_status }}" size="sm"></c-ui.badge>
+                        {% elif log.http_status == 422 %}
+                            <c-ui.badge variant="warning" label="HTTP 422" size="sm"></c-ui.badge>
+                        {% else %}
+                            <c-ui.badge variant="danger" label="HTTP {{ log.http_status }}" size="sm"></c-ui.badge>
+                        {% endif %}
+                    </td>
+                    <td class="!py-3 !px-5 !align-middle !text-right">
+                        <span class="!text-[12px] !font-mono !font-semibold !text-gray-600">{{ log.duration_ms|default:"0" }} ms</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="!py-10 !text-center !text-gray-500 !text-[13px]">No automation execution logs recorded yet.</td>
+                </tr>
+                {% endfor %}
+            </c-ui.table>
+        </div>
+    </div>
 
 </div>
 {% endblock %}

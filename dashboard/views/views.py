@@ -223,8 +223,16 @@ def settings_maintenance(request):
 
 @staff_required
 def notifications(request):
-    # If they click 'mark all read' (optional POST, or we just do it on view load)
-    # Actually, a professional approach is to mark them as read when the list is viewed.
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        notification_ids = request.POST.getlist('notification_ids')
+        
+        if action == 'delete' and notification_ids:
+            Notification.objects.filter(id__in=notification_ids).delete()
+        
+        return redirect('dashboard:notifications')
+
+    # Mark all unread notifications as read
     Notification.objects.filter(is_read=False).update(is_read=True)
     
     notifications_list = Notification.objects.all().order_by('-created_at')[:50]

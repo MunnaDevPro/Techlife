@@ -56,8 +56,9 @@ document.addEventListener('alpine:init', () => {
 
         copyToClipboard(text, msg) {
             navigator.clipboard.writeText(text);
-            this.copiedNotice = msg;
-            setTimeout(() => { this.copiedNotice = ''; }, 2500);
+            if (window.showToast) {
+                window.showToast(msg, 'success');
+            }
         },
 
         generateSnippet(ep, lang) {
@@ -149,58 +150,50 @@ document.addEventListener('alpine:init', () => {
 });
 </script>
 
-<div x-data="apiDocsManager" class="w-full space-y-6">
+<div x-data="apiDocsManager" class="!w-full !flex !flex-col !gap-6">
 
     <!-- Page Header & Action Bar -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 w-full">
-        <div class="min-w-0">
-            <div class="flex items-center gap-2.5 mb-1">
-                <i data-lucide="book-open" class="w-6 h-6 text-blue-600 shrink-0"></i>
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight truncate">API Documentation & Testbed</h2>
-            </div>
-            <p class="text-xs sm:text-sm text-gray-500">Explore, test, and export TechLife REST API specifications</p>
+    <div class="!flex !flex-col sm:!flex-row sm:!items-center sm:!justify-between !gap-4 !w-full">
+        <div class="!min-w-0">
+            <h2 class="!text-[20px] !font-bold !text-gray-900 !tracking-tight !leading-tight">API Documentation & Testbed</h2>
+            <p class="!text-[13px] !text-gray-500 !leading-tight !mt-0.5">Explore, test, and export TechLife REST API specifications</p>
         </div>
 
-        <div class="flex items-center gap-2 shrink-0" x-data="{ openExport: false }">
-            <div class="relative">
-                <c-ui.button type="button" variant="secondary" icon="download" icon_right="chevron-down" label="Export Spec" @click="openExport = !openExport"></c-ui.button>
+        <div class="!flex !items-center !gap-2 !shrink-0" x-data="{ openExport: false }">
+            <div class="!relative">
+                <c-ui.button type="button" variant="secondary" icon="download" label="Export Spec" @click="openExport = !openExport" />
                 
                 <div x-show="openExport" @click.outside="openExport = false" x-cloak
-                     class="absolute right-0 top-full mt-2 w-60 bg-white border border-gray-100 rounded-xl shadow-xl z-50 p-1.5 space-y-1">
-                    <a href="{% url 'dashboard:api_export' %}?format=openapi" target="_blank" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors">
-                        <i data-lucide="file-json" class="w-4 h-4 text-blue-600"></i> Complete OpenAPI 3.0 (JSON)
+                     class="!absolute !right-0 !top-full !mt-2 !w-60 !bg-white !border !border-gray-100 !rounded-xl !shadow-xl !z-50 !p-1.5 !space-y-1">
+                    <a href="{% url 'dashboard:api_export' %}?format=openapi" target="_blank" class="!flex !items-center !gap-2.5 !px-3 !py-2 !rounded-lg !text-[13px] !font-medium !text-gray-700 hover:!bg-blue-50 hover:!text-blue-700 !transition-colors">
+                        <i data-lucide="file-json" class="!w-4 !h-4 !text-blue-600"></i> OpenAPI 3.0 (JSON)
                     </a>
-                    <a href="{% url 'dashboard:api_export' %}?format=postman" target="_blank" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 transition-colors">
-                        <i data-lucide="send" class="w-4 h-4 text-orange-600"></i> Full Postman Collection
+                    <a href="{% url 'dashboard:api_export' %}?format=postman" target="_blank" class="!flex !items-center !gap-2.5 !px-3 !py-2 !rounded-lg !text-[13px] !font-medium !text-gray-700 hover:!bg-orange-50 hover:!text-orange-700 !transition-colors">
+                        <i data-lucide="send" class="!w-4 !h-4 !text-orange-600"></i> Postman Collection
                     </a>
-                    <a href="{% url 'dashboard:api_export' %}?format=markdown" target="_blank" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors">
-                        <i data-lucide="file-text" class="w-4 h-4 text-emerald-600"></i> Markdown Reference Document
+                    <a href="{% url 'dashboard:api_export' %}?format=markdown" target="_blank" class="!flex !items-center !gap-2.5 !px-3 !py-2 !rounded-lg !text-[13px] !font-medium !text-gray-700 hover:!bg-emerald-50 hover:!text-emerald-700 !transition-colors">
+                        <i data-lucide="file-text" class="!w-4 !h-4 !text-emerald-600"></i> Markdown Reference
                     </a>
                 </div>
             </div>
 
-            <c-ui.button href="{% url 'dashboard:api_config' %}" variant="secondary" icon="key-round" label="Tokens & Config"></c-ui.button>
+            <c-ui.button href="{% url 'dashboard:api_config' %}" variant="secondary" icon="key-round" label="Tokens & Config" />
         </div>
     </div>
 
-    <!-- Notification Toast -->
-    <div x-show="copiedNotice" x-cloak x-transition
-         class="fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium">
-        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i>
-        <span x-text="copiedNotice"></span>
-    </div>
 
-    <!-- Search & Filters Toolbar Card (Single Row Layout) -->
-    <c-ui.card padding="sm" extra_class="w-full !border-0 !shadow-sm">
-        <div class="flex flex-col md:flex-row items-center gap-3 p-1 w-full">
+
+    <!-- Search & Filters Toolbar Card -->
+    <div class="!bg-white !rounded-xl !border !border-gray-200/80 !p-4" style="box-shadow: none;">
+        <div class="!grid !grid-cols-1 md:!grid-cols-12 !gap-4 !w-full !items-end">
             <!-- Search Query Input -->
-            <div class="flex-1 w-full min-w-0">
-                <c-ui.input name="searchQuery" placeholder="Search endpoints by name or path..." icon="search" x-model="searchQuery"></c-ui.input>
+            <div class="md:!col-span-6">
+                <c-ui.input name="searchQuery" label="Search Endpoints" placeholder="Search by name or path..." icon="search" x-model="searchQuery" />
             </div>
 
             <!-- Categories Dropdown Filter -->
-            <div class="w-full md:w-56 shrink-0">
-                <c-ui.select name="filterCategory" value="All" x-model="filterCategory">
+            <div class="md:!col-span-3 !relative">
+                <c-ui.select name="filterCategory" label="Category" x-model="filterCategory">
                     <option value="All">All Categories</option>
                     <option value="Blog Posts">Blog Posts</option>
                     <option value="Automation Ingestion">Automation Ingestion</option>
@@ -212,236 +205,221 @@ document.addEventListener('alpine:init', () => {
             </div>
 
             <!-- HTTP Methods Dropdown Filter -->
-            <div class="w-full md:w-48 shrink-0">
-                <c-ui.select name="filterMethod" value="All" x-model="filterMethod">
-                    <option value="All">All HTTP Methods</option>
+            <div class="md:!col-span-3 !relative">
+                <c-ui.select name="filterMethod" label="HTTP Method" x-model="filterMethod">
+                    <option value="All">All Methods</option>
                     <option value="GET">GET</option>
                     <option value="POST">POST</option>
                     <option value="DELETE">DELETE</option>
                 </c-ui.select>
             </div>
         </div>
-    </c-ui.card>
+    </div>
 
     <!-- Expandable Endpoint Catalogue List -->
-    <div class="space-y-4 w-full min-w-0">
+    <div class="!flex !flex-col !gap-3 !w-full !min-w-0">
         <template x-for="ep in filteredEndpoints" :key="ep.id">
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-200">
+            <div class="!bg-white !rounded-xl !border !border-gray-200/80 !flex !flex-col" style="box-shadow: none;">
                 
                 <!-- Endpoint Card Header Bar (Click to Expand / Collapse) -->
                 <button type="button" @click="toggleEndpoint(ep.id)"
-                        class="w-full text-left px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white hover:bg-gray-50/80 transition-colors cursor-pointer"
-                        :class="selectedId === ep.id ? 'bg-blue-50/20' : ''">
+                        class="!w-full !text-left !px-4 !py-3.5 !flex !flex-col sm:!flex-row sm:!items-center !justify-between !gap-3 hover:!bg-gray-50/80 !transition-colors !cursor-pointer !border-b !border-transparent !rounded-t-xl"
+                        :class="selectedId === ep.id ? '!bg-blue-50/20 !border-gray-100' : '!rounded-b-xl !bg-white'">
                     
-                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                    <div class="!flex !items-center !gap-3 !min-w-0 !flex-1">
                         <span :class="{
-                            'bg-emerald-50 text-emerald-700 border-emerald-200': ep.method === 'GET',
-                            'bg-blue-50 text-blue-700 border-blue-200': ep.method === 'POST',
-                            'bg-rose-50 text-rose-700 border-rose-200': ep.method === 'DELETE'
-                        }" class="px-2.5 py-1 rounded-md border text-xs font-bold font-mono shrink-0" x-text="ep.method"></span>
+                            '!bg-emerald-50 !text-emerald-700 !border-emerald-200': ep.method === 'GET',
+                            '!bg-blue-50 !text-blue-700 !border-blue-200': ep.method === 'POST',
+                            '!bg-red-50 !text-red-700 !border-red-200': ep.method === 'DELETE'
+                        }" class="!px-2.5 !py-1 !rounded-md !border !text-[11px] !font-bold !font-mono !shrink-0" x-text="ep.method"></span>
 
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <h3 class="text-base font-bold text-gray-900 truncate" x-text="ep.name"></h3>
-                                <c-ui.badge variant="neutral" :label="ep.category" size="sm"></c-ui.badge>
+                        <div class="!min-w-0 !flex-1">
+                            <div class="!flex !items-center !gap-2 !flex-wrap">
+                                <h3 class="!text-[14px] !font-bold !text-gray-900 !truncate" x-text="ep.name"></h3>
+                                <c-ui.badge variant="neutral" :label="ep.category" size="sm" />
                             </div>
-                            <code class="text-xs font-mono text-gray-500 mt-0.5 block truncate" x-text="ep.path"></code>
+                            <code class="!text-[12px] !font-mono !text-gray-500 !mt-0.5 !block !truncate" x-text="ep.path"></code>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                        <c-ui.badge variant="info" :label="ep.auth_required" size="sm"></c-ui.badge>
-                        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-200"
-                           :class="selectedId === ep.id ? 'rotate-180 text-blue-600' : ''"></i>
+                    <div class="!flex !items-center !gap-3 !shrink-0 !self-end sm:!self-center">
+                        <c-ui.badge variant="info" :label="ep.auth_required" size="sm" />
+                        <i data-lucide="chevron-down" class="!w-4 !h-4 !text-gray-400 !transition-transform !duration-200"
+                           :class="selectedId === ep.id ? 'rotate-180 !text-blue-600' : ''"></i>
                     </div>
                 </button>
 
                 <!-- Expanded Content Panel -->
-                <div x-show="selectedId === ep.id" x-collapse x-cloak class="p-6 space-y-6 bg-gray-50/40 border-t border-gray-100/60">
+                <div x-show="selectedId === ep.id" x-collapse x-cloak class="!p-4 !flex !flex-col !gap-5 !bg-gray-50/40 !border-t !border-gray-100 !rounded-b-xl">
 
                     <!-- Description & Rules Box -->
-                    <div class="space-y-3">
-                        <p class="text-sm text-gray-700 leading-relaxed font-normal" x-text="ep.description"></p>
+                    <div class="!flex !flex-col !gap-3">
+                        <p class="!text-[13px] !text-gray-700 !leading-relaxed" x-text="ep.description"></p>
 
                         <template x-if="ep.rules && ep.rules.length > 0">
-                            <div class="p-4 rounded-xl bg-blue-50/60 border border-blue-100/70 space-y-2">
-                                <div class="flex items-center gap-2 text-xs font-bold text-blue-800 uppercase tracking-wider">
-                                    <i data-lucide="shield-alert" class="w-4 h-4 text-blue-600"></i>
-                                    <span>Rules & Constraints</span>
+                            <div class="!flex !items-start !gap-4 !p-5 !bg-amber-50 !rounded-xl !border-0">
+                                <div class="!shrink-0 !p-2.5 !bg-amber-100/70 !text-amber-600 !rounded-lg">
+                                    <i data-lucide="info" class="!w-4 !h-4"></i>
                                 </div>
-                                <ul class="list-disc list-inside text-xs text-blue-950 space-y-1 leading-relaxed">
-                                    <template x-for="rule in ep.rules">
-                                        <li x-text="rule"></li>
-                                    </template>
-                                </ul>
+                                <div class="!flex !flex-col !gap-2 !min-w-0 !w-full">
+                                    <h5 class="!text-[12px] !font-bold !text-amber-800 !uppercase !tracking-wider !mt-0.5">Rules & Constraints</h5>
+                                    <ul class="!flex !flex-col !gap-2.5 !mt-1">
+                                        <template x-for="rule in ep.rules">
+                                            <li class="!flex !items-start !gap-2.5 !text-[12.5px] !text-amber-900/90 !leading-relaxed">
+                                                <i data-lucide="check-circle-2" class="!w-4 !h-4 !text-amber-500 !shrink-0 !mt-[2px]"></i>
+                                                <span x-text="rule"></span>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
                             </div>
                         </template>
                     </div>
 
-                    <!-- Path Parameters Table (if applicable) -->
+                    <!-- Path Parameters Table -->
                     <template x-if="ep.path_params && ep.path_params.length > 0">
-                        <div class="space-y-2">
-                            <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Path Parameters</h4>
-                            <c-ui.table extra_class="!border-0">
+                        <div class="!flex !flex-col !gap-2">
+                            <h4 class="!text-[11px] !font-bold !text-gray-700 !uppercase !tracking-wider">Path Parameters</h4>
+                            <c-ui.table extra_class="!shadow-none !border !border-gray-200">
                                 <c-slot name="header">
-                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Parameter</th>
-                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Type</th>
-                                    <th class="text-center text-xs font-bold text-gray-500 uppercase py-3 px-4 w-24">Required</th>
-                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Description</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase">Parameter</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase">Type</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase !text-center !w-24">Required</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase">Description</th>
                                 </c-slot>
-                                <template x-for="pp in ep.path_params">
-                                    <tr class="hover:bg-gray-50 transition-colors">
-                                        <td class="py-3 px-4 text-xs font-mono font-bold text-blue-700" x-text="pp.name"></td>
-                                        <td class="py-3 px-4 text-xs font-mono text-gray-500" x-text="pp.type"></td>
-                                        <td class="py-3 px-4 text-xs text-center">
-                                            <c-ui.badge variant="danger" label="Required" size="sm"></c-ui.badge>
-                                        </td>
-                                        <td class="py-3 px-4 text-xs text-gray-600" x-text="pp.description"></td>
-                                    </tr>
-                                </template>
+                                <c-slot name="body">
+                                    <template x-for="pp in ep.path_params">
+                                        <tr class="hover:!bg-gray-50 !transition-colors !border-b !border-gray-100 last:!border-0">
+                                            <td class="!py-2.5 !px-4 !text-[12px] !font-mono !font-bold !text-blue-700" x-text="pp.name"></td>
+                                            <td class="!py-2.5 !px-4 !text-[12px] !font-mono !text-gray-500" x-text="pp.type"></td>
+                                            <td class="!py-2.5 !px-4 !text-center">
+                                                <c-ui.badge variant="danger" label="Required" size="sm" />
+                                            </td>
+                                            <td class="!py-2.5 !px-4 !text-[12px] !text-gray-600" x-text="pp.description"></td>
+                                        </tr>
+                                    </template>
+                                </c-slot>
                             </c-ui.table>
                         </div>
                     </template>
 
-                    <!-- Request Body Input Fields Table (if applicable) -->
+                    <!-- Request Body Input Fields Table -->
                     <template x-if="ep.body_params && ep.body_params.length > 0">
-                        <div class="space-y-2">
-                            <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Input Fields & Request Body Parameters</h4>
-                            <c-ui.table extra_class="!border-0">
+                        <div class="!flex !flex-col !gap-2">
+                            <h4 class="!text-[11px] !font-bold !text-gray-700 !uppercase !tracking-wider">Request Body</h4>
+                            <c-ui.table extra_class="!shadow-none !border !border-gray-200">
                                 <c-slot name="header">
-                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Field Name</th>
-                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Data Type</th>
-                                    <th class="text-center text-xs font-bold text-gray-500 uppercase py-3 px-4 w-24">Required</th>
-                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Validation & Rules</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase">Field Name</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase">Type</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase !text-center !w-24">Required</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase">Description</th>
                                 </c-slot>
-                                <template x-for="bp in ep.body_params">
-                                    <tr class="hover:bg-gray-50 transition-colors">
-                                        <td class="py-3 px-4 text-xs font-mono font-bold text-purple-700" x-text="bp.name"></td>
-                                        <td class="py-3 px-4 text-xs font-mono text-gray-500" x-text="bp.type"></td>
-                                        <td class="py-3 px-4 text-xs text-center">
-                                            <template x-if="bp.required">
-                                                <c-ui.badge variant="danger" label="Required" size="sm"></c-ui.badge>
-                                            </template>
-                                            <template x-if="!bp.required">
-                                                <c-ui.badge variant="neutral" label="Optional" size="sm"></c-ui.badge>
-                                            </template>
-                                        </td>
-                                        <td class="py-3 px-4 text-xs text-gray-600 leading-relaxed" x-text="bp.description"></td>
-                                    </tr>
-                                </template>
+                                <c-slot name="body">
+                                    <template x-for="bp in ep.body_params">
+                                        <tr class="hover:!bg-gray-50 !transition-colors !border-b !border-gray-100 last:!border-0">
+                                            <td class="!py-2.5 !px-4 !text-[12px] !font-mono !font-bold !text-purple-700" x-text="bp.name"></td>
+                                            <td class="!py-2.5 !px-4 !text-[12px] !font-mono !text-gray-500" x-text="bp.type"></td>
+                                            <td class="!py-2.5 !px-4 !text-center">
+                                                <template x-if="bp.required"><c-ui.badge variant="danger" label="Req" size="sm" /></template>
+                                                <template x-if="!bp.required"><c-ui.badge variant="neutral" label="Opt" size="sm" /></template>
+                                            </td>
+                                            <td class="!py-2.5 !px-4 !text-[12px] !text-gray-600" x-text="bp.description"></td>
+                                        </tr>
+                                    </template>
+                                </c-slot>
                             </c-ui.table>
                         </div>
                     </template>
 
-                    <!-- Query Parameters Table (if applicable) -->
+                    <!-- Query Parameters Table -->
                     <template x-if="ep.query_params && ep.query_params.length > 0">
-                        <div class="space-y-2">
-                            <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Query Parameters</h4>
-                            <c-ui.table extra_class="!border-0">
+                        <div class="!flex !flex-col !gap-2">
+                            <h4 class="!text-[11px] !font-bold !text-gray-700 !uppercase !tracking-wider">Query Parameters</h4>
+                            <c-ui.table extra_class="!shadow-none !border !border-gray-200">
                                 <c-slot name="header">
-                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Parameter</th>
-                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Type</th>
-                                    <th class="text-center text-xs font-bold text-gray-500 uppercase py-3 px-4 w-24">Required</th>
-                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Description</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase">Parameter</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase">Type</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase !text-center !w-24">Required</th>
+                                    <th class="!py-2 !px-4 !text-[11px] !font-bold !text-gray-500 !uppercase">Description</th>
                                 </c-slot>
-                                <template x-for="qp in ep.query_params">
-                                    <tr class="hover:bg-gray-50 transition-colors">
-                                        <td class="py-3 px-4 text-xs font-mono font-bold text-emerald-700" x-text="qp.name"></td>
-                                        <td class="py-3 px-4 text-xs font-mono text-gray-500" x-text="qp.type"></td>
-                                        <td class="py-3 px-4 text-xs text-center">
-                                            <template x-if="qp.required">
-                                                <c-ui.badge variant="danger" label="Required" size="sm"></c-ui.badge>
-                                            </template>
-                                            <template x-if="!qp.required">
-                                                <c-ui.badge variant="neutral" label="Optional" size="sm"></c-ui.badge>
-                                            </template>
-                                        </td>
-                                        <td class="py-3 px-4 text-xs text-gray-600" x-text="qp.description"></td>
-                                    </tr>
-                                </template>
+                                <c-slot name="body">
+                                    <template x-for="qp in ep.query_params">
+                                        <tr class="hover:!bg-gray-50 !transition-colors !border-b !border-gray-100 last:!border-0">
+                                            <td class="!py-2.5 !px-4 !text-[12px] !font-mono !font-bold !text-emerald-700" x-text="qp.name"></td>
+                                            <td class="!py-2.5 !px-4 !text-[12px] !font-mono !text-gray-500" x-text="qp.type"></td>
+                                            <td class="!py-2.5 !px-4 !text-center">
+                                                <template x-if="qp.required"><c-ui.badge variant="danger" label="Req" size="sm" /></template>
+                                                <template x-if="!qp.required"><c-ui.badge variant="neutral" label="Opt" size="sm" /></template>
+                                            </td>
+                                            <td class="!py-2.5 !px-4 !text-[12px] !text-gray-600" x-text="qp.description"></td>
+                                        </tr>
+                                    </template>
+                                </c-slot>
                             </c-ui.table>
                         </div>
                     </template>
 
-                    <!-- Required Headers Box -->
-                    <template x-if="ep.headers && Object.keys(ep.headers).length > 0">
-                        <div class="space-y-2">
-                            <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Request Headers</h4>
-                            <div class="bg-gray-100/60 rounded-xl p-4 space-y-1 font-mono text-xs text-gray-800">
-                                <template x-for="(val, key) in ep.headers" :key="key">
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-bold text-gray-900" x-text="key + ':'"></span>
-                                        <span class="text-gray-600" x-text="val"></span>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-
-                    <!-- Code Generator Section -->
-                    <div class="space-y-3 pt-2">
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Code Snippet Generator</h4>
-                            <c-ui.button type="button" variant="ghost" size="sm" icon="copy" label="Copy Code"
-                                         @click="copyToClipboard(generateSnippet(ep, codeTabs[ep.id] || 'curl'), 'Code snippet copied!')"></c-ui.button>
+                    <!-- Code Snippets -->
+                    <div class="!flex !flex-col !gap-3">
+                        <div class="!flex !items-center !justify-between">
+                            <h4 class="!text-[11px] !font-bold !text-gray-700 !uppercase !tracking-wider">Code Snippet</h4>
+                            <c-ui.button type="button" variant="secondary" size="sm" icon="copy" label="Copy Code"
+                                         @click="copyToClipboard(generateSnippet(ep, codeTabs[ep.id] || 'curl'), 'Code snippet copied!')" />
                         </div>
 
-                        <div class="flex items-center gap-2 border-b border-gray-200/80 pb-1.5 overflow-x-auto scrollbar-hide">
-                            <c-ui.tab-button label="cURL" :active="codeTabs[ep.id] === 'curl'" @click="codeTabs[ep.id] = 'curl'"></c-ui.tab-button>
-                            <c-ui.tab-button label="JavaScript (fetch)" :active="codeTabs[ep.id] === 'fetch'" @click="codeTabs[ep.id] = 'fetch'"></c-ui.tab-button>
-                            <c-ui.tab-button label="Python (requests)" :active="codeTabs[ep.id] === 'python'" @click="codeTabs[ep.id] = 'python'"></c-ui.tab-button>
+                        <div class="!flex !items-center !gap-2 !border-b !border-gray-200/80 !pb-1 !overflow-x-auto scrollbar-hide">
+                            <button @click="codeTabs[ep.id] = 'curl'" :class="codeTabs[ep.id] === 'curl' ? '!text-blue-600 !border-blue-600' : '!text-gray-500 !border-transparent hover:!text-gray-700'" class="!px-3 !py-1 !text-[12px] !font-bold !border-b-2 !transition-colors !whitespace-nowrap !cursor-pointer">cURL</button>
+                            <button @click="codeTabs[ep.id] = 'fetch'" :class="codeTabs[ep.id] === 'fetch' ? '!text-blue-600 !border-blue-600' : '!text-gray-500 !border-transparent hover:!text-gray-700'" class="!px-3 !py-1 !text-[12px] !font-bold !border-b-2 !transition-colors !whitespace-nowrap !cursor-pointer">JavaScript</button>
+                            <button @click="codeTabs[ep.id] = 'python'" :class="codeTabs[ep.id] === 'python' ? '!text-blue-600 !border-blue-600' : '!text-gray-500 !border-transparent hover:!text-gray-700'" class="!px-3 !py-1 !text-[12px] !font-bold !border-b-2 !transition-colors !whitespace-nowrap !cursor-pointer">Python</button>
                         </div>
 
-                        <div class="bg-gray-900 text-gray-100 p-4 rounded-xl font-mono text-xs overflow-x-auto w-full shadow-inner">
-                            <pre x-text="generateSnippet(ep, codeTabs[ep.id] || 'curl')"></pre>
+                        <div class="!bg-gray-50 !border !border-gray-200/80 !text-gray-800 !p-5 !rounded-xl !font-mono !text-[12.5px] !leading-relaxed !overflow-x-auto !w-full shadow-inner">
+                            <pre x-text="generateSnippet(ep, codeTabs[ep.id] || 'curl')" class="!m-0"></pre>
                         </div>
                     </div>
 
-                    <!-- Live API Testbed / Sandbox -->
-                    <div class="pt-4 border-t border-gray-200/80 space-y-4">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="play-circle" class="w-4 h-4 text-emerald-600"></i>
-                            <h4 class="text-xs font-bold text-gray-900 uppercase tracking-wider">Interactive Live Testbed</h4>
+                    <!-- Live Testbed -->
+                    <div class="!pt-4 !border-t !border-gray-200 !flex !flex-col !gap-4">
+                        <div class="!flex !items-center !gap-2">
+                            <i data-lucide="play-circle" class="!w-4 !h-4 !text-emerald-600"></i>
+                            <h4 class="!text-[11px] !font-bold !text-gray-900 !uppercase !tracking-wider">Interactive Testbed</h4>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                            <div class="sm:col-span-4 md:col-span-3">
-                                <c-ui.select name="sandboxMethod" label="Method" :value="sandboxState[ep.id].method" x-model="sandboxState[ep.id].method">
+                        <div class="!flex !flex-col md:!flex-row !gap-3 !items-end">
+                            <div class="!w-full md:!w-40 !relative">
+                                <c-ui.select name="sandboxMethod" label="Method" x-model="sandboxState[ep.id].method">
                                     <option value="GET">GET</option>
                                     <option value="POST">POST</option>
                                     <option value="DELETE">DELETE</option>
                                 </c-ui.select>
                             </div>
-
-                            <div class="sm:col-span-8 md:col-span-9">
-                                <c-ui.input name="sandboxPath" label="Endpoint URL Path" x-model="sandboxState[ep.id].path"></c-ui.input>
+                            <div class="!flex-1 !w-full">
+                                <c-ui.input name="sandboxPath" label="Endpoint Path" x-model="sandboxState[ep.id].path" />
                             </div>
                         </div>
 
                         <template x-if="['POST', 'PUT', 'PATCH'].includes(sandboxState[ep.id].method)">
-                            <div class="w-full">
-                                <c-ui.textarea name="sandboxBody" label="JSON Body Payload" rows="4" x-model="sandboxState[ep.id].body"></c-ui.textarea>
+                            <div class="!w-full">
+                                <c-ui.textarea name="sandboxBody" label="JSON Body Payload" rows="10" x-model="sandboxState[ep.id].body"></c-ui.textarea>
                             </div>
                         </template>
 
-                        <div class="pt-1">
-                            <c-ui.button type="button" variant="primary" icon="play" label="Execute Request" extra_class="w-full justify-center"
-                                         @click="runSandboxTest(ep.id)"></c-ui.button>
+                        <div>
+                            <c-ui.button type="button" variant="primary" icon="play" label="Execute Request" @click="runSandboxTest(ep.id)" />
                         </div>
 
-                        <!-- Live Response Output -->
                         <template x-if="sandboxState[ep.id].result">
-                            <div class="mt-4 pt-4 border-t border-gray-200/80 space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2">
+                            <div class="!mt-2 !pt-4 !border-t !border-gray-100 !flex !flex-col !gap-2">
+                                <div class="!flex !items-center !justify-between">
+                                    <div class="!flex !items-center !gap-2">
                                         <c-ui.badge :variant="sandboxState[ep.id].result.status >= 200 && sandboxState[ep.id].result.status < 300 ? 'success' : 'danger'"
-                                                    :label="'Status: ' + sandboxState[ep.id].result.status + ' ' + sandboxState[ep.id].result.statusText" size="md"></c-ui.badge>
-                                        <span class="text-xs font-mono text-gray-500" x-text="sandboxState[ep.id].result.duration + ' ms'"></span>
+                                                    :label="'Status: ' + sandboxState[ep.id].result.status + ' ' + sandboxState[ep.id].result.statusText" size="sm" />
+                                        <span class="!text-[11px] !font-mono !text-gray-500" x-text="sandboxState[ep.id].result.duration + ' ms'"></span>
                                     </div>
                                 </div>
 
-                                <div class="bg-gray-900 text-emerald-400 p-4 rounded-xl font-mono text-xs overflow-x-auto max-h-96 w-full shadow-inner">
-                                    <pre x-text="sandboxState[ep.id].result.bodyText"></pre>
+                                <div class="!bg-gray-50 !border !border-gray-200/80 !text-blue-900 !p-5 !rounded-xl !font-mono !text-[12.5px] !leading-relaxed !overflow-x-auto !max-h-[28rem] !w-full shadow-inner">
+                                    <pre x-text="sandboxState[ep.id].result.bodyText" class="!m-0"></pre>
                                 </div>
                             </div>
                         </template>
