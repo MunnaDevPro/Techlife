@@ -1213,11 +1213,17 @@ class AutomationGuardrailTests(TestCase):
 
 class CanonicalSearchResultsViewTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            email="search_author@techlifebd.com",
+        self.user1 = User.objects.create_user(
+            email="quantum_author@techlifebd.com",
             password="Password123!",
             first_name="Quantum",
             last_name="Author"
+        )
+        self.user2 = User.objects.create_user(
+            email="web_author@techlifebd.com",
+            password="Password123!",
+            first_name="Alice",
+            last_name="Smith"
         )
         self.category = Category.objects.create(name="Artificial Intelligence", slug="ai-tech")
         self.sub_category = SubCategory.objects.create(name="Deep Learning", slug="deep-learning", category=self.category)
@@ -1227,7 +1233,7 @@ class CanonicalSearchResultsViewTests(TestCase):
             title="Quantum Computing breakthrough in 2026",
             subtitle="Quantum algorithms explained",
             description="Detailed article on quantum processors",
-            author=self.user,
+            author=self.user1,
             category=self.category,
             subcategory=self.sub_category,
             status="published"
@@ -1238,7 +1244,7 @@ class CanonicalSearchResultsViewTests(TestCase):
             title="Web Development Best Practices",
             subtitle="Frontend frameworks overview",
             description="Guide to modern UI development",
-            author=self.user,
+            author=self.user2,
             category=self.category,
             status="published"
         )
