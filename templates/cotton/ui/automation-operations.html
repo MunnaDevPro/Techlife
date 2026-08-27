@@ -1,6 +1,6 @@
 <c-vars automation_ops />
 
-<div class="!bg-white !rounded-md !p-6 !border !border-gray-100 !flex !flex-col !gap-4 scroll-animate !opacity-0 data-animate="!animate-[fade-in-up_0.6s_ease-out]">
+<c-ui.card extra_class="!flex !flex-col !gap-4 scroll-animate !opacity-0" data-animate="!animate-[fade-in-up_0.6s_ease-out]">
     <!-- Header with status badge -->
     <div class="!flex !items-center !justify-between">
         <div class="!flex !items-center !gap-2">
@@ -26,64 +26,67 @@
     </div>
 
     <!-- Operations Metrics Grid -->
-    <div class="!grid !grid-cols-2 md:!grid-cols-4 !gap-3">
-        <div class="!p-3 !bg-gray-50/70 !rounded-lg !border !border-gray-100">
-            <span class="!text-[11px] !font-medium !text-gray-500">Published Today</span>
-            <div class="!flex !items-baseline !gap-1 !mt-1">
-                <span class="!text-xl !font-black !text-gray-900">{{ automation_ops.published_today }}</span>
-                <span class="!text-xs !text-gray-400">/ {{ automation_ops.daily_limit }} limit</span>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 !mt-2">
+        <c-ui.card extra_class="!border-none !bg-gray-50/70 !shadow-none" card_padding="sm">
+            <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mb-1.5">Published Today</span>
+            <div class="!flex !items-baseline !gap-1.5 !mt-1">
+                <span class="!text-2xl !font-black !text-gray-900">{{ automation_ops.published_today }}</span>
+                <span class="!text-[13px] !text-gray-400 font-medium">/ {{ automation_ops.daily_limit }} limit</span>
             </div>
-        </div>
-        <div class="!p-3 !bg-gray-50/70 !rounded-lg !border !border-gray-100">
-            <span class="!text-[11px] !font-medium !text-gray-500">Remaining Slots</span>
+        </c-ui.card>
+        
+        <c-ui.card extra_class="!border-none !bg-gray-50/70 !shadow-none" card_padding="sm">
+            <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mb-1.5">Remaining Slots</span>
             <div class="!mt-1">
-                <span class="!text-xl !font-black {% if automation_ops.remaining_slots > 0 %}!text-emerald-600{% else %}!text-amber-600{% endif %}">
+                <span class="!text-2xl !font-black {% if automation_ops.remaining_slots > 0 %}!text-emerald-600{% else %}!text-amber-600{% endif %}">
                     {{ automation_ops.remaining_slots }}
                 </span>
             </div>
-        </div>
-        <div class="!p-3 !bg-gray-50/70 !rounded-lg !border !border-gray-100">
-            <span class="!text-[11px] !font-medium !text-gray-500">Rejected Today</span>
+        </c-ui.card>
+
+        <c-ui.card extra_class="!border-none !bg-gray-50/70 !shadow-none" card_padding="sm">
+            <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mb-1.5">Rejected Today</span>
             <div class="!mt-1">
-                <span class="!text-xl !font-black !text-amber-600">{{ automation_ops.rejected_today }}</span>
+                <span class="!text-2xl !font-black !text-amber-600">{{ automation_ops.rejected_today }}</span>
             </div>
-        </div>
-        <div class="!p-3 !bg-gray-50/70 !rounded-lg !border !border-gray-100">
-            <span class="!text-[11px] !font-medium !text-gray-500">Failed Today</span>
+        </c-ui.card>
+
+        <c-ui.card extra_class="!border-none !bg-gray-50/70 !shadow-none" card_padding="sm">
+            <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mb-1.5">Failed Today</span>
             <div class="!mt-1">
-                <span class="!text-xl !font-black !text-rose-600">{{ automation_ops.failed_today }}</span>
+                <span class="!text-2xl !font-black !text-rose-600">{{ automation_ops.failed_today }}</span>
             </div>
-        </div>
+        </c-ui.card>
     </div>
 
     <!-- Recent Results List -->
-    <div class="!mt-1">
-        <h4 class="!text-xs !font-semibold !text-gray-700 !uppercase !tracking-wider !mb-2">Recent Execution Audit Logs</h4>
+    <div class="!mt-4">
+        <h4 class="!text-xs !font-bold !text-gray-400 !uppercase !tracking-wider !mb-4">Recent Execution Audit Logs</h4>
         {% if automation_ops.recent_results %}
-        <div class="!flex !flex-col !gap-2">
+        <div class="!flex !flex-col !gap-3">
             {% for item in automation_ops.recent_results %}
-            <div class="!flex !items-center !justify-between !p-2.5 !bg-gray-50/50 !rounded-md !border !border-gray-100 !text-xs">
-                <div class="!flex !items-center !gap-2 !min-w-0">
+            <div class="!flex !items-center !justify-between !p-4 !bg-gray-50/70 !rounded-xl !border-none !shadow-sm !text-[13px] hover:!shadow-md !transition-shadow !duration-300">
+                <div class="!flex !items-center !gap-3 !min-w-0">
                     {% if item.event_type == 'published' %}
-                        <span class="!px-2 !py-0.5 !rounded !bg-emerald-100 !text-emerald-800 !font-semibold !text-[10px]">Published</span>
+                        <span class="!px-2.5 !py-1 !rounded-full !bg-emerald-100 !text-emerald-800 !font-bold !text-[10px] !tracking-wider !uppercase">Published</span>
                     {% elif item.event_type == 'idempotent_replay' %}
-                        <span class="!px-2 !py-0.5 !rounded !bg-blue-100 !text-blue-800 !font-semibold !text-[10px]">Replay</span>
+                        <span class="!px-2.5 !py-1 !rounded-full !bg-blue-100 !text-blue-800 !font-bold !text-[10px] !tracking-wider !uppercase">Replay</span>
                     {% elif item.event_type == 'throttled' %}
-                        <span class="!px-2 !py-0.5 !rounded !bg-amber-100 !text-amber-800 !font-semibold !text-[10px]">Throttled</span>
+                        <span class="!px-2.5 !py-1 !rounded-full !bg-amber-100 !text-amber-800 !font-bold !text-[10px] !tracking-wider !uppercase">Throttled</span>
                     {% elif item.event_type == 'disabled' %}
-                        <span class="!px-2 !py-0.5 !rounded !bg-rose-100 !text-rose-800 !font-semibold !text-[10px]">Disabled</span>
+                        <span class="!px-2.5 !py-1 !rounded-full !bg-rose-100 !text-rose-800 !font-bold !text-[10px] !tracking-wider !uppercase">Disabled</span>
                     {% else %}
-                        <span class="!px-2 !py-0.5 !rounded !bg-gray-200 !text-gray-800 !font-semibold !text-[10px]">{{ item.event_type }}</span>
+                        <span class="!px-2.5 !py-1 !rounded-full !bg-gray-200 !text-gray-800 !font-bold !text-[10px] !tracking-wider !uppercase">{{ item.event_type }}</span>
                     {% endif %}
 
-                    <span class="!font-medium !text-gray-800 !truncate">{{ item.automation_id|default:item.result_code }}</span>
+                    <span class="!font-semibold !text-gray-800 !truncate">{{ item.automation_id|default:item.result_code }}</span>
                     {% if item.source_name %}
-                    <span class="!text-gray-400 !truncate">({{ item.source_name }})</span>
+                    <span class="!text-gray-500 !truncate">({{ item.source_name }})</span>
                     {% endif %}
                 </div>
-                <div class="!flex !items-center !gap-3 !flex-shrink-0">
-                    <span class="!text-[11px] !font-mono !text-gray-500">HTTP {{ item.http_status }}</span>
-                    <span class="!text-[11px] !text-gray-400">{{ item.created_at|timesince }} ago</span>
+                <div class="!flex !items-center !gap-4 !flex-shrink-0">
+                    <span class="!text-[12px] !font-mono !font-medium !text-gray-500">HTTP {{ item.http_status }}</span>
+                    <span class="!text-[12px] !font-medium !text-gray-400">{{ item.created_at|timesince }} ago</span>
                 </div>
             </div>
             {% endfor %}
@@ -94,4 +97,4 @@
         </div>
         {% endif %}
     </div>
-</div>
+</c-ui.card>
