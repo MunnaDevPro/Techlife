@@ -5,16 +5,16 @@
 {% endcomment %}
 
 <div class="ft-card !p-5 !rounded-2xl !bg-white !border !border-gray-150 !shadow-sm">
-    <div class="flex items-center gap-2 pb-3 mb-4 border-b border-gray-100">
-        <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+    <div class="!flex !items-center !gap-3 !pb-4 !mb-5 !border-b !border-gray-100">
+        <div class="!w-8 !h-8 !rounded-lg !bg-blue-50 !text-blue-600 !flex !items-center !justify-center !font-bold">
             <i data-lucide="file-text" class="w-4 h-4"></i>
         </div>
         <div>
-            <h4 class="text-sm font-bold text-gray-900">Stored Sanitized Article Preview</h4>
-            <p class="text-xs text-gray-500">Public rendering view for stored description content</p>
+            <h4 class="!text-sm !font-bold !text-gray-900">Stored Sanitized Article Preview</h4>
+            <p class="!text-[12.5px] !text-gray-500 !mt-0.5">Public rendering view for stored description content</p>
         </div>
     </div>
-    <div class="prose prose-sm max-w-none text-gray-800 leading-relaxed">
+    <div class="!prose !prose-sm !max-w-none !text-gray-800 !leading-relaxed !mt-2">
         {% if content %}
             {{ content|safe }}
         {% else %}

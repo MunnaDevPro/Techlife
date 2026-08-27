@@ -29,91 +29,91 @@
     </div>
 
     <!-- Metadata Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+    <div class="!grid !grid-cols-1 md:!grid-cols-2 lg:!grid-cols-4 !gap-4 lg:!gap-6 !text-xs !mt-2">
         <!-- Source Info -->
-        <div class="p-3 bg-gray-50 rounded-xl border border-gray-100">
-            <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mb-1">Source Name</span>
-            <span class="font-semibold text-gray-800 block truncate">{{ post.source_name|default:"N/A" }}</span>
+        <c-ui.card extra_class="!border-none !bg-gray-50/70 !shadow-none" card_padding="sm">
+            <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mb-1.5">Source Name</span>
+            <span class="!font-semibold !text-gray-800 !text-[13px] !block !truncate">{{ post.source_name|default:"N/A" }}</span>
 
-            <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mt-2 mb-1">Source URL</span>
+            <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mt-4 !mb-1.5">Source URL</span>
             {% if post.source_url %}
-                <a href="{{ post.source_url }}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline truncate block font-medium">
+                <a href="{{ post.source_url }}" target="_blank" rel="noopener noreferrer" class="!text-blue-600 hover:!text-blue-800 !transition-colors !truncate !block !font-medium !text-[13px]">
                     {{ post.source_url }}
                 </a>
             {% else %}
-                <span class="text-gray-400">None</span>
+                <span class="!text-gray-400 !text-[13px]">None</span>
             {% endif %}
 
             {% if post.source_author %}
-                <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mt-2 mb-1">Source Author</span>
-                <span class="font-semibold text-gray-800 block truncate">{{ post.source_author }}</span>
+                <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mt-4 !mb-1.5">Source Author</span>
+                <span class="!font-semibold !text-gray-800 !text-[13px] !block !truncate">{{ post.source_author }}</span>
             {% endif %}
-        </div>
+        </c-ui.card>
 
         <!-- AI & Pipeline Details -->
-        <div class="p-3 bg-gray-50 rounded-xl border border-gray-100">
-            <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mb-1">AI Writer Model</span>
-            <span class="font-semibold text-gray-800 block truncate">{{ post.ai_model|default:"N/A" }}</span>
+        <c-ui.card extra_class="!border-none !bg-gray-50/70 !shadow-none" card_padding="sm">
+            <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mb-1.5">AI Writer Model</span>
+            <span class="!font-semibold !text-gray-800 !text-[13px] !block !truncate">{{ post.ai_model|default:"N/A" }}</span>
 
-            <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mt-2 mb-1">Reviewer Model</span>
-            <span class="font-semibold text-gray-800 block truncate">{{ post.reviewer_model|default:"N/A" }}</span>
+            <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mt-4 !mb-1.5">Reviewer Model</span>
+            <span class="!font-semibold !text-gray-800 !text-[13px] !block !truncate">{{ post.reviewer_model|default:"N/A" }}</span>
 
-            <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mt-2 mb-1">Automation ID</span>
-            <span class="font-mono text-[11px] text-gray-700 block truncate">{{ post.automation_id|default:"N/A" }}</span>
-        </div>
+            <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mt-4 !mb-1.5">Automation ID</span>
+            <span class="!font-mono !text-[12px] !text-gray-600 !bg-gray-100 !px-2 !py-1 !rounded !inline-block !truncate !max-w-full">{{ post.automation_id|default:"N/A" }}</span>
+        </c-ui.card>
 
         <!-- Image Pipeline & Local Preview -->
-        <div class="p-3 bg-gray-50 rounded-xl border border-gray-100">
-            <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mb-1">Image Pipeline Status</span>
-            <div class="mt-0.5 mb-2">
+        <c-ui.card extra_class="!border-none !bg-gray-50/70 !shadow-none" card_padding="sm">
+            <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mb-1.5">Image Pipeline Status</span>
+            <div class="!mt-1 !mb-4">
                 <c-ui.status-pill status="{{ post.image_processing_status }}" label="{{ post.get_image_processing_status_display }}"></c-ui.status-pill>
             </div>
 
             {% if post.source_image_url %}
-                <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mb-1">Original Source Image</span>
-                <a href="{{ post.source_image_url }}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline truncate block font-medium mb-2">
+                <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mb-1.5">Original Source Image</span>
+                <a href="{{ post.source_image_url }}" target="_blank" rel="noopener noreferrer" class="!text-blue-600 hover:!text-blue-800 !truncate !block !font-medium !text-[13px] !mb-4">
                     {{ post.source_image_url }}
                 </a>
             {% endif %}
 
             {% if post.featured_image %}
-                <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mb-1">Localized Local Preview</span>
-                <div class="mt-1 rounded-lg overflow-hidden border border-gray-200 shadow-sm max-w-[140px]">
-                    <img src="{{ post.featured_image.url }}" alt="Localized Featured Image" class="w-full h-20 object-cover">
+                <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mb-2">Localized Local Preview</span>
+                <div class="!rounded-xl !overflow-hidden !border !border-gray-200 !shadow-sm !w-full">
+                    <img src="{{ post.featured_image.url }}" alt="Localized Featured Image" class="!w-full !h-24 !object-cover hover:!scale-105 !transition-transform !duration-500">
                 </div>
             {% endif %}
-        </div>
+        </c-ui.card>
 
         <!-- Scores Breakdown & Approval Gates -->
-        <div class="p-3 bg-gray-50 rounded-xl border border-gray-100">
-            <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] block mb-2">Quality & Audit Scores</span>
-            <div class="space-y-1.5">
-                <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-gray-600">Quality (&ge;90):</span>
-                    <span class="font-bold {% if post.quality_score >= 90 %}text-emerald-600{% else %}text-amber-600{% endif %}">
+        <c-ui.card extra_class="!border-none !bg-gray-50/70 !shadow-none" card_padding="sm">
+            <span class="!font-bold !text-gray-400 !uppercase !tracking-wider !text-[10px] !block !mb-3">Quality & Audit Scores</span>
+            <div class="!space-y-2.5">
+                <div class="!flex !items-center !justify-between !text-[12px]">
+                    <span class="!text-gray-500 !font-medium">Quality (&ge;90):</span>
+                    <span class="!font-bold !px-2 !py-0.5 !rounded-full {% if post.quality_score >= 90 %}!bg-emerald-50 !text-emerald-600{% else %}!bg-amber-50 !text-amber-600{% endif %}">
                         {{ post.quality_score|default:"--" }}/100
                     </span>
                 </div>
-                <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-gray-600">Factual (&ge;95):</span>
-                    <span class="font-bold {% if post.factual_accuracy_score >= 95 %}text-emerald-600{% else %}text-amber-600{% endif %}">
+                <div class="!flex !items-center !justify-between !text-[12px]">
+                    <span class="!text-gray-500 !font-medium">Factual (&ge;95):</span>
+                    <span class="!font-bold !px-2 !py-0.5 !rounded-full {% if post.factual_accuracy_score >= 95 %}!bg-emerald-50 !text-emerald-600{% else %}!bg-amber-50 !text-amber-600{% endif %}">
                         {{ post.factual_accuracy_score|default:"--" }}/100
                     </span>
                 </div>
-                <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-gray-600">Language (&ge;90):</span>
-                    <span class="font-bold {% if post.language_score >= 90 %}text-emerald-600{% else %}text-amber-600{% endif %}">
+                <div class="!flex !items-center !justify-between !text-[12px]">
+                    <span class="!text-gray-500 !font-medium">Language (&ge;90):</span>
+                    <span class="!font-bold !px-2 !py-0.5 !rounded-full {% if post.language_score >= 90 %}!bg-emerald-50 !text-emerald-600{% else %}!bg-amber-50 !text-amber-600{% endif %}">
                         {{ post.language_score|default:"--" }}/100
                     </span>
                 </div>
-                <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-gray-600">SEO (&ge;80):</span>
-                    <span class="font-bold {% if post.seo_score >= 80 %}text-emerald-600{% else %}text-amber-600{% endif %}">
+                <div class="!flex !items-center !justify-between !text-[12px]">
+                    <span class="!text-gray-500 !font-medium">SEO (&ge;80):</span>
+                    <span class="!font-bold !px-2 !py-0.5 !rounded-full {% if post.seo_score >= 80 %}!bg-emerald-50 !text-emerald-600{% else %}!bg-amber-50 !text-amber-600{% endif %}">
                         {{ post.seo_score|default:"--" }}/100
                     </span>
                 </div>
             </div>
-        </div>
+        </c-ui.card>
     </div>
 
     {% if post.review_notes %}
@@ -123,5 +123,4 @@
         </div>
     {% endif %}
 
-    <c-ui.taxonomy-card :post="post"></c-ui.taxonomy-card>
 </div>
