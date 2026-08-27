@@ -1211,6 +1211,71 @@ class AutomationGuardrailTests(TestCase):
         self.assertNotIn("error_summary", content_str)
 
 
+class CanonicalSearchResultsViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="search_author@techlifebd.com",
+            password="Password123!",
+            first_name="Quantum",
+            last_name="Author"
+        )
+        self.category = Category.objects.create(name="Artificial Intelligence", slug="ai-tech")
+        self.sub_category = SubCategory.objects.create(name="Deep Learning", slug="deep-learning", category=self.category)
+        self.tag = Tag.objects.create(name="neural-networks", slug="neural-networks")
+
+        self.post1 = BlogPost.objects.create(
+            title="Quantum Computing breakthrough in 2026",
+            subtitle="Quantum algorithms explained",
+            description="Detailed article on quantum processors",
+            author=self.user,
+            category=self.category,
+            subcategory=self.sub_category,
+            status="published"
+        )
+        self.post1.tags.add(self.tag)
+
+        self.post2 = BlogPost.objects.create(
+            title="Web Development Best Practices",
+            subtitle="Frontend frameworks overview",
+            description="Guide to modern UI development",
+            author=self.user,
+            category=self.category,
+            status="published"
+        )
+
+    def test_search_by_title_returns_results_page(self):
+        url = reverse("redirect_search_results") + "?q=Quantum"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertContains(response, "Quantum Computing breakthrough")
+        self.assertNotContains(response, "Web Development Best Practices")
+
+    def test_search_by_category_and_tag(self):
+        url = reverse("redirect_search_results") + "?q=neural-networks"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertContains(response, "Quantum Computing breakthrough")
+
+    def test_search_by_author(self):
+        url = reverse("redirect_search_results") + "?q=Quantum"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertContains(response, "Quantum")
+
+    def test_htmx_partial_search_request(self):
+        url = reverse("redirect_search_results") + "?q=Quantum"
+        headers = {"HTTP_HX_REQUEST": "true"}
+        response = self.client.get(url, **headers)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, "components/search/partial_search_results.html")
+
+    def test_empty_query_returns_search_page(self):
+        url = reverse("redirect_search_results") + "?q="
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+
 
 
 

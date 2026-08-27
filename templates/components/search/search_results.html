@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search results for "{{ query }}" — TechLife BD{% endblock title %}
+
+{% block meta_description %}Search results for "{{ query }}" on TechLife BD — explore technology articles, news, and guides.{% endblock meta_description %}
+
+{% block og_title %}Search results for "{{ query }}" | TechLife BD{% endblock og_title %}
+{% block og_description %}Search results for "{{ query }}" on TechLife BD.{% endblock og_description %}
+
+{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}
+
+{% block content %}
+{% include "components/search/partial_search_results.html" %}
+{% endblock content %}
