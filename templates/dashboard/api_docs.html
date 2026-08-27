@@ -3,154 +3,160 @@
 {% block content %}
 <script id="api-endpoints-json" type="application/json">{{ endpoints_json|safe }}</script>
 
-<div x-data="{
-    endpoints: [],
-    selectedId: 'posts_list',
-    filterCategory: 'All',
-    filterMethod: 'All',
-    searchQuery: '',
-    codeTab: 'curl',
-    activeTab: 'overview',
-    
-    // Sandbox State
-    customPath: '',
-    customMethod: 'GET',
-    customHeaders: '',
-    customBody: '',
-    customQuery: '',
-    testLoading: false,
-    testResult: null,
-    copiedNotice: '',
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('apiDocsManager', () => ({
+        endpoints: [],
+        selectedId: 'posts_list',
+        filterCategory: 'All',
+        filterMethod: 'All',
+        searchQuery: '',
+        codeTab: 'curl',
+        activeTab: 'overview',
+        
+        // Sandbox State
+        customPath: '',
+        customMethod: 'GET',
+        customHeaders: '',
+        customBody: '',
+        customQuery: '',
+        testLoading: false,
+        testResult: null,
+        copiedNotice: '',
 
-    init() {
-        try {
-            const raw = document.getElementById('api-endpoints-json').textContent;
-            this.endpoints = JSON.parse(raw);
-            if (this.endpoints.length > 0) {
-                this.selectEndpoint(this.endpoints[0].id);
+        init() {
+            try {
+                const raw = document.getElementById('api-endpoints-json').textContent;
+                this.endpoints = JSON.parse(raw);
+                if (this.endpoints.length > 0) {
+                    this.selectEndpoint(this.endpoints[0].id);
+                }
+            } catch (e) {
+                console.error('Failed to parse API endpoints JSON:', e);
             }
-        } catch (e) {
-            console.error('Failed to parse API endpoints JSON:', e);
+        },
+
+        get selectedEndpoint() {
+            return this.endpoints.find(e => e.id === this.selectedId) || this.endpoints[0] || {};
+        },
+
+        get filteredEndpoints() {
+            return this.endpoints.filter(e => {
+                const matchesCat = this.filterCategory === 'All' || e.category === this.filterCategory;
+                const matchesMethod = this.filterMethod === 'All' || e.method === this.filterMethod;
+                const matchesSearch = !this.searchQuery || 
+                    e.name.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
+                    e.path.toLowerCase().includes(this.searchQuery.toLowerCase());
+                return matchesCat && matchesMethod && matchesSearch;
+            });
+        },
+
+        selectEndpoint(id) {
+            this.selectedId = id;
+            const ep = this.selectedEndpoint;
+            if (!ep) return;
+            this.customPath = ep.path || '';
+            this.customMethod = ep.method || 'GET';
+            this.customHeaders = JSON.stringify(ep.headers || {}, null, 2);
+            this.customBody = ep.sample_request ? JSON.stringify(ep.sample_request, null, 2) : '';
+            this.customQuery = '';
+            this.testResult = null;
+        },
+
+        copyToClipboard(text, msg) {
+            navigator.clipboard.writeText(text);
+            this.copiedNotice = msg;
+            setTimeout(() => { this.copiedNotice = ''; }, 2500);
+        },
+
+        generateSnippet(ep, lang) {
+            if (!ep || !ep.path) return '';
+            const host = window.location.origin;
+            const fullUrl = host + ep.path;
+            if (lang === 'curl') {
+                let cmd = `curl -X ${ep.method} "${fullUrl}"`;
+                if (ep.headers) {
+                    Object.entries(ep.headers).forEach(([k, v]) => {
+                        cmd += ` \\\n  -H "${k}: ${v}"`;
+                    });
+                }
+                if (ep.sample_request && ep.method !== 'GET') {
+                    cmd += ` \\\n  -d '${JSON.stringify(ep.sample_request)}'`;
+                }
+                return cmd;
+            } else if (lang === 'fetch') {
+                const opts = { method: ep.method, headers: ep.headers || {} };
+                if (ep.sample_request && ep.method !== 'GET') {
+                    opts.body = ep.sample_request;
+                }
+                return `fetch("${fullUrl}", ${JSON.stringify(opts, null, 2)})\n  .then(res => res.json())\n  .then(data => console.log(data));`;
+            } else if (lang === 'python') {
+                let py = `import requests\n\nurl = "${fullUrl}"\n`;
+                if (ep.headers) {
+                    py += `headers = ${JSON.stringify(ep.headers, null, 2)}\n`;
+                }
+                if (ep.sample_request && ep.method !== 'GET') {
+                    py += `payload = ${JSON.stringify(ep.sample_request, null, 2)}\n`;
+                    py += `response = requests.${ep.method.toLowerCase()}(url, json=payload${ep.headers ? ', headers=headers' : ''})\n`;
+                } else {
+                    py += `response = requests.${ep.method.toLowerCase()}(url${ep.headers ? ', headers=headers' : ''})\n`;
+                }
+                py += `print(response.json())`;
+                return py;
+            }
+            return '';
+        },
+
+        async runSandboxTest() {
+            this.testLoading = true;
+            this.testResult = null;
+            const startTime = performance.now();
+            try {
+                let url = this.customPath;
+                if (this.customQuery) {
+                    url += (url.includes('?') ? '&' : '?') + this.customQuery;
+                }
+                let reqHeaders = {};
+                if (this.customHeaders) {
+                    try { reqHeaders = JSON.parse(this.customHeaders); } catch(e) {}
+                }
+                const opts = {
+                    method: this.customMethod,
+                    headers: reqHeaders,
+                };
+                if (['POST', 'PUT', 'PATCH'].includes(this.customMethod) && this.customBody) {
+                    opts.body = this.customBody;
+                }
+                const res = await fetch(url, opts);
+                const endTime = performance.now();
+                const duration = Math.round(endTime - startTime);
+                let bodyText = await res.text();
+                let jsonBody = null;
+                try { jsonBody = JSON.parse(bodyText); } catch(e) {}
+                this.testResult = {
+                    status: res.status,
+                    statusText: res.statusText,
+                    duration: duration,
+                    headers: Array.from(res.headers.entries()),
+                    bodyText: jsonBody ? JSON.stringify(jsonBody, null, 2) : bodyText
+                };
+            } catch (e) {
+                this.testResult = {
+                    status: 0,
+                    statusText: 'Network Error',
+                    duration: 0,
+                    headers: [],
+                    bodyText: e.toString()
+                };
+            } finally {
+                this.testLoading = false;
+            }
         }
-    },
+    }));
+});
+</script>
 
-    get selectedEndpoint() {
-        return this.endpoints.find(e => e.id === this.selectedId) || this.endpoints[0] || {};
-    },
-
-    get filteredEndpoints() {
-        return this.endpoints.filter(e => {
-            const matchesCat = this.filterCategory === 'All' || e.category === this.filterCategory;
-            const matchesMethod = this.filterMethod === 'All' || e.method === this.filterMethod;
-            const matchesSearch = !this.searchQuery || 
-                e.name.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
-                e.path.toLowerCase().includes(this.searchQuery.toLowerCase());
-            return matchesCat && matchesMethod && matchesSearch;
-        });
-    },
-
-    selectEndpoint(id) {
-        this.selectedId = id;
-        const ep = this.selectedEndpoint;
-        if (!ep) return;
-        this.customPath = ep.path || '';
-        this.customMethod = ep.method || 'GET';
-        this.customHeaders = JSON.stringify(ep.headers || {}, null, 2);
-        this.customBody = ep.sample_request ? JSON.stringify(ep.sample_request, null, 2) : '';
-        this.customQuery = '';
-        this.testResult = null;
-    },
-
-    copyToClipboard(text, msg) {
-        navigator.clipboard.writeText(text);
-        this.copiedNotice = msg;
-        setTimeout(() => { this.copiedNotice = ''; }, 2500);
-    },
-
-    generateSnippet(ep, lang) {
-        if (!ep || !ep.path) return '';
-        const host = window.location.origin;
-        const fullUrl = host + ep.path;
-        if (lang === 'curl') {
-            let cmd = `curl -X ${ep.method} \"${fullUrl}\"`;
-            if (ep.headers) {
-                Object.entries(ep.headers).forEach(([k, v]) => {
-                    cmd += ` \\\n  -H \"${k}: ${v}\"`;
-                });
-            }
-            if (ep.sample_request && ep.method !== 'GET') {
-                cmd += ` \\\n  -d '${JSON.stringify(ep.sample_request)}'`;
-            }
-            return cmd;
-        } else if (lang === 'fetch') {
-            const opts = { method: ep.method, headers: ep.headers || {} };
-            if (ep.sample_request && ep.method !== 'GET') {
-                opts.body = ep.sample_request;
-            }
-            return `fetch(\"${fullUrl}\", ${JSON.stringify(opts, null, 2)})\n  .then(res => res.json())\n  .then(data => console.log(data));`;
-        } else if (lang === 'python') {
-            let py = `import requests\n\nurl = \"${fullUrl}\"\n`;
-            if (ep.headers) {
-                py += `headers = ${JSON.stringify(ep.headers, null, 2)}\n`;
-            }
-            if (ep.sample_request && ep.method !== 'GET') {
-                py += `payload = ${JSON.stringify(ep.sample_request, null, 2)}\n`;
-                py += `response = requests.${ep.method.toLowerCase()}(url, json=payload${ep.headers ? ', headers=headers' : ''})\n`;
-            } else {
-                py += `response = requests.${ep.method.toLowerCase()}(url${ep.headers ? ', headers=headers' : ''})\n`;
-            }
-            py += `print(response.json())`;
-            return py;
-        }
-        return '';
-    },
-
-    async runSandboxTest() {
-        this.testLoading = true;
-        this.testResult = null;
-        const startTime = performance.now();
-        try {
-            let url = this.customPath;
-            if (this.customQuery) {
-                url += (url.includes('?') ? '&' : '?') + this.customQuery;
-            }
-            let reqHeaders = {};
-            if (this.customHeaders) {
-                try { reqHeaders = JSON.parse(this.customHeaders); } catch(e) {}
-            }
-            const opts = {
-                method: this.customMethod,
-                headers: reqHeaders,
-            };
-            if (['POST', 'PUT', 'PATCH'].includes(this.customMethod) && this.customBody) {
-                opts.body = this.customBody;
-            }
-            const res = await fetch(url, opts);
-            const endTime = performance.now();
-            const duration = Math.round(endTime - startTime);
-            let bodyText = await res.text();
-            let jsonBody = null;
-            try { jsonBody = JSON.parse(bodyText); } catch(e) {}
-            this.testResult = {
-                status: res.status,
-                statusText: res.statusText,
-                duration: duration,
-                headers: Array.from(res.headers.entries()),
-                bodyText: jsonBody ? JSON.stringify(jsonBody, null, 2) : bodyText
-            };
-        } catch (e) {
-            this.testResult = {
-                status: 0,
-                statusText: 'Network Error',
-                duration: 0,
-                headers: [],
-                bodyText: e.toString()
-            };
-        } finally {
-            this.testLoading = false;
-        }
-    }
-}" class="!flex !flex-col !gap-6">
+<div x-data="apiDocsManager" class="!flex !flex-col !gap-6">
 
     <!-- Header Section -->
     <div class="!flex !flex-col sm:!flex-row sm:!items-center sm:!justify-between !gap-4">
