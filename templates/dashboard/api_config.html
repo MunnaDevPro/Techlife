@@ -16,16 +16,14 @@
     <!-- Page Header & Action Bar -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <div class="flex items-center gap-3 mb-1">
-                <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-md">
-                    <i data-lucide="key-round" class="w-5 h-5"></i>
-                </div>
+            <div class="flex items-center gap-2.5 mb-1">
+                <i data-lucide="key-round" class="w-6 h-6 text-purple-600 shrink-0"></i>
                 <h2 class="text-2xl font-bold text-gray-900 tracking-tight">API Tokens & Configuration</h2>
             </div>
-            <p class="text-sm text-gray-500 ml-13">Manage authentication tokens, publishing limits, and ingestion audit logs</p>
+            <p class="text-sm text-gray-500">Manage authentication tokens, publishing limits, and ingestion audit logs</p>
         </div>
 
-        <c-ui.button href="{% url 'dashboard:api_docs' %}" variant="secondary" icon="book-open" label="View API Docs" />
+        <c-ui.button href="{% url 'dashboard:api_docs' %}" variant="secondary" icon="book-open" label="View API Docs"></c-ui.button>
     </div>
 
     <!-- Notification Toast -->
@@ -42,7 +40,7 @@
         <div class="md:col-span-7">
             <c-ui.card title="Automation Ingestion Token" subtitle="Authorization header used by n8n or Python automation scripts" padding="lg" class="h-full flex flex-col justify-between">
                 <c-slot name="actions">
-                    <c-ui.badge variant="success" label="Active" dot="true" size="md" />
+                    <c-ui.badge variant="success" label="Active" dot="true" size="md"></c-ui.badge>
                 </c-slot>
 
                 <div class="space-y-4">
@@ -55,7 +53,7 @@
                                 <i :data-lucide="showToken ? 'eye-off' : 'eye'" class="w-4 h-4"></i>
                             </button>
                             
-                            <c-ui.button type="button" variant="primary" size="sm" label="Copy Header" @click="copyToClipboard('Authorization: Automation ' + tokenValue, 'Header copied to clipboard!')" />
+                            <c-ui.button type="button" variant="primary" size="sm" label="Copy Header" @click="copyToClipboard('Authorization: Automation ' + tokenValue, 'Header copied to clipboard!')"></c-ui.button>
                         </div>
                     </div>
 
@@ -66,9 +64,7 @@
                     <form action="{% url 'dashboard:api_config' %}" method="post" class="inline">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="regenerate_token">
-                        <button type="submit" onclick="return confirm('Generate a new token recommendation? Note: Update your .env file with the generated token.')" class="inline-flex items-center gap-2 text-xs font-bold text-purple-600 hover:text-purple-800 cursor-pointer">
-                            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Generate New Token Recommendation
-                        </button>
+                        <c-ui.button type="submit" variant="ghost" size="sm" icon="refresh-cw" label="Generate New Token Recommendation" onclick="return confirm('Generate a new token recommendation? Note: Update your .env file with the generated token.')"></c-ui.button>
                     </form>
                 </c-slot>
             </c-ui.card>
@@ -80,17 +76,17 @@
                 <div class="space-y-3">
                     <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
                         <span class="text-sm font-medium text-gray-700">Hourly Request Limit</span>
-                        <c-ui.badge variant="info" label="{{ hourly_limit }} req/hr" size="md" />
+                        <c-ui.badge variant="info" label="{{ hourly_limit }} req/hr" size="md"></c-ui.badge>
                     </div>
 
                     <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
                         <span class="text-sm font-medium text-gray-700">Daily Publish Limit (BD Time)</span>
-                        <c-ui.badge variant="success" label="{{ daily_limit }} posts/day" size="md" />
+                        <c-ui.badge variant="success" label="{{ daily_limit }} posts/day" size="md"></c-ui.badge>
                     </div>
 
                     <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
                         <span class="text-sm font-medium text-gray-700">Default Automation Author</span>
-                        <c-ui.badge variant="primary" label="{{ author_username }}" size="md" />
+                        <c-ui.badge variant="primary" label="{{ author_username }}" size="md"></c-ui.badge>
                     </div>
                 </div>
             </c-ui.card>
@@ -120,11 +116,11 @@
                 </td>
                 <td class="py-3.5 px-6 align-middle text-center">
                     {% if log.http_status == 201 or log.http_status == 200 %}
-                        <c-ui.badge variant="success" label="HTTP {{ log.http_status }}" size="sm" />
+                        <c-ui.badge variant="success" label="HTTP {{ log.http_status }}" size="sm"></c-ui.badge>
                     {% elif log.http_status == 422 %}
-                        <c-ui.badge variant="warning" label="HTTP 422" size="sm" />
+                        <c-ui.badge variant="warning" label="HTTP 422" size="sm"></c-ui.badge>
                     {% else %}
-                        <c-ui.badge variant="danger" label="HTTP {{ log.http_status }}" size="sm" />
+                        <c-ui.badge variant="danger" label="HTTP {{ log.http_status }}" size="sm"></c-ui.badge>
                     {% endif %}
                 </td>
                 <td class="py-3.5 px-6 align-middle text-right">
