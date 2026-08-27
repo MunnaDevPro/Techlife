@@ -2,7 +2,7 @@ import hashlib
 from rest_framework import serializers
 from .models import (
     Category, SubCategory, BlogPost, BlogAdditionalImage, 
-    Like, Review, Post_view_ip, compnay_logo
+    Like, Review, Post_view_ip, compnay_logo, HomepageConfig
 )
 from accounts.models import CustomUserModel
 from tags.models import Tag
@@ -31,8 +31,8 @@ class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
         fields = [
-            'id', 'name', 'slug', 'description', 'category', 
-            'category_name', 'created_at', 'updated_at'
+            'id', 'name', 'slug', 'description', 'font_awesome_icon',
+            'category', 'category_name', 'created_at', 'updated_at'
         ]
 
 class BlogAdditionalImageSerializer(serializers.ModelSerializer):
@@ -53,16 +53,15 @@ class BlogPostListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'subtitle', 'slug', 'description', 
             'featured_image', 'featured_image_url', 'category',
-            'subcategory', 'author', 'status', 'views', 'likes_count',
-            'content_quality', 'created_at', 'updated_at', 'tags',
-            'comments_count'
+            'subcategory', 'author', 'status', 'is_featured', 'views', 'likes_count',
+            'content_quality', 'meta_title', 'meta_description',
+            'created_at', 'updated_at', 'tags', 'comments_count'
         ]
     
     def get_likes_count(self, obj):
         return obj.likes.count()
     
     def get_comments_count(self, obj):
-        # Assuming you have a comments app
         from comments.models import Comment
         return Comment.objects.filter(post=obj).count()
 
@@ -78,7 +77,7 @@ class BlogPostCreateSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'subtitle', 'description', 'featured_image',
             'featured_image_url', 'category', 'subcategory', 'tags_list',
-            'status', 'slug', 'meta_title', 'meta_description'
+            'status', 'slug', 'meta_title', 'meta_description', 'is_featured'
         ]
         read_only_fields = ['author', 'slug', 'status']
 
@@ -205,4 +204,15 @@ class PostViewIpSerializer(serializers.ModelSerializer):
 class CompanyLogoSerializer(serializers.ModelSerializer):
     class Meta:
         model = compnay_logo
-        fields = ['id', 'name', 'logo_svg']
+        fields = ['id', 'name', 'company_image', 'company_image_url', 'created_at']
+
+class HomepageConfigSerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    category_slug = serializers.CharField(source='category.slug', read_only=True)
+
+    class Meta:
+        model = HomepageConfig
+        fields = [
+            'id', 'section_key', 'title', 'category', 'category_name',
+            'category_slug', 'post_count', 'is_active', 'order'
+        ]
