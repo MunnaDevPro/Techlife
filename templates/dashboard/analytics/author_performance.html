@@ -35,7 +35,7 @@
                 </button>
                 
                 <div x-show="open" x-transition.opacity.duration.200ms style="display: none;"
-                    class="absolute left-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden py-1.5 ring-1 ring-black/5">
+                    class="absolute left-0 mt-2 w-full bg-white border border-gray-100 rounded-xl z-50 overflow-hidden py-1.5 ring-1 ring-black/5">
                     <button type="button" @click="days = 7; open = false; $nextTick(() => { document.getElementById('author-filters-form').submit(); });"
                         class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
                         :class="days == 7 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
@@ -66,7 +66,7 @@
                 </button>
                 
                 <div x-show="open" x-transition.opacity.duration.200ms style="display: none;"
-                    class="absolute right-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden py-1.5 ring-1 ring-black/5">
+                    class="absolute right-0 mt-2 w-full bg-white border border-gray-100 rounded-xl z-50 overflow-hidden py-1.5 ring-1 ring-black/5">
                     <button type="button" @click="sort = 'views'; open = false; $nextTick(() => { document.getElementById('author-filters-form').submit(); });"
                         class="w-full text-left !px-4 !py-2.5 text-[13.5px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
                         :class="sort == 'views' ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
@@ -122,10 +122,10 @@
                             {% endif %}
                             <div class="flex flex-col">
                                 {% if item.author.first_name or item.author.last_name %}
-                                    <span class="font-bold text-gray-900 text-[14px]">{{ item.author.first_name }} {{ item.author.last_name }}</span>
+                                    <span class="font-normal text-gray-900 text-[14px]">{{ item.author.first_name }} {{ item.author.last_name }}</span>
                                     <span class="text-gray-500 text-[12px]">{{ item.author.email }}</span>
                                 {% else %}
-                                    <span class="font-bold text-gray-900 text-[14px]">{{ item.author.email }}</span>
+                                    <span class="font-normal text-gray-900 text-[14px]">{{ item.author.email }}</span>
                                 {% endif %}
                             </div>
                         </div>

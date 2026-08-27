@@ -270,8 +270,18 @@
                     </div>
 
                     <!-- Tiptap Editor Canvas -->
+                    <style>
+                        .ProseMirror { outline: none !important; min-height: 350px; padding: 24px 32px; }
+                        .ProseMirror p.is-editor-empty:first-child::before {
+                            color: #adb5bd;
+                            content: attr(data-placeholder);
+                            float: left;
+                            height: 0;
+                            pointer-events: none;
+                        }
+                    </style>
                     <div id="tiptap-editor-container"
-                        class="w-full min-h-[400px] p-4 text-foreground text-[15px] leading-relaxed"></div>
+                        class="w-full min-h-[400px] text-gray-800 text-[15px] leading-relaxed prose prose-blue max-w-none bg-white"></div>
                 </div>
 
                 {% if form.description.errors %}

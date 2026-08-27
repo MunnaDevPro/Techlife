@@ -59,9 +59,11 @@ urlpatterns = [
     path("users/all/", users.user_list, name="users_all"),
     path("users/<int:pk>/", users.user_detail, name="user_detail"),
     path("users/<int:pk>/delete/", users.user_delete, name="user_delete"),
+    path("users/<int:pk>/toggle-active/", users.user_toggle_active, name="user_toggle_active"),
     path("users/verification/", users.verification_requests, name="users_verification"),
     path("users/<int:pk>/verify/", users.manual_verify_user, name="user_verify"),
     path("users/roles/", users.roles_permissions, name="users_roles"),
+    path("users/roles/<int:pk>/edit/", users.role_edit, name="role_edit"),
     
     # SEO
     path("seo/audit/", seo.meta_audit, name="seo_audit"),

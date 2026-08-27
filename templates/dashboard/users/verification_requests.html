@@ -2,48 +2,52 @@
 
 {% block content %}
 <div class="flex flex-col gap-5">
-    <div>
-        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Verification Requests</h2>
-        <p class="text-[14px] text-gray-500 mt-1">Manually verify and activate users pending email confirmation.</p>
+    <!-- Header -->
+    <div class="!flex !items-center !justify-between !mb-5 !flex-wrap !gap-4">
+        <div>
+            <h2 class="ft-page-title !mb-0">Verification Requests</h2>
+            <p class="ft-page-subtitle !mt-1">Manually verify and activate users pending email confirmation.</p>
+        </div>
     </div>
 
-    <c-ui.card title="Pending Verification" subtitle="Users awaiting manual approval ({{ users|length }})" class="border-gray-200 shadow-sm">
-        <div class="!mt-2">
+    <c-ui.card padding="none" extra_class="!shadow-none !border-gray-200 !overflow-hidden">
+        <c-slot name="header">
+            <div class="w-full !px-4 !pt-2 !pb-0.5">
+                <h3 class="!text-[14.5px] !font-bold !tracking-tight !text-gray-900">Pending Verification</h3>
+                <p class="!text-[12.5px] !text-gray-500 leading-none mt-0.5">Users awaiting manual approval ({{ users|length }})</p>
+            </div>
+        </c-slot>
             <c-ui.table>
                 <c-slot name="header">
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">User Account</th>
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">Date Joined</th>
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6">Status</th>
-                    <th class="text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-4 !px-6 text-right">Actions</th>
+                    <th class="!text-gray-500 !font-bold bg-gray-50 !uppercase !tracking-wider !text-[12px] !py-3 !px-6 !text-left">User Account</th>
+                    <th class="!text-gray-500 !font-bold bg-gray-50 !uppercase !tracking-wider !text-[12px] !py-3 !px-6 !text-left">Date Joined</th>
+                    <th class="!text-gray-500 !font-bold bg-gray-50 !uppercase !tracking-wider !text-[12px] !py-3 !px-6 !text-center">Status</th>
+                    <th class="!text-gray-500 !font-bold bg-gray-50 !uppercase !tracking-wider !text-[12px] !py-3 !px-6 !text-center">Actions</th>
                 </c-slot>
                 {% for u in users %}
                 <tr class="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
-                    <td class="!py-4 !px-6">
+                    <td class="!py-4 !px-6 !text-left !align-middle">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shadow-sm">
-                                <i data-lucide="user" class="w-4.5 h-4.5"></i>
-                            </div>
+                            <c-ui.avatar src="{% if u.profile_picture %}{{ u.profile_picture.url }}{% endif %}" initials="{{ u.first_name|first|default:'U' }}{{ u.last_name|first|default:'R' }}" size="lg" extra_class="!bg-amber-100 !text-amber-700"></c-ui.avatar>
                             <div class="flex flex-col">
                                 <span class="font-bold text-gray-900 text-[15px]">{{ u.first_name }} {{ u.last_name }}</span>
                                 <span class="text-gray-500 text-[13px] font-medium mt-0.5">{{ u.email }}</span>
                             </div>
                         </div>
                     </td>
-                    <td class="!py-4 !px-6">
-                        <span class="text-gray-600 text-[14px] font-medium">{{ u.date_joined|date:"M j, Y - H:i" }}</span>
+                    <td class="!py-4 !px-6 !text-left !align-middle">
+                        <span class="text-gray-600 text-[13.5px] font-medium">{{ u.date_joined|date:"M j, Y - H:i" }}</span>
                     </td>
-                    <td class="!py-4 !px-6">
-                        <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 !px-3 !py-1.5 text-[13px] font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">
-                            <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Unverified
-                        </span>
+                    <td class="!py-4 !px-6 !text-center !align-middle">
+                        <c-ui.status-pill status="pending" label="Unverified"></c-ui.status-pill>
                     </td>
-                    <td class="!py-4 !px-6 text-right">
-                        <form action="{% url 'dashboard:user_verify' u.pk %}" method="post" onsubmit="return confirm('Manually verify {{ u.email }}?')" class="inline">
-                            {% csrf_token %}
-                            <button type="submit" class="inline-flex items-center gap-2 !px-4 !py-2 rounded-lg bg-emerald-600 text-white font-medium text-[13.5px] shadow-sm hover:bg-emerald-700 transition-all cursor-pointer">
-                                <i data-lucide="check-circle" class="w-4 h-4"></i> Verify User
-                            </button>
-                        </form>
+                    <td class="!py-4 !px-6 !text-center !align-middle">
+                        <div class="flex items-center justify-center gap-2">
+                            <form action="{% url 'dashboard:user_verify' u.pk %}" method="post" class="inline" x-data @submit.prevent="window.confirmAction('Manually verify {{ u.email }}?', () => $el.submit())">
+                                {% csrf_token %}
+                                <c-ui.button type="submit" variant="primary" icon="check-circle" size="sm" label="Verify User" extra_class="!bg-emerald-600 hover:!bg-emerald-700 !border-transparent"></c-ui.button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
@@ -59,7 +63,6 @@
                 </tr>
                 {% endfor %}
             </c-ui.table>
-        </div>
     </c-ui.card>
 </div>
 {% endblock %}

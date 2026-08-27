@@ -7,41 +7,20 @@
             <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Traffic & Engagement</h2>
             <p class="text-[14px] text-gray-500 mt-1">Monitor real-time website visitors and page view trends.</p>
         </div>
-        <form id="timeframe-form" method="get" class="relative group min-w-[180px]" x-data="{ open: false, selected: {{ days }} }">
-            <input type="hidden" name="days" x-model="selected">
-            <button type="button" @click="open = !open" @click.away="open = false" 
-                class="flex items-center justify-between w-full !pl-4 !pr-3.5 !py-2.5 text-[14px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:border-transparent cursor-pointer transition-all hover:bg-gray-50 hover:border-gray-300">
-                <div class="flex items-center gap-2.5">
-                    <i data-lucide="calendar" class="w-4.5 h-4.5 text-gray-400 group-hover:text-[#2563eb] transition-colors"></i>
-                    <span x-text="'Last ' + selected + ' Days'">Last {{ days }} Days</span>
-                </div>
-                <i data-lucide="chevron-down" class="w-4.5 h-4.5 text-gray-400 transition-transform duration-200" :class="{'rotate-180': open}"></i>
-            </button>
-            
-            <div x-show="open" x-transition.opacity.duration.200ms style="display: none;"
-                class="absolute right-0 mt-2 w-full bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden py-1.5 ring-1 ring-black/5">
-                <button type="button" @click="selected = 7; $nextTick(() => { document.getElementById('timeframe-form').submit(); });"
-                    class="w-full text-left !px-4 !py-2.5 text-[14px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
-                    :class="selected == 7 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
-                    Last 7 Days
-                </button>
-                <button type="button" @click="selected = 30; $nextTick(() => { document.getElementById('timeframe-form').submit(); });"
-                    class="w-full text-left !px-4 !py-2.5 text-[14px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
-                    :class="selected == 30 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
-                    Last 30 Days
-                </button>
-                <button type="button" @click="selected = 90; $nextTick(() => { document.getElementById('timeframe-form').submit(); });"
-                    class="w-full text-left !px-4 !py-2.5 text-[14px] font-medium transition-colors cursor-pointer hover:bg-blue-50 hover:text-[#2563eb]"
-                    :class="selected == 90 ? 'bg-blue-50/50 text-[#2563eb]' : 'text-gray-700'">
-                    Last 90 Days
-                </button>
-            </div>
+        <form id="timeframe-form" method="get" class="min-w-[180px]">
+            <c-ui.select name="days" is_django_form="true">
+                <select name="days" @change="$event.target.closest('form').submit()" class="w-full">
+                    <option value="7" {% if days == '7' %}selected{% endif %}>Last 7 Days</option>
+                    <option value="30" {% if days == '30' %}selected{% endif %}>Last 30 Days</option>
+                    <option value="90" {% if days == '90' %}selected{% endif %}>Last 90 Days</option>
+                </select>
+            </c-ui.select>
         </form>
     </div>
 
-    <c-ui.card title="Overall Traffic Overview" class="border-gray-200 shadow-sm" subtitle="Daily aggregated page views across all posts">
-        <div class="!mt-4 relative">
-            <canvas id="trafficChart" class="max-h-[380px] w-full"></canvas>
+    <c-ui.card title="Overall Traffic Overview" padding="sm" class="border-gray-200 shadow-sm" subtitle="Daily aggregated page views across all posts">
+        <div class="!mt-3 relative w-full" style="height: 280px;">
+            <canvas id="trafficChart" class="w-full h-full"></canvas>
             <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const canvas = document.getElementById('trafficChart');
