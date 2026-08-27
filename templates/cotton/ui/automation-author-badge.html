@@ -1,0 +1,14 @@
+{% comment %} c-ui.automation-author-badge component
+   Displays a private automation badge identifying the configured automation author user inside authenticated admin views.
+   Props:
+   - user: CustomUserModel instance
+{% endcomment %}
+
+{% load static %}
+{% if is_automation_author or user.email == automation_author_email or user.username == automation_author_username %}
+    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+        <span class="w-1.5 h-1.5 rounded-full bg-purple-600 inline-block"></span>
+        <i data-lucide="bot" class="w-3.5 h-3.5 text-purple-600"></i>
+        <span>Automation Publisher (TechLife Desk)</span>
+    </div>
+{% endif %}

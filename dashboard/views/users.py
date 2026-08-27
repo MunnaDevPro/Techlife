@@ -129,12 +129,18 @@ def user_detail(request, pk):
     groups = Group.objects.all()
     user_group_ids = list(target_user.groups.values_list('id', flat=True))
     
+    auto_username = getattr(settings, 'TECHLIFE_AUTOMATION_AUTHOR_USERNAME', 'techlife_desk')
+    auto_email = auto_username if '@' in auto_username else f"{auto_username}@techlifebd.com"
+
     ctx = get_dashboard_context(request, "User Detail", "Users", "dashboard:users_all")
     ctx.update({
         "target_user": target_user,
         "posts": posts,
         "groups": groups,
         "user_group_ids": user_group_ids,
+        "automation_author_username": auto_username,
+        "automation_author_email": auto_email,
+        "is_automation_author": (target_user.email.lower() == auto_email.lower() or target_user.email.lower() == auto_username.lower()),
     })
     return render(request, "dashboard/users/user_detail.html", ctx)
 

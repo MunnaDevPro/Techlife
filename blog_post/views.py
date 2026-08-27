@@ -363,29 +363,62 @@ def redirect_search_results(request):
     query = request.GET.get('q', '').strip()
 
     if not query:
-        return redirect('homepage')
+        context = {
+            "query": "",
+            "blogs": [],
+            "total_blogs": 0,
+            "categories": Category.objects.all(),
+            "action": "search_results",
+        }
+        if request.headers.get("HX-Request"):
+            return render(request, "components/search/partial_search_results.html", context)
+        return render(request, "components/search/search_results.html", context)
 
+    search_filter = (
+        Q(title__icontains=query) |
+        Q(subtitle__icontains=query) |
+        Q(description__icontains=query) |
+        Q(tags__name__icontains=query) |
+        Q(category__name__icontains=query) |
+        Q(subcategory__name__icontains=query) |
+        Q(author__first_name__icontains=query) |
+        Q(author__last_name__icontains=query) |
+        Q(author__email__icontains=query)
+    )
+
+    published_posts = (
+        BlogPost.objects.filter(status="published")
+        .select_related("author", "category", "subcategory")
+        .prefetch_related("tags")
+        .filter(search_filter)
+        .distinct()
+        .order_by("-created_at")
+    )
+
+    total_count = published_posts.count()
+
+    paginator = Paginator(published_posts, 12)
+    page_number = request.GET.get('page', 1)
     try:
-        category_match = Category.objects.get(name__iexact=query)
-        return redirect('category_post', slug=category_match.slug)
-    except Category.DoesNotExist:
-        pass
+        blogs_page = paginator.page(page_number)
+    except PageNotAnInteger:
+        blogs_page = paginator.page(1)
+    except EmptyPage:
+        blogs_page = paginator.page(paginator.num_pages)
 
-    try:
-        subcategory_match = SubCategory.objects.get(name__iexact=query)
-        return redirect('category_post', slug=subcategory_match.slug)
-    except SubCategory.DoesNotExist:
-        pass
+    categories = Category.objects.all()
 
-    blog_post_match = BlogPost.objects.filter(
-        Q(title__icontains=query) | Q(subtitle__icontains=query),
-        status="published"
-    ).first()
+    context = {
+        "query": query,
+        "blogs": blogs_page,
+        "total_blogs": total_count,
+        "categories": categories,
+        "action": "search_results",
+    }
 
-    if blog_post_match:
-        return redirect('blog_details', slug=blog_post_match.slug)
-
-    return redirect('homepage')
+    if request.headers.get("HX-Request"):
+        return render(request, "components/search/partial_search_results.html", context)
+    return render(request, "components/search/search_results.html", context)
 
 
 @vary_on_headers("HX-Request")

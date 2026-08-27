@@ -199,3 +199,39 @@ def get_recent_activity():
         return events[:10]
         
     return cache.get_or_set("dashboard_recent_activity", _fetch, 60)
+
+
+def get_automation_operations_stats():
+    """
+    Computes automation publishing operational statistics for today in Asia/Dhaka.
+    """
+    from django.conf import settings
+    from blog_post.models import AutomationPublishLog
+    from blog_post.automation_services import get_asia_dhaka_day_range
+
+    local_start, local_end = get_asia_dhaka_day_range()
+    
+    daily_limit = getattr(settings, 'TECHLIFE_AUTOMATION_DAILY_POST_LIMIT', 4)
+    enabled = getattr(settings, 'TECHLIFE_AUTOMATION_ENABLED', True)
+
+    today_logs = AutomationPublishLog.objects.filter(created_at__range=(local_start, local_end))
+    published_today = today_logs.filter(event_type='published').count()
+    rejected_today = today_logs.filter(event_type='rejected').count()
+    failed_today = today_logs.filter(event_type='processing_failed').count()
+
+    remaining_slots = max(0, daily_limit - published_today)
+
+    recent_results = list(
+        AutomationPublishLog.objects.select_related('post').order_by('-created_at')[:5]
+    )
+
+    return {
+        "automation_enabled": enabled,
+        "daily_limit": daily_limit,
+        "published_today": published_today,
+        "remaining_slots": remaining_slots,
+        "rejected_today": rejected_today,
+        "failed_today": failed_today,
+        "recent_results": recent_results,
+    }
+

@@ -1,0 +1,157 @@
+{% load static %}
+
+<div id="page-meta-update" class="hidden"
+    data-title="Search results for '{{ query }}' | TechLife BD"
+    data-description="Search results for '{{ query }}' on TechLife BD."
+    data-canonical="{{ request.build_absolute_uri }}">
+</div>
+
+<div class="max-w-7xl mx-auto px-3 py-4">
+
+    <!-- Search Header & Input Bar -->
+    <div class="bg-white border border-gray-100 rounded-2xl p-5 mb-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#1e3a6e] text-white flex items-center justify-center shrink-0">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-xl text-gray-900 tracking-tight">
+                        {% if query %}
+                            Search Results for "<span class="text-[#1e3a6e]">{{ query }}</span>"
+                        {% else %}
+                            Search TechLife Articles
+                        {% endif %}
+                    </h1>
+                    <p class="text-xs text-gray-500 mt-0.5">Found {{ total_blogs }} matching result{{ total_blogs|pluralize }}</p>
+                </div>
+            </div>
+
+            {% if total_blogs %}
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#dbeafe]/70 text-[#1e3a6e] text-xs font-bold self-start sm:self-auto">
+                {{ total_blogs }} Result{{ total_blogs|pluralize }}
+            </span>
+            {% endif %}
+        </div>
+
+        <!-- Interactive Search Input -->
+        <form action="{% url 'redirect_search_results' %}" method="GET"
+              hx-get="{% url 'redirect_search_results' %}"
+              hx-target="#container"
+              hx-push-url="true"
+              hx-swap="innerHTML"
+              class="flex items-center gap-2">
+            <div class="relative flex-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3.5 top-3 pointer-events-none"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input type="search" name="q" value="{{ query }}" placeholder="Search articles by title, content, tag, category or author..." required
+                       class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 text-gray-800 focus:outline-none focus:border-[#1e3a6e] focus:bg-white transition-colors" />
+            </div>
+            <button type="submit" class="px-5 py-2.5 bg-[#1e3a6e] hover:bg-[#152d56] text-white text-xs font-bold rounded-xl transition-colors shrink-0">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <!-- Results Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+        {% for blog in blogs %}
+        <a href="{% url 'blog_details' blog.slug %}"
+           hx-get="{% url 'blog_details' blog.slug %}"
+           hx-target="#container"
+           hx-push-url="true"
+           hx-swap="innerHTML"
+           class="bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-md transition-all duration-200 cursor-pointer group flex flex-col">
+            <div class="overflow-hidden relative" style="aspect-ratio: 16/9;">
+                {% if blog.featured_image %}
+                <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.04]" width="400" height="225" loading="lazy" />
+                {% elif blog.featured_image_url %}
+                <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.04]" width="400" height="225" loading="lazy" />
+                {% else %}
+                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.04]" width="400" height="225" loading="lazy" />
+                {% endif %}
+                
+                {% if blog.category %}
+                <span class="absolute top-2.5 left-2.5 inline-block text-[10px] font-bold text-[#1e3a6e] bg-white/90 backdrop-blur-sm px-2.5 py-0.5 rounded-full shadow-sm">
+                    {{ blog.category.name }}
+                </span>
+                {% endif %}
+            </div>
+
+            <div class="p-4 flex flex-col flex-1">
+                <div class="flex items-center justify-between text-[11px] text-gray-400 mb-2">
+                    <span>{{ blog.created_at|date:"M d, Y" }}</span>
+                    <span>{{ blog.views }} views</span>
+                </div>
+
+                <h3 class="font-bold text-[14px] text-gray-900 line-clamp-2 group-hover:text-[#1e3a6e] transition-colors leading-snug flex-1 mb-2">
+                    {{ blog.title }}
+                </h3>
+
+                <p class="text-[12px] text-gray-500 line-clamp-2 mb-3 leading-relaxed">
+                    {{ blog.description|truncatechars:90|striptags }}
+                </p>
+
+                <div class="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
+                    <span class="text-[11px] font-semibold text-gray-600 flex items-center gap-1.5 truncate">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        {{ blog.author.first_name|default:blog.author.username }}
+                    </span>
+                    <span class="text-[11px] font-bold text-[#1e3a6e] group-hover:translate-x-0.5 transition-transform">
+                        Read →
+                    </span>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <div class="col-span-full bg-white border border-gray-100 rounded-2xl p-12 text-center">
+            <div class="w-16 h-16 rounded-full bg-blue-50 text-[#1e3a6e] flex items-center justify-center mx-auto mb-4">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </div>
+            <h3 class="font-bold text-lg text-gray-800 mb-1">No Results Found</h3>
+            <p class="text-sm text-gray-500 mb-5 max-w-md mx-auto">
+                We couldn't find any published articles matching "<span class="font-bold text-gray-700">{{ query }}</span>". Try checking for spelling errors or searching with broader keywords.
+            </p>
+            <a href="{% url 'blogs' %}"
+               hx-get="{% url 'blogs' %}"
+               hx-target="#container"
+               hx-push-url="true"
+               hx-swap="innerHTML"
+               class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1e3a6e] text-white text-xs font-bold rounded-xl hover:bg-[#152d56] transition-colors">
+                Browse All Articles
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    {% if blogs.has_other_pages %}
+    <div class="flex items-center justify-center gap-2 mt-6">
+        {% if blogs.has_previous %}
+        <a href="?q={{ query }}&page={{ blogs.previous_page_number }}"
+           hx-get="?q={{ query }}&page={{ blogs.previous_page_number }}"
+           hx-target="#container"
+           hx-push-url="true"
+           hx-swap="innerHTML"
+           class="px-3.5 py-2 border border-gray-200 rounded-xl bg-white text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors">
+            ← Previous
+        </a>
+        {% endif %}
+
+        <span class="px-4 py-2 text-xs font-semibold text-gray-500">
+            Page {{ blogs.number }} of {{ blogs.paginator.num_pages }}
+        </span>
+
+        {% if blogs.has_next %}
+        <a href="?q={{ query }}&page={{ blogs.next_page_number }}"
+           hx-get="?q={{ query }}&page={{ blogs.next_page_number }}"
+           hx-target="#container"
+           hx-push-url="true"
+           hx-swap="innerHTML"
+           class="px-3.5 py-2 border border-gray-200 rounded-xl bg-white text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors">
+            Next →
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>

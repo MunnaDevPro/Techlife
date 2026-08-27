@@ -1,8 +1,8 @@
-# serializers.py
+import hashlib
 from rest_framework import serializers
 from .models import (
     Category, SubCategory, BlogPost, BlogAdditionalImage, 
-    Like, Review, Post_view_ip, compnay_logo
+    Like, Review, Post_view_ip, compnay_logo, HomepageConfig
 )
 from accounts.models import CustomUserModel
 from tags.models import Tag
@@ -31,8 +31,8 @@ class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
         fields = [
-            'id', 'name', 'slug', 'description', 'category', 
-            'category_name', 'created_at', 'updated_at'
+            'id', 'name', 'slug', 'description', 'font_awesome_icon',
+            'category', 'category_name', 'created_at', 'updated_at'
         ]
 
 class BlogAdditionalImageSerializer(serializers.ModelSerializer):
@@ -53,16 +53,15 @@ class BlogPostListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'subtitle', 'slug', 'description', 
             'featured_image', 'featured_image_url', 'category',
-            'subcategory', 'author', 'status', 'views', 'likes_count',
-            'content_quality', 'created_at', 'updated_at', 'tags',
-            'comments_count'
+            'subcategory', 'author', 'status', 'is_featured', 'views', 'likes_count',
+            'content_quality', 'meta_title', 'meta_description',
+            'created_at', 'updated_at', 'tags', 'comments_count'
         ]
     
     def get_likes_count(self, obj):
         return obj.likes.count()
     
     def get_comments_count(self, obj):
-        # Assuming you have a comments app
         from comments.models import Comment
         return Comment.objects.filter(post=obj).count()
 
@@ -77,10 +76,40 @@ class BlogPostCreateSerializer(serializers.ModelSerializer):
         model = BlogPost
         fields = [
             'id', 'title', 'subtitle', 'description', 'featured_image',
-            'featured_image_url', 'category', 'subcategory', 'tags_list'
+            'featured_image_url', 'category', 'subcategory', 'tags_list',
+            'status', 'slug', 'meta_title', 'meta_description', 'is_featured'
         ]
         read_only_fields = ['author', 'slug', 'status']
-    
+
+    def validate(self, attrs):
+        title = attrs.get('title', getattr(self.instance, 'title', '') if self.instance else '')
+        description = attrs.get('description', getattr(self.instance, 'description', '') if self.instance else '')
+        if title:
+            raw_content = (title + str(description or '')).encode("utf-8")
+            c_hash = hashlib.md5(raw_content).hexdigest()
+            qs = BlogPost.objects.filter(content_hash=c_hash)
+            if self.instance and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise serializers.ValidationError({"non_field_errors": ["A blog post with duplicate content already exists."]})
+
+        featured_image = attrs.get('featured_image')
+        if featured_image and hasattr(featured_image, 'read'):
+            try:
+                featured_image.seek(0)
+                img_bytes = featured_image.read()
+                featured_image.seek(0)
+                img_hash = hashlib.md5(img_bytes).hexdigest()
+                img_qs = BlogPost.objects.filter(image_hash=img_hash)
+                if self.instance and self.instance.pk:
+                    img_qs = img_qs.exclude(pk=self.instance.pk)
+                if img_qs.exists():
+                    raise serializers.ValidationError({"featured_image": ["A blog post with a duplicate image already exists."]})
+            except Exception:
+                pass
+
+        return attrs
+
     def create(self, validated_data):
         tags_list = validated_data.pop('tags_list', [])
         user = self.context['request'].user
@@ -95,9 +124,12 @@ class BlogPostCreateSerializer(serializers.ModelSerializer):
             slug = f"{base_slug}-{counter}"
             counter += 1
         
+        validated_data.pop('author', None)
+        validated_data.pop('author_id', None)
+        author = user
         # Create blog post
         blog_post = BlogPost.objects.create(
-            author=user,
+            author=author,
             slug=slug,
             **validated_data
         )
@@ -172,4 +204,15 @@ class PostViewIpSerializer(serializers.ModelSerializer):
 class CompanyLogoSerializer(serializers.ModelSerializer):
     class Meta:
         model = compnay_logo
-        fields = ['id', 'name', 'logo_svg']
+        fields = ['id', 'name', 'company_image', 'company_image_url', 'created_at']
+
+class HomepageConfigSerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    category_slug = serializers.CharField(source='category.slug', read_only=True)
+
+    class Meta:
+        model = HomepageConfig
+        fields = [
+            'id', 'section_key', 'title', 'category', 'category_name',
+            'category_slug', 'post_count', 'is_active', 'order'
+        ]

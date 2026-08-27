@@ -9,12 +9,18 @@ from dashboard.views import users
 from dashboard.views import seo
 from dashboard.views import analytics
 from dashboard.views import site_config
+from dashboard.views import api
 
 app_name = "dashboard"
 
 urlpatterns = [
     path("login/", auth_views.LoginView.as_view(template_name="dashboard/login.html"), name="login"),
     path("", overview, name="overview"),
+    
+    # API & Conf
+    path("api/docs/", api.api_docs, name="api_docs"),
+    path("api/config/", api.api_config, name="api_config"),
+    path("api/docs/export/", api.api_export, name="api_export"),
     
     # Content
     path("content/posts/", content.post_list, name="content_posts"),

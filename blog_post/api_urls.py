@@ -3,9 +3,9 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .api_views import (
     CategoryViewSet, SubCategoryViewSet, BlogPostViewSet,
-    LikeViewSet, ReviewViewSet, CompanyLogoViewSet,
-    PopularBlogsAPIView, LatestBlogsAPIView, CategoryBlogsAPIView,
-    UserBlogsAPIView
+    LikeViewSet, ReviewViewSet, CompanyLogoViewSet, HomepageConfigViewSet,
+    FeaturedBlogsAPIView, PopularBlogsAPIView, LatestBlogsAPIView,
+    CategoryBlogsAPIView, UserBlogsAPIView
 )
 
 router = DefaultRouter()
@@ -15,9 +15,11 @@ router.register(r'posts', BlogPostViewSet, basename='post')
 router.register(r'likes', LikeViewSet, basename='like')
 router.register(r'reviews', ReviewViewSet, basename='review')
 router.register(r'company-logos', CompanyLogoViewSet)
+router.register(r'homepage-configs', HomepageConfigViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('featured-posts/', FeaturedBlogsAPIView.as_view(), name='api-featured-posts'),
     path('popular-posts/', PopularBlogsAPIView.as_view(), name='api-popular-posts'),
     path('latest-posts/', LatestBlogsAPIView.as_view(), name='api-latest-posts'),
     path('category/<slug:slug>/posts/', CategoryBlogsAPIView.as_view(), name='api-category-posts'),

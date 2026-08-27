@@ -1,0 +1,456 @@
+{% extends base_template %}
+
+{% block content %}
+<script id="api-endpoints-json" type="application/json">{{ endpoints_json|safe }}</script>
+
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('apiDocsManager', () => ({
+        endpoints: [],
+        selectedId: 'posts_like',
+        filterCategory: 'All',
+        filterMethod: 'All',
+        searchQuery: '',
+        codeTabs: {},
+        sandboxState: {},
+        copiedNotice: '',
+
+        init() {
+            try {
+                const raw = document.getElementById('api-endpoints-json').textContent;
+                this.endpoints = JSON.parse(raw);
+                if (this.endpoints.length > 0) {
+                    this.selectedId = this.endpoints[0].id;
+                    this.endpoints.forEach(ep => {
+                        this.codeTabs[ep.id] = 'curl';
+                        this.sandboxState[ep.id] = {
+                            method: ep.method || 'GET',
+                            path: ep.path || '',
+                            headers: JSON.stringify(ep.headers || {}, null, 2),
+                            body: ep.sample_request ? JSON.stringify(ep.sample_request, null, 2) : '',
+                            query: '',
+                            loading: false,
+                            result: null
+                        };
+                    });
+                }
+            } catch (e) {
+                console.error('Failed to parse API endpoints JSON:', e);
+            }
+        },
+
+        get filteredEndpoints() {
+            return this.endpoints.filter(e => {
+                const matchesCat = this.filterCategory === 'All' || e.category === this.filterCategory;
+                const matchesMethod = this.filterMethod === 'All' || e.method === this.filterMethod;
+                const matchesSearch = !this.searchQuery || 
+                    e.name.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
+                    e.path.toLowerCase().includes(this.searchQuery.toLowerCase());
+                return matchesCat && matchesMethod && matchesSearch;
+            });
+        },
+
+        toggleEndpoint(id) {
+            this.selectedId = (this.selectedId === id ? null : id);
+        },
+
+        copyToClipboard(text, msg) {
+            navigator.clipboard.writeText(text);
+            this.copiedNotice = msg;
+            setTimeout(() => { this.copiedNotice = ''; }, 2500);
+        },
+
+        generateSnippet(ep, lang) {
+            if (!ep || !ep.path) return '';
+            const host = window.location.origin;
+            const fullUrl = host + ep.path;
+            if (lang === 'curl') {
+                let cmd = `curl -X ${ep.method} "${fullUrl}"`;
+                if (ep.headers) {
+                    Object.entries(ep.headers).forEach(([k, v]) => {
+                        cmd += ` \\\n  -H "${k}: ${v}"`;
+                    });
+                }
+                if (ep.sample_request && ep.method !== 'GET') {
+                    cmd += ` \\\n  -d '${JSON.stringify(ep.sample_request)}'`;
+                }
+                return cmd;
+            } else if (lang === 'fetch') {
+                const opts = { method: ep.method, headers: ep.headers || {} };
+                if (ep.sample_request && ep.method !== 'GET') {
+                    opts.body = ep.sample_request;
+                }
+                return `fetch("${fullUrl}", ${JSON.stringify(opts, null, 2)})\n  .then(res => res.json())\n  .then(data => console.log(data));`;
+            } else if (lang === 'python') {
+                let py = `import requests\n\nurl = "${fullUrl}"\n`;
+                if (ep.headers) {
+                    py += `headers = ${JSON.stringify(ep.headers, null, 2)}\n`;
+                }
+                if (ep.sample_request && ep.method !== 'GET') {
+                    py += `payload = ${JSON.stringify(ep.sample_request, null, 2)}\n`;
+                    py += `response = requests.${ep.method.toLowerCase()}(url, json=payload${ep.headers ? ', headers=headers' : ''})\n`;
+                } else {
+                    py += `response = requests.${ep.method.toLowerCase()}(url${ep.headers ? ', headers=headers' : ''})\n`;
+                }
+                py += `print(response.json())`;
+                return py;
+            }
+            return '';
+        },
+
+        async runSandboxTest(epId) {
+            const sb = this.sandboxState[epId];
+            if (!sb) return;
+            sb.loading = true;
+            sb.result = null;
+            const startTime = performance.now();
+            try {
+                let url = sb.path;
+                if (sb.query) {
+                    url += (url.includes('?') ? '&' : '?') + sb.query;
+                }
+                let reqHeaders = {};
+                if (sb.headers) {
+                    try { reqHeaders = JSON.parse(sb.headers); } catch(e) {}
+                }
+                const opts = {
+                    method: sb.method,
+                    headers: reqHeaders,
+                };
+                if (['POST', 'PUT', 'PATCH'].includes(sb.method) && sb.body) {
+                    opts.body = sb.body;
+                }
+                const res = await fetch(url, opts);
+                const endTime = performance.now();
+                const duration = Math.round(endTime - startTime);
+                let bodyText = await res.text();
+                let jsonBody = null;
+                try { jsonBody = JSON.parse(bodyText); } catch(e) {}
+                sb.result = {
+                    status: res.status,
+                    statusText: res.statusText,
+                    duration: duration,
+                    headers: Array.from(res.headers.entries()),
+                    bodyText: jsonBody ? JSON.stringify(jsonBody, null, 2) : bodyText
+                };
+            } catch (e) {
+                sb.result = {
+                    status: 0,
+                    statusText: 'Network Error',
+                    duration: 0,
+                    headers: [],
+                    bodyText: e.toString()
+                };
+            } finally {
+                sb.loading = false;
+            }
+        }
+    }));
+});
+</script>
+
+<div x-data="apiDocsManager" class="w-full space-y-6">
+
+    <!-- Page Header & Action Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 w-full">
+        <div class="min-w-0">
+            <div class="flex items-center gap-2.5 mb-1">
+                <i data-lucide="book-open" class="w-6 h-6 text-blue-600 shrink-0"></i>
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight truncate">API Documentation & Testbed</h2>
+            </div>
+            <p class="text-xs sm:text-sm text-gray-500">Explore, test, and export TechLife REST API specifications</p>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0" x-data="{ openExport: false }">
+            <div class="relative">
+                <c-ui.button type="button" variant="secondary" icon="download" icon_right="chevron-down" label="Export Spec" @click="openExport = !openExport"></c-ui.button>
+                
+                <div x-show="openExport" @click.outside="openExport = false" x-cloak
+                     class="absolute right-0 top-full mt-2 w-60 bg-white border border-gray-100 rounded-xl shadow-xl z-50 p-1.5 space-y-1">
+                    <a href="{% url 'dashboard:api_export' %}?format=openapi" target="_blank" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                        <i data-lucide="file-json" class="w-4 h-4 text-blue-600"></i> Complete OpenAPI 3.0 (JSON)
+                    </a>
+                    <a href="{% url 'dashboard:api_export' %}?format=postman" target="_blank" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 transition-colors">
+                        <i data-lucide="send" class="w-4 h-4 text-orange-600"></i> Full Postman Collection
+                    </a>
+                    <a href="{% url 'dashboard:api_export' %}?format=markdown" target="_blank" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors">
+                        <i data-lucide="file-text" class="w-4 h-4 text-emerald-600"></i> Markdown Reference Document
+                    </a>
+                </div>
+            </div>
+
+            <c-ui.button href="{% url 'dashboard:api_config' %}" variant="secondary" icon="key-round" label="Tokens & Config"></c-ui.button>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div x-show="copiedNotice" x-cloak x-transition
+         class="fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium">
+        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i>
+        <span x-text="copiedNotice"></span>
+    </div>
+
+    <!-- Search & Filters Toolbar Card (Single Row Layout) -->
+    <c-ui.card padding="sm" extra_class="w-full !border-0 !shadow-sm">
+        <div class="flex flex-col md:flex-row items-center gap-3 p-1 w-full">
+            <!-- Search Query Input -->
+            <div class="flex-1 w-full min-w-0">
+                <c-ui.input name="searchQuery" placeholder="Search endpoints by name or path..." icon="search" x-model="searchQuery"></c-ui.input>
+            </div>
+
+            <!-- Categories Dropdown Filter -->
+            <div class="w-full md:w-56 shrink-0">
+                <c-ui.select name="filterCategory" value="All" x-model="filterCategory">
+                    <option value="All">All Categories</option>
+                    <option value="Blog Posts">Blog Posts</option>
+                    <option value="Automation Ingestion">Automation Ingestion</option>
+                    <option value="Interactions">Interactions</option>
+                    <option value="Taxonomy">Taxonomy</option>
+                    <option value="Curated Collections">Curated Collections</option>
+                    <option value="Site Settings">Site Settings</option>
+                </c-ui.select>
+            </div>
+
+            <!-- HTTP Methods Dropdown Filter -->
+            <div class="w-full md:w-48 shrink-0">
+                <c-ui.select name="filterMethod" value="All" x-model="filterMethod">
+                    <option value="All">All HTTP Methods</option>
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="DELETE">DELETE</option>
+                </c-ui.select>
+            </div>
+        </div>
+    </c-ui.card>
+
+    <!-- Expandable Endpoint Catalogue List -->
+    <div class="space-y-4 w-full min-w-0">
+        <template x-for="ep in filteredEndpoints" :key="ep.id">
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-200">
+                
+                <!-- Endpoint Card Header Bar (Click to Expand / Collapse) -->
+                <button type="button" @click="toggleEndpoint(ep.id)"
+                        class="w-full text-left px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white hover:bg-gray-50/80 transition-colors cursor-pointer"
+                        :class="selectedId === ep.id ? 'bg-blue-50/20' : ''">
+                    
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                        <span :class="{
+                            'bg-emerald-50 text-emerald-700 border-emerald-200': ep.method === 'GET',
+                            'bg-blue-50 text-blue-700 border-blue-200': ep.method === 'POST',
+                            'bg-rose-50 text-rose-700 border-rose-200': ep.method === 'DELETE'
+                        }" class="px-2.5 py-1 rounded-md border text-xs font-bold font-mono shrink-0" x-text="ep.method"></span>
+
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h3 class="text-base font-bold text-gray-900 truncate" x-text="ep.name"></h3>
+                                <c-ui.badge variant="neutral" :label="ep.category" size="sm"></c-ui.badge>
+                            </div>
+                            <code class="text-xs font-mono text-gray-500 mt-0.5 block truncate" x-text="ep.path"></code>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                        <c-ui.badge variant="info" :label="ep.auth_required" size="sm"></c-ui.badge>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-200"
+                           :class="selectedId === ep.id ? 'rotate-180 text-blue-600' : ''"></i>
+                    </div>
+                </button>
+
+                <!-- Expanded Content Panel -->
+                <div x-show="selectedId === ep.id" x-collapse x-cloak class="p-6 space-y-6 bg-gray-50/40 border-t border-gray-100/60">
+
+                    <!-- Description & Rules Box -->
+                    <div class="space-y-3">
+                        <p class="text-sm text-gray-700 leading-relaxed font-normal" x-text="ep.description"></p>
+
+                        <template x-if="ep.rules && ep.rules.length > 0">
+                            <div class="p-4 rounded-xl bg-blue-50/60 border border-blue-100/70 space-y-2">
+                                <div class="flex items-center gap-2 text-xs font-bold text-blue-800 uppercase tracking-wider">
+                                    <i data-lucide="shield-alert" class="w-4 h-4 text-blue-600"></i>
+                                    <span>Rules & Constraints</span>
+                                </div>
+                                <ul class="list-disc list-inside text-xs text-blue-950 space-y-1 leading-relaxed">
+                                    <template x-for="rule in ep.rules">
+                                        <li x-text="rule"></li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Path Parameters Table (if applicable) -->
+                    <template x-if="ep.path_params && ep.path_params.length > 0">
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Path Parameters</h4>
+                            <c-ui.table extra_class="!border-0">
+                                <c-slot name="header">
+                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Parameter</th>
+                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Type</th>
+                                    <th class="text-center text-xs font-bold text-gray-500 uppercase py-3 px-4 w-24">Required</th>
+                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Description</th>
+                                </c-slot>
+                                <template x-for="pp in ep.path_params">
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="py-3 px-4 text-xs font-mono font-bold text-blue-700" x-text="pp.name"></td>
+                                        <td class="py-3 px-4 text-xs font-mono text-gray-500" x-text="pp.type"></td>
+                                        <td class="py-3 px-4 text-xs text-center">
+                                            <c-ui.badge variant="danger" label="Required" size="sm"></c-ui.badge>
+                                        </td>
+                                        <td class="py-3 px-4 text-xs text-gray-600" x-text="pp.description"></td>
+                                    </tr>
+                                </template>
+                            </c-ui.table>
+                        </div>
+                    </template>
+
+                    <!-- Request Body Input Fields Table (if applicable) -->
+                    <template x-if="ep.body_params && ep.body_params.length > 0">
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Input Fields & Request Body Parameters</h4>
+                            <c-ui.table extra_class="!border-0">
+                                <c-slot name="header">
+                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Field Name</th>
+                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Data Type</th>
+                                    <th class="text-center text-xs font-bold text-gray-500 uppercase py-3 px-4 w-24">Required</th>
+                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Validation & Rules</th>
+                                </c-slot>
+                                <template x-for="bp in ep.body_params">
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="py-3 px-4 text-xs font-mono font-bold text-purple-700" x-text="bp.name"></td>
+                                        <td class="py-3 px-4 text-xs font-mono text-gray-500" x-text="bp.type"></td>
+                                        <td class="py-3 px-4 text-xs text-center">
+                                            <template x-if="bp.required">
+                                                <c-ui.badge variant="danger" label="Required" size="sm"></c-ui.badge>
+                                            </template>
+                                            <template x-if="!bp.required">
+                                                <c-ui.badge variant="neutral" label="Optional" size="sm"></c-ui.badge>
+                                            </template>
+                                        </td>
+                                        <td class="py-3 px-4 text-xs text-gray-600 leading-relaxed" x-text="bp.description"></td>
+                                    </tr>
+                                </template>
+                            </c-ui.table>
+                        </div>
+                    </template>
+
+                    <!-- Query Parameters Table (if applicable) -->
+                    <template x-if="ep.query_params && ep.query_params.length > 0">
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Query Parameters</h4>
+                            <c-ui.table extra_class="!border-0">
+                                <c-slot name="header">
+                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Parameter</th>
+                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Type</th>
+                                    <th class="text-center text-xs font-bold text-gray-500 uppercase py-3 px-4 w-24">Required</th>
+                                    <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Description</th>
+                                </c-slot>
+                                <template x-for="qp in ep.query_params">
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="py-3 px-4 text-xs font-mono font-bold text-emerald-700" x-text="qp.name"></td>
+                                        <td class="py-3 px-4 text-xs font-mono text-gray-500" x-text="qp.type"></td>
+                                        <td class="py-3 px-4 text-xs text-center">
+                                            <template x-if="qp.required">
+                                                <c-ui.badge variant="danger" label="Required" size="sm"></c-ui.badge>
+                                            </template>
+                                            <template x-if="!qp.required">
+                                                <c-ui.badge variant="neutral" label="Optional" size="sm"></c-ui.badge>
+                                            </template>
+                                        </td>
+                                        <td class="py-3 px-4 text-xs text-gray-600" x-text="qp.description"></td>
+                                    </tr>
+                                </template>
+                            </c-ui.table>
+                        </div>
+                    </template>
+
+                    <!-- Required Headers Box -->
+                    <template x-if="ep.headers && Object.keys(ep.headers).length > 0">
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Request Headers</h4>
+                            <div class="bg-gray-100/60 rounded-xl p-4 space-y-1 font-mono text-xs text-gray-800">
+                                <template x-for="(val, key) in ep.headers" :key="key">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-gray-900" x-text="key + ':'"></span>
+                                        <span class="text-gray-600" x-text="val"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Code Generator Section -->
+                    <div class="space-y-3 pt-2">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Code Snippet Generator</h4>
+                            <c-ui.button type="button" variant="ghost" size="sm" icon="copy" label="Copy Code"
+                                         @click="copyToClipboard(generateSnippet(ep, codeTabs[ep.id] || 'curl'), 'Code snippet copied!')"></c-ui.button>
+                        </div>
+
+                        <div class="flex items-center gap-2 border-b border-gray-200/80 pb-1.5 overflow-x-auto scrollbar-hide">
+                            <c-ui.tab-button label="cURL" :active="codeTabs[ep.id] === 'curl'" @click="codeTabs[ep.id] = 'curl'"></c-ui.tab-button>
+                            <c-ui.tab-button label="JavaScript (fetch)" :active="codeTabs[ep.id] === 'fetch'" @click="codeTabs[ep.id] = 'fetch'"></c-ui.tab-button>
+                            <c-ui.tab-button label="Python (requests)" :active="codeTabs[ep.id] === 'python'" @click="codeTabs[ep.id] = 'python'"></c-ui.tab-button>
+                        </div>
+
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-xl font-mono text-xs overflow-x-auto w-full shadow-inner">
+                            <pre x-text="generateSnippet(ep, codeTabs[ep.id] || 'curl')"></pre>
+                        </div>
+                    </div>
+
+                    <!-- Live API Testbed / Sandbox -->
+                    <div class="pt-4 border-t border-gray-200/80 space-y-4">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="play-circle" class="w-4 h-4 text-emerald-600"></i>
+                            <h4 class="text-xs font-bold text-gray-900 uppercase tracking-wider">Interactive Live Testbed</h4>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                            <div class="sm:col-span-4 md:col-span-3">
+                                <c-ui.select name="sandboxMethod" label="Method" :value="sandboxState[ep.id].method" x-model="sandboxState[ep.id].method">
+                                    <option value="GET">GET</option>
+                                    <option value="POST">POST</option>
+                                    <option value="DELETE">DELETE</option>
+                                </c-ui.select>
+                            </div>
+
+                            <div class="sm:col-span-8 md:col-span-9">
+                                <c-ui.input name="sandboxPath" label="Endpoint URL Path" x-model="sandboxState[ep.id].path"></c-ui.input>
+                            </div>
+                        </div>
+
+                        <template x-if="['POST', 'PUT', 'PATCH'].includes(sandboxState[ep.id].method)">
+                            <div class="w-full">
+                                <c-ui.textarea name="sandboxBody" label="JSON Body Payload" rows="4" x-model="sandboxState[ep.id].body"></c-ui.textarea>
+                            </div>
+                        </template>
+
+                        <div class="pt-1">
+                            <c-ui.button type="button" variant="primary" icon="play" label="Execute Request" extra_class="w-full justify-center"
+                                         @click="runSandboxTest(ep.id)"></c-ui.button>
+                        </div>
+
+                        <!-- Live Response Output -->
+                        <template x-if="sandboxState[ep.id].result">
+                            <div class="mt-4 pt-4 border-t border-gray-200/80 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <c-ui.badge :variant="sandboxState[ep.id].result.status >= 200 && sandboxState[ep.id].result.status < 300 ? 'success' : 'danger'"
+                                                    :label="'Status: ' + sandboxState[ep.id].result.status + ' ' + sandboxState[ep.id].result.statusText" size="md"></c-ui.badge>
+                                        <span class="text-xs font-mono text-gray-500" x-text="sandboxState[ep.id].result.duration + ' ms'"></span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-gray-900 text-emerald-400 p-4 rounded-xl font-mono text-xs overflow-x-auto max-h-96 w-full shadow-inner">
+                                    <pre x-text="sandboxState[ep.id].result.bodyText"></pre>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                </div>
+            </div>
+        </template>
+    </div>
+
+</div>
+{% endblock %}

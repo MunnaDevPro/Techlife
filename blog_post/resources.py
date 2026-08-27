@@ -167,6 +167,20 @@ class BlogPostResource(resources.ModelResource):
                 print(f" Error in after_import_row: {e}")
 
 
+class AdminBlogPostResource(BlogPostResource):
+    """Resource for administrative export including full source and automation metadata"""
+
+    class Meta(BlogPostResource.Meta):
+        fields = BlogPostResource.Meta.fields + (
+            'source_name', 'source_url', 'source_author', 'source_published_at',
+            'original_title', 'original_content_hash', 'automation_id',
+            'generated_by_ai', 'ai_model', 'reviewer_model', 'review_decision',
+            'quality_score', 'factual_accuracy_score', 'language_score',
+            'seo_score', 'review_notes', 'source_image_url',
+            'image_processing_status', 'automation_created_at'
+        )
+
+
 class CompanyLogoResource(resources.ModelResource):
     """Resource for Company Logo import/export"""
     

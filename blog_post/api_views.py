@@ -1,5 +1,6 @@
 # api_views.py
 from rest_framework import viewsets, generics, status, permissions
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -9,15 +10,17 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.core.paginator import Paginator
 
+from .authentication import AutomationAuthentication
+
 from .models import (
     Category, SubCategory, BlogPost, BlogAdditionalImage, 
-    Like, Review, Post_view_ip, compnay_logo
+    Like, Review, Post_view_ip, compnay_logo, HomepageConfig
 )
 from .serializers import (
     CategorySerializer, SubCategorySerializer, 
     BlogPostListSerializer, BlogPostDetailSerializer,
     BlogPostCreateSerializer, LikeSerializer, ReviewSerializer,
-    PostViewIpSerializer, CompanyLogoSerializer
+    PostViewIpSerializer, CompanyLogoSerializer, HomepageConfigSerializer
 )
 from accounts.models import CustomUserModel
 
@@ -44,7 +47,9 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
         
         return queryset
 
+
 class BlogPostViewSet(viewsets.ModelViewSet):
+    authentication_classes = [AutomationAuthentication, SessionAuthentication, BasicAuthentication]
     queryset = BlogPost.objects.filter(status="published")
     lookup_field = 'slug'
     
@@ -61,7 +66,12 @@ class BlogPostViewSet(viewsets.ModelViewSet):
         return [permissions.AllowAny()]
     
     def get_queryset(self):
-        queryset = BlogPost.objects.filter(status="published")
+        # Base filter: default to published posts, allow status filter if staff or specified
+        post_status = self.request.query_params.get('status', 'published')
+        if not self.request.user.is_staff and post_status != 'published':
+            post_status = 'published'
+
+        queryset = BlogPost.objects.filter(status=post_status)
         
         # Filter by category
         category_slug = self.request.query_params.get('category', None)
@@ -83,6 +93,14 @@ class BlogPostViewSet(viewsets.ModelViewSet):
         if tag:
             queryset = queryset.filter(tags__name=tag)
         
+        # Filter by is_featured
+        is_featured = self.request.query_params.get('is_featured', None)
+        if is_featured is not None:
+            if is_featured.lower() in ['true', '1']:
+                queryset = queryset.filter(is_featured=True)
+            elif is_featured.lower() in ['false', '0']:
+                queryset = queryset.filter(is_featured=False)
+
         # Search
         search = self.request.query_params.get('search', None)
         if search:
@@ -94,11 +112,24 @@ class BlogPostViewSet(viewsets.ModelViewSet):
         
         # Ordering
         order_by = self.request.query_params.get('order_by', '-created_at')
-        if order_by in ['created_at', '-created_at', 'views', '-views']:
+        allowed_orders = [
+            'created_at', '-created_at',
+            'updated_at', '-updated_at',
+            'views', '-views',
+            'is_featured', '-is_featured',
+            'title', '-title'
+        ]
+        if order_by in allowed_orders:
             queryset = queryset.order_by(order_by)
         
         return queryset.select_related('category', 'subcategory', 'author').prefetch_related('tags')
     
+    def create(self, request, *args, **kwargs):
+        if getattr(request, 'auth', None) == 'Automation':
+            from .automation_services import process_automation_post_creation
+            return process_automation_post_creation(request.data, request.user)
+        return super().create(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
     
@@ -140,7 +171,7 @@ class BlogPostViewSet(viewsets.ModelViewSet):
         serializer = PostViewIpSerializer(views, many=True)
         return Response(serializer.data)
     
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
     def record_view(self, request, slug=None):
         blog_post = self.get_object()
         ip_address = self.get_client_ip(request)
@@ -157,6 +188,16 @@ class BlogPostViewSet(viewsets.ModelViewSet):
             blog_post.save()
         
         return Response({'status': 'view recorded'}, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['get'])
+    def featured(self, request):
+        queryset = self.get_queryset().filter(is_featured=True)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
     
     def get_client_ip(self, request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -192,10 +233,23 @@ class ReviewViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 class CompanyLogoViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = compnay_logo.objects.all()
+    queryset = compnay_logo.objects.all().order_by('-created_at')
     serializer_class = CompanyLogoSerializer
 
+class HomepageConfigViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = HomepageConfig.objects.filter(is_active=True).select_related('category').order_by('order')
+    serializer_class = HomepageConfigSerializer
+
 # Additional API Views
+class FeaturedBlogsAPIView(generics.ListAPIView):
+    serializer_class = BlogPostListSerializer
+
+    def get_queryset(self):
+        return BlogPost.objects.filter(
+            status="published",
+            is_featured=True
+        ).select_related('category', 'subcategory', 'author').prefetch_related('tags').order_by('-created_at')
+
 class PopularBlogsAPIView(generics.ListAPIView):
     serializer_class = BlogPostListSerializer
     
@@ -203,13 +257,13 @@ class PopularBlogsAPIView(generics.ListAPIView):
         return BlogPost.objects.filter(
             status="published",
             views__gte=100
-        ).order_by('-views', '-created_at')[:10]
+        ).select_related('category', 'subcategory', 'author').prefetch_related('tags').order_by('-views', '-created_at')[:10]
 
 class LatestBlogsAPIView(generics.ListAPIView):
     serializer_class = BlogPostListSerializer
     
     def get_queryset(self):
-        return BlogPost.objects.filter(status="published").order_by('-created_at')[:10]
+        return BlogPost.objects.filter(status="published").select_related('category', 'subcategory', 'author').prefetch_related('tags').order_by('-created_at')[:10]
 
 class CategoryBlogsAPIView(generics.ListAPIView):
     serializer_class = BlogPostListSerializer
@@ -219,7 +273,7 @@ class CategoryBlogsAPIView(generics.ListAPIView):
         return BlogPost.objects.filter(
             status="published",
             category__slug=category_slug
-        ).order_by('-created_at')
+        ).select_related('category', 'subcategory', 'author').prefetch_related('tags').order_by('-created_at')
 
 class UserBlogsAPIView(generics.ListAPIView):
     serializer_class = BlogPostListSerializer
@@ -229,4 +283,4 @@ class UserBlogsAPIView(generics.ListAPIView):
         return BlogPost.objects.filter(
             status="published",
             author_id=user_id
-        ).order_by('-created_at')
+        ).select_related('category', 'subcategory', 'author').prefetch_related('tags').order_by('-created_at')

@@ -133,6 +133,25 @@ META_ACCESS_TOKEN = config("META_ACCESS_TOKEN", default="")
 META_TEST_EVENT_CODE = config("META_TEST_EVENT_CODE", default="")
 META_API_VERSION = config("META_API_VERSION", default="v23.0")
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Automation API Credentials & Settings (n8n / Pipeline Publishing)
+# ─────────────────────────────────────────────────────────────────────────────
+TECHLIFE_AUTOMATION_TOKEN = config("TECHLIFE_AUTOMATION_TOKEN", default="")
+TECHLIFE_AUTOMATION_AUTHOR_USERNAME = config("TECHLIFE_AUTOMATION_AUTHOR_USERNAME", default="techlife_desk")
+TECHLIFE_AUTOMATION_ENABLED = config("TECHLIFE_AUTOMATION_ENABLED", default=True, cast=bool)
+TECHLIFE_AUTOMATION_DAILY_POST_LIMIT = config("TECHLIFE_AUTOMATION_DAILY_POST_LIMIT", default=4, cast=int)
+TECHLIFE_AUTOMATION_HOURLY_REQUEST_LIMIT = config("TECHLIFE_AUTOMATION_HOURLY_REQUEST_LIMIT", default=20, cast=int)
+TECHLIFE_AUTOMATION_TIMEZONE = config("TECHLIFE_AUTOMATION_TIMEZONE", default="Asia/Dhaka")
+AUTOMATION_IMAGE_MAX_BYTES = config("AUTOMATION_IMAGE_MAX_BYTES", default=8388608, cast=int)
+AUTOMATION_IMAGE_CONNECT_TIMEOUT = config("AUTOMATION_IMAGE_CONNECT_TIMEOUT", default=5, cast=int)
+AUTOMATION_IMAGE_READ_TIMEOUT = config("AUTOMATION_IMAGE_READ_TIMEOUT", default=15, cast=int)
+AUTOMATION_IMAGE_MAX_REDIRECTS = config("AUTOMATION_IMAGE_MAX_REDIRECTS", default=3, cast=int)
+AUTOMATION_IMAGE_MAX_WIDTH = config("AUTOMATION_IMAGE_MAX_WIDTH", default=1600, cast=int)
+AUTOMATION_IMAGE_MAX_HEIGHT = config("AUTOMATION_IMAGE_MAX_HEIGHT", default=1200, cast=int)
+AUTOMATION_IMAGE_WEBP_QUALITY = config("AUTOMATION_IMAGE_WEBP_QUALITY", default=82, cast=int)
+
+
+
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [

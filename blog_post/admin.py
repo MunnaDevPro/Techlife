@@ -12,6 +12,7 @@ from blog_post.models import (
     Like,
     SubCategory,
     compnay_logo,
+    AutomationPublishLog,
 )
 from django.utils.html import format_html
 from unfold.contrib.import_export.forms import ExportForm, ImportForm
@@ -88,6 +89,7 @@ class BlogPostAdminForm(forms.ModelForm):
     views = forms.IntegerField(required=False, disabled=True)
     content_hash = forms.CharField(required=False, disabled=True)
     image_hash = forms.CharField(required=False, disabled=True)
+    original_content_hash = forms.CharField(required=False, disabled=True)
     created_at = forms.DateTimeField(required=False, disabled=True)
     updated_at = forms.DateTimeField(required=False, disabled=True)
 
@@ -109,6 +111,25 @@ class BlogPostAdminForm(forms.ModelForm):
             "description",
             "meta_title",
             "meta_description",
+            "source_name",
+            "source_url",
+            "source_author",
+            "source_published_at",
+            "original_title",
+            "original_content_hash",
+            "automation_id",
+            "generated_by_ai",
+            "ai_model",
+            "reviewer_model",
+            "review_decision",
+            "quality_score",
+            "factual_accuracy_score",
+            "language_score",
+            "seo_score",
+            "review_notes",
+            "source_image_url",
+            "image_processing_status",
+            "automation_created_at",
         )
     description = forms.CharField(
         widget=CKEditorUploadingWidget(
@@ -200,11 +221,17 @@ class BlogPostAdmin(ModelAdmin, ImportExportModelAdmin):
 
     list_display = (
         "image_preview", "title", "author", "category",
-        "subcategory", "status", "is_featured", "views", "created_at"
+        "subcategory", "status", "is_featured", "generated_by_ai", "review_decision", "created_at"
     )
-    list_filter = ("is_featured", "status", "category", "subcategory", "created_at")
+    list_filter = (
+        "is_featured", "status", "generated_by_ai", "review_decision",
+        "image_processing_status", "category", "subcategory", "created_at"
+    )
     list_editable = ("is_featured", "status")
-    search_fields = ("title", "author__email", "category__name", "subcategory__name")
+    search_fields = (
+        "title", "author__email", "category__name", "subcategory__name",
+        "source_name", "source_author", "automation_id", "ai_model"
+    )
     ordering = ("-created_at",)
     autocomplete_fields = ("author", "category", "subcategory")
     filter_horizontal = ("tags",)
@@ -212,11 +239,11 @@ class BlogPostAdmin(ModelAdmin, ImportExportModelAdmin):
     readonly_fields = (
         "content_hash",
         "image_hash",
+        "original_content_hash",
         "created_at",
         "updated_at",
     )
 
-    # ✅ FIX: show all posts per page (বা বড় সংখ্যা)
     list_per_page = 50
     show_full_result_count = True
 
@@ -232,6 +259,31 @@ class BlogPostAdmin(ModelAdmin, ImportExportModelAdmin):
         }),
         ("Content", {
             "fields": ("description",),
+        }),
+        ("Source Information", {
+            "fields": (
+                "source_name", "source_url", "source_author",
+                "source_published_at", "original_title", "original_content_hash"
+            ),
+            "classes": ("collapse",),
+        }),
+        ("Automation & AI Metadata", {
+            "fields": (
+                "automation_id", "generated_by_ai", "ai_model",
+                "automation_created_at"
+            ),
+            "classes": ("collapse",),
+        }),
+        ("AI Review & Quality Scores", {
+            "fields": (
+                "reviewer_model", "review_decision", "quality_score",
+                "factual_accuracy_score", "language_score", "seo_score", "review_notes"
+            ),
+            "classes": ("collapse",),
+        }),
+        ("Image Pipeline", {
+            "fields": ("source_image_url", "image_processing_status"),
+            "classes": ("collapse",),
         }),
         ("SEO", {
             "fields": ("meta_title", "meta_description"),
@@ -367,3 +419,83 @@ class PostViewIpAdmin(ModelAdmin):
     search_fields = ("post__title", "user__email", "ip_address")
     list_filter = ("viewed_at",)
     ordering = ("-viewed_at",)
+
+
+# ============================================
+# AUTOMATION PUBLISH LOG ADMIN (PRIVATE OPERATIONAL AUDIT)
+# ============================================
+
+@admin.register(AutomationPublishLog)
+class AutomationPublishLogAdmin(ModelAdmin):
+    list_display = (
+        "created_at",
+        "event_type",
+        "automation_id",
+        "result_code",
+        "http_status",
+        "duration_ms",
+        "source_name",
+        "post",
+    )
+    list_filter = (
+        "event_type",
+        "http_status",
+        "review_decision",
+        "created_at",
+    )
+    search_fields = (
+        "automation_id",
+        "source_name",
+        "source_url",
+        "result_code",
+        "error_summary",
+    )
+    date_hierarchy = "created_at"
+    ordering = ("-created_at",)
+
+    readonly_fields = (
+        "automation_id",
+        "source_name",
+        "source_url",
+        "post",
+        "event_type",
+        "result_code",
+        "http_status",
+        "duration_ms",
+        "image_status",
+        "review_decision",
+        "quality_score",
+        "factual_accuracy_score",
+        "language_score",
+        "seo_score",
+        "error_summary",
+        "created_at",
+    )
+
+    fieldsets = (
+        ("Request Identification", {
+            "fields": ("created_at", "automation_id", "event_type", "result_code", "http_status", "duration_ms"),
+        }),
+        ("Source & Article Link", {
+            "fields": ("source_name", "source_url", "post"),
+        }),
+        ("Pipeline Metrics & Review", {
+            "fields": (
+                "image_status",
+                "review_decision",
+                "quality_score",
+                "factual_accuracy_score",
+                "language_score",
+                "seo_score",
+            ),
+        }),
+        ("Error Diagnostics (Sanitized)", {
+            "fields": ("error_summary",),
+        }),
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
