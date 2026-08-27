@@ -65,7 +65,7 @@
         {% if automation_ops.recent_results %}
         <div class="!flex !flex-col !gap-3">
             {% for item in automation_ops.recent_results %}
-            <div class="!flex !items-center !justify-between !p-4 !bg-gray-50/70 !rounded-xl !border-none !shadow-sm !text-[13px] hover:!shadow-md !transition-shadow !duration-300">
+            <div class="!flex !items-center !justify-between !p-4 !bg-gray-50/70 !rounded-xl !border-none !text-[13px] !transition-colors !duration-300 hover:!bg-gray-100/70">
                 <div class="!flex !items-center !gap-3 !min-w-0">
                     {% if item.event_type == 'published' %}
                         <span class="!px-2.5 !py-1 !rounded-full !bg-emerald-100 !text-emerald-800 !font-bold !text-[10px] !tracking-wider !uppercase">Published</span>
