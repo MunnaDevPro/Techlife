@@ -7,22 +7,13 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
             <div class="flex items-center gap-2.5 mb-1">
-                <div
-                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-sm">
-                    <i data-lucide="link-2-off" class="w-4 h-4 text-white"></i>
-                </div>
                 <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Broken Links & 404 Logs</h2>
             </div>
-            <p class="text-[13.5px] text-gray-500 ml-10">Real-time page-not-found redirects recorded by middleware</p>
+            <p class="text-[13.5px] text-gray-500">Real-time page-not-found redirects recorded by middleware</p>
         </div>
         <!-- Live indicator -->
-        <div
-            class="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl !px-4 !py-2.5 self-start sm:self-auto">
-            <span class="relative flex h-2.5 w-2.5">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
-            </span>
-            <span class="text-[13px] font-semibold text-red-700">Live Monitoring</span>
+        <div class="self-start sm:self-auto">
+            <c-ui.badge variant="danger" label="Live Monitoring" dot="true" />
         </div>
     </div>
 
@@ -30,170 +21,88 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
         <!-- Unique Broken Paths -->
-        <div
-            class="bg-white border border-gray-200 rounded-2xl !p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden">
-            <div
-                class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-rose-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl">
-            </div>
-            <div class="flex items-center justify-between relative z-10">
-                <div
-                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-sm">
-                    <i data-lucide="link-2-off" class="w-5 h-5 text-white"></i>
-                </div>
-                <span
-                    class="text-[10.5px] font-semibold text-red-600 bg-red-50 border border-red-100 !px-2 !py-0.5 rounded-full uppercase tracking-wider">Unique</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">Broken Paths</p>
-                <h3 class="text-3xl font-bold text-gray-900 mt-0.5 tracking-tight">{{ total_logs }}</h3>
-            </div>
-        </div>
+        <c-dashboard.kpi_card 
+            title="Broken Paths" 
+            value="{{ total_logs }}" 
+            icon="link-2-off" 
+            icon_color="!text-red-500" 
+            badge="Unique" 
+            badge_text_color="!text-red-600" 
+            badge_bg_color="!bg-red-50" 
+        />
 
         <!-- Total Hit Count -->
-        <div
-            class="bg-white border border-gray-200 rounded-2xl !p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden">
-            <div
-                class="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl">
-            </div>
-            <div class="flex items-center justify-between relative z-10">
-                <div
-                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-sm">
-                    <i data-lucide="target" class="w-5 h-5 text-white"></i>
-                </div>
-                <span
-                    class="text-[10.5px] font-semibold text-orange-600 bg-orange-50 border border-orange-100 !px-2 !py-0.5 rounded-full uppercase tracking-wider">Total</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">Total Hits</p>
-                <h3 class="text-3xl font-bold text-gray-900 mt-0.5 tracking-tight">{{ total_hits }}</h3>
-            </div>
-        </div>
+        <c-dashboard.kpi_card 
+            title="Total Hits" 
+            value="{{ total_hits }}" 
+            icon="target" 
+            icon_color="!text-orange-500" 
+            badge="Total" 
+            badge_text_color="!text-orange-600" 
+            badge_bg_color="!bg-orange-50" 
+        />
 
         <!-- Top Offender -->
-        <div
-            class="bg-white border border-gray-200 rounded-2xl !p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden">
-            <div
-                class="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl">
-            </div>
-            <div class="flex items-center justify-between relative z-10">
-                <div
-                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-sm">
-                    <i data-lucide="alert-triangle" class="w-5 h-5 text-white"></i>
-                </div>
-                <span
-                    class="text-[10.5px] font-semibold text-violet-600 bg-violet-50 border border-violet-100 !px-2 !py-0.5 rounded-full uppercase tracking-wider">#1</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">Top Offender</p>
-                {% if top_offender %}
-                <h3 class="text-[13px] font-bold text-gray-800 mt-0.5 truncate" title="{{ top_offender.path }}">{{
-                    top_offender.path }}</h3>
-                <p class="text-[11px] text-violet-600 font-semibold mt-0.5">{{ top_offender.hit_count }} hits</p>
-                {% else %}
-                <h3 class="text-[13px] font-bold text-gray-400 mt-0.5">None</h3>
-                {% endif %}
-            </div>
-        </div>
+        <c-dashboard.kpi_card 
+            title="Top Offender" 
+            value="{% if top_offender %}{{ top_offender.hit_count }} hits{% else %}0 hits{% endif %}" 
+            icon="alert-triangle" 
+            icon_color="!text-violet-500" 
+            badge="#1" 
+            badge_text_color="!text-violet-600" 
+            badge_bg_color="!bg-violet-50" 
+        />
 
         <!-- Active Today -->
-        <div
-            class="bg-white border border-gray-200 rounded-2xl !p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden">
-            <div
-                class="absolute inset-0 bg-gradient-to-br from-sky-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl">
-            </div>
-            <div class="flex items-center justify-between relative z-10">
-                <div
-                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-sm">
-                    <i data-lucide="calendar-clock" class="w-5 h-5 text-white"></i>
-                </div>
-                <span
-                    class="text-[10.5px] font-semibold text-sky-600 bg-sky-50 border border-sky-100 !px-2 !py-0.5 rounded-full uppercase tracking-wider">Today</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">Active Today</p>
-                <h3 class="text-3xl font-bold text-gray-900 mt-0.5 tracking-tight">{{ today_logs }}</h3>
-            </div>
-        </div>
+        <c-dashboard.kpi_card 
+            title="Active Today" 
+            value="{{ today_logs }}" 
+            icon="calendar-clock" 
+            icon_color="!text-sky-500" 
+            badge="Today" 
+            badge_text_color="!text-sky-600" 
+            badge_bg_color="!bg-sky-50" 
+        />
 
     </div>
 
     <!-- 404 Log Table -->
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-
-        <!-- Card Header -->
-        <div class="!px-6 !py-5 border-b border-gray-100 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div
-                    class="w-9 h-9 rounded-xl bg-gradient-to-br from-red-400 to-rose-500 flex items-center justify-center shadow-sm">
-                    <i data-lucide="list-x" class="w-4 h-4 text-white"></i>
-                </div>
-                <div>
-                    <h3 class="text-[15px] font-bold text-gray-900">404 Error Log</h3>
-                    <p class="text-[12px] text-gray-400 mt-0.5">{{ total_logs }} unique path{{ total_logs|pluralize }} ·
-                        {{ total_hits }} total hit{{ total_hits|pluralize }}</p>
-                </div>
-            </div>
+    <c-ui.card title="404 Error Log" subtitle="{{ total_logs }} unique path{{ total_logs|pluralize }} · {{ total_hits }} total hit{{ total_hits|pluralize }}" class="border-gray-200">
+        <c-slot name="actions">
             <div class="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg !px-3 !py-1.5">
                 <i data-lucide="arrow-down-az" class="w-3.5 h-3.5 text-gray-400"></i>
                 <span class="text-[12px] font-medium text-gray-500">By Hit Count</span>
             </div>
-        </div>
+        </c-slot>
 
-        <!-- Table -->
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead>
-                    <tr class="bg-gray-50/70 border-b border-gray-100">
-                        <th
-                            class="text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-4 w-10">
-                            #</th>
-                        <th
-                            class="text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-4">
-                            Request Path</th>
-                        <th
-                            class="text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-4">
-                            HTTP Referer / Source</th>
-                        <th
-                            class="text-center text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-4">
-                            Severity</th>
-                        <th
-                            class="text-center text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-4">
-                            Hit Count</th>
-                        <th
-                            class="text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-4">
-                            Last Seen</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-
+        <div class="!mt-2 overflow-x-auto">
+            <c-ui.table>
+                <c-slot name="header">
+                    <th class="text-left text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-4 w-10">#</th>
+                    <th class="text-left text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-4">Request Path</th>
+                    <th class="text-left text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-4">HTTP Referer / Source</th>
+                    <th class="text-center text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-4">Severity</th>
+                    <th class="text-center text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-4">Hit Count</th>
+                    <th class="text-left text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-4">Last Seen</th>
+                </c-slot>
+                
+                <c-slot name="body">
                     {% for log in logs %}
-                    <tr class="hover:bg-gray-50/60 transition-colors duration-150 group">
-
-                        <!-- # -->
-                        <td class="!py-4 !px-4">
-                            <span
-                                class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-200 text-gray-500 font-semibold text-[11px]">{{
-                                forloop.counter }}</span>
+                    <tr class="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
+                        <td class="!py-2.5 !px-4">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-200 text-gray-500 font-semibold text-[11px]">{{ forloop.counter }}</span>
                         </td>
-
-                        <!-- Request Path -->
-                        <td class="!py-4 !px-4">
+                        <td class="!py-2.5 !px-4">
                             <div class="flex items-center gap-2">
                                 <i data-lucide="file-x-2" class="w-3.5 h-3.5 text-red-400 flex-shrink-0"></i>
-                                <code
-                                    class="text-[12px] font-mono text-red-700 bg-red-50 !px-2 !py-0.5 rounded-md border border-red-100 truncate max-w-[220px]"
-                                    title="{{ log.path }}">{{ log.path }}</code>
+                                <code class="text-[12px] font-mono text-red-700 bg-red-50 !px-2 !py-0.5 rounded-md border border-red-100 truncate max-w-[220px]" title="{{ log.path }}">{{ log.path }}</code>
                             </div>
                         </td>
-
-                        <!-- Referer / Source -->
-                        <td class="!py-4 !px-4">
+                        <td class="!py-2.5 !px-4">
                             {% if log.referer %}
                             <div class="flex items-center gap-1.5">
                                 <i data-lucide="external-link" class="w-3 h-3 text-blue-400 flex-shrink-0"></i>
-                                <span
-                                    class="text-[12px] text-blue-600 underline underline-offset-2 truncate max-w-[240px]"
-                                    title="{{ log.referer }}">{{ log.referer }}</span>
+                                <span class="text-[12px] text-blue-600 underline underline-offset-2 truncate max-w-[240px]" title="{{ log.referer }}">{{ log.referer }}</span>
                             </div>
                             {% else %}
                             <div class="flex items-center gap-1.5">
@@ -202,80 +111,57 @@
                             </div>
                             {% endif %}
                         </td>
-
-                        <!-- Severity Badge -->
-                        <td class="!py-4 !px-4 text-center">
+                        <td class="!py-2.5 !px-4 text-center">
                             {% if log.hit_count >= 50 %}
-                            <span
-                                class="inline-flex items-center gap-1 !px-2.5 !py-1 rounded-full bg-red-100 border border-red-200 text-[11px] font-bold text-red-700">
-                                <i data-lucide="flame" class="w-3 h-3"></i> Critical
-                            </span>
+                                <c-ui.badge variant="danger" label="Critical" />
                             {% elif log.hit_count >= 10 %}
-                            <span
-                                class="inline-flex items-center gap-1 !px-2.5 !py-1 rounded-full bg-orange-100 border border-orange-200 text-[11px] font-bold text-orange-700">
-                                <i data-lucide="alert-triangle" class="w-3 h-3"></i> High
-                            </span>
+                                <c-ui.badge variant="warning" label="High" />
                             {% elif log.hit_count >= 3 %}
-                            <span
-                                class="inline-flex items-center gap-1 !px-2.5 !py-1 rounded-full bg-amber-100 border border-amber-200 text-[11px] font-bold text-amber-700">
-                                <i data-lucide="minus-circle" class="w-3 h-3"></i> Medium
-                            </span>
+                                <c-ui.badge variant="warning" label="Medium" />
                             {% else %}
-                            <span
-                                class="inline-flex items-center gap-1 !px-2.5 !py-1 rounded-full bg-gray-100 border border-gray-200 text-[11px] font-bold text-gray-500">
-                                <i data-lucide="info" class="w-3 h-3"></i> Low
-                            </span>
+                                <c-ui.badge variant="neutral" label="Low" />
                             {% endif %}
                         </td>
-
-                        <!-- Hit Count -->
-                        <td class="!py-4 !px-4 text-center">
-                            <span
-                                class="inline-flex items-center gap-1 {% if log.hit_count >= 50 %}bg-red-50 text-red-700 border-red-200{% elif log.hit_count >= 10 %}bg-orange-50 text-orange-700 border-orange-200{% elif log.hit_count >= 3 %}bg-amber-50 text-amber-700 border-amber-200{% else %}bg-gray-50 text-gray-600 border-gray-200{% endif %} border !px-2.5 !py-1 rounded-lg text-[13px] font-bold">
+                        <td class="!py-2.5 !px-4 text-center">
+                            <span class="inline-flex items-center gap-1 {% if log.hit_count >= 50 %}bg-red-50 text-red-700 border-red-200{% elif log.hit_count >= 10 %}bg-orange-50 text-orange-700 border-orange-200{% elif log.hit_count >= 3 %}bg-amber-50 text-amber-700 border-amber-200{% else %}bg-gray-50 text-gray-600 border-gray-200{% endif %} border !px-2.5 !py-1 rounded-lg text-[13px] font-bold">
                                 {{ log.hit_count }}
                                 <span class="text-[10px] font-medium opacity-70">hits</span>
                             </span>
                         </td>
-
-                        <!-- Last Seen -->
-                        <td class="!py-4 !px-4">
+                        <td class="!py-2.5 !px-4">
                             <div class="flex items-center gap-1.5">
-                                <i data-lucide="clock" class="w-3 h-3 text-gray-300 flex-shrink-0"></i>
-                                <span class="text-[12px] text-gray-400 font-medium whitespace-nowrap">{{
-                                    log.last_seen|date:"Y-m-d H:i" }}</span>
+                                <i data-lucide="clock" class="w-3 h-3 text-gray-400 flex-shrink-0"></i>
+                                <span class="text-[12px] text-gray-500 font-medium whitespace-nowrap">{{ log.last_seen|date:"Y-m-d H:i" }}</span>
                             </div>
                         </td>
-
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="!px-6 !py-16 text-center">
-                            <div class="flex flex-col items-center justify-center text-gray-400">
-                                <div
-                                    class="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-4">
-                                    <i data-lucide="check-circle-2" class="w-8 h-8 text-emerald-500"></i>
+                        <td colspan="6" class="!px-6 !py-16 text-center border-t border-gray-100">
+                            <div class="flex flex-col items-center justify-center text-gray-500">
+                                <div class="bg-gray-50 !p-4 rounded-full mb-4 border border-gray-100">
+                                    <i data-lucide="check-circle-2" class="w-10 h-10 text-emerald-400"></i>
                                 </div>
-                                <p class="text-[15px] font-semibold text-gray-600">No broken links recorded yet</p>
+                                <p class="text-[15px] font-medium text-gray-600">No broken links recorded yet</p>
                                 <p class="text-[13px] text-gray-400 mt-1">All pages are resolving correctly.</p>
                             </div>
                         </td>
                     </tr>
                     {% endfor %}
-
-                </tbody>
-            </table>
+                </c-slot>
+            </c-ui.table>
         </div>
 
-        <!-- Footer -->
-        <div class="!px-6 !py-4 bg-gray-50/50 border-t border-gray-100 flex items-center gap-2">
-            <i data-lucide="shield" class="w-3.5 h-3.5 text-gray-400 flex-shrink-0"></i>
-            <p class="text-[11.5px] text-gray-400 italic">
-                Logged automatically by middleware on every 404 response. Paths are deduplicated and hit counts are
-                incremented on each request.
-            </p>
-        </div>
+        <c-slot name="card_footer">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield" class="w-4 h-4 text-gray-400"></i>
+                <p class="text-[13px] text-gray-500">
+                    Logged automatically by middleware on every 404 response. Paths are deduplicated and hit counts are incremented on each request.
+                </p>
+            </div>
+        </c-slot>
 
-    </div>
+    </c-ui.card>
 
 </div>
 {% endblock %}

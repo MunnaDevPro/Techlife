@@ -31,52 +31,54 @@
      }"
      id="modal-{{ id }}">
 
-  <div x-show="open"
-       x-transition:enter="transition ease-out duration-300"
-       x-transition:enter-start="opacity-0 backdrop-blur-none"
-       x-transition:enter-end="opacity-100 backdrop-blur-sm"
-       x-transition:leave="transition ease-in duration-200"
-       x-transition:leave-start="opacity-100 backdrop-blur-sm"
-       x-transition:leave-end="opacity-0 backdrop-blur-none"
-       @click="{% if not static %}open = false; if(window.SoundFX) SoundFX.playModalClose();{% endif %}"
-       class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6"
-       x-cloak>
+  <template x-teleport="body">
+    <div x-show="open"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 backdrop-blur-none"
+         x-transition:enter-end="opacity-100 backdrop-blur-sm"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 backdrop-blur-sm"
+         x-transition:leave-end="opacity-0 backdrop-blur-none"
+         @click="{% if not static %}open = false; if(window.SoundFX) SoundFX.playModalClose();{% endif %}"
+         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6"
+         x-cloak>
 
-    <div class="relative w-full bg-white dark:bg-slate-900 rounded-xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh]"
-         style="max-width: {% if size == 'sm' %}24rem{% elif size == 'lg' %}32rem{% elif size == 'xl' %}48rem{% else %}28rem{% endif %};"
-         @click.stop
-         x-transition:enter="transition transform ease-out duration-300"
-         x-transition:enter-start="opacity-0 scale-95 translate-y-4 sm:translate-y-8"
-         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-         x-transition:leave="transition transform ease-in duration-200"
-         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-         x-transition:leave-end="opacity-0 scale-95 translate-y-4 sm:translate-y-8">
+      <div class="relative w-full bg-white dark:bg-slate-900 rounded-xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh]"
+           style="max-width: {% if size == 'sm' %}24rem{% elif size == 'lg' %}32rem{% elif size == 'xl' %}48rem{% else %}28rem{% endif %};"
+           @click.stop
+           x-transition:enter="transition transform ease-out duration-300"
+           x-transition:enter-start="opacity-0 scale-95 translate-y-4 sm:translate-y-8"
+           x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+           x-transition:leave="transition transform ease-in duration-200"
+           x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+           x-transition:leave-end="opacity-0 scale-95 translate-y-4 sm:translate-y-8">
 
-      {# Header #}
-      {% if title %}
-      <div class="!flex !items-center !justify-between !px-6 !py-4 !border-b !flex-shrink-0"
-           style="border-color:var(--border)">
-        <h3 class="!text-[15px] !font-semibold" style="color:var(--text)">{{ title }}</h3>
-        <button type="button"
-                @click="open = false; if(window.SoundFX) SoundFX.playModalClose();"
-                class="ft-btn ft-btn-ghost ft-btn-sm !w-8 !h-8 !p-0 !flex !items-center !justify-center !rounded-md">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
+        {# Header #}
+        {% if title %}
+        <div class="!flex !items-center !justify-between !px-6 !py-4 !border-b !flex-shrink-0"
+             style="border-color:var(--border)">
+          <h3 class="!text-[15px] !font-semibold" style="color:var(--text)">{{ title }}</h3>
+          <button type="button"
+                  @click="open = false; if(window.SoundFX) SoundFX.playModalClose();"
+                  class="ft-btn ft-btn-ghost ft-btn-sm !w-8 !h-8 !p-0 !flex !items-center !justify-center !rounded-md">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        {% endif %}
+
+        {# Body #}
+        <div class="!p-6 !overflow-y-auto !flex-1">
+          {{ slot }}
+        </div>
+
+        {# Footer #}
+        {% if modal_footer %}
+        <div class="!px-6 !py-4 !border-t !flex !items-center !justify-end !gap-3 !flex-shrink-0"
+             style="border-color:var(--border); background:var(--surface-2); border-radius:0 0 8px 8px;">
+          {{ modal_footer }}
+        </div>
+        {% endif %}
       </div>
-      {% endif %}
-
-      {# Body #}
-      <div class="!p-6 !overflow-y-auto !flex-1">
-        {{ slot }}
-      </div>
-
-      {# Footer #}
-      {% if modal_footer %}
-      <div class="!px-6 !py-4 !border-t !flex !items-center !justify-end !gap-3 !flex-shrink-0"
-           style="border-color:var(--border); background:var(--surface-2); border-radius:0 0 8px 8px;">
-        {{ modal_footer }}
-      </div>
-      {% endif %}
     </div>
-  </div>
+  </template>
 </div>

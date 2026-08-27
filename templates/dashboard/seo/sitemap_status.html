@@ -7,12 +7,9 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
             <div class="flex items-center gap-2.5 mb-1">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-sm">
-                    <i data-lucide="map" class="w-4 h-4 text-white"></i>
-                </div>
                 <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Sitemap Status</h2>
             </div>
-            <p class="text-[13.5px] text-gray-500 ml-10">Scan sitemap configuration and URL mappings across your site</p>
+            <p class="text-[13.5px] text-gray-500">Scan sitemap configuration and URL mappings across your site</p>
         </div>
         <!-- Overall Health Badge -->
         <div class="self-start sm:self-auto">
@@ -72,10 +69,7 @@
     <!-- Alignment Table Card -->
     <c-ui.card title="Sitemap vs Database Alignment" subtitle="All feeds synchronized with database" class="border-gray-200">
         <c-slot name="actions">
-            <span class="inline-flex items-center gap-1.5 rounded-md bg-emerald-50 px-2.5 py-1 text-sm font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-                Healthy
-            </span>
+            <c-ui.badge variant="success" label="Healthy" dot="true" />
         </c-slot>
 
         <div class="!mt-2 overflow-x-auto">
@@ -114,9 +108,7 @@
                             <span class="text-[13px] font-medium text-gray-700">{{ row.coverage }}%</span>
                         </td>
                         <td class="!py-2.5 !px-4 text-center">
-                            <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 !px-2.5 !py-1 text-[13px] font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-                                {{ row.status }}
-                            </span>
+                            <c-ui.badge variant="success" label="{{ row.status }}" />
                         </td>
                     </tr>
                     {% empty %}
