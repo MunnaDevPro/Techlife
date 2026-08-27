@@ -1,8 +1,10 @@
 {% extends base_template %}
 
 {% block content %}
+<script id="api-endpoints-json" type="application/json">{{ endpoints_json|safe }}</script>
+
 <div x-data="{
-    endpoints: {{ endpoints_json|safe }},
+    endpoints: [],
     selectedId: 'posts_list',
     filterCategory: 'All',
     filterMethod: 'All',
@@ -20,8 +22,20 @@
     testResult: null,
     copiedNotice: '',
 
+    init() {
+        try {
+            const raw = document.getElementById('api-endpoints-json').textContent;
+            this.endpoints = JSON.parse(raw);
+            if (this.endpoints.length > 0) {
+                this.selectEndpoint(this.endpoints[0].id);
+            }
+        } catch (e) {
+            console.error('Failed to parse API endpoints JSON:', e);
+        }
+    },
+
     get selectedEndpoint() {
-        return this.endpoints.find(e => e.id === this.selectedId) || this.endpoints[0];
+        return this.endpoints.find(e => e.id === this.selectedId) || this.endpoints[0] || {};
     },
 
     get filteredEndpoints() {
@@ -38,8 +52,9 @@
     selectEndpoint(id) {
         this.selectedId = id;
         const ep = this.selectedEndpoint;
-        this.customPath = ep.path;
-        this.customMethod = ep.method;
+        if (!ep) return;
+        this.customPath = ep.path || '';
+        this.customMethod = ep.method || 'GET';
         this.customHeaders = JSON.stringify(ep.headers || {}, null, 2);
         this.customBody = ep.sample_request ? JSON.stringify(ep.sample_request, null, 2) : '';
         this.customQuery = '';
@@ -53,103 +68,92 @@
     },
 
     generateSnippet(ep, lang) {
+        if (!ep || !ep.path) return '';
         const host = window.location.origin;
         const fullUrl = host + ep.path;
         if (lang === 'curl') {
             let cmd = `curl -X ${ep.method} \"${fullUrl}\"`;
             if (ep.headers) {
-                for (let [k, v] of Object.entries(ep.headers)) {
+                Object.entries(ep.headers).forEach(([k, v]) => {
                     cmd += ` \\\n  -H \"${k}: ${v}\"`;
-                }
+                });
             }
-            if (ep.sample_request) {
+            if (ep.sample_request && ep.method !== 'GET') {
                 cmd += ` \\\n  -d '${JSON.stringify(ep.sample_request)}'`;
             }
             return cmd;
         } else if (lang === 'fetch') {
-            let opts = { method: ep.method };
-            if (ep.headers) opts.headers = ep.headers;
-            if (ep.sample_request) opts.body = ep.sample_request;
+            const opts = { method: ep.method, headers: ep.headers || {} };
+            if (ep.sample_request && ep.method !== 'GET') {
+                opts.body = ep.sample_request;
+            }
             return `fetch(\"${fullUrl}\", ${JSON.stringify(opts, null, 2)})\n  .then(res => res.json())\n  .then(data => console.log(data));`;
         } else if (lang === 'python') {
-            let code = `import requests\n\nurl = \"${fullUrl}\"\n`;
+            let py = `import requests\n\nurl = \"${fullUrl}\"\n`;
             if (ep.headers) {
-                code += `headers = ${JSON.stringify(ep.headers, null, 4)}\n`;
+                py += `headers = ${JSON.stringify(ep.headers, null, 2)}\n`;
             }
-            if (ep.sample_request) {
-                code += `payload = ${JSON.stringify(ep.sample_request, null, 4)}\n`;
-                code += `response = requests.${ep.method.toLowerCase()}(url, headers=headers, json=payload)\n`;
+            if (ep.sample_request && ep.method !== 'GET') {
+                py += `payload = ${JSON.stringify(ep.sample_request, null, 2)}\n`;
+                py += `response = requests.${ep.method.toLowerCase()}(url, json=payload${ep.headers ? ', headers=headers' : ''})\n`;
             } else {
-                code += `response = requests.${ep.method.toLowerCase()}(url${ep.headers ? ', headers=headers' : ''})\n`;
+                py += `response = requests.${ep.method.toLowerCase()}(url${ep.headers ? ', headers=headers' : ''})\n`;
             }
-            code += `print(response.status_code, response.json())`;
-            return code;
+            py += `print(response.json())`;
+            return py;
         }
         return '';
     },
 
-    async runInstantTest() {
+    async runSandboxTest() {
         this.testLoading = true;
         this.testResult = null;
         const startTime = performance.now();
-        const ep = this.selectedEndpoint;
-        
-        let targetUrl = this.customPath;
-        if (this.customQuery) {
-            targetUrl += (targetUrl.includes('?') ? '&' : '?') + this.customQuery;
-        }
-
-        let reqHeaders = {};
         try {
-            if (this.customHeaders.trim()) {
-                reqHeaders = JSON.parse(this.customHeaders);
+            let url = this.customPath;
+            if (this.customQuery) {
+                url += (url.includes('?') ? '&' : '?') + this.customQuery;
             }
-        } catch(e) {}
-
-        let fetchOptions = {
-            method: this.customMethod,
-            headers: reqHeaders
-        };
-
-        if (['POST', 'PUT', 'PATCH'].includes(this.customMethod) && this.customBody) {
-            fetchOptions.body = this.customBody;
-        }
-
-        try {
-            const resp = await fetch(targetUrl, fetchOptions);
-            const duration = Math.round(performance.now() - startTime);
-            let responseData;
-            const contentType = resp.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                responseData = await resp.json();
-            } else {
-                responseData = await resp.text();
+            let reqHeaders = {};
+            if (this.customHeaders) {
+                try { reqHeaders = JSON.parse(this.customHeaders); } catch(e) {}
             }
-
-            this.testResult = {
-                status: resp.status,
-                statusText: resp.statusText,
-                ok: resp.ok,
-                duration: duration,
-                data: typeof responseData === 'object' ? JSON.stringify(responseData, null, 2) : responseData
+            const opts = {
+                method: this.customMethod,
+                headers: reqHeaders,
             };
-        } catch (err) {
-            const duration = Math.round(performance.now() - startTime);
+            if (['POST', 'PUT', 'PATCH'].includes(this.customMethod) && this.customBody) {
+                opts.body = this.customBody;
+            }
+            const res = await fetch(url, opts);
+            const endTime = performance.now();
+            const duration = Math.round(endTime - startTime);
+            let bodyText = await res.text();
+            let jsonBody = null;
+            try { jsonBody = JSON.parse(bodyText); } catch(e) {}
+            this.testResult = {
+                status: res.status,
+                statusText: res.statusText,
+                duration: duration,
+                headers: Array.from(res.headers.entries()),
+                bodyText: jsonBody ? JSON.stringify(jsonBody, null, 2) : bodyText
+            };
+        } catch (e) {
             this.testResult = {
                 status: 0,
-                statusText: 'Network / CORS Error',
-                ok: false,
-                duration: duration,
-                data: JSON.stringify({ error: err.message, hint: 'Check authentication tokens or cross-origin restrictions.' }, null, 2)
+                statusText: 'Network Error',
+                duration: 0,
+                headers: [],
+                bodyText: e.toString()
             };
         } finally {
             this.testLoading = false;
         }
     }
-}" x-init="selectEndpoint('posts_list')" class="!flex !flex-col !gap-6">
+}" class="!flex !flex-col !gap-6">
 
-    <!-- Header & Action Controls -->
-    <div class="!flex !flex-col md:!flex-row md:!items-center md:!justify-between !gap-4">
+    <!-- Header Section -->
+    <div class="!flex !flex-col sm:!flex-row sm:!items-center sm:!justify-between !gap-4">
         <div>
             <div class="!flex !items-center !gap-3 !mb-1">
                 <div class="!w-10 !h-10 !rounded-xl !bg-gradient-to-br !from-blue-600 !to-indigo-700 !flex !items-center !justify-center !shadow-md">
@@ -157,19 +161,32 @@
                 </div>
                 <h2 class="!text-2xl !font-bold !text-gray-900 !tracking-tight">API Documentation & Testbed</h2>
             </div>
-            <p class="!text-[14px] !text-gray-500 !ml-[52px]">Interactive REST API reference, snippet generator, and instant testbed preview</p>
+            <p class="!text-[14px] !text-gray-500 !ml-[52px]">Explore, test, and export TechLife REST API specifications</p>
         </div>
 
-        <!-- Export Dropdown -->
-        <div class="!flex !items-center !gap-2.5">
-            <a href="{% url 'dashboard:api_export' %}?format=openapi" class="!inline-flex !items-center !gap-2 !px-4 !py-2.5 !rounded-xl !bg-white !border !border-gray-200 !text-gray-700 !font-semibold !text-[13px] hover:!bg-gray-50 hover:!border-gray-300 !transition-all !shadow-sm">
-                <i data-lucide="download" class="!w-4 !h-4 !text-blue-600"></i> Export OpenAPI JSON
-            </a>
-            <a href="{% url 'dashboard:api_export' %}?format=postman" class="!inline-flex !items-center !gap-2 !px-4 !py-2.5 !rounded-xl !bg-white !border !border-gray-200 !text-gray-700 !font-semibold !text-[13px] hover:!bg-gray-50 hover:!border-gray-300 !transition-all !shadow-sm">
-                <i data-lucide="file-code" class="!w-4 !h-4 !text-orange-500"></i> Postman
-            </a>
-            <a href="{% url 'dashboard:api_export' %}?format=markdown" class="!inline-flex !items-center !gap-2 !px-4 !py-2.5 !rounded-xl !bg-white !border !border-gray-200 !text-gray-700 !font-semibold !text-[13px] hover:!bg-gray-50 hover:!border-gray-300 !transition-all !shadow-sm">
-                <i data-lucide="file-text" class="!w-4 !h-4 !text-purple-600"></i> Markdown
+        <!-- Export Spec Dropdown -->
+        <div class="!flex !items-center !gap-2" x-data="{ openExport: false }">
+            <div class="!relative">
+                <button type="button" @click="openExport = !openExport" class="!inline-flex !items-center !gap-2 !rounded-xl !bg-white !border !border-gray-200 !text-gray-700 !font-bold !text-[13.5px] hover:!bg-gray-50 !transition-all !px-4 !py-2.5 !shadow-sm">
+                    <i data-lucide="download" class="!w-4 !h-4 !text-blue-600"></i> Export Spec
+                    <i data-lucide="chevron-down" class="!w-3.5 !h-3.5 !text-gray-400"></i>
+                </button>
+                <div x-show="openExport" @click.outside="openExport = false" x-cloak
+                     class="!absolute !right-0 !top-full !mt-2 !w-56 !bg-white !border !border-gray-200 !rounded-xl !shadow-xl !z-50 !p-1.5">
+                    <a href="{% url 'dashboard:api_export' %}?format=openapi" target="_blank" class="!flex !items-center !gap-2.5 !px-3 !py-2 !rounded-lg !text-[13px] !font-medium !text-gray-700 hover:!bg-blue-50 hover:!text-blue-700">
+                        <i data-lucide="file-json" class="!w-4 !h-4 !text-blue-600"></i> OpenAPI 3.0 (JSON)
+                    </a>
+                    <a href="{% url 'dashboard:api_export' %}?format=postman" target="_blank" class="!flex !items-center !gap-2.5 !px-3 !py-2 !rounded-lg !text-[13px] !font-medium !text-gray-700 hover:!bg-orange-50 hover:!text-orange-700">
+                        <i data-lucide="send" class="!w-4 !h-4 !text-orange-600"></i> Postman Collection
+                    </a>
+                    <a href="{% url 'dashboard:api_export' %}?format=markdown" target="_blank" class="!flex !items-center !gap-2.5 !px-3 !py-2 !rounded-lg !text-[13px] !font-medium !text-gray-700 hover:!bg-emerald-50 hover:!text-emerald-700">
+                        <i data-lucide="file-text" class="!w-4 !h-4 !text-emerald-600"></i> Markdown Reference
+                    </a>
+                </div>
+            </div>
+
+            <a href="{% url 'dashboard:api_config' %}" class="!inline-flex !items-center !gap-2 !rounded-xl !bg-purple-50 !border !border-purple-200 !text-purple-700 !font-bold !text-[13.5px] hover:!bg-purple-100 !transition-all !px-4 !py-2.5">
+                <i data-lucide="key-round" class="!w-4 !h-4 !text-purple-600"></i> Tokens & Config
             </a>
         </div>
     </div>
@@ -181,246 +198,214 @@
         <span x-text="copiedNotice"></span>
     </div>
 
-    <!-- Main Grid: Endpoints Sidebar & Detail Viewer -->
+    <!-- Main Grid Layout -->
     <div class="!grid !grid-cols-1 lg:!grid-cols-12 !gap-6">
 
-        <!-- Sidebar: Endpoint Filter & Navigation -->
-        <div class="lg:!col-span-4 !flex !flex-col !gap-4">
-            
-            <c-ui.card class="!border-gray-200 !shadow-sm">
-                <div class="!p-4 !border-b !border-gray-100 !bg-gray-50/50 !flex !flex-col !gap-3">
-                    <!-- Search Input -->
+        <!-- Sidebar Endpoint List -->
+        <div class="lg:!col-span-4 !space-y-4">
+            <c-ui.card padding="sm">
+                <!-- Search & Filters -->
+                <div class="!space-y-3">
                     <div class="!relative">
-                        <i data-lucide="search" class="!w-4 !h-4 !absolute !left-3 !top-3 !text-gray-400"></i>
+                        <i data-lucide="search" class="!w-4 !h-4 !text-gray-400 !absolute !left-3 !top-3"></i>
                         <input type="text" x-model="searchQuery" placeholder="Filter endpoints..."
-                               class="!w-full !pl-9 !pr-3 !py-2 !bg-white !border !border-gray-200 !rounded-lg !text-[13px] focus:!outline-none focus:!border-blue-500">
+                               class="!w-full !pl-9 !pr-3 !py-2 !text-[13px] !border !border-gray-200 !rounded-xl !bg-gray-50 focus:!bg-white focus:!border-blue-600 focus:!outline-none">
                     </div>
 
-                    <!-- Method Filter Pills -->
-                    <div class="!flex !items-center !gap-1.5 !overflow-x-auto !pb-1 scrollbar-none">
-                        <button type="button" @click="filterMethod = 'All'"
-                                :class="filterMethod === 'All' ? '!bg-gray-900 !text-white' : '!bg-gray-100 !text-gray-600 hover:!bg-gray-200'"
-                                class="!px-2.5 !py-1 !rounded-md !text-[11px] !font-bold !transition-colors">All</button>
-                        <button type="button" @click="filterMethod = 'GET'"
-                                :class="filterMethod === 'GET' ? '!bg-emerald-600 !text-white' : '!bg-emerald-50 !text-emerald-700 hover:!bg-emerald-100'"
-                                class="!px-2.5 !py-1 !rounded-md !text-[11px] !font-bold !transition-colors">GET</button>
-                        <button type="button" @click="filterMethod = 'POST'"
-                                :class="filterMethod === 'POST' ? '!bg-blue-600 !text-white' : '!bg-blue-50 !text-blue-700 hover:!bg-blue-100'"
-                                class="!px-2.5 !py-1 !rounded-md !text-[11px] !font-bold !transition-colors">POST</button>
-                        <button type="button" @click="filterMethod = 'DELETE'"
-                                :class="filterMethod === 'DELETE' ? '!bg-red-600 !text-white' : '!bg-red-50 !text-red-700 hover:!bg-red-100'"
-                                class="!px-2.5 !py-1 !rounded-md !text-[11px] !font-bold !transition-colors">DELETE</button>
+                    <div class="!flex !items-center !gap-2">
+                        <select x-model="filterCategory" class="!flex-1 !px-2.5 !py-1.5 !text-[12px] !border !border-gray-200 !rounded-lg !bg-white !text-gray-700 focus:!outline-none">
+                            <option value="All">All Categories</option>
+                            <option value="Blog Posts">Blog Posts</option>
+                            <option value="Automation Ingestion">Automation</option>
+                            <option value="Interactions">Interactions</option>
+                            <option value="Taxonomy">Taxonomy</option>
+                            <option value="Site Config">Site Config</option>
+                        </select>
+                        <select x-model="filterMethod" class="!w-24 !px-2.5 !py-1.5 !text-[12px] !border !border-gray-200 !rounded-lg !bg-white !text-gray-700 focus:!outline-none">
+                            <option value="All">All Methods</option>
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- Endpoint List -->
-                <div class="!divide-y !divide-gray-100 !max-h-[620px] !overflow-y-auto">
+                <!-- List of Endpoints -->
+                <div class="!mt-4 !space-y-1.5 !max-h-[580px] !overflow-y-auto !pr-1">
                     <template x-for="ep in filteredEndpoints" :key="ep.id">
                         <button type="button" @click="selectEndpoint(ep.id)"
-                                :class="selectedId === ep.id ? '!bg-blue-50/70 !border-l-4 !border-blue-600' : 'hover:!bg-gray-50/80'"
-                                class="!w-full !text-left !p-3.5 !transition-all !flex !flex-col !gap-1.5 !cursor-pointer">
-                            <div class="!flex !items-center !justify-between">
+                                :class="selectedId === ep.id ? '!bg-blue-50 !border-blue-200 !shadow-sm' : '!bg-white hover:!bg-gray-50 !border-gray-100'"
+                                class="!w-full !text-left !p-3 !rounded-xl !border !transition-all !flex !flex-col !gap-1.5 !cursor-pointer">
+                            <div class="!flex !items-center !justify-between !gap-2">
+                                <span class="!font-bold !text-[13px] !text-gray-900 !truncate" x-text="ep.name"></span>
                                 <span :class="{
-                                    '!bg-emerald-100 !text-emerald-800': ep.method === 'GET',
-                                    '!bg-blue-100 !text-blue-800': ep.method === 'POST',
-                                    '!bg-purple-100 !text-purple-800': ep.method === 'PUT',
-                                    '!bg-red-100 !text-red-800': ep.method === 'DELETE'
-                                }" class="!px-2 !py-0.5 !rounded !text-[10px] !font-extrabold" x-text="ep.method"></span>
-                                <span class="!text-[11px] !font-semibold !text-gray-400" x-text="ep.category"></span>
+                                    '!bg-emerald-50 !text-emerald-700 !border-emerald-200': ep.method === 'GET',
+                                    '!bg-blue-50 !text-blue-700 !border-blue-200': ep.method === 'POST',
+                                    '!bg-rose-50 !text-rose-700 !border-rose-200': ep.method === 'DELETE'
+                                }" class="!px-2 !py-0.5 !rounded-md !border !text-[10px] !font-bold !font-mono" x-text="ep.method"></span>
                             </div>
-                            <p class="!text-[13.5px] !font-bold !text-gray-800 !leading-snug" x-text="ep.name"></p>
-                            <code class="!text-[11px] !font-mono !text-gray-500 !truncate" x-text="ep.path"></code>
+                            <code class="!text-[11.5px] !font-mono !text-gray-500 !truncate" x-text="ep.path"></code>
                         </button>
                     </template>
                 </div>
             </c-ui.card>
-
         </div>
 
-        <!-- Main Workspace: Endpoint Details, Code Snippets & Instant Testbed -->
-        <div class="lg:!col-span-8 !flex !flex-col !gap-5">
+        <!-- Main Workspace (Doc Details & Interactive Testbed) -->
+        <div class="lg:!col-span-8">
+            <template x-if="selectedEndpoint">
+                <div class="!space-y-6">
 
-            <div class="!bg-white !border !border-gray-200 !rounded-2xl !p-6 !shadow-sm">
-                
-                <!-- Endpoint Title Header -->
-                <div class="!flex !flex-col sm:!flex-row sm:!items-center sm:!justify-between !gap-3 !pb-5 !border-b !border-gray-100">
-                    <div>
-                        <div class="!flex !items-center !gap-2.5 !mb-1.5">
+                    <!-- Endpoint Header Banner -->
+                    <c-ui.card padding="lg">
+                        <div class="!flex !items-center !gap-3 !mb-3">
                             <span :class="{
-                                '!bg-emerald-600 !text-white': selectedEndpoint.method === 'GET',
-                                '!bg-blue-600 !text-white': selectedEndpoint.method === 'POST',
-                                '!bg-purple-600 !text-white': selectedEndpoint.method === 'PUT',
-                                '!bg-red-600 !text-white': selectedEndpoint.method === 'DELETE'
-                            }" class="!px-2.5 !py-1 !rounded-md !text-[12px] !font-black !tracking-wide" x-text="selectedEndpoint.method"></span>
-                            <code class="!text-[15px] !font-bold !font-mono !text-gray-900" x-text="selectedEndpoint.path"></code>
+                                '!bg-emerald-100 !text-emerald-800': selectedEndpoint.method === 'GET',
+                                '!bg-blue-100 !text-blue-800': selectedEndpoint.method === 'POST',
+                                '!bg-rose-100 !text-rose-800': selectedEndpoint.method === 'DELETE'
+                            }" class="!px-3 !py-1 !rounded-lg !text-[12px] !font-black !font-mono" x-text="selectedEndpoint.method"></span>
+
+                            <code class="!text-[15px] !font-mono !font-bold !text-gray-900" x-text="selectedEndpoint.path"></code>
+
+                            <span class="!ml-auto !text-[11px] !font-bold !px-2.5 !py-1 !rounded-full !bg-gray-100 !text-gray-600" x-text="selectedEndpoint.category"></span>
                         </div>
-                        <h3 class="!text-xl !font-bold !text-gray-900" x-text="selectedEndpoint.name"></h3>
-                        <p class="!text-[13.5px] !text-gray-500 !mt-1" x-text="selectedEndpoint.description"></p>
-                    </div>
 
-                    <button type="button" @click="copyToClipboard(window.location.origin + selectedEndpoint.path, 'Endpoint URL copied!')"
-                            class="!inline-flex !items-center !gap-1.5 !px-3 !py-1.5 !rounded-lg !bg-gray-100 hover:!bg-gray-200 !text-gray-700 !text-[12px] !font-bold !transition-colors !cursor-pointer">
-                        <i data-lucide="copy" class="!w-3.5 !h-3.5"></i> Copy URL
-                    </button>
-                </div>
+                        <h3 class="!text-xl !font-bold !text-gray-900 !mb-1" x-text="selectedEndpoint.name"></h3>
+                        <p class="!text-[13.5px] !text-gray-600 !leading-relaxed" x-text="selectedEndpoint.description"></p>
 
-                <!-- Tabs: Overview & Schema | Code Generator | Instant Preview Testbed -->
-                <div class="!flex !items-center !gap-6 !border-b !border-gray-200 !mt-4 !mb-6">
-                    <button type="button" @click="activeTab = 'overview'"
-                            :class="activeTab === 'overview' ? '!border-blue-600 !text-blue-600 !font-bold' : '!border-transparent !text-gray-500 hover:!text-gray-700'"
-                            class="!py-3 !border-b-2 !text-[14px] !transition-all !cursor-pointer">
-                        Overview & Schema
-                    </button>
-                    <button type="button" @click="activeTab = 'code'"
-                            :class="activeTab === 'code' ? '!border-blue-600 !text-blue-600 !font-bold' : '!border-transparent !text-gray-500 hover:!text-gray-700'"
-                            class="!py-3 !border-b-2 !text-[14px] !transition-all !cursor-pointer">
-                        Code Snippets
-                    </button>
-                    <button type="button" @click="activeTab = 'sandbox'"
-                            :class="activeTab === 'sandbox' ? '!border-blue-600 !text-blue-600 !font-bold' : '!border-transparent !text-gray-500 hover:!text-gray-700'"
-                            class="!py-3 !border-b-2 !text-[14px] !transition-all !cursor-pointer !flex !items-center !gap-2">
-                        <span>Instant Sandbox Preview</span>
-                        <span class="!w-2 !h-2 !rounded-full !bg-emerald-500 !animate-pulse"></span>
-                    </button>
-                </div>
-
-                <!-- TAB 1: OVERVIEW & SCHEMA -->
-                <div x-show="activeTab === 'overview'" class="!flex !flex-col !gap-6">
-                    <!-- Auth Requirements -->
-                    <div class="!bg-blue-50/60 !border !border-blue-100 !rounded-xl !p-4 !flex !items-center !justify-between">
-                        <div class="!flex !items-center !gap-3">
-                            <i data-lucide="shield-check" class="!w-5 !h-5 !text-blue-600"></i>
-                            <div>
-                                <p class="!text-[12px] !font-bold !text-blue-900 !uppercase !tracking-wider">Authentication Requirement</p>
-                                <p class="!text-[13.5px] !font-semibold !text-blue-800 !mt-0.5" x-text="selectedEndpoint.auth_required"></p>
-                            </div>
+                        <!-- Tab Navigation -->
+                        <div class="!flex !items-center !gap-4 !mt-6 !border-b !border-gray-200">
+                            <button type="button" @click="activeTab = 'overview'"
+                                    :class="activeTab === 'overview' ? '!border-blue-600 !text-blue-600 !font-bold' : '!border-transparent !text-gray-500 hover:!text-gray-700'"
+                                    class="!pb-2.5 !text-[13.5px] !border-b-2 !transition-all">Overview & Code Snippets</button>
+                            <button type="button" @click="activeTab = 'sandbox'"
+                                    :class="activeTab === 'sandbox' ? '!border-blue-600 !text-blue-600 !font-bold' : '!border-transparent !text-gray-500 hover:!text-gray-700'"
+                                    class="!pb-2.5 !text-[13.5px] !border-b-2 !transition-all !flex !items-center !gap-1.5">
+                                <i data-lucide="play-circle" class="!w-4 !h-4 !text-emerald-600"></i> Interactive Testbed
+                            </button>
                         </div>
-                    </div>
+                    </c-ui.card>
 
-                    <!-- Query Parameters -->
-                    <template x-if="selectedEndpoint.query_params">
-                        <div>
-                            <h4 class="!text-[13px] !font-bold !text-gray-700 !uppercase !tracking-wider !mb-3">Query Parameters</h4>
-                            <div class="!border !border-gray-200 !rounded-xl !overflow-hidden">
-                                <table class="!w-full !text-left">
-                                    <thead class="!bg-gray-50 !border-b !border-gray-200 !text-[11px] !font-bold !text-gray-500 !uppercase">
-                                        <tr>
-                                            <th class="!py-2.5 !px-4">Parameter</th>
-                                            <th class="!py-2.5 !px-4">Type</th>
-                                            <th class="!py-2.5 !px-4">Description</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="!divide-y !divide-gray-100 !text-[13px]">
-                                        <template x-for="qp in selectedEndpoint.query_params" :key="qp.name">
-                                            <tr>
-                                                <td class="!py-2.5 !px-4 !font-mono !font-bold !text-blue-700" x-text="qp.name"></td>
-                                                <td class="!py-2.5 !px-4 !text-gray-500" x-text="qp.type"></td>
-                                                <td class="!py-2.5 !px-4 !text-gray-700" x-text="qp.description"></td>
-                                            </tr>
-                                        </template>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </template>
+                    <!-- TAB 1: OVERVIEW & SNIPPETS -->
+                    <div x-show="activeTab === 'overview'" class="!space-y-6">
 
-                    <!-- Sample Response -->
-                    <div>
-                        <div class="!flex !items-center !justify-between !mb-2">
-                            <h4 class="!text-[13px] !font-bold !text-gray-700 !uppercase !tracking-wider">Example Response (200 OK)</h4>
-                            <button type="button" @click="copyToClipboard(JSON.stringify(selectedEndpoint.sample_response, null, 2), 'Response JSON copied!')"
-                                    class="!text-[12px] !font-semibold !text-blue-600 hover:!underline">Copy JSON</button>
-                        </div>
-                        <pre class="!bg-gray-900 !text-emerald-400 !p-4 !rounded-xl !text-[12.5px] !font-mono !overflow-x-auto !max-h-80"><code x-text="JSON.stringify(selectedEndpoint.sample_response, null, 2)"></code></pre>
-                    </div>
-                </div>
-
-                <!-- TAB 2: CODE SNIPPETS GENERATOR -->
-                <div x-show="activeTab === 'code'" class="!flex !flex-col !gap-4">
-                    <div class="!flex !items-center !gap-2 !mb-2">
-                        <button type="button" @click="codeTab = 'curl'"
-                                :class="codeTab === 'curl' ? '!bg-gray-900 !text-white' : '!bg-gray-100 !text-gray-600'"
-                                class="!px-3 !py-1.5 !rounded-lg !text-[12px] !font-bold !transition-colors">cURL</button>
-                        <button type="button" @click="codeTab = 'fetch'"
-                                :class="codeTab === 'fetch' ? '!bg-gray-900 !text-white' : '!bg-gray-100 !text-gray-600'"
-                                class="!px-3 !py-1.5 !rounded-lg !text-[12px] !font-bold !transition-colors">JavaScript (fetch)</button>
-                        <button type="button" @click="codeTab = 'python'"
-                                :class="codeTab === 'python' ? '!bg-gray-900 !text-white' : '!bg-gray-100 !text-gray-600'"
-                                class="!px-3 !py-1.5 !rounded-lg !text-[12px] !font-bold !transition-colors">Python (requests)</button>
-                    </div>
-
-                    <div class="!relative">
-                        <pre class="!bg-gray-900 !text-gray-100 !p-5 !rounded-xl !text-[13px] !font-mono !overflow-x-auto"><code x-text="generateSnippet(selectedEndpoint, codeTab)"></code></pre>
-                        <button type="button" @click="copyToClipboard(generateSnippet(selectedEndpoint, codeTab), 'Code snippet copied!')"
-                                class="!absolute !top-3 !right-3 !px-3 !py-1.5 !rounded-md !bg-gray-800 hover:!bg-gray-700 !text-gray-200 !text-[11px] !font-bold !transition-colors !cursor-pointer">
-                            Copy Code
-                        </button>
-                    </div>
-                </div>
-
-                <!-- TAB 3: INSTANT SANDBOX PREVIEW -->
-                <div x-show="activeTab === 'sandbox'" class="!flex !flex-col !gap-5">
-                    
-                    <div class="!grid !grid-cols-1 md:!grid-cols-12 !gap-4">
-                        <div class="md:!col-span-3">
-                            <label class="!text-[11px] !font-bold !text-gray-500 !uppercase">HTTP Method</label>
-                            <select x-model="customMethod" class="!w-full !mt-1 !p-2.5 !bg-white !border !border-gray-300 !rounded-lg !text-[13.5px] !font-bold">
-                                <option value="GET">GET</option>
-                                <option value="POST">POST</option>
-                                <option value="PUT">PUT</option>
-                                <option value="DELETE">DELETE</option>
-                            </select>
-                        </div>
-                        <div class="md:!col-span-9">
-                            <label class="!text-[11px] !font-bold !text-gray-500 !uppercase">Endpoint Target Path</label>
-                            <input type="text" x-model="customPath" class="!w-full !mt-1 !p-2.5 !bg-white !border !border-gray-300 !rounded-lg !text-[13.5px] !font-mono">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="!text-[11px] !font-bold !text-gray-500 !uppercase">Query String Params (e.g. category=tech&search=ai)</label>
-                        <input type="text" x-model="customQuery" placeholder="search=ai&order_by=-created_at" class="!w-full !mt-1 !p-2.5 !bg-white !border !border-gray-300 !rounded-lg !text-[13.5px] !font-mono">
-                    </div>
-
-                    <div x-show="['POST', 'PUT', 'PATCH'].includes(customMethod)">
-                        <label class="!text-[11px] !font-bold !text-gray-500 !uppercase">JSON Request Payload Body</label>
-                        <textarea x-model="customBody" rows="5" class="!w-full !mt-1 !p-3 !bg-gray-50 !border !border-gray-300 !rounded-lg !text-[12.5px] !font-mono"></textarea>
-                    </div>
-
-                    <!-- Submit Test Button -->
-                    <div>
-                        <button type="button" @click="runInstantTest()" :disabled="testLoading"
-                                class="!inline-flex !items-center !gap-2 !px-6 !py-3 !rounded-xl !bg-blue-600 hover:!bg-blue-700 !text-white !font-bold !text-[14px] !transition-all !shadow-md !cursor-pointer">
-                            <template x-if="!testLoading">
-                                <span class="!flex !items-center !gap-2"><i data-lucide="play" class="!w-4 !h-4"></i> Execute Live Test</span>
-                            </template>
-                            <template x-if="testLoading">
-                                <span class="!flex !items-center !gap-2"><c-ui.loading-spinner size="sm" /> Sending Request...</span>
-                            </template>
-                        </button>
-                    </div>
-
-                    <!-- Sandbox Response Preview Output -->
-                    <template x-if="testResult">
-                        <div class="!mt-4 !p-5 !border !rounded-2xl !flex !flex-col !gap-3"
-                             :class="testResult.ok ? '!bg-emerald-50/50 !border-emerald-200' : '!bg-red-50/50 !border-red-200'">
-                            <div class="!flex !items-center !justify-between">
-                                <div class="!flex !items-center !gap-3">
-                                    <span :class="testResult.ok ? '!bg-emerald-600 !text-white' : '!bg-red-600 !text-white'"
-                                          class="!px-3 !py-1 !rounded-md !text-[12px] !font-black"
-                                          x-text="testResult.status + ' ' + testResult.statusText"></span>
-                                    <span class="!text-[12px] !font-bold !text-gray-600" x-text="testResult.duration + ' ms'"></span>
+                        <!-- Authentication & Parameters Card -->
+                        <c-ui.card title="Request Details" padding="lg">
+                            <div class="!space-y-4">
+                                <div class="!flex !items-center !justify-between !p-3 !rounded-xl !bg-gray-50 !border !border-gray-200">
+                                    <span class="!text-[13px] !font-bold !text-gray-700">Authentication Required</span>
+                                    <span class="!text-[12px] !font-bold !px-2.5 !py-1 !rounded-md !bg-purple-50 !text-purple-700 !border !border-purple-200" x-text="selectedEndpoint.auth_required"></span>
                                 </div>
-                                <button type="button" @click="copyToClipboard(testResult.data, 'Live response copied!')" class="!text-[12px] !font-bold !text-blue-600">Copy Response</button>
+
+                                <template x-if="selectedEndpoint.query_params && selectedEndpoint.query_params.length > 0">
+                                    <div>
+                                        <h4 class="!text-[12.5px] !font-bold !text-gray-700 !uppercase !tracking-wider !mb-2">Query Parameters</h4>
+                                        <div class="!border !border-gray-200 !rounded-xl !overflow-hidden">
+                                            <table class="!w-full !text-left !text-[13px]">
+                                                <thead class="!bg-gray-50 !text-gray-600 !font-bold !border-b">
+                                                    <tr>
+                                                        <th class="!p-2.5">Parameter</th>
+                                                        <th class="!p-2.5">Type</th>
+                                                        <th class="!p-2.5">Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="!divide-y !divide-gray-100">
+                                                    <template x-for="qp in selectedEndpoint.query_params">
+                                                        <tr>
+                                                            <td class="!p-2.5 !font-mono !font-bold !text-blue-700" x-text="qp.name"></td>
+                                                            <td class="!p-2.5 !font-mono !text-gray-500" x-text="qp.type"></td>
+                                                            <td class="!p-2.5 !text-gray-600" x-text="qp.description"></td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
-                            <pre class="!bg-gray-900 !text-gray-100 !p-4 !rounded-xl !text-[12.5px] !font-mono !overflow-x-auto !max-h-96"><code x-text="testResult.data"></code></pre>
-                        </div>
-                    </template>
+                        </c-ui.card>
+
+                        <!-- Code Snippet Generator Card -->
+                        <c-ui.card title="Code Snippet Generator" padding="lg">
+                            <div class="!space-y-3">
+                                <div class="!flex !items-center !justify-between">
+                                    <div class="!flex !items-center !gap-2">
+                                        <button type="button" @click="codeTab = 'curl'" :class="codeTab === 'curl' ? '!bg-gray-900 !text-white' : '!bg-gray-100 !text-gray-700'" class="!px-3 !py-1.5 !rounded-lg !text-[12px] !font-bold">cURL</button>
+                                        <button type="button" @click="codeTab = 'fetch'" :class="codeTab === 'fetch' ? '!bg-gray-900 !text-white' : '!bg-gray-100 !text-gray-700'" class="!px-3 !py-1.5 !rounded-lg !text-[12px] !font-bold">JavaScript (fetch)</button>
+                                        <button type="button" @click="codeTab = 'python'" :class="codeTab === 'python' ? '!bg-gray-900 !text-white' : '!bg-gray-100 !text-gray-700'" class="!px-3 !py-1.5 !rounded-lg !text-[12px] !font-bold">Python (requests)</button>
+                                    </div>
+                                    <button type="button" @click="copyToClipboard(generateSnippet(selectedEndpoint, codeTab), 'Code snippet copied!')" class="!text-[12px] !font-bold !text-blue-600 hover:!text-blue-800">
+                                        Copy Code
+                                    </button>
+                                </div>
+
+                                <div class="!bg-gray-900 !text-gray-100 !p-4 !rounded-xl !font-mono !text-[12.5px] !overflow-x-auto">
+                                    <pre x-text="generateSnippet(selectedEndpoint, codeTab)"></pre>
+                                </div>
+                            </div>
+                        </c-ui.card>
+                    </div>
+
+                    <!-- TAB 2: INTERACTIVE SANDBOX -->
+                    <div x-show="activeTab === 'sandbox'" class="!space-y-6">
+                        <c-ui.card title="Live API Testbed" subtitle="Execute live HTTP requests against local backend endpoints" padding="lg">
+                            <div class="!space-y-4">
+                                <div class="!grid !grid-cols-12 !gap-3">
+                                    <div class="!col-span-3">
+                                        <label class="!block !text-[12px] !font-bold !text-gray-700 !mb-1">Method</label>
+                                        <select x-model="customMethod" class="!w-full !p-2.5 !text-[13px] !font-mono !font-bold !border !border-gray-200 !rounded-xl !bg-white">
+                                            <option value="GET">GET</option>
+                                            <option value="POST">POST</option>
+                                            <option value="DELETE">DELETE</option>
+                                        </select>
+                                    </div>
+                                    <div class="!col-span-9">
+                                        <label class="!block !text-[12px] !font-bold !text-gray-700 !mb-1">Endpoint Path</label>
+                                        <input type="text" x-model="customPath" class="!w-full !p-2.5 !text-[13px] !font-mono !border !border-gray-200 !rounded-xl !bg-gray-50">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="!block !text-[12px] !font-bold !text-gray-700 !mb-1">Headers (JSON)</label>
+                                    <textarea x-model="customHeaders" rows="3" class="!w-full !p-2.5 !text-[12.5px] !font-mono !border !border-gray-200 !rounded-xl !bg-gray-900 !text-gray-100"></textarea>
+                                </div>
+
+                                <template x-if="['POST', 'PUT', 'PATCH'].includes(customMethod)">
+                                    <div>
+                                        <label class="!block !text-[12px] !font-bold !text-gray-700 !mb-1">Request Body (JSON)</label>
+                                        <textarea x-model="customBody" rows="5" class="!w-full !p-2.5 !text-[12.5px] !font-mono !border !border-gray-200 !rounded-xl !bg-gray-900 !text-gray-100"></textarea>
+                                    </div>
+                                </template>
+
+                                <div class="!pt-2">
+                                    <button type="button" @click="runSandboxTest()" :disabled="testLoading"
+                                            class="!w-full !py-3 !rounded-xl !bg-blue-600 hover:!bg-blue-700 !text-white !font-bold !text-[14px] !transition-all !shadow-md !flex !items-center !justify-center !gap-2 !cursor-pointer">
+                                        <i data-lucide="play" class="!w-4 !h-4"></i> Send Test Request
+                                    </button>
+                                </div>
+
+                                <!-- Response Output -->
+                                <template x-if="testResult">
+                                    <div class="!mt-6 !pt-6 !border-t !border-gray-200 !space-y-3">
+                                        <div class="!flex !items-center !justify-between">
+                                            <div class="!flex !items-center !gap-2">
+                                                <span :class="testResult.status >= 200 && testResult.status < 300 ? '!bg-emerald-100 !text-emerald-800' : '!bg-rose-100 !text-rose-800'"
+                                                      class="!px-3 !py-1 !rounded-md !font-mono !font-bold !text-[12px]" x-text="'Status: ' + testResult.status + ' ' + testResult.statusText"></span>
+                                                <span class="!text-[12px] !font-mono !text-gray-500" x-text="testResult.duration + ' ms'"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="!bg-gray-900 !text-emerald-400 !p-4 !rounded-xl !font-mono !text-[12.5px] !overflow-x-auto !max-h-96">
+                                            <pre x-text="testResult.bodyText"></pre>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </c-ui.card>
+                    </div>
 
                 </div>
-
-            </div>
-
+            </template>
         </div>
 
     </div>
