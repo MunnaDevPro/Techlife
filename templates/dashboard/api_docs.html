@@ -156,70 +156,65 @@ document.addEventListener('alpine:init', () => {
 });
 </script>
 
-<div x-data="apiDocsManager" class="!flex !flex-col !gap-6">
+<div x-data="apiDocsManager" class="space-y-6">
 
-    <!-- Header Section -->
-    <div class="!flex !flex-col sm:!flex-row sm:!items-center sm:!justify-between !gap-4">
+    <!-- Page Header & Action Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <div class="!flex !items-center !gap-3 !mb-1">
-                <div class="!w-10 !h-10 !rounded-xl !bg-gradient-to-br !from-blue-600 !to-indigo-700 !flex !items-center !justify-center !shadow-md">
-                    <i data-lucide="book-open" class="!w-5 !h-5 !text-white"></i>
+            <div class="flex items-center gap-3 mb-1">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
                 </div>
-                <h2 class="!text-2xl !font-bold !text-gray-900 !tracking-tight">API Documentation & Testbed</h2>
+                <h2 class="text-2xl font-bold text-gray-900 tracking-tight">API Documentation & Testbed</h2>
             </div>
-            <p class="!text-[14px] !text-gray-500 !ml-[52px]">Explore, test, and export TechLife REST API specifications</p>
+            <p class="text-sm text-gray-500 ml-13">Explore, test, and export TechLife REST API specifications</p>
         </div>
 
-        <!-- Export Spec Dropdown -->
-        <div class="!flex !items-center !gap-2" x-data="{ openExport: false }">
-            <div class="!relative">
-                <button type="button" @click="openExport = !openExport" class="!inline-flex !items-center !gap-2 !rounded-xl !bg-white !border !border-gray-200 !text-gray-700 !font-bold !text-[13.5px] hover:!bg-gray-50 !transition-all !px-4 !py-2.5 !shadow-sm">
-                    <i data-lucide="download" class="!w-4 !h-4 !text-blue-600"></i> Export Spec
-                    <i data-lucide="chevron-down" class="!w-3.5 !h-3.5 !text-gray-400"></i>
-                </button>
+        <div class="flex items-center gap-2" x-data="{ openExport: false }">
+            <div class="relative">
+                <c-ui.button type="button" variant="secondary" icon="download" icon_right="chevron-down" label="Export Spec" @click="openExport = !openExport" />
+                
                 <div x-show="openExport" @click.outside="openExport = false" x-cloak
-                     class="!absolute !right-0 !top-full !mt-2 !w-56 !bg-white !border !border-gray-200 !rounded-xl !shadow-xl !z-50 !p-1.5">
-                    <a href="{% url 'dashboard:api_export' %}?format=openapi" target="_blank" class="!flex !items-center !gap-2.5 !px-3 !py-2 !rounded-lg !text-[13px] !font-medium !text-gray-700 hover:!bg-blue-50 hover:!text-blue-700">
-                        <i data-lucide="file-json" class="!w-4 !h-4 !text-blue-600"></i> OpenAPI 3.0 (JSON)
+                     class="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50 p-1.5 space-y-1">
+                    <a href="{% url 'dashboard:api_export' %}?format=openapi" target="_blank" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                        <i data-lucide="file-json" class="w-4 h-4 text-blue-600"></i> OpenAPI 3.0 (JSON)
                     </a>
-                    <a href="{% url 'dashboard:api_export' %}?format=postman" target="_blank" class="!flex !items-center !gap-2.5 !px-3 !py-2 !rounded-lg !text-[13px] !font-medium !text-gray-700 hover:!bg-orange-50 hover:!text-orange-700">
-                        <i data-lucide="send" class="!w-4 !h-4 !text-orange-600"></i> Postman Collection
+                    <a href="{% url 'dashboard:api_export' %}?format=postman" target="_blank" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 transition-colors">
+                        <i data-lucide="send" class="w-4 h-4 text-orange-600"></i> Postman Collection
                     </a>
-                    <a href="{% url 'dashboard:api_export' %}?format=markdown" target="_blank" class="!flex !items-center !gap-2.5 !px-3 !py-2 !rounded-lg !text-[13px] !font-medium !text-gray-700 hover:!bg-emerald-50 hover:!text-emerald-700">
-                        <i data-lucide="file-text" class="!w-4 !h-4 !text-emerald-600"></i> Markdown Reference
+                    <a href="{% url 'dashboard:api_export' %}?format=markdown" target="_blank" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors">
+                        <i data-lucide="file-text" class="w-4 h-4 text-emerald-600"></i> Markdown Reference
                     </a>
                 </div>
             </div>
 
-            <a href="{% url 'dashboard:api_config' %}" class="!inline-flex !items-center !gap-2 !rounded-xl !bg-purple-50 !border !border-purple-200 !text-purple-700 !font-bold !text-[13.5px] hover:!bg-purple-100 !transition-all !px-4 !py-2.5">
-                <i data-lucide="key-round" class="!w-4 !h-4 !text-purple-600"></i> Tokens & Config
-            </a>
+            <c-ui.button href="{% url 'dashboard:api_config' %}" variant="secondary" icon="key-round" label="Tokens & Config" />
         </div>
     </div>
 
-    <!-- Notification Toast -->
+    <!-- Toast Notification -->
     <div x-show="copiedNotice" x-cloak x-transition
-         class="!fixed !bottom-6 !right-6 !z-50 !bg-gray-900 !text-white !px-4 !py-3 !rounded-xl !shadow-2xl !flex !items-center !gap-3 !text-[13.5px] !font-medium">
-        <i data-lucide="check-circle-2" class="!w-5 !h-5 !text-emerald-400"></i>
+         class="fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium">
+        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i>
         <span x-text="copiedNotice"></span>
     </div>
 
-    <!-- Main Grid Layout -->
-    <div class="!grid !grid-cols-1 lg:!grid-cols-12 !gap-6">
+    <!-- Main Workspace Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- Sidebar Endpoint List -->
-        <div class="lg:!col-span-4 !space-y-4">
-            <c-ui.card padding="sm">
+        <!-- Endpoint List Sidebar Card -->
+        <div class="lg:col-span-4">
+            <c-ui.card padding="sm" class="h-full">
                 <!-- Search & Filters -->
-                <div class="!space-y-3">
-                    <div class="!relative">
-                        <i data-lucide="search" class="!w-4 !h-4 !text-gray-400 !absolute !left-3 !top-3"></i>
+                <div class="space-y-3 p-1">
+                    <div class="relative">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
                         <input type="text" x-model="searchQuery" placeholder="Filter endpoints..."
-                               class="!w-full !pl-9 !pr-3 !py-2 !text-[13px] !border !border-gray-200 !rounded-xl !bg-gray-50 focus:!bg-white focus:!border-blue-600 focus:!outline-none">
+                               class="w-full pl-9 pr-3 py-2 text-xs border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-blue-600 focus:outline-none transition-colors">
                     </div>
 
-                    <div class="!flex !items-center !gap-2">
-                        <select x-model="filterCategory" class="!flex-1 !px-2.5 !py-1.5 !text-[12px] !border !border-gray-200 !rounded-lg !bg-white !text-gray-700 focus:!outline-none">
+                    <div class="flex items-center gap-2">
+                        <select x-model="filterCategory" class="flex-1 px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none">
                             <option value="All">All Categories</option>
                             <option value="Blog Posts">Blog Posts</option>
                             <option value="Automation Ingestion">Automation</option>
@@ -227,7 +222,8 @@ document.addEventListener('alpine:init', () => {
                             <option value="Taxonomy">Taxonomy</option>
                             <option value="Site Config">Site Config</option>
                         </select>
-                        <select x-model="filterMethod" class="!w-24 !px-2.5 !py-1.5 !text-[12px] !border !border-gray-200 !rounded-lg !bg-white !text-gray-700 focus:!outline-none">
+
+                        <select x-model="filterMethod" class="w-24 px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none">
                             <option value="All">All Methods</option>
                             <option value="GET">GET</option>
                             <option value="POST">POST</option>
@@ -236,116 +232,97 @@ document.addEventListener('alpine:init', () => {
                     </div>
                 </div>
 
-                <!-- List of Endpoints -->
-                <div class="!mt-4 !space-y-1.5 !max-h-[580px] !overflow-y-auto !pr-1">
+                <!-- Endpoint Items -->
+                <div class="mt-3 space-y-1 max-h-[580px] overflow-y-auto pr-1">
                     <template x-for="ep in filteredEndpoints" :key="ep.id">
                         <button type="button" @click="selectEndpoint(ep.id)"
-                                :class="selectedId === ep.id ? '!bg-blue-50 !border-blue-200 !shadow-sm' : '!bg-white hover:!bg-gray-50 !border-gray-100'"
-                                class="!w-full !text-left !p-3 !rounded-xl !border !transition-all !flex !flex-col !gap-1.5 !cursor-pointer">
-                            <div class="!flex !items-center !justify-between !gap-2">
-                                <span class="!font-bold !text-[13px] !text-gray-900 !truncate" x-text="ep.name"></span>
+                                :class="selectedId === ep.id ? 'bg-blue-50 border-blue-200 shadow-sm' : 'bg-white hover:bg-gray-50 border-gray-100'"
+                                class="w-full text-left p-3 rounded-xl border transition-all flex flex-col gap-1.5 cursor-pointer">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-bold text-xs text-gray-900 truncate" x-text="ep.name"></span>
                                 <span :class="{
-                                    '!bg-emerald-50 !text-emerald-700 !border-emerald-200': ep.method === 'GET',
-                                    '!bg-blue-50 !text-blue-700 !border-blue-200': ep.method === 'POST',
-                                    '!bg-rose-50 !text-rose-700 !border-rose-200': ep.method === 'DELETE'
-                                }" class="!px-2 !py-0.5 !rounded-md !border !text-[10px] !font-bold !font-mono" x-text="ep.method"></span>
+                                    'bg-emerald-50 text-emerald-700 border-emerald-200': ep.method === 'GET',
+                                    'bg-blue-50 text-blue-700 border-blue-200': ep.method === 'POST',
+                                    'bg-rose-50 text-rose-700 border-rose-200': ep.method === 'DELETE'
+                                }" class="px-2 py-0.5 rounded-md border text-[10px] font-bold font-mono" x-text="ep.method"></span>
                             </div>
-                            <code class="!text-[11.5px] !font-mono !text-gray-500 !truncate" x-text="ep.path"></code>
+                            <code class="text-[11px] font-mono text-gray-500 truncate" x-text="ep.path"></code>
                         </button>
                     </template>
                 </div>
             </c-ui.card>
         </div>
 
-        <!-- Main Workspace (Doc Details & Interactive Testbed) -->
-        <div class="lg:!col-span-8">
-            <template x-if="selectedEndpoint">
-                <div class="!space-y-6">
+        <!-- Right Detail Panel -->
+        <div class="lg:col-span-8">
+            <template x-if="selectedEndpoint && selectedEndpoint.path">
+                <div class="space-y-6">
 
-                    <!-- Endpoint Header Banner -->
+                    <!-- Endpoint Summary Header Card -->
                     <c-ui.card padding="lg">
-                        <div class="!flex !items-center !gap-3 !mb-3">
-                            <span :class="{
-                                '!bg-emerald-100 !text-emerald-800': selectedEndpoint.method === 'GET',
-                                '!bg-blue-100 !text-blue-800': selectedEndpoint.method === 'POST',
-                                '!bg-rose-100 !text-rose-800': selectedEndpoint.method === 'DELETE'
-                            }" class="!px-3 !py-1 !rounded-lg !text-[12px] !font-black !font-mono" x-text="selectedEndpoint.method"></span>
-
-                            <code class="!text-[15px] !font-mono !font-bold !text-gray-900" x-text="selectedEndpoint.path"></code>
-
-                            <span class="!ml-auto !text-[11px] !font-bold !px-2.5 !py-1 !rounded-full !bg-gray-100 !text-gray-600" x-text="selectedEndpoint.category"></span>
+                        <div class="flex items-center gap-3 mb-3">
+                            <c-ui.badge :variant="selectedEndpoint.method === 'GET' ? 'success' : (selectedEndpoint.method === 'POST' ? 'primary' : 'danger')" :label="selectedEndpoint.method" size="md" />
+                            <code class="text-sm font-mono font-bold text-gray-900" x-text="selectedEndpoint.path"></code>
+                            <c-ui.badge variant="neutral" :label="selectedEndpoint.category" size="sm" class="ml-auto" />
                         </div>
 
-                        <h3 class="!text-xl !font-bold !text-gray-900 !mb-1" x-text="selectedEndpoint.name"></h3>
-                        <p class="!text-[13.5px] !text-gray-600 !leading-relaxed" x-text="selectedEndpoint.description"></p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-1" x-text="selectedEndpoint.name"></h3>
+                        <p class="text-sm text-gray-600 leading-relaxed" x-text="selectedEndpoint.description"></p>
 
-                        <!-- Tab Navigation -->
-                        <div class="!flex !items-center !gap-4 !mt-6 !border-b !border-gray-200">
-                            <button type="button" @click="activeTab = 'overview'"
-                                    :class="activeTab === 'overview' ? '!border-blue-600 !text-blue-600 !font-bold' : '!border-transparent !text-gray-500 hover:!text-gray-700'"
-                                    class="!pb-2.5 !text-[13.5px] !border-b-2 !transition-all">Overview & Code Snippets</button>
-                            <button type="button" @click="activeTab = 'sandbox'"
-                                    :class="activeTab === 'sandbox' ? '!border-blue-600 !text-blue-600 !font-bold' : '!border-transparent !text-gray-500 hover:!text-gray-700'"
-                                    class="!pb-2.5 !text-[13.5px] !border-b-2 !transition-all !flex !items-center !gap-1.5">
-                                <i data-lucide="play-circle" class="!w-4 !h-4 !text-emerald-600"></i> Interactive Testbed
-                            </button>
+                        <!-- Tab Switcher -->
+                        <div class="flex items-center gap-2 mt-6 border-b border-gray-200 pb-1">
+                            <c-ui.tab-button label="Overview & Code Snippets" :active="activeTab === 'overview'" @click="activeTab = 'overview'" />
+                            <c-ui.tab-button label="Interactive Testbed" :active="activeTab === 'sandbox'" color="emerald" @click="activeTab = 'sandbox'" />
                         </div>
                     </c-ui.card>
 
                     <!-- TAB 1: OVERVIEW & SNIPPETS -->
-                    <div x-show="activeTab === 'overview'" class="!space-y-6">
+                    <div x-show="activeTab === 'overview'" class="space-y-6">
 
-                        <!-- Authentication & Parameters Card -->
+                        <!-- Request Details Card -->
                         <c-ui.card title="Request Details" padding="lg">
-                            <div class="!space-y-4">
-                                <div class="!flex !items-center !justify-between !p-3 !rounded-xl !bg-gray-50 !border !border-gray-200">
-                                    <span class="!text-[13px] !font-bold !text-gray-700">Authentication Required</span>
-                                    <span class="!text-[12px] !font-bold !px-2.5 !py-1 !rounded-md !bg-purple-50 !text-purple-700 !border !border-purple-200" x-text="selectedEndpoint.auth_required"></span>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
+                                    <span class="text-xs font-bold text-gray-700">Authentication Required</span>
+                                    <c-ui.badge variant="info" :label="selectedEndpoint.auth_required" size="md" />
                                 </div>
 
                                 <template x-if="selectedEndpoint.query_params && selectedEndpoint.query_params.length > 0">
                                     <div>
-                                        <h4 class="!text-[12.5px] !font-bold !text-gray-700 !uppercase !tracking-wider !mb-2">Query Parameters</h4>
-                                        <div class="!border !border-gray-200 !rounded-xl !overflow-hidden">
-                                            <table class="!w-full !text-left !text-[13px]">
-                                                <thead class="!bg-gray-50 !text-gray-600 !font-bold !border-b">
-                                                    <tr>
-                                                        <th class="!p-2.5">Parameter</th>
-                                                        <th class="!p-2.5">Type</th>
-                                                        <th class="!p-2.5">Description</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="!divide-y !divide-gray-100">
-                                                    <template x-for="qp in selectedEndpoint.query_params">
-                                                        <tr>
-                                                            <td class="!p-2.5 !font-mono !font-bold !text-blue-700" x-text="qp.name"></td>
-                                                            <td class="!p-2.5 !font-mono !text-gray-500" x-text="qp.type"></td>
-                                                            <td class="!p-2.5 !text-gray-600" x-text="qp.description"></td>
-                                                        </tr>
-                                                    </template>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Query Parameters</h4>
+                                        <c-ui.table>
+                                            <c-slot name="header">
+                                                <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Parameter</th>
+                                                <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Type</th>
+                                                <th class="text-left text-xs font-bold text-gray-500 uppercase py-3 px-4">Description</th>
+                                            </c-slot>
+                                            <template x-for="qp in selectedEndpoint.query_params">
+                                                <tr class="hover:bg-gray-50 transition-colors">
+                                                    <td class="py-3 px-4 text-xs font-mono font-bold text-blue-700" x-text="qp.name"></td>
+                                                    <td class="py-3 px-4 text-xs font-mono text-gray-500" x-text="qp.type"></td>
+                                                    <td class="py-3 px-4 text-xs text-gray-600" x-text="qp.description"></td>
+                                                </tr>
+                                            </template>
+                                        </c-ui.table>
                                     </div>
                                 </template>
                             </div>
                         </c-ui.card>
 
-                        <!-- Code Snippet Generator Card -->
+                        <!-- Code Generator Card -->
                         <c-ui.card title="Code Snippet Generator" padding="lg">
-                            <div class="!space-y-3">
-                                <div class="!flex !items-center !justify-between">
-                                    <div class="!flex !items-center !gap-2">
-                                        <button type="button" @click="codeTab = 'curl'" :class="codeTab === 'curl' ? '!bg-gray-900 !text-white' : '!bg-gray-100 !text-gray-700'" class="!px-3 !py-1.5 !rounded-lg !text-[12px] !font-bold">cURL</button>
-                                        <button type="button" @click="codeTab = 'fetch'" :class="codeTab === 'fetch' ? '!bg-gray-900 !text-white' : '!bg-gray-100 !text-gray-700'" class="!px-3 !py-1.5 !rounded-lg !text-[12px] !font-bold">JavaScript (fetch)</button>
-                                        <button type="button" @click="codeTab = 'python'" :class="codeTab === 'python' ? '!bg-gray-900 !text-white' : '!bg-gray-100 !text-gray-700'" class="!px-3 !py-1.5 !rounded-lg !text-[12px] !font-bold">Python (requests)</button>
-                                    </div>
-                                    <button type="button" @click="copyToClipboard(generateSnippet(selectedEndpoint, codeTab), 'Code snippet copied!')" class="!text-[12px] !font-bold !text-blue-600 hover:!text-blue-800">
-                                        Copy Code
-                                    </button>
+                            <c-slot name="actions">
+                                <c-ui.button type="button" variant="ghost" size="sm" icon="copy" label="Copy Code" @click="copyToClipboard(generateSnippet(selectedEndpoint, codeTab), 'Code snippet copied!')" />
+                            </c-slot>
+
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-2 border-b border-gray-100 pb-2">
+                                    <c-ui.tab-button label="cURL" :active="codeTab === 'curl'" @click="codeTab = 'curl'" />
+                                    <c-ui.tab-button label="JavaScript (fetch)" :active="codeTab === 'fetch'" @click="codeTab = 'fetch'" />
+                                    <c-ui.tab-button label="Python (requests)" :active="codeTab === 'python'" @click="codeTab = 'python'" />
                                 </div>
 
-                                <div class="!bg-gray-900 !text-gray-100 !p-4 !rounded-xl !font-mono !text-[12.5px] !overflow-x-auto">
+                                <div class="bg-gray-900 text-gray-100 p-4 rounded-xl font-mono text-xs overflow-x-auto">
                                     <pre x-text="generateSnippet(selectedEndpoint, codeTab)"></pre>
                                 </div>
                             </div>
@@ -353,55 +330,51 @@ document.addEventListener('alpine:init', () => {
                     </div>
 
                     <!-- TAB 2: INTERACTIVE SANDBOX -->
-                    <div x-show="activeTab === 'sandbox'" class="!space-y-6">
+                    <div x-show="activeTab === 'sandbox'" class="space-y-6">
                         <c-ui.card title="Live API Testbed" subtitle="Execute live HTTP requests against local backend endpoints" padding="lg">
-                            <div class="!space-y-4">
-                                <div class="!grid !grid-cols-12 !gap-3">
-                                    <div class="!col-span-3">
-                                        <label class="!block !text-[12px] !font-bold !text-gray-700 !mb-1">Method</label>
-                                        <select x-model="customMethod" class="!w-full !p-2.5 !text-[13px] !font-mono !font-bold !border !border-gray-200 !rounded-xl !bg-white">
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-12 gap-3">
+                                    <div class="col-span-3">
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Method</label>
+                                        <select x-model="customMethod" class="w-full p-2.5 text-xs font-mono font-bold border border-gray-200 rounded-xl bg-white focus:outline-none">
                                             <option value="GET">GET</option>
                                             <option value="POST">POST</option>
                                             <option value="DELETE">DELETE</option>
                                         </select>
                                     </div>
-                                    <div class="!col-span-9">
-                                        <label class="!block !text-[12px] !font-bold !text-gray-700 !mb-1">Endpoint Path</label>
-                                        <input type="text" x-model="customPath" class="!w-full !p-2.5 !text-[13px] !font-mono !border !border-gray-200 !rounded-xl !bg-gray-50">
+                                    <div class="col-span-9">
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Endpoint Path</label>
+                                        <input type="text" x-model="customPath" class="w-full p-2.5 text-xs font-mono border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none">
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label class="!block !text-[12px] !font-bold !text-gray-700 !mb-1">Headers (JSON)</label>
-                                    <textarea x-model="customHeaders" rows="3" class="!w-full !p-2.5 !text-[12.5px] !font-mono !border !border-gray-200 !rounded-xl !bg-gray-900 !text-gray-100"></textarea>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Headers (JSON)</label>
+                                    <textarea x-model="customHeaders" rows="3" class="w-full p-2.5 text-xs font-mono border border-gray-200 rounded-xl bg-gray-900 text-gray-100 focus:outline-none"></textarea>
                                 </div>
 
                                 <template x-if="['POST', 'PUT', 'PATCH'].includes(customMethod)">
                                     <div>
-                                        <label class="!block !text-[12px] !font-bold !text-gray-700 !mb-1">Request Body (JSON)</label>
-                                        <textarea x-model="customBody" rows="5" class="!w-full !p-2.5 !text-[12.5px] !font-mono !border !border-gray-200 !rounded-xl !bg-gray-900 !text-gray-100"></textarea>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Request Body (JSON)</label>
+                                        <textarea x-model="customBody" rows="5" class="w-full p-2.5 text-xs font-mono border border-gray-200 rounded-xl bg-gray-900 text-gray-100 focus:outline-none"></textarea>
                                     </div>
                                 </template>
 
-                                <div class="!pt-2">
-                                    <button type="button" @click="runSandboxTest()" :disabled="testLoading"
-                                            class="!w-full !py-3 !rounded-xl !bg-blue-600 hover:!bg-blue-700 !text-white !font-bold !text-[14px] !transition-all !shadow-md !flex !items-center !justify-center !gap-2 !cursor-pointer">
-                                        <i data-lucide="play" class="!w-4 !h-4"></i> Send Test Request
-                                    </button>
+                                <div class="pt-2">
+                                    <c-ui.button type="button" variant="primary" icon="play" label="Send Test Request" class="w-full justify-center" @click="runSandboxTest()" />
                                 </div>
 
                                 <!-- Response Output -->
                                 <template x-if="testResult">
-                                    <div class="!mt-6 !pt-6 !border-t !border-gray-200 !space-y-3">
-                                        <div class="!flex !items-center !justify-between">
-                                            <div class="!flex !items-center !gap-2">
-                                                <span :class="testResult.status >= 200 && testResult.status < 300 ? '!bg-emerald-100 !text-emerald-800' : '!bg-rose-100 !text-rose-800'"
-                                                      class="!px-3 !py-1 !rounded-md !font-mono !font-bold !text-[12px]" x-text="'Status: ' + testResult.status + ' ' + testResult.statusText"></span>
-                                                <span class="!text-[12px] !font-mono !text-gray-500" x-text="testResult.duration + ' ms'"></span>
+                                    <div class="mt-6 pt-6 border-t border-gray-200 space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-2">
+                                                <c-ui.badge :variant="testResult.status >= 200 && testResult.status < 300 ? 'success' : 'danger'" :label="'Status: ' + testResult.status + ' ' + testResult.statusText" size="md" />
+                                                <span class="text-xs font-mono text-gray-500" x-text="testResult.duration + ' ms'"></span>
                                             </div>
                                         </div>
 
-                                        <div class="!bg-gray-900 !text-emerald-400 !p-4 !rounded-xl !font-mono !text-[12.5px] !overflow-x-auto !max-h-96">
+                                        <div class="bg-gray-900 text-emerald-400 p-4 rounded-xl font-mono text-xs overflow-x-auto max-h-96">
                                             <pre x-text="testResult.bodyText"></pre>
                                         </div>
                                     </div>
