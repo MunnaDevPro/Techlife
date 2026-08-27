@@ -156,21 +156,21 @@ document.addEventListener('alpine:init', () => {
 });
 </script>
 
-<div x-data="apiDocsManager" class="space-y-6">
+<div x-data="apiDocsManager" class="w-full space-y-6">
 
     <!-- Page Header & Action Bar -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 w-full">
+        <div class="min-w-0">
             <div class="flex items-center gap-3 mb-1">
-                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shrink-0">
                     <i data-lucide="book-open" class="w-5 h-5"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-900 tracking-tight">API Documentation & Testbed</h2>
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight truncate">API Documentation & Testbed</h2>
             </div>
-            <p class="text-sm text-gray-500 ml-13">Explore, test, and export TechLife REST API specifications</p>
+            <p class="text-xs sm:text-sm text-gray-500 ml-13">Explore, test, and export TechLife REST API specifications</p>
         </div>
 
-        <div class="flex items-center gap-2" x-data="{ openExport: false }">
+        <div class="flex items-center gap-2 shrink-0" x-data="{ openExport: false }">
             <div class="relative">
                 <c-ui.button type="button" variant="secondary" icon="download" icon_right="chevron-down" label="Export Spec" @click="openExport = !openExport" />
                 
@@ -199,22 +199,22 @@ document.addEventListener('alpine:init', () => {
         <span x-text="copiedNotice"></span>
     </div>
 
-    <!-- Main Workspace Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Main Workspace Layout -->
+    <div class="flex flex-col lg:flex-row items-start gap-6 w-full min-w-0">
 
         <!-- Endpoint List Sidebar Card -->
-        <div class="lg:col-span-4">
-            <c-ui.card padding="sm" class="h-full">
+        <div class="w-full lg:w-80 lg:shrink-0 min-w-0">
+            <c-ui.card padding="sm" class="w-full">
                 <!-- Search & Filters -->
                 <div class="space-y-3 p-1">
-                    <div class="relative">
+                    <div class="relative w-full">
                         <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
                         <input type="text" x-model="searchQuery" placeholder="Filter endpoints..."
                                class="w-full pl-9 pr-3 py-2 text-xs border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-blue-600 focus:outline-none transition-colors">
                     </div>
 
-                    <div class="flex items-center gap-2">
-                        <select x-model="filterCategory" class="flex-1 px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none">
+                    <div class="flex items-center gap-2 w-full">
+                        <select x-model="filterCategory" class="flex-1 min-w-0 px-2 py-1.5 text-xs border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none truncate">
                             <option value="All">All Categories</option>
                             <option value="Blog Posts">Blog Posts</option>
                             <option value="Automation Ingestion">Automation</option>
@@ -223,7 +223,7 @@ document.addEventListener('alpine:init', () => {
                             <option value="Site Config">Site Config</option>
                         </select>
 
-                        <select x-model="filterMethod" class="w-24 px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none">
+                        <select x-model="filterMethod" class="w-20 shrink-0 px-2 py-1.5 text-xs border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none">
                             <option value="All">All Methods</option>
                             <option value="GET">GET</option>
                             <option value="POST">POST</option>
@@ -233,20 +233,20 @@ document.addEventListener('alpine:init', () => {
                 </div>
 
                 <!-- Endpoint Items -->
-                <div class="mt-3 space-y-1 max-h-[580px] overflow-y-auto pr-1">
+                <div class="mt-3 space-y-1 max-h-[600px] overflow-y-auto pr-1 w-full">
                     <template x-for="ep in filteredEndpoints" :key="ep.id">
                         <button type="button" @click="selectEndpoint(ep.id)"
                                 :class="selectedId === ep.id ? 'bg-blue-50 border-blue-200 shadow-sm' : 'bg-white hover:bg-gray-50 border-gray-100'"
-                                class="w-full text-left p-3 rounded-xl border transition-all flex flex-col gap-1.5 cursor-pointer">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="font-bold text-xs text-gray-900 truncate" x-text="ep.name"></span>
+                                class="w-full text-left p-3 rounded-xl border transition-all flex flex-col gap-1.5 cursor-pointer min-w-0">
+                            <div class="flex items-center justify-between gap-2 w-full min-w-0">
+                                <span class="font-bold text-xs text-gray-900 truncate flex-1 min-w-0" x-text="ep.name"></span>
                                 <span :class="{
                                     'bg-emerald-50 text-emerald-700 border-emerald-200': ep.method === 'GET',
                                     'bg-blue-50 text-blue-700 border-blue-200': ep.method === 'POST',
                                     'bg-rose-50 text-rose-700 border-rose-200': ep.method === 'DELETE'
-                                }" class="px-2 py-0.5 rounded-md border text-[10px] font-bold font-mono" x-text="ep.method"></span>
+                                }" class="px-2 py-0.5 rounded-md border text-[10px] font-bold font-mono shrink-0" x-text="ep.method"></span>
                             </div>
-                            <code class="text-[11px] font-mono text-gray-500 truncate" x-text="ep.path"></code>
+                            <code class="text-[11px] font-mono text-gray-500 truncate w-full block" x-text="ep.path"></code>
                         </button>
                     </template>
                 </div>
@@ -254,41 +254,41 @@ document.addEventListener('alpine:init', () => {
         </div>
 
         <!-- Right Detail Panel -->
-        <div class="lg:col-span-8">
+        <div class="flex-1 w-full min-w-0">
             <template x-if="selectedEndpoint && selectedEndpoint.path">
-                <div class="space-y-6">
+                <div class="space-y-6 w-full min-w-0">
 
                     <!-- Endpoint Summary Header Card -->
-                    <c-ui.card padding="lg">
-                        <div class="flex items-center gap-3 mb-3">
+                    <c-ui.card padding="lg" class="w-full">
+                        <div class="flex flex-wrap items-center gap-3 mb-3 w-full min-w-0">
                             <c-ui.badge :variant="selectedEndpoint.method === 'GET' ? 'success' : (selectedEndpoint.method === 'POST' ? 'primary' : 'danger')" :label="selectedEndpoint.method" size="md" />
-                            <code class="text-sm font-mono font-bold text-gray-900" x-text="selectedEndpoint.path"></code>
+                            <code class="text-sm font-mono font-bold text-gray-900 break-all" x-text="selectedEndpoint.path"></code>
                             <c-ui.badge variant="neutral" :label="selectedEndpoint.category" size="sm" class="ml-auto" />
                         </div>
 
-                        <h3 class="text-xl font-bold text-gray-900 mb-1" x-text="selectedEndpoint.name"></h3>
-                        <p class="text-sm text-gray-600 leading-relaxed" x-text="selectedEndpoint.description"></p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-1 break-words" x-text="selectedEndpoint.name"></h3>
+                        <p class="text-sm text-gray-600 leading-relaxed break-words" x-text="selectedEndpoint.description"></p>
 
                         <!-- Tab Switcher -->
-                        <div class="flex items-center gap-2 mt-6 border-b border-gray-200 pb-1">
+                        <div class="flex items-center gap-2 mt-6 border-b border-gray-200 pb-1 overflow-x-auto scrollbar-hide w-full">
                             <c-ui.tab-button label="Overview & Code Snippets" :active="activeTab === 'overview'" @click="activeTab = 'overview'" />
                             <c-ui.tab-button label="Interactive Testbed" :active="activeTab === 'sandbox'" color="emerald" @click="activeTab = 'sandbox'" />
                         </div>
                     </c-ui.card>
 
                     <!-- TAB 1: OVERVIEW & SNIPPETS -->
-                    <div x-show="activeTab === 'overview'" class="space-y-6">
+                    <div x-show="activeTab === 'overview'" class="space-y-6 w-full min-w-0">
 
                         <!-- Request Details Card -->
-                        <c-ui.card title="Request Details" padding="lg">
-                            <div class="space-y-4">
+                        <c-ui.card title="Request Details" padding="lg" class="w-full">
+                            <div class="space-y-4 w-full min-w-0">
                                 <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
                                     <span class="text-xs font-bold text-gray-700">Authentication Required</span>
                                     <c-ui.badge variant="info" :label="selectedEndpoint.auth_required" size="md" />
                                 </div>
 
                                 <template x-if="selectedEndpoint.query_params && selectedEndpoint.query_params.length > 0">
-                                    <div>
+                                    <div class="w-full min-w-0">
                                         <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Query Parameters</h4>
                                         <c-ui.table>
                                             <c-slot name="header">
@@ -310,19 +310,19 @@ document.addEventListener('alpine:init', () => {
                         </c-ui.card>
 
                         <!-- Code Generator Card -->
-                        <c-ui.card title="Code Snippet Generator" padding="lg">
+                        <c-ui.card title="Code Snippet Generator" padding="lg" class="w-full">
                             <c-slot name="actions">
                                 <c-ui.button type="button" variant="ghost" size="sm" icon="copy" label="Copy Code" @click="copyToClipboard(generateSnippet(selectedEndpoint, codeTab), 'Code snippet copied!')" />
                             </c-slot>
 
-                            <div class="space-y-3">
-                                <div class="flex items-center gap-2 border-b border-gray-100 pb-2">
+                            <div class="space-y-3 w-full min-w-0">
+                                <div class="flex items-center gap-2 border-b border-gray-100 pb-2 overflow-x-auto scrollbar-hide">
                                     <c-ui.tab-button label="cURL" :active="codeTab === 'curl'" @click="codeTab = 'curl'" />
                                     <c-ui.tab-button label="JavaScript (fetch)" :active="codeTab === 'fetch'" @click="codeTab = 'fetch'" />
                                     <c-ui.tab-button label="Python (requests)" :active="codeTab === 'python'" @click="codeTab = 'python'" />
                                 </div>
 
-                                <div class="bg-gray-900 text-gray-100 p-4 rounded-xl font-mono text-xs overflow-x-auto">
+                                <div class="bg-gray-900 text-gray-100 p-4 rounded-xl font-mono text-xs overflow-x-auto w-full">
                                     <pre x-text="generateSnippet(selectedEndpoint, codeTab)"></pre>
                                 </div>
                             </div>
@@ -330,11 +330,11 @@ document.addEventListener('alpine:init', () => {
                     </div>
 
                     <!-- TAB 2: INTERACTIVE SANDBOX -->
-                    <div x-show="activeTab === 'sandbox'" class="space-y-6">
-                        <c-ui.card title="Live API Testbed" subtitle="Execute live HTTP requests against local backend endpoints" padding="lg">
-                            <div class="space-y-4">
-                                <div class="grid grid-cols-12 gap-3">
-                                    <div class="col-span-3">
+                    <div x-show="activeTab === 'sandbox'" class="space-y-6 w-full min-w-0">
+                        <c-ui.card title="Live API Testbed" subtitle="Execute live HTTP requests against local backend endpoints" padding="lg" class="w-full">
+                            <div class="space-y-4 w-full min-w-0">
+                                <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 w-full">
+                                    <div class="sm:col-span-3">
                                         <label class="block text-xs font-bold text-gray-700 mb-1">Method</label>
                                         <select x-model="customMethod" class="w-full p-2.5 text-xs font-mono font-bold border border-gray-200 rounded-xl bg-white focus:outline-none">
                                             <option value="GET">GET</option>
@@ -342,31 +342,31 @@ document.addEventListener('alpine:init', () => {
                                             <option value="DELETE">DELETE</option>
                                         </select>
                                     </div>
-                                    <div class="col-span-9">
+                                    <div class="sm:col-span-9">
                                         <label class="block text-xs font-bold text-gray-700 mb-1">Endpoint Path</label>
                                         <input type="text" x-model="customPath" class="w-full p-2.5 text-xs font-mono border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none">
                                     </div>
                                 </div>
 
-                                <div>
+                                <div class="w-full">
                                     <label class="block text-xs font-bold text-gray-700 mb-1">Headers (JSON)</label>
                                     <textarea x-model="customHeaders" rows="3" class="w-full p-2.5 text-xs font-mono border border-gray-200 rounded-xl bg-gray-900 text-gray-100 focus:outline-none"></textarea>
                                 </div>
 
                                 <template x-if="['POST', 'PUT', 'PATCH'].includes(customMethod)">
-                                    <div>
+                                    <div class="w-full">
                                         <label class="block text-xs font-bold text-gray-700 mb-1">Request Body (JSON)</label>
                                         <textarea x-model="customBody" rows="5" class="w-full p-2.5 text-xs font-mono border border-gray-200 rounded-xl bg-gray-900 text-gray-100 focus:outline-none"></textarea>
                                     </div>
                                 </template>
 
-                                <div class="pt-2">
+                                <div class="pt-2 w-full">
                                     <c-ui.button type="button" variant="primary" icon="play" label="Send Test Request" class="w-full justify-center" @click="runSandboxTest()" />
                                 </div>
 
                                 <!-- Response Output -->
                                 <template x-if="testResult">
-                                    <div class="mt-6 pt-6 border-t border-gray-200 space-y-3">
+                                    <div class="mt-6 pt-6 border-t border-gray-200 space-y-3 w-full min-w-0">
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center gap-2">
                                                 <c-ui.badge :variant="testResult.status >= 200 && testResult.status < 300 ? 'success' : 'danger'" :label="'Status: ' + testResult.status + ' ' + testResult.statusText" size="md" />
@@ -374,7 +374,7 @@ document.addEventListener('alpine:init', () => {
                                             </div>
                                         </div>
 
-                                        <div class="bg-gray-900 text-emerald-400 p-4 rounded-xl font-mono text-xs overflow-x-auto max-h-96">
+                                        <div class="bg-gray-900 text-emerald-400 p-4 rounded-xl font-mono text-xs overflow-x-auto max-h-96 w-full">
                                             <pre x-text="testResult.bodyText"></pre>
                                         </div>
                                     </div>
