@@ -9,8 +9,8 @@
 
     <!-- Filters -->
     <c-ui.card title="Filters" padding="sm" class="mb-5 border-gray-200 shadow-sm">
-        <form method="get" class="flex flex-col sm:flex-row items-end gap-4 !mt-1">
-            <div class="w-full sm:w-[180px]">
+        <form method="get" class="flex flex-col sm:flex-row items-end gap-3 mt-1">
+            <div class="w-full" style="max-width: 180px;">
                 <c-ui.select name="days" label="Time Window" is_django_form="true">
                     <select name="days" class="w-full">
                         <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 Days</option>
@@ -20,7 +20,7 @@
                 </c-ui.select>
             </div>
 
-            <div class="w-full sm:w-[240px]">
+            <div class="w-full" style="max-width: 250px;">
                 <c-ui.select name="category" label="Category" is_django_form="true">
                     <select name="category" class="w-full">
                         <option value="">All Categories</option>
@@ -31,8 +31,8 @@
                 </c-ui.select>
             </div>
 
-            <div class="w-full sm:flex-1 sm:max-w-[150px]">
-                <c-ui.button type="submit" variant="primary" label="Apply Filter" icon="filter" extra_class="w-full"></c-ui.button>
+            <div class="w-full sm:w-auto">
+                <c-ui.button type="submit" variant="primary" label="Apply Filter" icon="filter" extra_class="w-full sm:w-auto"></c-ui.button>
             </div>
         </form>
     </c-ui.card>

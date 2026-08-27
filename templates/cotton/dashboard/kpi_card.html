@@ -1,0 +1,13 @@
+<div class="!bg-white !rounded-md !p-5 !transition-all !duration-300 !border !border-gray-100 !flex !flex-col !justify-between">
+    <div class="!flex !items-center !justify-between !mb-3">
+        <span class="!text-[13px] !font-semibold !text-gray-500 !flex !items-center !gap-1.5">
+            <i data-lucide="{{ icon }}" class="!w-4 !h-4 {{ icon_color }}"></i> {{ title }}
+        </span>
+        {% if badge %}
+        <span class="!text-[10px] !font-bold {{ badge_text_color }} {{ badge_bg_color }} !px-1.5 !py-0.5 !rounded-md">
+            {{ badge }}
+        </span>
+        {% endif %}
+    </div>
+    <h3 class="!text-3xl !font-black !text-gray-800">{{ value }}</h3>
+</div>

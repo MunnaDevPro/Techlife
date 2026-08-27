@@ -61,6 +61,51 @@ def sitemap_status(request):
     db_categories = Category.objects.count()
     static_urls = 4  # homepage, blogs, popular_blogs, redirect_search_results
     total_db_urls = db_posts + db_categories + static_urls
+
+    sitemap_data = [
+        {
+            "name": "PostSitemap",
+            "description": "Article pages",
+            "icon": "file-text",
+            "pattern": "/details/*",
+            "db_count": db_posts,
+            "sitemap_count": db_posts,
+            "coverage": 100 if db_posts > 0 else 0, # Assuming 100% for now
+            "status": "Aligned",
+            "bg_class": "bg-violet-50",
+            "border_class": "border-violet-100",
+            "text_class": "text-violet-600",
+            "hover_class": "group-hover:bg-violet-100"
+        },
+        {
+            "name": "CategorySitemap",
+            "description": "Category pages",
+            "icon": "layers",
+            "pattern": "/category/*",
+            "db_count": db_categories,
+            "sitemap_count": db_categories,
+            "coverage": 100 if db_categories > 0 else 0,
+            "status": "Aligned",
+            "bg_class": "bg-sky-50",
+            "border_class": "border-sky-100",
+            "text_class": "text-sky-600",
+            "hover_class": "group-hover:bg-sky-100"
+        },
+        {
+            "name": "StaticViewSitemap",
+            "description": "Core static pages",
+            "icon": "link",
+            "pattern": "Core pages",
+            "db_count": static_urls,
+            "sitemap_count": static_urls,
+            "coverage": 100,
+            "status": "Aligned",
+            "bg_class": "bg-amber-50",
+            "border_class": "border-amber-100",
+            "text_class": "text-amber-600",
+            "hover_class": "group-hover:bg-amber-100"
+        }
+    ]
     
     ctx = get_dashboard_context(request, "Sitemap Status", "SEO", "dashboard:seo_sitemap")
     ctx.update({
@@ -68,6 +113,7 @@ def sitemap_status(request):
         "db_posts": db_posts,
         "db_categories": db_categories,
         "static_urls": static_urls,
+        "sitemap_data": sitemap_data,
     })
     return render(request, "dashboard/seo/sitemap_status.html", ctx)
 

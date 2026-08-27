@@ -15,12 +15,8 @@
             <p class="text-[13.5px] text-gray-500 ml-10">Scan sitemap configuration and URL mappings across your site</p>
         </div>
         <!-- Overall Health Badge -->
-        <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-xl !px-4 !py-2.5 self-start sm:self-auto">
-            <span class="relative flex h-2.5 w-2.5">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-            </span>
-            <span class="text-[13px] font-semibold text-emerald-700">All Systems Aligned</span>
+        <div class="self-start sm:self-auto">
+            <c-ui.badge variant="success" label="All Systems Aligned" dot="true" />
         </div>
     </div>
 
@@ -28,229 +24,127 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
         <!-- Total URLs -->
-        <div class="bg-white border border-gray-200 rounded-2xl !p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-            <div class="flex items-center justify-between relative z-10">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-sm">
-                    <i data-lucide="globe" class="w-5 h-5 text-white"></i>
-                </div>
-                <span class="text-[10.5px] font-semibold text-blue-600 bg-blue-50 border border-blue-100 !px-2 !py-0.5 rounded-full uppercase tracking-wider">Total</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">Sitemap URLs</p>
-                <h3 class="text-3xl font-bold text-gray-900 mt-0.5 tracking-tight">{{ total_db_urls }}</h3>
-            </div>
-        </div>
+        <c-dashboard.kpi_card 
+            title="Sitemap URLs" 
+            value="{{ total_db_urls }}" 
+            icon="globe" 
+            icon_color="!text-blue-500" 
+            badge="Total" 
+            badge_text_color="!text-blue-600" 
+            badge_bg_color="!bg-blue-50" 
+        />
 
         <!-- Articles -->
-        <div class="bg-white border border-gray-200 rounded-2xl !p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-            <div class="flex items-center justify-between relative z-10">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-sm">
-                    <i data-lucide="file-text" class="w-5 h-5 text-white"></i>
-                </div>
-                <span class="text-[10.5px] font-semibold text-violet-600 bg-violet-50 border border-violet-100 !px-2 !py-0.5 rounded-full uppercase tracking-wider">Posts</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">Articles Registered</p>
-                <h3 class="text-3xl font-bold text-gray-900 mt-0.5 tracking-tight">{{ db_posts }}</h3>
-            </div>
-        </div>
+        <c-dashboard.kpi_card 
+            title="Articles Registered" 
+            value="{{ db_posts }}" 
+            icon="file-text" 
+            icon_color="!text-violet-500" 
+            badge="Posts" 
+            badge_text_color="!text-violet-600" 
+            badge_bg_color="!bg-violet-50" 
+        />
 
         <!-- Categories -->
-        <div class="bg-white border border-gray-200 rounded-2xl !p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-sky-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-            <div class="flex items-center justify-between relative z-10">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-cyan-600 flex items-center justify-center shadow-sm">
-                    <i data-lucide="layers" class="w-5 h-5 text-white"></i>
-                </div>
-                <span class="text-[10.5px] font-semibold text-sky-600 bg-sky-50 border border-sky-100 !px-2 !py-0.5 rounded-full uppercase tracking-wider">Tags</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">Categories Registered</p>
-                <h3 class="text-3xl font-bold text-gray-900 mt-0.5 tracking-tight">{{ db_categories }}</h3>
-            </div>
-        </div>
+        <c-dashboard.kpi_card 
+            title="Categories Registered" 
+            value="{{ db_categories }}" 
+            icon="layers" 
+            icon_color="!text-sky-500" 
+            badge="Tags" 
+            badge_text_color="!text-sky-600" 
+            badge_bg_color="!bg-sky-50" 
+        />
 
         <!-- Static Routes -->
-        <div class="bg-white border border-gray-200 rounded-2xl !p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow duration-200 group relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-            <div class="flex items-center justify-between relative z-10">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-sm">
-                    <i data-lucide="link" class="w-5 h-5 text-white"></i>
-                </div>
-                <span class="text-[10.5px] font-semibold text-amber-600 bg-amber-50 border border-amber-100 !px-2 !py-0.5 rounded-full uppercase tracking-wider">Core</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-[11.5px] font-medium text-gray-400 uppercase tracking-wider">Static Routes</p>
-                <h3 class="text-3xl font-bold text-gray-900 mt-0.5 tracking-tight">{{ static_urls }}</h3>
-            </div>
-        </div>
+        <c-dashboard.kpi_card 
+            title="Static Routes" 
+            value="{{ static_urls }}" 
+            icon="link" 
+            icon_color="!text-amber-500" 
+            badge="Core" 
+            badge_text_color="!text-amber-600" 
+            badge_bg_color="!bg-amber-50" 
+        />
 
     </div>
 
     <!-- Alignment Table Card -->
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+    <c-ui.card title="Sitemap vs Database Alignment" subtitle="All feeds synchronized with database" class="border-gray-200">
+        <c-slot name="actions">
+            <span class="inline-flex items-center gap-1.5 rounded-md bg-emerald-50 px-2.5 py-1 text-sm font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                Healthy
+            </span>
+        </c-slot>
 
-        <!-- Card Header -->
-        <div class="!px-6 !py-5 border-b border-gray-100 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-sm">
-                    <i data-lucide="git-merge" class="w-4 h-4 text-white"></i>
-                </div>
-                <div>
-                    <h3 class="text-[15px] font-bold text-gray-900">Sitemap vs Database Alignment</h3>
-                    <p class="text-[12px] text-gray-400 mt-0.5">All feeds synchronized with database</p>
-                </div>
+        <div class="!mt-2 overflow-x-auto">
+            <c-ui.table>
+                <c-slot name="header">
+                    <th class="text-left text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-6">Sitemap Component</th>
+                    <th class="text-left text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-4">Route Pattern</th>
+                    <th class="text-center text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-4">DB Records</th>
+                    <th class="text-center text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-4">Sitemap Count</th>
+                    <th class="text-left text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-4">Coverage</th>
+                    <th class="text-center text-gray-600 font-medium bg-gray-50 uppercase tracking-wider text-[12px] !py-3 !px-4">Status</th>
+                </c-slot>
+                
+                <c-slot name="body">
+                    {% for row in sitemap_data %}
+                    <tr class="hover:bg-gray-50/50 transition-colors border-b border-gray-100 last:border-0">
+                        <td class="!py-2.5 !px-6">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="{{ row.icon }}" class="w-5 h-5 text-gray-400"></i>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-gray-900 text-[14px]">{{ row.name }}</span>
+                                    <span class="text-gray-500 text-[12px]">{{ row.description }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="!py-2.5 !px-4">
+                            <code class="text-[12px] text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">{{ row.pattern }}</code>
+                        </td>
+                        <td class="!py-2.5 !px-4 text-center">
+                            <span class="text-[14px] font-semibold text-gray-800">{{ row.db_count }}</span>
+                        </td>
+                        <td class="!py-2.5 !px-4 text-center">
+                            <span class="text-[14px] font-semibold text-gray-800">{{ row.sitemap_count }}</span>
+                        </td>
+                        <td class="!py-2.5 !px-4">
+                            <span class="text-[13px] font-medium text-gray-700">{{ row.coverage }}%</span>
+                        </td>
+                        <td class="!py-2.5 !px-4 text-center">
+                            <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 !px-2.5 !py-1 text-[13px] font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+                                {{ row.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="!px-6 !py-16 text-center border-t border-gray-100">
+                            <div class="flex flex-col items-center justify-center text-gray-500">
+                                <div class="bg-gray-50 !p-4 rounded-full mb-4 border border-gray-100">
+                                    <i data-lucide="map" class="w-10 h-10 text-gray-400"></i>
+                                </div>
+                                <p class="text-[15px] font-medium text-gray-600">No sitemap data recorded.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </c-slot>
+            </c-ui.table>
+        </div>
+
+        <c-slot name="card_footer">
+            <div class="flex items-center gap-2">
+                <i data-lucide="info" class="w-4 h-4 text-gray-400"></i>
+                <p class="text-[13px] text-gray-500">
+                    Django sitemaps are generated dynamically. All feeds are synchronized with database queries.
+                </p>
             </div>
-            <div class="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 rounded-lg !px-3 !py-1.5">
-                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600"></i>
-                <span class="text-[12px] font-semibold text-emerald-700">Healthy</span>
-            </div>
-        </div>
+        </c-slot>
 
-        <!-- Table -->
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead>
-                    <tr class="bg-gray-50/70 border-b border-gray-100">
-                        <th class="text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-6">Sitemap Component</th>
-                        <th class="text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-4">Route Pattern</th>
-                        <th class="text-center text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-4">DB Records</th>
-                        <th class="text-center text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-4">Sitemap Count</th>
-                        <th class="text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-4">Coverage</th>
-                        <th class="text-center text-[11px] font-bold text-gray-500 uppercase tracking-wider !py-3.5 !px-4">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-
-                    <!-- PostSitemap Row -->
-                    <tr class="hover:bg-gray-50/60 transition-colors duration-150 group">
-                        <td class="!py-4 !px-6">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-violet-50 border border-violet-100 flex items-center justify-center group-hover:bg-violet-100 transition-colors">
-                                    <i data-lucide="file-text" class="w-3.5 h-3.5 text-violet-600"></i>
-                                </div>
-                                <div>
-                                    <span class="text-[13px] font-semibold text-gray-800">PostSitemap</span>
-                                    <p class="text-[11px] text-gray-400 mt-0.5">Article pages</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="!py-4 !px-4">
-                            <code class="text-[11.5px] font-mono bg-gray-100 text-gray-600 !px-2 !py-1 rounded-md border border-gray-200">/details/*</code>
-                        </td>
-                        <td class="!py-4 !px-4 text-center">
-                            <span class="text-[15px] font-bold text-gray-800">{{ db_posts }}</span>
-                        </td>
-                        <td class="!py-4 !px-4 text-center">
-                            <span class="text-[15px] font-bold text-gray-800">{{ db_posts }}</span>
-                        </td>
-                        <td class="!py-4 !px-4">
-                            <div class="flex items-center gap-2 min-w-[100px]">
-                                <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full" style="width:100%"></div>
-                                </div>
-                                <span class="text-[11px] font-semibold text-emerald-600 whitespace-nowrap">100%</span>
-                            </div>
-                        </td>
-                        <td class="!py-4 !px-4 text-center">
-                            <span class="inline-flex items-center gap-1.5 !px-3 !py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[11.5px] font-semibold text-emerald-700">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                Aligned
-                            </span>
-                        </td>
-                    </tr>
-
-                    <!-- CategorySitemap Row -->
-                    <tr class="hover:bg-gray-50/60 transition-colors duration-150 group">
-                        <td class="!py-4 !px-6">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-sky-50 border border-sky-100 flex items-center justify-center group-hover:bg-sky-100 transition-colors">
-                                    <i data-lucide="layers" class="w-3.5 h-3.5 text-sky-600"></i>
-                                </div>
-                                <div>
-                                    <span class="text-[13px] font-semibold text-gray-800">CategorySitemap</span>
-                                    <p class="text-[11px] text-gray-400 mt-0.5">Category pages</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="!py-4 !px-4">
-                            <code class="text-[11.5px] font-mono bg-gray-100 text-gray-600 !px-2 !py-1 rounded-md border border-gray-200">/category/*</code>
-                        </td>
-                        <td class="!py-4 !px-4 text-center">
-                            <span class="text-[15px] font-bold text-gray-800">{{ db_categories }}</span>
-                        </td>
-                        <td class="!py-4 !px-4 text-center">
-                            <span class="text-[15px] font-bold text-gray-800">{{ db_categories }}</span>
-                        </td>
-                        <td class="!py-4 !px-4">
-                            <div class="flex items-center gap-2 min-w-[100px]">
-                                <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full" style="width:100%"></div>
-                                </div>
-                                <span class="text-[11px] font-semibold text-emerald-600 whitespace-nowrap">100%</span>
-                            </div>
-                        </td>
-                        <td class="!py-4 !px-4 text-center">
-                            <span class="inline-flex items-center gap-1.5 !px-3 !py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[11.5px] font-semibold text-emerald-700">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                Aligned
-                            </span>
-                        </td>
-                    </tr>
-
-                    <!-- StaticViewSitemap Row -->
-                    <tr class="hover:bg-gray-50/60 transition-colors duration-150 group">
-                        <td class="!py-4 !px-6">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-amber-50 border border-amber-100 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
-                                    <i data-lucide="link" class="w-3.5 h-3.5 text-amber-600"></i>
-                                </div>
-                                <div>
-                                    <span class="text-[13px] font-semibold text-gray-800">StaticViewSitemap</span>
-                                    <p class="text-[11px] text-gray-400 mt-0.5">Core static pages</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="!py-4 !px-4">
-                            <code class="text-[11.5px] font-mono bg-gray-100 text-gray-600 !px-2 !py-1 rounded-md border border-gray-200">Core pages</code>
-                        </td>
-                        <td class="!py-4 !px-4 text-center">
-                            <span class="text-[15px] font-bold text-gray-800">{{ static_urls }}</span>
-                        </td>
-                        <td class="!py-4 !px-4 text-center">
-                            <span class="text-[15px] font-bold text-gray-800">{{ static_urls }}</span>
-                        </td>
-                        <td class="!py-4 !px-4">
-                            <div class="flex items-center gap-2 min-w-[100px]">
-                                <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full" style="width:100%"></div>
-                                </div>
-                                <span class="text-[11px] font-semibold text-emerald-600 whitespace-nowrap">100%</span>
-                            </div>
-                        </td>
-                        <td class="!py-4 !px-4 text-center">
-                            <span class="inline-flex items-center gap-1.5 !px-3 !py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[11.5px] font-semibold text-emerald-700">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                Aligned
-                            </span>
-                        </td>
-                    </tr>
-
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Card Footer -->
-        <div class="!px-6 !py-4 bg-gray-50/50 border-t border-gray-100 flex items-center gap-2">
-            <i data-lucide="info" class="w-3.5 h-3.5 text-gray-400 flex-shrink-0"></i>
-            <p class="text-[11.5px] text-gray-400 italic">
-                Django sitemaps are generated dynamically. All feeds are synchronized with database queries.
-            </p>
-        </div>
-
-    </div>
+    </c-ui.card>
 
 </div>
 {% endblock %}
