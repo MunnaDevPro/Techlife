@@ -383,7 +383,6 @@ def redirect_search_results(request):
         Q(subcategory__name__icontains=query) |
         Q(author__first_name__icontains=query) |
         Q(author__last_name__icontains=query) |
-        Q(author__username__icontains=query) |
         Q(author__email__icontains=query)
     )
 
