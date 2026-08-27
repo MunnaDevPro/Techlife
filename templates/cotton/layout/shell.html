@@ -18,7 +18,8 @@ Slot (default): page body content
        '{{ active_menu }}' === 'Users' ? 'users' :
        '{{ active_menu }}' === 'SEO' ? 'seo' :
        '{{ active_menu }}' === 'Analytics' ? 'analytics' :
-       '{{ active_menu }}' === 'Site Settings' ? 'settings' : ''),
+       '{{ active_menu }}' === 'Site Settings' ? 'settings' :
+       '{{ active_menu }}' === 'API & Conf' ? 'api' : ''),
     toggleDropdown(menu) {
         this.activeDropdown = this.activeDropdown === menu ? '' : menu;
         localStorage.setItem('ft_active_dropdown', this.activeDropdown);
@@ -310,6 +311,33 @@ Slot (default): page body content
               class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:settings_maintenance' %}!text-white{% endif %}"></i>
             <span
               class="{% if active_submenu == 'dashboard:settings_maintenance' %}!text-white{% endif %}">Maintenance</span>
+          </a>
+        </div>
+      </div>
+
+      {# API & Conf Tree #}
+      <div class="mt-2">
+        <button type="button" @click="toggleDropdown('api')"
+          class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'API & Conf' %}text-[var(--primary)] font-semibold{% endif %}">
+          <div class="flex items-center gap-2">
+            <i data-lucide="code-2"></i>
+            <span>API & Conf</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
+            :class="activeDropdown === 'api' ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="activeDropdown === 'api'" x-collapse.duration.500ms class="ft-tree-group py-1 space-y-1">
+          <a href="{% url 'dashboard:api_docs' %}"
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:api_docs' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="book-open"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:api_docs' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:api_docs' %}!text-white{% endif %}">API Documentation</span>
+          </a>
+          <a href="{% url 'dashboard:api_config' %}"
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:api_config' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="key-round"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:api_config' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:api_config' %}!text-white{% endif %}">API Tokens & Settings</span>
           </a>
         </div>
       </div>

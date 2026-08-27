@@ -50,6 +50,10 @@
          { label: 'Footer & Branding',     href: '{% url "dashboard:settings_footer" %}',       icon: 'layout-panel-bottom', group: 'Settings',      keywords: 'footer logo branding links social settings site' },
          { label: 'Maintenance Mode',      href: '{% url "dashboard:settings_maintenance" %}',  icon: 'wrench',              group: 'Settings',      keywords: 'maintenance mode downtime offline under construction enable' },
 
+         // ── API & Conf ──
+         { label: 'API Documentation',     href: '{% url "dashboard:api_docs" %}',              icon: 'book-open',           group: 'API & Conf',    keywords: 'api docs rest swagger openapi endpoints testbed developer' },
+         { label: 'API Tokens & Settings', href: '{% url "dashboard:api_config" %}',            icon: 'key-round',           group: 'API & Conf',    keywords: 'api tokens keys automation settings auth headers n8n secret' },
+
          // ── Notifications ──
          { label: 'Notifications',         href: '{% url "dashboard:notifications" %}',         icon: 'bell',                group: 'Notifications', keywords: 'notifications alerts unread messages inbox bell' },
        ],
