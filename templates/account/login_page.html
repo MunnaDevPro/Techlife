@@ -9,15 +9,15 @@
     style="background-image: linear-gradient(rgba(15,30,70,0.80), rgba(15,30,70,0.80)), url('{% static 'image/authentication.jpg' %}'); background-size: cover; background-position: center;">
 
     <div class="w-full max-w-sm">
-        <!-- Logo -->
-        <div class="text-center mb-6">
-            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-8 w-auto mx-auto mb-3" />
-            <p class="text-white/60 text-[13px]">Sign in to your account</p>
-        </div>
-
         <form class="bg-white rounded-2xl shadow-2xl p-6" method="post" action="{% url 'login' %}">
+            <!-- Logo -->
+            <div class="text-center mb-6">
+                <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-8 w-auto mx-auto mb-2" />
+                <p class="text-gray-500 text-[13px]">Sign in to your account</p>
+            </div>
+            
             {% csrf_token %}
-
+            
             <!-- Messages -->
             {% for message in messages %}
             <div class="mb-4 p-3 rounded-xl text-[12px] text-center font-medium
@@ -75,7 +75,7 @@
 
             <!-- Submit -->
             <button type="submit"
-                class="w-full py-3 rounded-xl bg-[#1e3a6e] text-white text-[13px] font-bold hover:bg-[#152d56] focus:ring-4 focus:ring-[#1e3a6e]/30 transition-all duration-200 mb-4">
+                class="w-full py-3 rounded-xl bg-[#1e3a6e] text-white text-[13px] font-bold hover:bg-[#152d56] focus:ring-4 focus:ring-[#1e3a6e]/30 transition-all duration-200 mb-4 cursor-pointer">
                 Sign In
             </button>
 

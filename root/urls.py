@@ -97,6 +97,7 @@ urlpatterns = [
     
     path('api-auth/', include('rest_framework.urls')),
     path('api/blog/', include('blog_post.api_urls')),
+    path('api/account/', include('accounts.api_urls')),
 
     path("__reload__/", include("django_browser_reload.urls")),
     path('ckeditor/', include('ckeditor_uploader.urls')),

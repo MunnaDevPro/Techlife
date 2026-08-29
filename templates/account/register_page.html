@@ -7,14 +7,14 @@
 <div class="-mt-[60px] flex items-center justify-center min-h-screen px-4 py-8"
      style="background-image: linear-gradient(rgba(15,30,70,0.80), rgba(15,30,70,0.80)), url('{% static 'image/authentication.jpg' %}'); background-size: cover; background-position: center;">
 
-    <div class="w-full max-w-md">
-        <!-- Logo -->
-        <div class="text-center mb-6">
-            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-8 w-auto mx-auto mb-3" />
-            <p class="text-white/60 text-[13px]">Join thousands of tech readers and writers</p>
-        </div>
+    <div class="w-full max-w-sm">
+        <form id="signup-form" class="bg-white rounded-2xl shadow-2xl p-6" method="post" enctype="multipart/form-data" action="{% url 'signup' %}">
+            <!-- Logo -->
+            <div class="text-center mb-6">
+                <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-8 w-auto mx-auto mb-2" />
+                <p class="text-gray-500 text-[13px]">Create a new account</p>
+            </div>
 
-        <form id="signup-form" class="bg-white rounded-2xl shadow-2xl p-6" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             <!-- Messages -->
@@ -26,18 +26,16 @@
             </div>
             {% endfor %}
 
-            <!-- Name row -->
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                <div>
-                    <label for="first_name" class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">First Name</label>
-                    <input type="text" name="first_name" id="first_name" required placeholder="First"
-                        class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
-                </div>
-                <div>
-                    <label for="last_name" class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">Last Name</label>
-                    <input type="text" name="last_name" id="last_name" required placeholder="Last"
-                        class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
-                </div>
+            <!-- Name fields -->
+            <div class="mb-4">
+                <label for="first_name" class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">First Name</label>
+                <input type="text" name="first_name" id="first_name" required placeholder="Enter your first name"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+            </div>
+            <div class="mb-4">
+                <label for="last_name" class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">Last Name</label>
+                <input type="text" name="last_name" id="last_name" required placeholder="Enter your last name"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
             </div>
 
             <!-- Email -->
@@ -46,33 +44,51 @@
                 <div class="relative">
                     <input type="email" name="email" id="email" required placeholder="your@email.com"
                         class="w-full px-4 py-2.5 pr-10 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
-                    <div id="loading-spinner" class="hidden absolute inset-y-0 right-3 flex items-center">
+                    <div id="loading-spinner" class="hidden absolute inset-y-0 right-3 items-center">
                         <div class="animate-spin h-4 w-4 border-2 border-[#1e3a6e] border-t-transparent rounded-full"></div>
                     </div>
                 </div>
-                <p id="email-error" class="hidden text-red-500 text-[11px] mt-1.5 flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                    This email is already registered.
-                </p>
+                <div id="email-error" class="hidden mt-1.5">
+                    <p class="text-red-500 text-[11px] flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        This email is already registered.
+                    </p>
+                </div>
             </div>
 
             <!-- Password -->
             <div class="mb-4">
                 <label for="password" class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">Password</label>
-                <input type="password" name="password" id="password" required placeholder="Min. 8 characters"
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                <div class="relative">
+                    <input type="password" name="password" id="password" required placeholder="Min. 8 characters"
+                        class="w-full px-4 py-2.5 pr-10 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                    <button type="button" class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 toggle-password cursor-pointer" data-target="password">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <!-- Confirm Password -->
             <div class="mb-5">
                 <label for="confirm_password" class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">Confirm Password</label>
-                <input type="password" name="confirm_password" id="confirm_password" required placeholder="Repeat your password"
-                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                <div class="relative">
+                    <input type="password" name="confirm_password" id="confirm_password" required placeholder="Repeat your password"
+                        class="w-full px-4 py-2.5 pr-10 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                    <button type="button" class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 toggle-password cursor-pointer" data-target="confirm_password">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <!-- Submit -->
             <button type="submit" id="submit-btn"
-                class="w-full py-3 rounded-xl bg-[#1e3a6e] text-white text-[13px] font-bold hover:bg-[#152d56] focus:ring-4 focus:ring-[#1e3a6e]/30 transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed mb-4">
+                class="w-full py-3 rounded-xl bg-[#1e3a6e] text-white text-[13px] font-bold hover:bg-[#152d56] focus:ring-4 focus:ring-[#1e3a6e]/30 transition-all duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed mb-4 cursor-pointer">
                 Create Account
             </button>
 
@@ -89,34 +105,70 @@
     const emailError = document.getElementById('email-error');
     const submitBtn  = document.getElementById('submit-btn');
     const loadingSpinner = document.getElementById('loading-spinner');
+    let debounceTimer;
 
     emailInput.addEventListener('input', function() {
         const email = this.value.trim();
+        clearTimeout(debounceTimer);
+
         if (email.includes('@') && email.includes('.')) {
             loadingSpinner.classList.remove('hidden');
-            const checkUrl = "{% url 'check_email' %}?email=" + encodeURIComponent(email);
-            fetch(checkUrl)
-                .then(r => r.json())
-                .then(data => {
-                    loadingSpinner.classList.add('hidden');
-                    if (data.is_taken) {
-                        emailError.classList.remove('hidden');
-                        emailInput.classList.add('border-red-400', 'focus:ring-red-300');
-                        emailInput.classList.remove('border-gray-200', 'focus:ring-[#1e3a6e]');
-                        submitBtn.disabled = true;
-                    } else {
-                        emailError.classList.add('hidden');
-                        emailInput.classList.remove('border-red-400', 'focus:ring-red-300');
-                        emailInput.classList.add('border-gray-200', 'focus:ring-[#1e3a6e]');
-                        submitBtn.disabled = false;
-                    }
-                })
-                .catch(() => { loadingSpinner.classList.add('hidden'); });
+            loadingSpinner.classList.add('flex');
+            
+            debounceTimer = setTimeout(() => {
+                const checkUrl = "{% url 'check_email' %}?email=" + encodeURIComponent(email);
+                fetch(checkUrl)
+                    .then(r => r.json())
+                    .then(data => {
+                        // Check if the current value is still the one we fetched
+                        if (emailInput.value.trim() !== email) return;
+                        
+                        loadingSpinner.classList.remove('flex');
+                        loadingSpinner.classList.add('hidden');
+                        if (data.is_taken) {
+                            emailError.classList.remove('hidden');
+                            emailInput.classList.add('border-red-400', 'focus:ring-red-300');
+                            emailInput.classList.remove('border-gray-200', 'focus:ring-[#1e3a6e]');
+                            submitBtn.disabled = true;
+                        } else {
+                            emailError.classList.add('hidden');
+                            emailInput.classList.remove('border-red-400', 'focus:ring-red-300');
+                            emailInput.classList.add('border-gray-200', 'focus:ring-[#1e3a6e]');
+                            submitBtn.disabled = false;
+                        }
+                    })
+                    .catch(() => { 
+                        if (emailInput.value.trim() === email) {
+                            loadingSpinner.classList.remove('flex');
+                            loadingSpinner.classList.add('hidden'); 
+                        }
+                    });
+            }, 500); // 500ms delay
         } else {
             emailError.classList.add('hidden');
-            emailInput.classList.remove('border-red-400');
+            emailInput.classList.remove('border-red-400', 'focus:ring-red-300');
+            emailInput.classList.add('border-gray-200', 'focus:ring-[#1e3a6e]');
             submitBtn.disabled = false;
+            loadingSpinner.classList.remove('flex');
+            loadingSpinner.classList.add('hidden');
         }
+    });
+
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const icon = this.querySelector('.eye-icon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>'; // Eye-off icon
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>'; // Eye icon
+            }
+        });
     });
 </script>
 {% endblock %}

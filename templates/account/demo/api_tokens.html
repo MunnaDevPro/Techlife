@@ -1,0 +1,434 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block title %}API Access — TechLife BD{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-3 py-6 space-y-6" x-data="{ showRevokeModal: false, revokeTokenId: '', revokeTokenName: '' }">
+
+    <!-- Page Header -->
+    <div class="tl-card rounded-2xl overflow-hidden">
+        <div class="bg-[#1e3a6e] px-6 py-5 flex items-center justify-between flex-wrap gap-3">
+            <div>
+                <h2 class="text-[16px] font-bold text-white flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    API Access
+                </h2>
+                <p class="text-[12px] text-white/60 mt-0.5">Generate personal tokens to post content from external sites and scripts</p>
+            </div>
+            <a href="{% url 'user_dashboard' %}" class="text-xs text-white/70 hover:text-white flex items-center gap-1 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Django messages -->
+        {% if messages %}
+        <div class="px-6 pt-4">
+            {% for message in messages %}
+            <div class="mb-2 px-4 py-2 rounded-lg text-sm font-medium
+                {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200
+                {% elif message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200
+                {% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- ═══════════════════════════════════════════════════════════
+             ONE-TIME TOKEN REVEAL (shown only immediately after creation)
+             ══════════════════════════════════════════════════════════= -->
+        {% if new_token_data %}
+        <div class="mx-6 mt-5 rounded-xl bg-amber-50 p-5" id="token-reveal-box">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-amber-800">
+                        ⚠ Save this token now — it will NOT be shown again
+                    </p>
+                    <p class="text-[13px] text-amber-700 mt-0.5 mb-4">
+                        Token: <strong>{{ new_token_data.name }}</strong>
+                        &nbsp;|&nbsp; Created: just now
+                    </p>
+
+                    <!-- Token display + copy button -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <code id="raw-token-display"
+                              class="flex-1 break-all bg-white border border-amber-100 rounded-lg px-4 py-2.5 text-[13px] font-mono text-gray-800 select-all">{{ new_token_data.raw_token }}</code>
+                        <button id="copy-token-btn"
+                                onclick="copyToken()"
+                                class="flex-shrink-0 inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition min-h-[36px] cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            <span id="copy-btn-text">Copy</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-amber-600 mt-2">
+                        Use this token in the <code class="bg-white rounded px-1">Authorization: Bearer &lt;token&gt;</code> header.
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ═══════════════════════════════════════════════════════════
+             GENERATE NEW TOKEN FORM
+             ══════════════════════════════════════════════════════════= -->
+        <div class="px-6 py-5 border-b border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Generate New Token
+            </h3>
+            <form method="POST" action="{% url 'user_api_tokens' %}" class="flex items-end gap-3 flex-wrap" id="generate-token-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="generate">
+                <div class="flex-1 min-w-[200px]">
+                    <label for="token-name" class="block text-xs text-gray-600 mb-1">Token label <span class="text-gray-400">(optional)</span></label>
+                    <input type="text"
+                           id="token-name"
+                           name="name"
+                           maxlength="100"
+                           placeholder="e.g. My Portfolio Site"
+                           class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e]">
+                </div>
+                <button type="submit"
+                        class="inline-flex items-center gap-2 bg-[#1e3a6e] hover:bg-[#163059] text-white text-sm font-semibold px-5 py-2 rounded-lg transition min-h-[42px] cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                    Generate Token
+                </button>
+            </form>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             EXISTING TOKENS TABLE
+             ══════════════════════════════════════════════════════════= -->
+        <div class="px-6 py-5 border-b border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                Your Tokens
+                <span class="ml-auto text-xs text-gray-400 font-normal">{{ tokens.count }} token{{ tokens.count|pluralize }}</span>
+            </h3>
+
+            {% if tokens %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-xs text-gray-500 border-b border-gray-100">
+                            <th class="pb-2 pr-4 font-medium">Label</th>
+                            <th class="pb-2 pr-4 font-medium">Token prefix</th>
+                            <th class="pb-2 pr-4 font-medium">Created</th>
+                            <th class="pb-2 pr-4 font-medium">Last used</th>
+                            <th class="pb-2 pr-4 font-medium">Status</th>
+                            <th class="pb-2 font-medium">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for token in tokens %}
+                        <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                            <td class="py-2.5 pr-4 text-gray-800 font-medium max-w-[140px] truncate">
+                                {{ token.name|default:"Unnamed" }}
+                            </td>
+                            <td class="py-2.5 pr-4">
+                                <code class="text-xs bg-gray-100 rounded px-2 py-0.5 text-gray-700">{{ token.token_prefix }}...</code>
+                            </td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-500">
+                                {{ token.created_at|date:"M d, Y" }}
+                            </td>
+                            <td class="py-2.5 pr-4 text-xs text-gray-500">
+                                {% if token.last_used_at %}
+                                    {{ token.last_used_at|timesince }} ago
+                                {% else %}
+                                    <span class="text-gray-300">Never</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-2.5 pr-4">
+                                {% if not token.is_active or token.revoked_at %}
+                                    <span class="inline-flex items-center gap-1 text-xs font-medium text-red-600 bg-red-50 rounded-full px-2 py-0.5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                                        Revoked
+                                    </span>
+                                {% elif token.is_expired %}
+                                    <span class="inline-flex items-center gap-1 text-xs font-medium text-orange-600 bg-orange-50 rounded-full px-2 py-0.5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                                        Expired
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-50 rounded-full px-2 py-0.5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                                        Active
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="py-2.5">
+                                {% if token.is_active and not token.revoked_at %}
+                                <button type="button"
+                                        @click="revokeTokenId = '{{ token.pk }}'; revokeTokenName = '{{ token.name|default:token.token_prefix|escapejs }}'; showRevokeModal = true;"
+                                        class="text-xs text-red-600 hover:text-red-800 font-medium flex items-center gap-1 transition cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m5 0V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2"/></svg>
+                                    Revoke
+                                </button>
+                                {% else %}
+                                <span class="text-xs text-gray-300">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-8 text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-2 opacity-40"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <p class="text-sm">No tokens yet. Generate your first token above.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             USAGE DOCUMENTATION & CURL EXAMPLE
+             ══════════════════════════════════════════════════════════= -->
+        <div class="px-6 py-5 border-b border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                How to Use
+            </h3>
+
+            <div class="space-y-4 text-sm text-gray-700">
+                <div class="bg-gray-50 rounded-xl p-4 space-y-2">
+                    <p class="font-medium text-gray-800">Endpoint</p>
+                    <code class="block text-xs bg-white border border-gray-200 rounded-lg px-3 py-2 text-blue-700">
+                        POST https://techlife.com.bd/api/blog/posts/
+                    </code>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4 space-y-2">
+                    <p class="font-medium text-gray-800">Authorization header</p>
+                    <code class="block text-xs bg-white border border-gray-200 rounded-lg px-3 py-2 text-purple-700">
+                        Authorization: Bearer techlife_user_YOUR_TOKEN_HERE
+                    </code>
+                    <p class="text-xs text-gray-500">⚠ Must use HTTPS in production. Never share your token in public code.</p>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4 space-y-2">
+                    <p class="font-medium text-gray-800 mb-1">Required request fields</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs">
+                            <thead>
+                                <tr class="text-left text-gray-500 border-b border-gray-200">
+                                    <th class="pb-1 pr-4 font-medium">Field</th>
+                                    <th class="pb-1 pr-4 font-medium">Type</th>
+                                    <th class="pb-1 font-medium">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-700">
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-1.5 pr-4"><code>title</code> <span class="text-red-500">*</span></td>
+                                    <td class="py-1.5 pr-4">string</td>
+                                    <td class="py-1.5">Post title</td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-1.5 pr-4"><code>description</code> <span class="text-red-500">*</span></td>
+                                    <td class="py-1.5 pr-4">string (HTML)</td>
+                                    <td class="py-1.5">Post body content (HTML is sanitized server-side)</td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-1.5 pr-4"><code>category_slug</code> <span class="text-red-500">*</span></td>
+                                    <td class="py-1.5 pr-4">string</td>
+                                    <td class="py-1.5">Category slug (e.g. <code>technology</code>)</td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-1.5 pr-4"><code>subcategory_slug</code></td>
+                                    <td class="py-1.5 pr-4">string</td>
+                                    <td class="py-1.5">Optional subcategory slug</td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-1.5 pr-4"><code>tags_list</code></td>
+                                    <td class="py-1.5 pr-4">array</td>
+                                    <td class="py-1.5">Tag names e.g. <code>["AI", "tech"]</code></td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-1.5 pr-4"><code>source_url</code></td>
+                                    <td class="py-1.5 pr-4">URL</td>
+                                    <td class="py-1.5">Original article URL (used for idempotency)</td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-1.5 pr-4"><code>source_image_url</code></td>
+                                    <td class="py-1.5 pr-4">URL</td>
+                                    <td class="py-1.5">Remote image — safely downloaded &amp; converted to WebP</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1.5 pr-4"><code>original_content_hash</code></td>
+                                    <td class="py-1.5 pr-4">string</td>
+                                    <td class="py-1.5">SHA-256 of your content (prevents duplicate submissions)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Fields marked <span class="text-red-500 font-bold">*</span> are required.</p>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-4 space-y-2">
+                    <div class="flex items-center justify-between mb-1">
+                        <p class="font-medium text-gray-800">curl example</p>
+                        <button onclick="copyCurl()" class="text-xs text-[#1e3a6e] hover:underline cursor-pointer">Copy</button>
+                    </div>
+                    <pre id="curl-example" class="text-xs bg-[#1a1a2e] text-green-300 rounded-lg px-4 py-3 overflow-x-auto leading-relaxed whitespace-pre-wrap">curl -X POST https://techlife.com.bd/api/blog/posts/ \
+  -H "Authorization: Bearer techlife_user_YOUR_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "My Article Title",
+    "description": "&lt;p&gt;Article body content goes here.&lt;/p&gt;",
+    "category_slug": "technology",
+    "tags_list": ["tech", "tutorial"],
+    "source_url": "https://yoursite.com/article/my-article",
+    "source_image_url": "https://yoursite.com/images/hero.jpg"
+  }'</pre>
+                </div>
+
+                <div class="bg-blue-50 rounded-xl p-4 space-y-1">
+                    <p class="font-medium text-blue-800 text-xs">Rate limits (per token)</p>
+                    <ul class="text-xs text-blue-700 space-y-0.5 list-disc list-inside">
+                        <li><strong>20 requests/hour</strong> — returns HTTP 429 when exceeded</li>
+                        <li><strong>4 posts/day</strong> (Bangladesh time) — resets at midnight BD</li>
+                        <li>Submitted posts go to <strong>Pending</strong> status — admin review required before publishing</li>
+                        <li>Re-submitting the same <code>original_content_hash</code> or <code>source_url</code> returns <strong>HTTP 200 (idempotent)</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             RECENT ACTIVITY LOG
+             ══════════════════════════════════════════════════════════= -->
+        <div class="px-6 py-5">
+            <h3 class="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Recent Activity
+                <span class="ml-auto text-xs text-gray-400 font-normal">Last 20 events</span>
+            </h3>
+
+            {% if recent_logs %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="text-left text-gray-500 border-b border-gray-100">
+                            <th class="pb-2 pr-4 font-medium">Time</th>
+                            <th class="pb-2 pr-4 font-medium">Event</th>
+                            <th class="pb-2 pr-4 font-medium">Status</th>
+                            <th class="pb-2 font-medium">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in recent_logs %}
+                        <tr class="border-b border-gray-50 hover:bg-gray-50">
+                            <td class="py-2 pr-4 text-gray-500 whitespace-nowrap">{{ log.created_at|date:"M d H:i" }}</td>
+                            <td class="py-2 pr-4">
+                                <span class="inline-block rounded-full px-2 py-0.5 font-medium
+                                    {% if log.event_type == 'published' %}bg-green-50 text-green-700
+                                    {% elif log.event_type == 'throttled' %}bg-orange-50 text-orange-700
+                                    {% elif log.event_type == 'rejected' %}bg-red-50 text-red-700
+                                    {% elif log.event_type == 'idempotent_replay' %}bg-blue-50 text-blue-700
+                                    {% else %}bg-gray-100 text-gray-600{% endif %}">
+                                    {{ log.event_type|title }}
+                                </span>
+                            </td>
+                            <td class="py-2 pr-4 text-gray-600">HTTP {{ log.http_status }}</td>
+                            <td class="py-2 text-gray-500 max-w-[200px] truncate">
+                                {% if log.post %}
+                                    <a href="/details/{{ log.post.slug }}/" class="text-[#1e3a6e] hover:underline" target="_blank">{{ log.post.title|truncatechars:40 }}</a>
+                                {% elif log.result_code %}
+                                    {{ log.result_code }}
+                                {% elif log.error_summary %}
+                                    {{ log.error_summary|truncatechars:50 }}
+                                {% else %}—{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-6 text-gray-400">
+                <p class="text-sm">No activity yet. Once you start using your token, events will appear here.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             REVOKE CONFIRMATION MODAL
+             ══════════════════════════════════════════════════════════= -->
+        <div x-show="showRevokeModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div @click.away="showRevokeModal = false" class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95">
+                <div class="p-5 border-b border-gray-100 flex items-start gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600 mt-0.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-gray-900 mt-1">Revoke Token?</h3>
+                        <p class="text-sm text-gray-500 mt-2 leading-relaxed">
+                            Are you sure you want to revoke <strong x-text="revokeTokenName" class="text-gray-800"></strong>? Any scripts using this token will immediately fail. This action cannot be undone.
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-5 py-4 flex items-center justify-end gap-3">
+                    <button type="button" @click="showRevokeModal = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition cursor-pointer">
+                        Cancel
+                    </button>
+                    <form method="POST" action="{% url 'user_api_tokens' %}" class="m-0">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="revoke">
+                        <input type="hidden" name="token_id" x-model="revokeTokenId">
+                        <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition cursor-pointer">
+                            Yes, Revoke Token
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /tl-card -->
+</div>
+
+<script>
+// Copy raw token to clipboard
+function copyToken() {
+    const tokenEl = document.getElementById('raw-token-display');
+    const btnText = document.getElementById('copy-btn-text');
+    if (!tokenEl) return;
+    navigator.clipboard.writeText(tokenEl.textContent.trim()).then(() => {
+        btnText.textContent = 'Copied!';
+        setTimeout(() => { btnText.textContent = 'Copy'; }, 2500);
+    }).catch(() => {
+        // Fallback for older browsers
+        const range = document.createRange();
+        range.selectNode(tokenEl);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand('copy');
+        btnText.textContent = 'Copied!';
+        setTimeout(() => { btnText.textContent = 'Copy'; }, 2500);
+    });
+}
+
+// Copy curl example
+function copyCurl() {
+    const el = document.getElementById('curl-example');
+    if (!el) return;
+    navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+        alert('curl command copied!');
+    });
+}
+</script>
+
+<!-- AlpineJS for the Revoke Modal -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+{% endblock %}

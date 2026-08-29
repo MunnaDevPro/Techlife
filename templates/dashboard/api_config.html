@@ -4,11 +4,17 @@
 <div x-data="{
     showToken: false,
     tokenValue: '{{ automation_token }}',
+    copyBtnText: 'Copy Header',
 
     copyToClipboard(text, msg) {
+        const updateBtn = () => {
+            this.copyBtnText = 'Copied!';
+            setTimeout(() => { this.copyBtnText = 'Copy Header'; }, 2000);
+        };
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(() => {
                 window.dispatchEvent(new CustomEvent('new-toast', { detail: { message: msg, type: 'success' } }));
+                updateBtn();
             }).catch(err => {
                 window.dispatchEvent(new CustomEvent('new-toast', { detail: { message: 'Failed to copy', type: 'error' } }));
             });
@@ -23,6 +29,7 @@
             try {
                 document.execCommand('copy');
                 window.dispatchEvent(new CustomEvent('new-toast', { detail: { message: msg, type: 'success' } }));
+                updateBtn();
             } catch (err) {
                 window.dispatchEvent(new CustomEvent('new-toast', { detail: { message: 'Failed to copy', type: 'error' } }));
             }
@@ -40,6 +47,20 @@
 
         <c-ui.button href="{% url 'dashboard:api_docs' %}" variant="secondary" icon="book-open" label="View API Docs"></c-ui.button>
     </div>
+
+    <!-- Django messages -->
+    {% if messages %}
+    <div class="!mt-4">
+        {% for message in messages %}
+        <div class="!mb-2 !px-4 !py-3 !rounded-lg !text-sm !font-medium
+            {% if message.tags == 'success' %}!bg-emerald-50 !text-emerald-800 !border !border-emerald-200
+            {% elif message.tags == 'error' %}!bg-red-50 !text-red-800 !border !border-red-200
+            {% else %}!bg-blue-50 !text-blue-800 !border !border-blue-200{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
 
 
@@ -72,7 +93,7 @@
                                 <span x-show="showToken" x-cloak><i data-lucide="eye-off" class="!w-4 !h-4"></i></span>
                             </button>
                             
-                            <button type="button" class="ft-btn ft-btn-primary ft-btn-sm" @click="copyToClipboard('Authorization: Automation ' + tokenValue, 'Token copied')">Copy Header</button>
+                            <button type="button" class="ft-btn ft-btn-primary ft-btn-sm" @click="copyToClipboard('Authorization: Automation ' + tokenValue, 'Token copied')" x-text="copyBtnText"></button>
                         </div>
                     </div>
 
@@ -80,12 +101,12 @@
                 </div>
 
                 <div class="!px-4 !py-3.5 !border-t !border-gray-100/80 !bg-gray-50/40 !rounded-b-xl !mt-auto">
-                    <c-ui.button type="button" variant="ghost" size="sm" icon="refresh-cw" label="Generate New Token Recommendation" @click="$dispatch('open-modal', {id: 'confirm-regen'})"></c-ui.button>
+                    <c-ui.button type="button" variant="primary" size="sm" icon="key" label="Generate New Token" @click="$dispatch('open-modal', {id: 'confirm-regen'})"></c-ui.button>
                     
-                    <c-ui.modal id="confirm-regen" title="Regenerate Token" size="sm">
+                    <c-ui.modal id="confirm-regen" title="Generate New Automation Token" size="sm">
                         <div class="!space-y-4">
                             <p class="!text-[13.5px] !text-gray-600 !leading-relaxed">
-                                Are you sure you want to generate a new token recommendation?
+                                Are you sure you want to generate a new automation token? The current token will be invalidated and any scripts using it will need to be updated.
                             </p>
                             
                             <div class="!bg-emerald-50 !rounded-xl !p-4 !flex !gap-3 !items-start shadow-sm">

@@ -305,3 +305,116 @@ def profile_update_view(request):
     }
     
     return render(request, 'account/demo/profile_update.html', context)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# User API Tokens Dashboard View
+# ─────────────────────────────────────────────────────────────────────────────
+
+@login_required
+def user_api_tokens_view(request):
+    """
+    Dashboard page for managing personal API tokens.
+
+    GET:  Renders the token list, recent activity log, and usage docs.
+    POST (action=generate): Creates a new token and flashes the raw value
+         exactly once via request.session so it is shown after redirect.
+    POST (action=revoke):   Revokes the specified token (CSRF-protected).
+    """
+    from accounts.models import UserAPIToken
+    from blog_post.models import AutomationPublishLog
+
+    user = request.user
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        # ---- Generate new token ----
+        if action == 'generate':
+            name = request.POST.get('name', '').strip()[:100]
+            token_obj, raw_token = UserAPIToken.generate(user=user, name=name)
+            # Flash raw token once via session — never persisted in DB
+            request.session['_new_api_token'] = {
+                'id': token_obj.pk,
+                'name': token_obj.name or 'Unnamed',
+                'prefix': token_obj.token_prefix,
+                'raw_token': raw_token,
+            }
+            messages.success(
+                request,
+                'New API token generated! Copy it now — it will not be shown again.'
+            )
+            return redirect('user_api_tokens')
+
+        # ---- Revoke a token ----
+        if action == 'revoke':
+            token_id = request.POST.get('token_id')
+            try:
+                token_obj = UserAPIToken.objects.get(pk=token_id, user=user)
+                token_obj.revoke()
+                messages.success(request, f'Token "{token_obj.name or token_obj.token_prefix}..." has been revoked.')
+            except UserAPIToken.DoesNotExist:
+                messages.error(request, 'Token not found.')
+            return redirect('user_api_tokens')
+
+    # ---- GET ----
+    # Pop the one-time raw token from session if present
+    new_token_data = request.session.pop('_new_api_token', None)
+
+    tokens = UserAPIToken.objects.filter(user=user).order_by('-created_at')
+
+    recent_logs = AutomationPublishLog.objects.filter(
+        token_user=user,
+        auth_source='user_token',
+    ).order_by('-created_at')[:20]
+
+    context = {
+        'user': user,
+        'tokens': tokens,
+        'recent_logs': recent_logs,
+        'new_token_data': new_token_data,   # None unless just generated
+        'action': 'api_tokens',
+    }
+    return render(request, 'account/demo/api_tokens.html', context)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Notification Views
+# ─────────────────────────────────────────────────────────────────────────────
+
+from django.http import HttpResponse, JsonResponse
+
+@login_required
+def user_notifications(request):
+    notifications = request.user.notifications.all().order_by('-created_at')
+    
+    context = {
+        'notifications': notifications,
+        'action': 'notifications',
+        'user': request.user
+    }
+    return render(request, 'account/demo/notifications.html', context)
+
+@login_required
+def mark_notifications_read(request):
+    if request.method == "POST":
+        request.user.notifications.filter(is_read=False).update(is_read=True)
+        if request.headers.get('HX-Request'):
+            return HttpResponse("")
+        return JsonResponse({"status": "success"})
+    return JsonResponse({"status": "error"}, status=400)
+
+@login_required
+def delete_notification(request, notif_id):
+    if request.method == "POST" or request.method == "DELETE":
+        try:
+            notif = request.user.notifications.get(id=notif_id)
+            notif.delete()
+            if request.headers.get('HX-Request'):
+                return HttpResponse("")
+            return JsonResponse({"status": "success"})
+        except Exception:
+            if request.headers.get('HX-Request'):
+                return HttpResponse("Not found", status=404)
+            return JsonResponse({"status": "error"}, status=404)
+    return JsonResponse({"status": "error"}, status=400)
+

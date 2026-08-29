@@ -107,6 +107,7 @@ TEMPLATES = [
                 "site_settings.context_processors.site_settings",
                 "maintenance.context_processors.maintenance",
                 "integrations.meta.context_processors.meta_pixel",
+                "notification.context_processors.unread_notifications",
             ],
         },
     },
@@ -149,6 +150,12 @@ AUTOMATION_IMAGE_MAX_REDIRECTS = config("AUTOMATION_IMAGE_MAX_REDIRECTS", defaul
 AUTOMATION_IMAGE_MAX_WIDTH = config("AUTOMATION_IMAGE_MAX_WIDTH", default=1600, cast=int)
 AUTOMATION_IMAGE_MAX_HEIGHT = config("AUTOMATION_IMAGE_MAX_HEIGHT", default=1200, cast=int)
 AUTOMATION_IMAGE_WEBP_QUALITY = config("AUTOMATION_IMAGE_WEBP_QUALITY", default=82, cast=int)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Per-User API Token Settings
+# ─────────────────────────────────────────────────────────────────────────────
+TECHLIFE_USER_TOKEN_HOURLY_REQUEST_LIMIT = config("TECHLIFE_USER_TOKEN_HOURLY_REQUEST_LIMIT", default=20, cast=int)
+TECHLIFE_USER_TOKEN_DAILY_POST_LIMIT = config("TECHLIFE_USER_TOKEN_DAILY_POST_LIMIT", default=4, cast=int)
 
 
 

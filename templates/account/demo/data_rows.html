@@ -7,12 +7,12 @@
 </style>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-300 lg:col-span-1 relative overflow-hidden">
+    <div class="bg-white p-6 rounded-xl border border-gray-300 lg:col-span-1 relative overflow-hidden">
 
         <h3 class="text-lg font-semibold mb-4 border-b border-gray-200 text-gray-800 pb-2">Earning History (Last 30 Days)</h3>
 
         <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/60 backdrop-blur-[1px]">
-            <div class="bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg font-medium">
+            <div class="bg-gray-800 text-white px-4 py-2 rounded-lg font-medium">
                 Coming Soon
             </div>
             <p class="text-xs text-gray-600 mt-2">This feature is under maintenance</p>
@@ -48,7 +48,7 @@
             </div>
         </div>
     </div>
-    <!-- <div class="bg-white p-6 rounded-xl shadow-md border border-gray-300 lg:col-span-1">
+    <!-- <div class="bg-white p-6 rounded-xl border border-gray-300 lg:col-span-1">
         <h3 class="text-lg font-semibold mb-4 border-b border-gray-200 text-gray-800 pb-2">Earning History (Last 30 Days)
         </h3>
 
@@ -94,7 +94,7 @@
         </div>
     </div> -->
 
-    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-300 lg:col-span-2">
+    <div class="bg-white p-6 rounded-xl border border-gray-300 lg:col-span-2">
         <h3 class="text-lg font-semibold mb-4 border-b border-gray-200 text-gray-800 pb-2">Recent User Activities</h3>
         <div class="space-y-4">
             {% for post in user_blog_posts|slice:"1" %}
@@ -204,7 +204,7 @@
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-300 flex justify-between items-center">
+    <div class="bg-white p-6 rounded-xl border border-gray-300 flex justify-between items-center">
         <div>
             <h3 class="text-lg font-semibold mb-2 text-gray-800">Total Article Views</h3>
             <div class="text-3xl font-bold text-gray-900">{{ total_views|intcomma }}</div>
@@ -213,7 +213,7 @@
         <i class="fas fa-eye text-4xl text-gray-300"></i>
     </div>
     <!-- Total forum answer count  -->
-    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-300 flex justify-between items-center">
+    <div class="bg-white p-6 rounded-xl border border-gray-300 flex justify-between items-center">
         <div>
             <h3 class="text-lg font-semibold mb-2 text-gray-800">Total Forum Answers</h3>
             <div class="text-3xl font-bold text-gray-900">{{ answers_count }}</div>
@@ -222,7 +222,7 @@
         <i class="fas fa-comments text-4xl text-gray-300"></i>
     </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-300 flex justify-between items-center">
+    <div class="bg-white p-6 rounded-xl border border-gray-300 flex justify-between items-center">
         <div>
             <h3 class="text-lg font-semibold mb-2 text-gray-800">Total Post Likes</h3>
 

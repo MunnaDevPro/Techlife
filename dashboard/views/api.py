@@ -337,6 +337,114 @@ def get_api_endpoints():
                     "order": 1
                 }
             ]
+        },
+        {
+            "id": "user_token_post_create",
+            "category": "User API Tokens",
+            "name": "Submit Post via Personal Token",
+            "method": "POST",
+            "path": "/api/blog/posts/",
+            "description": "Submit a new blog post from any external website or script using your personal API token. Posts are placed in 'Pending' status and require admin review before publishing.",
+            "auth_required": "Bearer Token (Authorization: Bearer techlife_user_...)",
+            "path_params": [],
+            "query_params": [],
+            "headers": {
+                "Authorization": "Bearer techlife_user_YOUR_TOKEN_HERE",
+                "Content-Type": "application/json"
+            },
+            "body_params": [
+                {"name": "title", "type": "string", "required": True, "description": "Post title (max 500 chars)"},
+                {"name": "description", "type": "string", "required": True, "description": "HTML body content — sanitized server-side against XSS"},
+                {"name": "category_slug", "type": "string", "required": True, "description": "Slug of the target category (e.g. 'technology')"},
+                {"name": "subcategory_slug", "type": "string", "required": False, "description": "Optional subcategory slug"},
+                {"name": "tags_list", "type": "array of strings", "required": False, "description": "Tag names e.g. ['AI', 'tech']"},
+                {"name": "source_url", "type": "url", "required": False, "description": "Source article URL — used for idempotency"},
+                {"name": "source_image_url", "type": "url", "required": False, "description": "Remote image URL — downloaded & converted to WebP (SSRF-safe)"},
+                {"name": "original_content_hash", "type": "string (sha256)", "required": False, "description": "SHA-256 of your content — prevents duplicate submissions"},
+                {"name": "source_name", "type": "string", "required": False, "description": "Original source name"},
+                {"name": "source_author", "type": "string", "required": False, "description": "Original author name"},
+            ],
+            "rules": [
+                "Authorization: Bearer <token> header required.",
+                "Rate limit: 20 requests/hour per user, 4 posts/day per user (BD timezone).",
+                "Posts are created with status='pending' — admin approval required to publish.",
+                "Author of the post is automatically set to the token owner's account.",
+                "Idempotency: Re-submitting the same original_content_hash or source_url returns HTTP 200.",
+                "SSRF Protection: Remote images are validated and safely downloaded.",
+                "HTML Sanitization: description field is sanitized against XSS on every submission.",
+                "Token scope is limited to POST /api/blog/posts/ only.",
+            ],
+            "sample_request": {
+                "title": "My External Blog Post",
+                "description": "<h2>Introduction</h2><p>Content from my external site.</p>",
+                "category_slug": "technology",
+                "tags_list": ["tech", "tutorial"],
+                "source_url": "https://mysite.com/article/my-post",
+                "source_image_url": "https://mysite.com/images/hero.jpg",
+            },
+            "sample_response": {
+                "status": "pending",
+                "post_id": 105,
+                "slug": "my-external-blog-post",
+                "idempotent_replay": False,
+                "message": "Post submitted successfully. It will appear after admin review."
+            }
+        },
+        {
+            "id": "user_token_list",
+            "category": "User API Tokens",
+            "name": "List My Tokens",
+            "method": "GET",
+            "path": "/api/account/tokens/",
+            "description": "List the authenticated user's personal API tokens (session auth required).",
+            "auth_required": "Session (logged-in user)",
+            "path_params": [],
+            "query_params": [],
+            "body_params": [],
+            "headers": {"Accept": "application/json"},
+            "rules": ["Returns token prefix, label, dates, and status — never the raw or hashed value."],
+            "sample_response": [
+                {"id": 1, "name": "My Portfolio", "token_prefix": "techlife_user_XY",
+                 "is_active": True, "created_at": "2026-08-29T10:00:00Z",
+                 "last_used_at": "2026-08-29T11:00:00Z"}
+            ]
+        },
+        {
+            "id": "user_token_create",
+            "category": "User API Tokens",
+            "name": "Generate New Token",
+            "method": "POST",
+            "path": "/api/account/tokens/",
+            "description": "Generate a new personal API token. The raw token is returned once in this response and cannot be recovered.",
+            "auth_required": "Session (logged-in user)",
+            "path_params": [],
+            "query_params": [],
+            "body_params": [
+                {"name": "name", "type": "string", "required": False, "description": "Token label (e.g. 'My Portfolio Site')"}
+            ],
+            "headers": {"Content-Type": "application/json"},
+            "rules": ["Raw token is returned exactly once. Store it securely."],
+            "sample_response": {
+                "id": 1, "name": "My Portfolio", "token_prefix": "techlife_user_XY",
+                "raw_token": "techlife_user_XYZ...", "created_at": "2026-08-29T10:00:00Z"
+            }
+        },
+        {
+            "id": "user_token_revoke",
+            "category": "User API Tokens",
+            "name": "Revoke a Token",
+            "method": "POST",
+            "path": "/api/account/tokens/{id}/revoke/",
+            "description": "Immediately revoke a specific personal API token.",
+            "auth_required": "Session (logged-in user)",
+            "path_params": [
+                {"name": "id", "type": "integer", "required": True, "description": "Token ID to revoke"}
+            ],
+            "query_params": [],
+            "body_params": [],
+            "headers": {},
+            "rules": ["Token must belong to the authenticated user.", "Revocation is immediate and permanent."],
+            "sample_response": {"status": "revoked", "message": "Token revoked successfully."}
         }
     ]
 
@@ -403,6 +511,15 @@ def api_config(request):
     recent_logs = AutomationPublishLog.objects.all().order_by("-created_at")[:25]
     total_logs_count = AutomationPublishLog.objects.count()
 
+    # User token activity stats for admin view
+    user_token_logs = AutomationPublishLog.objects.filter(
+        auth_source='user_token'
+    ).order_by("-created_at")[:25]
+    user_token_logs_count = AutomationPublishLog.objects.filter(auth_source='user_token').count()
+    automation_logs_count = AutomationPublishLog.objects.filter(
+        auth_source__isnull=True
+    ).count() + AutomationPublishLog.objects.filter(auth_source='automation').count()
+
     ctx = get_dashboard_context(request, "API Tokens & Configuration", "API & Conf", "dashboard:api_config")
     ctx.update({
         "automation_token": token,
@@ -412,6 +529,12 @@ def api_config(request):
         "daily_limit": daily_limit,
         "recent_logs": recent_logs,
         "total_logs_count": total_logs_count,
+        # User token audit context
+        "user_token_logs": user_token_logs,
+        "user_token_logs_count": user_token_logs_count,
+        "automation_logs_count": automation_logs_count,
+        "user_token_hourly_limit": getattr(settings, 'TECHLIFE_USER_TOKEN_HOURLY_REQUEST_LIMIT', 20),
+        "user_token_daily_limit": getattr(settings, 'TECHLIFE_USER_TOKEN_DAILY_POST_LIMIT', 4),
     })
     return render(request, "dashboard/api_config.html", ctx)
 

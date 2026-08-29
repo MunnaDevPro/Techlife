@@ -16,6 +16,11 @@ urlpatterns = [
     path('profile/edit/', views.profile_update_view, name='profile_update'),
     path('check-email/', views.check_email_exists, name='check_email'),
     
-    # path('profile/<int:id>/', views.particular_user_view, name='particular_user_view'),
+    # API Token dashboard page
+    path('api-tokens/', views.user_api_tokens_view, name='user_api_tokens'),
     
+    # Notifications dashboard page
+    path('notifications/', views.user_notifications, name='user_notifications'),
+    path('notifications/read/', views.mark_notifications_read, name='mark_notifications_read'),
+    path('notifications/delete/<int:notif_id>/', views.delete_notification, name='delete_notification'),
 ]

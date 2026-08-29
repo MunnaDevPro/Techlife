@@ -11,6 +11,7 @@ from django.views.decorators.cache import cache_page
 from django.core.paginator import Paginator
 
 from .authentication import AutomationAuthentication
+from .user_token_authentication import UserAPITokenAuthentication
 
 from .models import (
     Category, SubCategory, BlogPost, BlogAdditionalImage, 
@@ -49,7 +50,12 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
 
 
 class BlogPostViewSet(viewsets.ModelViewSet):
-    authentication_classes = [AutomationAuthentication, SessionAuthentication, BasicAuthentication]
+    authentication_classes = [
+        AutomationAuthentication,
+        UserAPITokenAuthentication,
+        SessionAuthentication,
+        BasicAuthentication,
+    ]
     queryset = BlogPost.objects.filter(status="published")
     lookup_field = 'slug'
     
@@ -125,9 +131,22 @@ class BlogPostViewSet(viewsets.ModelViewSet):
         return queryset.select_related('category', 'subcategory', 'author').prefetch_related('tags')
     
     def create(self, request, *args, **kwargs):
-        if getattr(request, 'auth', None) == 'Automation':
+        auth = getattr(request, 'auth', None)
+
+        if auth == 'Automation':
+            # Admin automation token — existing logic untouched
             from .automation_services import process_automation_post_creation
             return process_automation_post_creation(request.data, request.user)
+
+        if isinstance(auth, str) and auth.startswith('UserAPIToken:'):
+            # Personal user API token
+            token_id = int(auth.split(':', 1)[1])
+            source_ip = self._get_client_ip(request)
+            from .automation_services import process_user_token_post_creation
+            return process_user_token_post_creation(
+                request.data, request.user, token_id=token_id, source_ip=source_ip
+            )
+
         return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
@@ -204,6 +223,10 @@ class BlogPostViewSet(viewsets.ModelViewSet):
         if x_forwarded_for:
             return x_forwarded_for.split(',')[0].strip()
         return request.META.get('REMOTE_ADDR')
+
+    # Private alias used internally for user-token creation
+    def _get_client_ip(self, request):
+        return self.get_client_ip(request)
 
 class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all() 

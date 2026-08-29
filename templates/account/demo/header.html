@@ -2,12 +2,12 @@
 
 
 <section class="w-full mx-auto px-4 sm:px-6 lg:mt-5 mt-0 pt-3">
-    <div class="bg-white p-4 sm:p-6 sm:rounded-sm lg:rounded-2xl shadow-sm  sm:shadow-md border border-gray-300">
+    <div class="bg-white p-4 sm:p-6 sm:rounded-sm lg:rounded-2xl  sm: border border-gray-300">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-center">
             <!-- Profile Info - Mobile Optimized -->
             <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-7 sm:ml-10">
                 <!-- Profile Picture -->
-                <div class="h-28 w-28 sm:h-36 sm:w-36 rounded-full overflow-hidden border-4 border-blue-600 shadow-md flex-shrink-0">
+                <div class="h-28 w-28 sm:h-36 sm:w-36 rounded-full overflow-hidden border-4 border-blue-600 flex-shrink-0">
                     <img class="h-full w-full object-cover" src="{% if user.profile_picture %}{{ user.profile_picture.url }}?{{ user.updated_at|date:'U' }}{% else %}{% static 'user_profile/default_user_profile.png' %}{% endif %}" alt="{{ user.get_full_name|default:'User' }} profile photo"
                     />
                 </div>
@@ -42,11 +42,22 @@
             <div class="flex flex-col items-center sm:items-start lg:items-end gap-4 sm:gap-6 w-full">
                 <!-- Buttons -->
                 <div class="flex gap-2 sm:gap-3 flex-wrap justify-center sm:justify-start lg:justify-end w-full">
+                    <a href="{% url 'user_notifications' %}" class="relative inline-flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold py-2 px-3 sm:py-2 sm:px-4 rounded-lg text-xs sm:text-sm transition min-h-[44px]">
+                        <i class="fas fa-bell text-xs sm:text-sm"></i>
+                        <span>Notifications</span>
+                        {% if unread_notifications_count > 0 %}
+                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-white">{{ unread_notifications_count }}</span>
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'user_api_tokens' %}" class="inline-flex items-center gap-2 bg-[#1e3a6e] hover:bg-[#163059] text-white font-semibold py-2 px-3 sm:py-2 sm:px-4 rounded-lg text-xs sm:text-sm transition min-h-[44px]">
+                        <i class="fas fa-key text-xs sm:text-sm"></i>
+                        <span>Generate API</span>
+                    </a>
                     <a href="{% url 'profile_update' %}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 sm:py-2 sm:px-4 rounded-lg text-xs sm:text-sm transition min-h-[44px]">
                         <i class="fas fa-user-edit text-xs sm:text-sm"></i>
                         <span>Edit Profile</span>
                     </a>
-                    <a href="{% url 'logout' %}" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 sm:py-2 sm:px-4 rounded-lg text-xs sm:text-sm transition shadow-sm border border-gray-200 min-h-[44px]">
+                    <a href="{% url 'logout' %}" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 sm:py-2 sm:px-4 rounded-lg text-xs sm:text-sm transition border border-gray-200 min-h-[44px]">
                         <i class="fas fa-sign-out-alt text-xs sm:text-sm"></i>
                         <span>Logout</span>
                     </a>

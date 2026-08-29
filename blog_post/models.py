@@ -455,6 +455,11 @@ class HomepageConfig(models.Model):
 
 
 class AutomationPublishLog(models.Model):
+    AUTH_SOURCE_CHOICES = (
+        ('automation', 'Admin Automation Token'),
+        ('user_token', 'User Personal API Token'),
+    )
+
     EVENT_TYPE_CHOICES = (
         ("request_received", "Request Received"),
         ("idempotent_replay", "Idempotent Replay"),
@@ -491,6 +496,36 @@ class AutomationPublishLog(models.Model):
 
     error_summary = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    # ---- User-token specific fields (null for admin automation logs) ----
+    auth_source = models.CharField(
+        max_length=20,
+        choices=AUTH_SOURCE_CHOICES,
+        null=True,
+        blank=True,
+        db_index=True,
+        verbose_name='Auth Source',
+    )
+    token_user = models.ForeignKey(
+        CustomUserModel,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='api_token_logs',
+        verbose_name='Token Owner',
+    )
+    token_id = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        db_index=True,
+        verbose_name='User Token ID',
+    )
+    source_ip = models.CharField(
+        max_length=45,  # IPv6 max length
+        null=True,
+        blank=True,
+        verbose_name='Source IP',
+    )
 
     class Meta:
         ordering = ['-created_at']
