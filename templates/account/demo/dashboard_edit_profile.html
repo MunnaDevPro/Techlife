@@ -1,0 +1,113 @@
+<div class="bg-white border border-gray-300 shadow-sm rounded-none">
+    <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
+        <h3 class="text-sm font-bold text-gray-800">Edit Profile</h3>
+    </div>
+    <div class="px-4 py-2 border-b border-gray-100 bg-white">
+        <p class="text-[11px] text-gray-500">Update your personal information and address details.</p>
+    </div>
+    
+    <form method="POST" enctype="multipart/form-data" action="{% url 'profile_update' %}" class="p-6">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Left Column: Profile Picture -->
+            <div class="md:col-span-1 flex flex-col items-center border-b md:border-b-0 md:border-r border-gray-100 pb-6 md:pb-0 md:pr-6">
+                <label for="profile_picture" class="relative cursor-pointer group mb-4">
+                    <img id="profile_preview" class="h-28 w-28 rounded-full object-cover border-4 border-gray-100 transition-opacity group-hover:opacity-75"
+                         src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}/static/images/default-avatar.png{% endif %}"
+                         alt="Profile picture" />
+                    <div class="absolute inset-0 flex items-center justify-center bg-gray-900/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="fas fa-camera text-white text-xl"></i>
+                    </div>
+                    <input type="file" name="profile_picture" id="profile_picture" class="hidden" accept="image/*">
+                </label>
+                <h4 class="text-[13px] font-bold text-gray-800">{{ user.first_name }} {{ user.last_name }}</h4>
+                <p class="text-[11px] text-gray-500 mt-1">Click image to upload new photo</p>
+                <p class="text-[10px] text-gray-400 mt-0.5">JPG, GIF or PNG. Max size of 2MB.</p>
+            </div>
+
+            <!-- Right Column: Form Fields -->
+            <div class="md:col-span-2 space-y-6">
+                
+                <!-- Personal Info -->
+                <div>
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Personal Information</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">First Name</label>
+                            <input type="text" name="first_name" value="{{ user.first_name|default:'' }}" placeholder="e.g. John"
+                                class="w-full px-3 py-2 border border-gray-300 rounded text-[13px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400" />
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Last Name</label>
+                            <input type="text" name="last_name" value="{{ user.last_name|default:'' }}" placeholder="e.g. Doe"
+                                class="w-full px-3 py-2 border border-gray-300 rounded text-[13px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400" />
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Mobile Number</label>
+                            <input type="text" name="mobile" value="{{ user.mobile|default:'' }}" placeholder="e.g. +880 1700 000000"
+                                class="w-full px-3 py-2 border border-gray-300 rounded text-[13px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Info -->
+                <div>
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Address Details</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Address Line 1</label>
+                            <input type="text" name="address_line_1" value="{{ user.address_line_1|default:'' }}" placeholder="e.g. 123 Main St, Apartment 4B"
+                                class="w-full px-3 py-2 border border-gray-300 rounded text-[13px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400" />
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Address Line 2 <span class="font-normal text-gray-400">(Optional)</span></label>
+                            <input type="text" name="address_line_2" value="{{ user.address_line_2|default:'' }}" placeholder="e.g. Building Name, Area"
+                                class="w-full px-3 py-2 border border-gray-300 rounded text-[13px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400" />
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">City</label>
+                            <input type="text" name="city" value="{{ user.city|default:'' }}" placeholder="e.g. Dhaka"
+                                class="w-full px-3 py-2 border border-gray-300 rounded text-[13px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400" />
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Postcode</label>
+                            <input type="text" name="postcode" value="{{ user.postcode|default:'' }}" placeholder="e.g. 1205"
+                                class="w-full px-3 py-2 border border-gray-300 rounded text-[13px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400" />
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Country</label>
+                            <input type="text" name="country" value="{{ user.country|default:'' }}" placeholder="e.g. Bangladesh"
+                                class="w-full px-3 py-2 border border-gray-300 rounded text-[13px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-100 flex justify-end">
+                    <button type="submit" class="px-5 py-2 bg-blue-600 text-white text-[13px] font-semibold rounded hover:bg-blue-700 transition-colors shadow-sm cursor-pointer">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const profileInput = document.getElementById('profile_picture');
+        const profilePreview = document.getElementById('profile_preview');
+        
+        if (profileInput && profilePreview) {
+            profileInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profilePreview.src = e.target.result;
+                    }
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+        }
+    });
+</script>

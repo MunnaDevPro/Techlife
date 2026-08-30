@@ -5,17 +5,20 @@
 
 <head>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7286281628917450"
-     crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
 
-     
+
     <meta charset="UTF-8" />
     {% if GTM_ID %}
     <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','{{ GTM_ID }}');</script>
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', '{{ GTM_ID }}');</script>
     <!-- End Google Tag Manager -->
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -38,7 +41,8 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{% block twitter_title %}{{ SITE_TITLE }}{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}{{ META_DESCRIPTION }}{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}{% static 'images/default_og_image.png' %}{% endblock %}">
+    <meta name="twitter:image"
+        content="{% block twitter_image %}{% static 'images/default_og_image.png' %}{% endblock %}">
 
     {% block structured_data %}
     <script type="application/ld+json">
@@ -58,240 +62,319 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"></noscript>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap">
+    </noscript>
 
     <!-- HTMX CSRF -->
     {% csrf_token %}
     <meta name="csrf-token" content="{{ csrf_token }}" />
 
-        <!-- Tailwind CSS -->
-        <link rel="stylesheet" href="{% static 'css/output.css' %}?v=1.4">
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}?v=1.4">
 
     <!-- Core Styles -->
     <style>
-      :root {
-        --navy: #1e3a6e;
-        --navy-dark: #152d56;
-        --navy-light: #dbeafe;
-        --accent: #2563eb;
-        --bg-page: #f0f2f5;
-        --bg-card: #ffffff;
-        --border: #e2e8f0;
-        --text-primary: #1c1c1e;
-        --text-muted: #6b7280;
-      }
+        :root {
+            --navy: #1e3a6e;
+            --navy-dark: #152d56;
+            --navy-light: #dbeafe;
+            --accent: #2563eb;
+            --bg-page: #f0f2f5;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --text-primary: #1c1c1e;
+            --text-muted: #6b7280;
+        }
 
-      * { -webkit-box-sizing: border-box; box-sizing: border-box; }
-      .flex { display: -webkit-flex; display: flex; }
+        * {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
 
-      html { scroll-behavior: smooth; }
+        .flex {
+            display: -webkit-flex;
+            display: flex;
+        }
 
-      @font-face { font-family: 'Font Awesome 6 Free'; font-display: swap; }
-      @font-face { font-family: 'Font Awesome 6 Brands'; font-display: swap; }
+        html {
+            scroll-behavior: smooth;
+        }
 
-      body {
-        font-family: "Inter", sans-serif;
-        line-height: 1.6;
-        color: var(--text-primary);
-        background-color: var(--bg-page);
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        -webkit-text-size-adjust: 100%;
-      }
+        @font-face {
+            font-family: 'Font Awesome 6 Free';
+            font-display: swap;
+        }
 
-      /* Carousel */
-      .carousel { position: relative; overflow: hidden; }
-      .carousel-track { display: flex; transition: transform 0.5s ease-in-out; }
-      .carousel-slide { min-width: 100%; }
-      .carousel-indicator { transition: all 0.3s ease; }
-      .carousel-indicator.active { transform: scale(1.5); background-color: var(--navy); }
-      @media (max-width: 768px) { .carousel { width: 100%; } }
+        @font-face {
+            font-family: 'Font Awesome 6 Brands';
+            font-display: swap;
+        }
 
-      /* Card shadow */
-      .tl-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-      }
+        body {
+            font-family: "Inter", sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--bg-page);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-text-size-adjust: 100%;
+        }
 
-      /* Safari flexbox fix */
-      .flex-1 { min-width: 0; }
+        /* Carousel */
+        .carousel {
+            position: relative;
+            overflow: hidden;
+        }
 
-      /* Scrollbar */
-      .scrollbar-hide::-webkit-scrollbar { display: none; }
-      .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
 
-      /* Category accent */
-      .cat-accent { border-left: 3px solid var(--navy); }
+        .carousel-slide {
+            min-width: 100%;
+        }
 
-      /* Mobile bottom nav safe area */
-      @media (max-width: 767px) {
-        body { padding-bottom: 64px; }
-      }
+        .carousel-indicator {
+            transition: all 0.3s ease;
+        }
 
-            @media (min-width: 768px) {
-                nav.mobile-bottom-nav {
-                    display: none !important;
-                }
+        .carousel-indicator.active {
+            transform: scale(1.5);
+            background-color: var(--navy);
+        }
+
+        @media (max-width: 768px) {
+            .carousel {
+                width: 100%;
             }
+        }
 
-      /* Login / Signup */
-      .login, .signup {
-        background-image: url("");
-        background-blend-mode: darken;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        min-height: 100vh;
-      }
+        /* Card shadow */
+        .tl-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
 
-      .category-header-bg {
-        background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.05), rgba(255,255,255,.05) 10px, transparent 10px, transparent 20px);
-      }
+        /* Safari flexbox fix */
+        .flex-1 {
+            min-width: 0;
+        }
 
-      /* Scroll btn */
-      .show-scroll-btn {
-        visibility: visible !important;
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-      }
+        /* Scrollbar */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
 
-      /* Loader */
-      #loader-wrapper {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background-color: #ffffff;
-        display: flex; justify-content: center; align-items: center;
-        z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s ease;
-      }
-      .loader-hidden { opacity: 0; visibility: hidden; }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
 
-      /* ─── HTMX Loader — Old Money / Apple UI ─────────────────────────────── */
+        /* Category accent */
+        .cat-accent {
+            border-left: 3px solid var(--navy);
+        }
 
-      #htmx-loader {
-        position: fixed;
-        inset: 0;
-        z-index: 99999;
-        pointer-events: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.22s ease;
-      }
+        /* Mobile bottom nav safe area */
+        @media (max-width: 767px) {
+            body {
+                padding-bottom: 64px;
+            }
+        }
 
-      /* Frosted veil — extremely subtle, Apple-style */
-      #htmx-loader::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: rgba(240, 237, 232, 0.55);
-        backdrop-filter: blur(1.5px);
-        -webkit-backdrop-filter: blur(1.5px);
-      }
+        @media (min-width: 768px) {
+            nav.mobile-bottom-nav {
+                display: none !important;
+            }
+        }
 
-      /* The panel itself */
-      #htmx-loader-panel {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 18px;
+        /* Login / Signup */
+        .login,
+        .signup {
+            background-image: url("");
+            background-blend-mode: darken;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
 
-        /* Ivory parchment surface */
-        background: #faf9f6;
+        .category-header-bg {
+            background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .05) 10px, transparent 10px, transparent 20px);
+        }
 
-        /* Hairline border — restrained luxury */
-        border: 0.5px solid rgba(30, 58, 110, 0.16);
+        /* Scroll btn */
+        .show-scroll-btn {
+            visibility: visible !important;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
 
-        /* Square edges with the slimmest radius — boardroom, not bubble */
-        border-radius: 3px;
+        /* Loader */
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
 
-        padding: 36px 48px 32px;
+        .loader-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
 
-        /* Single, barely-there lift */
-        box-shadow:
-          0 1px 2px rgba(0, 0, 0, 0.04),
-          0 4px 16px rgba(0, 0, 0, 0.05);
-      }
+        /* ─── HTMX Loader — Old Money / Apple UI ─────────────────────────────── */
 
-      /* Monogram mark */
-      #htmx-loader-monogram {
-        width: 36px;
-        height: 36px;
-        border: 0.5px solid rgba(30, 58, 110, 0.22);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      #htmx-loader-monogram span {
-        font-family: Georgia, 'Times New Roman', serif;
-        font-size: 15px;
-        font-weight: 400;
-        color: #1e3a6e;
-        letter-spacing: 0.08em;
-        line-height: 1;
-        user-select: none;
-      }
+        #htmx-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.22s ease;
+        }
 
-      /* Ring spinner */
-      #htmx-loader-ring {
-        position: relative;
-        width: 46px;
-        height: 46px;
-      }
-      #htmx-loader-ring-track {
-        position: absolute;
-        inset: 0;
-        border-radius: 50%;
-        border: 0.75px solid rgba(30, 58, 110, 0.10);
-      }
-      #htmx-loader-ring-spin {
-        position: absolute;
-        inset: 0;
-        border-radius: 50%;
-        border: 0.75px solid transparent;
-        border-top-color: #1e3a6e;
-        animation: htmx-loader-rotate 1.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-      }
-      /* Tiny centre pip — like a watch seconds hand pivot */
-      #htmx-loader-ring-pip {
-        position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        width: 3px; height: 3px;
-        border-radius: 50%;
-        background: rgba(30, 58, 110, 0.35);
-      }
+        /* Frosted veil — extremely subtle, Apple-style */
+        #htmx-loader::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(240, 237, 232, 0.55);
+            backdrop-filter: blur(1.5px);
+            -webkit-backdrop-filter: blur(1.5px);
+        }
 
-      /* Divider rule */
-      #htmx-loader-rule {
-        width: 20px;
-        height: 0.5px;
-        background: rgba(30, 58, 110, 0.18);
-      }
+        /* The panel itself */
+        #htmx-loader-panel {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
 
-      /* Label */
-      #htmx-loader-label {
-        font-family: "Inter", sans-serif;
-        font-size: 9px;
-        font-weight: 400;
-        letter-spacing: 0.25em;
-        text-transform: uppercase;
-        color: rgba(30, 58, 110, 0.45);
-        user-select: none;
-      }
+            /* Ivory parchment surface */
+            background: #faf9f6;
 
-      @keyframes htmx-loader-rotate {
-        to { transform: rotate(360deg); }
-      }
+            /* Hairline border — restrained luxury */
+            border: 0.5px solid rgba(30, 58, 110, 0.16);
 
-      /* ───────────────────────────────────────────────────────────────────────── */
+            /* Square edges with the slimmest radius — boardroom, not bubble */
+            border-radius: 3px;
+
+            padding: 36px 48px 32px;
+
+            /* Single, barely-there lift */
+            box-shadow:
+                0 1px 2px rgba(0, 0, 0, 0.04),
+                0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Monogram mark */
+        #htmx-loader-monogram {
+            width: 36px;
+            height: 36px;
+            border: 0.5px solid rgba(30, 58, 110, 0.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #htmx-loader-monogram span {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 15px;
+            font-weight: 400;
+            color: #1e3a6e;
+            letter-spacing: 0.08em;
+            line-height: 1;
+            user-select: none;
+        }
+
+        /* Ring spinner */
+        #htmx-loader-ring {
+            position: relative;
+            width: 46px;
+            height: 46px;
+        }
+
+        #htmx-loader-ring-track {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 0.75px solid rgba(30, 58, 110, 0.10);
+        }
+
+        #htmx-loader-ring-spin {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 0.75px solid transparent;
+            border-top-color: #1e3a6e;
+            animation: htmx-loader-rotate 1.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        /* Tiny centre pip — like a watch seconds hand pivot */
+        #htmx-loader-ring-pip {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: rgba(30, 58, 110, 0.35);
+        }
+
+        /* Divider rule */
+        #htmx-loader-rule {
+            width: 20px;
+            height: 0.5px;
+            background: rgba(30, 58, 110, 0.18);
+        }
+
+        /* Label */
+        #htmx-loader-label {
+            font-family: "Inter", sans-serif;
+            font-size: 9px;
+            font-weight: 400;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(30, 58, 110, 0.45);
+            user-select: none;
+        }
+
+        @keyframes htmx-loader-rotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ───────────────────────────────────────────────────────────────────────── */
     </style>
 
     <!-- AOS CSS -->
-    <link rel="preload" as="style" href="https://unpkg.com/aos@2.3.1/dist/aos.css" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"></noscript>
+    <link rel="preload" as="style" href="https://unpkg.com/aos@2.3.1/dist/aos.css"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    </noscript>
 
     {% if action == 'home_page' and carousel_blogs %}
     {% with first_blog=carousel_blogs|first %}
@@ -326,20 +409,19 @@
     {% endif %}
 
     <!-- Font Awesome -->
-    <link rel="preload" as="style"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-      crossorigin="anonymous"
-      onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+            crossorigin="anonymous">
     </noscript>
     {% comment %}
     ─── Meta Pixel + Conversions API ────────────────────────────────────────────
     Renders fbq() initialisation + <noscript> fallback.
-    Empty when META_PIXEL_ID is not configured in .env.
-    {% endcomment %}
-    {% meta_pixel %}
+        Empty when META_PIXEL_ID is not configured in .env.
+        {% endcomment %}
+        {% meta_pixel %}
 
 </head>
 
@@ -371,23 +453,28 @@
 
 
     {% if GTM_ID %}
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ GTM_ID }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ GTM_ID }}" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
     {% endif %}
 
     {% if META_PIXEL_ID %}
     <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '{{ META_PIXEL_ID }}');
-    fbq('track', 'PageView');
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '{{ META_PIXEL_ID }}');
+        fbq('track', 'PageView');
     </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ META_PIXEL_ID }}&ev=PageView&noscript=1"/></noscript>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id={{ META_PIXEL_ID }}&ev=PageView&noscript=1" /></noscript>
     {% endif %}
 
     <!-- Maintenance Modal -->
@@ -396,96 +483,114 @@
     <!-- Toast Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col items-end gap-2">
         {% if messages %}
-            {% for message in messages %}
-            <div x-data="{ show: true }" 
-                 x-show="show" 
-                 x-init="setTimeout(() => show = false, 3000)" 
-                 x-transition:leave="transition ease-in duration-300"
-                 x-transition:leave-start="opacity-100 translate-x-0"
-                 x-transition:leave-end="opacity-0 translate-x-4"
-                 class="toast-message bg-[#1e3a6e] text-white px-5 py-3 rounded-md shadow-lg text-sm">
-                {{ message }}
-            </div>
-            {% endfor %}
+        {% for message in messages %}
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
+            x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-x-0"
+            x-transition:leave-end="opacity-0 translate-x-4"
+            class="toast-message bg-[#1e3a6e] text-white px-5 py-3 rounded-md shadow-lg text-sm">
+            {{ message }}
+        </div>
+        {% endfor %}
         {% endif %}
     </div>
 
     <!-- Navbar -->
+    {% block navbar %}
     {% comment %} {% include 'include/navbar.html' %} {% endcomment %}
     {% include 'include/navbar_modern.html' %}
     {% comment %} {% include 'include/navbar_compact.html' %} {% endcomment %}
     {% include 'include/notification.html' %}
+    {% endblock %}
 
     <!-- Main Content -->
     <main id="container" class="mt-9 mx-auto flex-grow min-h-[calc(100vh-128px)] py-4">
         {% block content %}
-        {% if action == 'post_create' or action == 'post_edit' %} {% include 'components/blogs/partial_create_blog_content.html' %}
+        {% if action == 'post_create' or action == 'post_edit' %} {% include
+        'components/blogs/partial_create_blog_content.html' %}
         {% elif action == 'home_page' %} {% include 'components/home/home_page.html' %}
         {% elif action == 'all_blogs' %} {% include 'components/blogs/partial_all_blog_page.html' %}
         {% elif action == 'contact_page' %} {% include 'partial_contact_us_page.html' %}
         {% elif action == 'category_post' %} {% include 'components/category/category_post_partial.html' %}
         {% elif action == 'popular_blogs' %} {% include 'components/popular/popular_post_partial.html' %}
         {% elif action == 'all_article' %} {% include 'components/category/all_article_partial.html' %}
-        {% elif action == 'popular_category_post' %} {% include 'components/popular/popular_category_post_partial.html' %}
+        {% elif action == 'popular_category_post' %} {% include 'components/popular/popular_category_post_partial.html'
+        %}
         {% elif action == 'blog_details' %} {% include 'components/blog_details/partial_blog_details_page.html' %}
-        {% elif action == 'right_side_update_in_blog_details' %} {% include 'components/blog_details/blog_right_side_partial.html' %}
+        {% elif action == 'right_side_update_in_blog_details' %} {% include
+        'components/blog_details/blog_right_side_partial.html' %}
         {% endif %}
         {% endblock content %}
     </main>
 
     <!-- Footer -->
+    {% block footer %}
     {% include 'include/footer.html' %}
+    {% endblock %}
 
     <!-- Mobile Bottom Navigation -->
-    <nav class="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-[999] bg-white border-t border-gray-200 flex items-center justify-around px-2 py-2 safe-area-bottom">
+    {% block mobile_nav %}
+    <nav
+        class="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-[999] bg-white border-t border-gray-200 flex items-center justify-around px-2 py-2 safe-area-bottom">
         <a href="/" class="flex flex-col items-center gap-0.5 text-[#1e3a6e] min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
             <span class="text-[10px] font-medium">Home</span>
         </a>
-        <a href="{% url 'redirect_search_results' %}" class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+        <a href="{% url 'redirect_search_results' %}"
+            class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
             </svg>
             <span class="text-[10px] font-medium">Search</span>
         </a>
         <a href="{% url 'popular_blogs' %}" class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
             </svg>
             <span class="text-[10px] font-medium">Popular</span>
         </a>
         <a href="{% url 'blogs' %}" class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
             </svg>
             <span class="text-[10px] font-medium">Articles</span>
         </a>
         {% if request.user.is_authenticated %}
         <a href="{% url 'create_blog' %}" class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
             </svg>
             <span class="text-[10px] font-medium">Write</span>
         </a>
         {% else %}
-        <button type="button" data-login-alert-trigger class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        <button type="button" data-login-alert-trigger
+            class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
             </svg>
             <span class="text-[10px] font-medium">Write</span>
         </button>
         {% endif %}
     </nav>
+    {% endblock %}
 
     <!-- Scroll To Top -->
     <button id="scrollToTop"
         class="cursor-pointer fixed bottom-20 right-4 md:bottom-8 md:right-8 z-[9998] translate-y-20 opacity-0 invisible bg-[#1e3a6e] text-white p-3 rounded-full hover:bg-[#152d56] active:scale-90 transition-all duration-500 shadow-lg"
-        onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
-        aria-label="Scroll to top">
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to top">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
         </svg>
     </button>
 
@@ -528,7 +633,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        document.body.addEventListener('htmx:afterSwap', function(e) {
+        document.body.addEventListener('htmx:afterSwap', function (e) {
             const container = document.getElementById('container');
             if (!container) return;
 
@@ -575,7 +680,7 @@
     </script>
 
     <script>
-        window.addEventListener("load", function() {
+        window.addEventListener("load", function () {
             const loader = document.getElementById("loader-wrapper");
             if (loader) loader.classList.add("loader-hidden");
         });
@@ -583,54 +688,55 @@
 
     <!-- HTMX Loader controller -->
     <script>
-    (function () {
-        var loader = document.getElementById('htmx-loader');
-        var timer  = null;
-        var DELAY  = 180;
+        (function () {
+            var loader = document.getElementById('htmx-loader');
+            var timer = null;
+            var DELAY = 180;
 
-        function showLoader() {
-            timer = setTimeout(function () {
-                if (loader) {
-                    loader.style.opacity       = '1';
-                    loader.style.pointerEvents = 'all';
-                }
-            }, DELAY);
-        }
-
-        function hideLoader() {
-            clearTimeout(timer);
-            if (loader) {
-                loader.style.opacity       = '0';
-                loader.style.pointerEvents = 'none';
+            function showLoader() {
+                timer = setTimeout(function () {
+                    if (loader) {
+                        loader.style.opacity = '1';
+                        loader.style.pointerEvents = 'all';
+                    }
+                }, DELAY);
             }
-        }
 
-        document.body.addEventListener('htmx:beforeRequest', function(e) {
-            const target = e.detail.requestConfig?.elt;
-            if (target && target.closest('#comment-list, .like-btn, .reply-form')) return;
-            showLoader();
-        });
-        document.body.addEventListener('htmx:afterRequest',   hideLoader);
-        document.body.addEventListener('htmx:responseError',  hideLoader);
-        document.body.addEventListener('htmx:sendError',      hideLoader);
-        // ✅ FIX: back button এ browser history restore হলে loader hide করো
-        document.body.addEventListener('htmx:historyRestore', hideLoader);
-        window.addEventListener('popstate', hideLoader);
-        // Safari/Firefox back button fix
-        window.addEventListener('pageshow', function(e) { hideLoader(); });
-        // Page visibility change fix (tab switch etc)
-        document.addEventListener('visibilitychange', function() {
-        });
-    })();
+            function hideLoader() {
+                clearTimeout(timer);
+                if (loader) {
+                    loader.style.opacity = '0';
+                    loader.style.pointerEvents = 'none';
+                }
+            }
+
+            document.body.addEventListener('htmx:beforeRequest', function (e) {
+                const target = e.detail.requestConfig?.elt;
+                if (target && target.closest('#comment-list, .like-btn, .reply-form')) return;
+                showLoader();
+            });
+            document.body.addEventListener('htmx:afterRequest', hideLoader);
+            document.body.addEventListener('htmx:responseError', hideLoader);
+            document.body.addEventListener('htmx:sendError', hideLoader);
+            // ✅ FIX: back button এ browser history restore হলে loader hide করো
+            document.body.addEventListener('htmx:historyRestore', hideLoader);
+            window.addEventListener('popstate', hideLoader);
+            // Safari/Firefox back button fix
+            window.addEventListener('pageshow', function (e) { hideLoader(); });
+            // Page visibility change fix (tab switch etc)
+            document.addEventListener('visibilitychange', function () {
+            });
+        })();
     </script>
 
     {# ─── Meta JS Helper ────────────────────────────────────────────────────
-         Meta.track("Lead", {...}, eventID) — wraps fbq() with auto deduplication
-         Only loaded when META_PIXEL_ID is configured.
+    Meta.track("Lead", {...}, eventID) — wraps fbq() with auto deduplication
+    Only loaded when META_PIXEL_ID is configured.
     #}
     {% if META_PIXEL_ID %}
     <script src="{% static 'js/meta.js' %}" defer></script>
     {% endif %}
 
 </body>
+
 </html>

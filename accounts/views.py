@@ -190,6 +190,7 @@ def contact_us_view(request):
 
 def user_dashboard_view(request):
     user = request.user
+    section = request.GET.get('section', 'overview')
     user_blog_posts = BlogPost.objects.filter(author=user).select_related('author','category').prefetch_related('comments').order_by('-created_at')
     
     # forum section
@@ -263,9 +264,9 @@ def user_dashboard_view(request):
         'answers_count': answers_count,
 
         'recent_7_days': recent_answers_7_days,
-
-        'last_follower':last_follower
-       
+        'last_follower':last_follower,
+        'section': section,
+        'notifications': user.notifications.all().order_by('-created_at') if section == 'notifications' else None
     }
 
     return render(request, "account/demo/user_dashboard.html", context)
@@ -297,7 +298,7 @@ def profile_update_view(request):
         
         user.save()
         # messages.success(request, 'Your profile has been updated successfully!')
-        return redirect('user_dashboard') 
+        return redirect('/account/user_dashboard/?section=edit-profile') 
 
     context = {
         'user_data': user, 
@@ -417,4 +418,60 @@ def delete_notification(request, notif_id):
                 return HttpResponse("Not found", status=404)
             return JsonResponse({"status": "error"}, status=404)
     return JsonResponse({"status": "error"}, status=400)
+
+@login_required
+def bulk_delete_notifications(request):
+    if request.method == "POST":
+        notification_ids = request.POST.getlist('notification_ids')
+        if notification_ids:
+            request.user.notifications.filter(id__in=notification_ids).delete()
+        if request.headers.get('HX-Request'):
+            return HttpResponse("")
+        return redirect(reverse('user_dashboard') + "?section=notifications")
+    return JsonResponse({"status": "error"}, status=400)
+
+
+@login_required
+def user_traffic_api(request):
+    try:
+        days = int(request.GET.get('days', 7))
+    except ValueError:
+        days = 7
+
+    start_date = timezone.now().date() - timedelta(days=days-1)
+    
+    from blog_post.models import Post_view_ip
+    from forum.models import Question_view_ip
+    
+    labels = []
+    visits_data = []
+    users_data = []
+    
+    for i in range(days):
+        current_date = start_date + timedelta(days=i)
+        
+        if current_date == timezone.now().date():
+            label = 'Today'
+        else:
+            label = current_date.strftime('%b %d')
+            
+        labels.append(label)
+        
+        post_views = Post_view_ip.objects.filter(post__author=request.user, viewed_at=current_date)
+        question_views = Question_view_ip.objects.filter(question__author=request.user, viewed_at=current_date)
+        
+        total_visits = post_views.count() + question_views.count()
+        
+        post_ips = set(post_views.values_list('ip_address', flat=True))
+        question_ips = set(question_views.values_list('ip_address', flat=True))
+        unique_users = len(post_ips.union(question_ips))
+        
+        visits_data.append(total_visits)
+        users_data.append(unique_users)
+        
+    return JsonResponse({
+        'labels': labels,
+        'visits': visits_data,
+        'users': users_data
+    })
 

@@ -1,0 +1,325 @@
+{% load static %} {% load humanize %} {% load custom_filters %}
+
+<div class="space-y-6">
+    <!-- Top Row: 3 Columns -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Column 1: Alerts / Quick Stats -->
+        <div class="bg-white border border-gray-300 shadow-sm rounded-none flex flex-col">
+            <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
+                <h3 class="text-sm font-semibold text-gray-700">Quick Stats</h3>
+                <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-h"></i></button>
+            </div>
+            <div class="p-4 flex-1 flex flex-col justify-center space-y-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-8 flex items-center justify-center flex-shrink-0">
+                        <i class="far fa-file-alt text-[20px] text-[#1e3a6e] opacity-70"></i>
+                    </div>
+                    <div>
+                        <div class="text-[13px] text-gray-800 leading-tight"><span class="font-bold">{{ user_blog_posts.count }}</span> Published Articles</div>
+                        <div class="text-[11px] text-green-600 mt-0.5"><i class="fas fa-arrow-up mr-0.5"></i> Trending up</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-8 flex items-center justify-center flex-shrink-0">
+                        <i class="far fa-comments text-[20px] text-[#1e3a6e] opacity-70"></i>
+                    </div>
+                    <div>
+                        <div class="text-[13px] text-gray-800 leading-tight"><span class="font-bold">{{ questions_count }}</span> Forum Questions</div>
+                        <div class="text-[11px] text-gray-500 mt-0.5">Asked by you</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-8 flex items-center justify-center flex-shrink-0">
+                        <i class="far fa-comment-dots text-[20px] text-[#1e3a6e] opacity-70"></i>
+                    </div>
+                    <div>
+                        <div class="text-[13px] text-gray-800 leading-tight"><span class="font-bold">{{ answers_count }}</span> Forum Answers</div>
+                        <div class="text-[11px] text-green-600 mt-0.5">+{{ recent_answers_7_days|default:0 }} this week</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-8 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-chart-line text-[20px] text-[#1e3a6e] opacity-70"></i>
+                    </div>
+                    <div>
+                        <div class="text-[13px] text-gray-800 leading-tight"><span class="font-bold">7.5%</span> Engagement Rate</div>
+                        <div class="text-[11px] text-gray-500 mt-0.5">Above average</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Column 2: Activity Pipeline (Doughnut Chart) -->
+        <div class="bg-white border border-gray-300 shadow-sm rounded-none flex flex-col">
+            <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
+                <h3 class="text-sm font-semibold text-gray-700">Activity Pipeline</h3>
+                <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-h"></i></button>
+            </div>
+            <div class="p-4 flex-1 flex flex-col md:flex-row items-center justify-center gap-6">
+                <div class="relative w-36 h-36 flex-shrink-0">
+                    <canvas id="pipelineChart"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none mt-1">
+                        <span class="text-3xl font-bold text-gray-800 leading-none">{{ user_blog_posts.count|add:questions_count|add:answers_count }}</span>
+                        <span class="text-[9px] text-gray-500 font-semibold uppercase mt-1">Total Items</span>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center space-y-3 text-xs text-gray-700 w-full md:w-auto">
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-2"><span class="w-3.5 h-3.5 bg-[#3b82f6] rounded-sm"></span> Articles</div>
+                        <span class="font-bold text-gray-900">{{ user_blog_posts.count }}</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-2"><span class="w-3.5 h-3.5 bg-[#10b981] rounded-sm"></span> Questions</div>
+                        <span class="font-bold text-gray-900">{{ questions_count }}</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-2"><span class="w-3.5 h-3.5 bg-[#f59e0b] rounded-sm"></span> Answers</div>
+                        <span class="font-bold text-gray-900">{{ answers_count }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Column 3: Site Traffic / Views (Line Chart) -->
+        <div class="bg-white border border-gray-300 shadow-sm rounded-none flex flex-col lg:col-span-1 md:col-span-2">
+            <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
+                <div class="flex items-center gap-3">
+                    <h3 class="text-sm font-semibold text-gray-700">Site Traffic</h3>
+                    <select id="trafficFilter" class="text-[11px] py-0 px-2 border border-gray-300 rounded bg-white text-gray-600 focus:ring-0 cursor-pointer h-6">
+                        <option value="30">Last 30 days</option>
+                        <option value="7">Last 7 days</option>
+                    </select>
+                </div>
+                <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-h"></i></button>
+            </div>
+            <div class="p-4 flex-1 h-[220px] w-full">
+                <canvas id="trafficChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Row: Table -->
+    <div class="bg-white border border-gray-300 shadow-sm rounded-none">
+        <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
+            <h3 class="text-sm font-bold text-gray-800">Top Performing Posts</h3>
+            <a href="{% url 'user_dashboard' %}?section=blog-posts" class="text-xs text-blue-600 hover:underline font-medium">View all posts <i class="fas fa-arrow-right ml-1 text-gray-400"></i></a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-white border-b border-gray-300">
+                    <tr class="text-[11px] text-gray-900 font-bold tracking-tight">
+                        <th class="py-3 px-4 w-1/3 text-left">Post Title</th>
+                        <th class="py-3 px-4 text-left">Category</th>
+                        <th class="py-3 px-4 text-center">Views</th>
+                        <th class="py-3 px-4 text-center">Likes</th>
+                        <th class="py-3 px-4 text-center">Comments</th>
+                        <th class="py-3 px-4 text-right">Published Date</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 text-sm">
+                    {% for post in user_blog_posts|slice:"5" %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="py-3 px-4 text-left text-blue-600 font-medium text-[13px]">
+                            <a href="{% url 'blog_details' post.slug %}">{{ post.title|truncatechars:40 }}</a>
+                        </td>
+                        <td class="py-3 px-4 text-left text-gray-600 text-[13px]">{{ post.category.name|default:"General" }}</td>
+                        <td class="py-3 px-4 text-center text-gray-800 text-[13px] font-semibold">{{ post.views|humanize_number }}</td>
+                        <td class="py-3 px-4 text-center text-gray-800 text-[13px]">{{ post.likes.count|humanize_number }}</td>
+                        <td class="py-3 px-4 text-center text-gray-800 text-[13px]">
+                            {{ post.comments.count|humanize_number }}
+                        </td>
+                        <td class="py-3 px-4 text-right text-gray-600 text-[13px]">{{ post.created_at|date:"M d, Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="py-8 text-center text-gray-500 text-sm">No blog posts found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Data
+        const articles = {{ user_blog_posts.count|default:0 }};
+        const questions = {{ questions_count|default:0 }};
+        const answers = {{ answers_count|default:0 }};
+
+        // 1. Pipeline Doughnut Chart
+        const pipelineCtx = document.getElementById('pipelineChart').getContext('2d');
+        new Chart(pipelineCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Articles', 'Questions', 'Answers'],
+                datasets: [{
+                    data: [articles, questions, answers],
+                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '72%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        titleColor: '#374151',
+                        bodyColor: '#374151',
+                        borderColor: '#e5e7eb',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 4,
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.label + ': ' + context.parsed;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 2. Traffic Line Chart
+        const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+        const trafficChart = new Chart(trafficCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Visits',
+                        data: [],
+                        borderColor: '#4ade80', // Light green
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        tension: 0, 
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    },
+                    {
+                        label: 'Users',
+                        data: [],
+                        borderColor: '#3b82f6', // Blue
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        tension: 0,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                layout: {
+                    padding: { top: 10, right: 10, bottom: 0, left: 0 }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            boxWidth: 12,
+                            usePointStyle: false,
+                            font: { size: 11, family: 'Inter', weight: 'bold' },
+                            color: '#374151',
+                            padding: 15
+                        },
+                        onHover: function(e) {
+                            e.native.target.style.cursor = 'pointer';
+                        },
+                        onLeave: function(e) {
+                            e.native.target.style.cursor = 'default';
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        titleColor: '#374151',
+                        bodyColor: '#374151',
+                        borderColor: '#e5e7eb',
+                        borderWidth: 1,
+                        padding: 8,
+                        displayColors: true,
+                        boxPadding: 4
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#e5e7eb',
+                            drawBorder: false,
+                            tickLength: 0
+                        },
+                        ticks: {
+                            font: { size: 9, family: 'Inter', weight: 'bold' },
+                            color: '#6b7280',
+                            padding: 10,
+                            precision: 0
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: true,
+                            color: '#e5e7eb',
+                            drawBorder: true,
+                            tickLength: 5,
+                            drawTicks: true
+                        },
+                        ticks: {
+                            autoSkip: true,
+                            maxTicksLimit: 5,
+                            maxRotation: 0,
+                            font: { size: 10, family: 'Inter', weight: 'bold' },
+                            color: '#6b7280',
+                        }
+                    }
+                }
+            }
+        });
+
+        // Fetch data and update chart
+        const fetchTrafficData = async (days) => {
+            try {
+                const response = await fetch(`/account/api/traffic-data/?days=${days}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    trafficChart.data.labels = data.labels;
+                    trafficChart.data.datasets[0].data = data.visits;
+                    trafficChart.data.datasets[1].data = data.users;
+                    trafficChart.update();
+                }
+            } catch (error) {
+                console.error("Error fetching traffic data:", error);
+            }
+        };
+
+        // Initialize with default 30 days
+        fetchTrafficData(30);
+
+        // Handle dropdown changes
+        const filterSelect = document.getElementById('trafficFilter');
+        if (filterSelect) {
+            filterSelect.addEventListener('change', (e) => {
+                fetchTrafficData(e.target.value);
+            });
+        }
+    });
+</script>

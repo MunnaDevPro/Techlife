@@ -152,7 +152,7 @@
             {% endif %}
 
             {% if request.user.is_authenticated %}
-            <a href="{% url 'user_notifications' %}"
+            <a href="{% url 'user_dashboard' %}?section=notifications"
                 class="relative w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#1e3a6e] hover:bg-gray-50 rounded-full transition-colors">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">

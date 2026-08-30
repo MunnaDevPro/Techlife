@@ -77,6 +77,22 @@ class Answer(models.Model):
 
 
 
+class Question_view_ip(models.Model):
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name="view_track"
+    )
+    user = models.ForeignKey(
+        CustomUserModel, on_delete=models.CASCADE, null=True, blank=True
+    )
+    ip_address = models.CharField(max_length=255, null=True, blank=True)
+    viewed_at = models.DateField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("question", "ip_address")
+
+    def __str__(self):
+        return f"{self.question.title} viewed by {self.user or self.ip_address}"
+
 class Follow_section(models.Model):
     user = models.OneToOneField(CustomUserModel, on_delete=models.CASCADE)
     

@@ -1,16 +1,46 @@
-{% extends 'base.html' %} {% load static %} {% block title %}User Dashboard - Light Theme{% endblock %} {% block head %} {% endblock %} {% block content %}
+{% extends 'base.html' %} {% load static %} {% block title %}User Dashboard - Light Theme{% endblock %} {% block head %}
+{% endblock %} 
 
-<div class="container max-w-7xl mx-auto flex  bg-white text-gray-800 lg:-mt-[40px]">
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block mobile_nav %}{% endblock %}
+
+{% block content %}
+
+<style>
+    main#container { margin-top: 0 !important; padding-top: 0 !important; }
+</style>
+
+<div id="dashboard-container" class="container max-w-7xl mx-auto flex bg-white text-gray-800">
 
     {% include 'account/demo/sidebar.html' %}
 
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col overflow-hidden bg-gray-50/30">
 
-        {% include 'account/demo/header.html' %}
+        <!-- Top Header for Right Side Content -->
+        <header class="h-14 flex items-center justify-end px-4 md:px-6 border-b border-gray-100 bg-white flex-shrink-0">
+            <a href="{% url 'homepage' %}" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-gray-600 hover:text-[#1e3a6e] hover:border-[#1e3a6e] transition-all group" title="Back to Home">
+                <i class="fas fa-arrow-left text-[11px] group-hover:-translate-x-0.5 transition-transform"></i>
+                <span class="text-[12px] font-bold">Back to Home</span>
+            </a>
+        </header>
 
-        <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 lg:p-10">
 
-            {% include 'account/demo/main_stats.html' %} {% include 'account/demo/data_rows.html' %} {% include 'account/demo/order_table.html' %} {% include 'account/demo/visitors_map.html' %}
+        <main class="flex-1 overflow-x-hidden overflow-y-auto p-2 sm:p-4 md:p-6 lg:p-10">
+
+            {% if section == 'overview' %}
+                {% include 'account/demo/overview_grid.html' %}
+            {% elif section == 'blog-posts' %}
+                {% include 'account/demo/order_table.html' %} 
+            {% elif section == 'activities' %}
+                {% include 'account/demo/data_rows.html' %} 
+            {% elif section == 'questions' %}
+                {% include 'account/demo/questions_table.html' %} 
+            {% elif section == 'notifications' %}
+                {% include 'account/demo/dashboard_notifications.html' %}
+            {% elif section == 'edit-profile' %}
+                {% include 'account/demo/dashboard_edit_profile.html' %}
+            {% endif %}
 
         </main>
 
@@ -19,40 +49,52 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    function initializeSidebar() {
         const sidebar = document.getElementById('sidebar');
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-
-        if (sidebar && mobileMenuBtn) {
-            if (window.innerWidth < 768) {
-                sidebar.classList.add('hidden');
+        if (sidebar && window.innerWidth < 768) {
+            if (!sidebar.classList.contains('hidden-mobile')) {
+                sidebar.classList.add('hidden-mobile');
             }
+        }
+    }
 
-            mobileMenuBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('hidden');
-            });
+    document.addEventListener('DOMContentLoaded', initializeSidebar);
+    document.body.addEventListener('htmx:load', initializeSidebar);
+
+    document.addEventListener('click', (e) => {
+        const mobileMenuBtn = e.target.closest('#mobile-menu-btn');
+        const mobileMenuOpenBtn = e.target.closest('#mobile-menu-open-btn');
+        const sidebar = document.getElementById('sidebar');
+
+        if (mobileMenuBtn && sidebar) {
+            if (window.innerWidth >= 768) {
+                sidebar.classList.toggle('collapsed');
+            } else {
+                sidebar.classList.add('hidden-mobile');
+            }
         }
 
-        const transactionChartCanvas = document.getElementById('transactionChart');
-        if (transactionChartCanvas) {
-
+        if (mobileMenuOpenBtn && sidebar) {
+            sidebar.classList.remove('hidden-mobile');
         }
+    });
 
-        const todoCheckboxes = document.querySelectorAll('.form-checkbox');
-        todoCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                const label = e.target.closest('label').querySelector('span');
-                if (e.target.checked) {
-
-                    label.classList.add('line-through', 'text-gray-500');
-                    label.classList.remove('text-gray-800');
-                } else {
-                    label.classList.remove('line-through', 'text-gray-500');
-                    label.classList.add('text-gray-800');
+    document.addEventListener('change', (e) => {
+        if (e.target.matches('.form-checkbox')) {
+            const label = e.target.closest('label');
+            if (label) {
+                const span = label.querySelector('span');
+                if (span) {
+                    if (e.target.checked) {
+                        span.classList.add('line-through', 'text-gray-500');
+                        span.classList.remove('text-gray-800');
+                    } else {
+                        span.classList.remove('line-through', 'text-gray-500');
+                        span.classList.add('text-gray-800');
+                    }
                 }
-            });
-        });
-
+            }
+        }
     });
 </script>
 {% endblock %}

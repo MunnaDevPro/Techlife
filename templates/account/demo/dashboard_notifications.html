@@ -1,0 +1,124 @@
+{% load static %} {% load humanize %} {% load custom_filters %}
+
+<div class="bg-white border border-gray-300 shadow-sm rounded-none">
+<form id="bulk-delete-form" hx-post="{% url 'bulk_delete_notifications' %}" hx-swap="none" hx-on::after-request="window.location.reload()">
+    {% csrf_token %}
+    <div class="px-4 py-3 border-b border-gray-200 flex flex-wrap justify-between items-center bg-gray-50/50 gap-3">
+        <div class="flex items-center gap-3">
+            {% if notifications %}
+            <input type="checkbox" id="selectAllNotifs" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer" title="Select All">
+            {% endif %}
+            <h3 class="text-sm font-bold text-gray-800">Notifications</h3>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            {% if notifications %}
+            <button type="submit" id="bulkDeleteBtn" disabled
+                    class="text-[11px] font-semibold px-3 py-1.5 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                Delete Selected
+            </button>
+            <button type="button" hx-post="{% url 'mark_notifications_read' %}"
+                    hx-swap="none"
+                    hx-on::after-request="window.location.reload()"
+                    class="text-[11px] font-semibold px-3 py-1.5 bg-gray-100 border border-gray-200 text-gray-700 hover:bg-gray-200 rounded transition-colors cursor-pointer">
+                Mark All as Read
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="px-4 py-2 border-b border-gray-100 bg-white">
+        <p class="text-[11px] text-gray-500">Stay updated with your latest alerts and activities.</p>
+    </div>
+    
+    <div class="divide-y divide-gray-100 text-sm">
+        {% if notifications %}
+            {% for notif in notifications %}
+            <div id="notif-{{ notif.id }}" class="group px-4 py-3 flex items-start justify-between gap-4 hover:bg-gray-50 transition-colors {% if not notif.is_read %}bg-blue-50/30{% endif %}">
+                <div class="flex items-start gap-3 flex-1 min-w-0">
+                    <div class="flex-shrink-0 mt-2">
+                        <input type="checkbox" name="notification_ids" value="{{ notif.id }}" class="notif-checkbox w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
+                    </div>
+                    <!-- Icon -->
+                    <div class="flex-shrink-0 mt-0.5">
+                        {% if notif.is_read %}
+                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 border border-gray-200">
+                            <i class="fas fa-bell text-[12px]"></i>
+                        </div>
+                        {% else %}
+                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-200">
+                            <i class="fas fa-bell text-[12px]"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Content -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4">
+                            <h3 class="text-[13px] font-bold {% if not notif.is_read %}text-gray-900{% else %}text-gray-700{% endif %} truncate">
+                                {{ notif.title }}
+                            </h3>
+                            <span class="text-[11px] text-gray-500 whitespace-nowrap">{{ notif.created_at|timesince }} ago</span>
+                        </div>
+                        <p class="text-[12px] mt-0.5 {% if not notif.is_read %}text-gray-700 font-medium{% else %}text-gray-500{% endif %}">
+                            {{ notif.message }}
+                        </p>
+                        {% if notif.target_url %}
+                        <div class="mt-1.5">
+                            <a href="{{ notif.target_url }}" class="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 hover:underline cursor-pointer">
+                                View Details
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="py-12 px-6 text-center">
+            <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3 border border-gray-100">
+                <i class="fas fa-check-circle text-gray-300 text-xl"></i>
+            </div>
+            <h3 class="text-sm font-bold text-gray-800">You're all caught up!</h3>
+            <p class="text-[11px] text-gray-500 mt-1 max-w-sm mx-auto">No new notifications right now. When something happens, it will show up here.</p>
+        </div>
+        </div>
+        {% endif %}
+    </div>
+</form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAll = document.getElementById('selectAllNotifs');
+    const checkboxes = document.querySelectorAll('.notif-checkbox');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            checkboxes.forEach(cb => {
+                cb.checked = selectAll.checked;
+            });
+            updateBulkDeleteBtn();
+        });
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', function() {
+                const allChecked = Array.from(checkboxes).every(c => c.checked);
+                const someChecked = Array.from(checkboxes).some(c => c.checked);
+                selectAll.checked = allChecked;
+                selectAll.indeterminate = someChecked && !allChecked;
+                updateBulkDeleteBtn();
+            });
+        });
+
+        function updateBulkDeleteBtn() {
+            const hasChecked = Array.from(checkboxes).some(c => c.checked);
+            bulkDeleteBtn.disabled = !hasChecked;
+            if (hasChecked) {
+                bulkDeleteBtn.classList.add('cursor-pointer');
+            } else {
+                bulkDeleteBtn.classList.remove('cursor-pointer');
+            }
+        }
+    }
+});
+</script>

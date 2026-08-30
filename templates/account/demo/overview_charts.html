@@ -1,0 +1,113 @@
+<div class="bg-white p-6 rounded-xl border border-gray-300 mb-6 w-full shadow-sm">
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="text-lg font-semibold text-gray-800">Activity Overview</h3>
+        <span class="text-sm text-gray-500 font-medium bg-gray-50 px-3 py-1 rounded-full border border-gray-200">All Time</span>
+    </div>
+    <div class="relative w-full h-72 md:h-80">
+        <canvas id="overviewActivityChart"></canvas>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('overviewActivityChart').getContext('2d');
+        
+        // Data from Django context
+        const totalPosts = {{ user_blog_posts.count|default:0 }};
+        const totalQuestions = {{ questions_count|default:0 }};
+        const totalAnswers = {{ answers_count|default:0 }};
+        
+        // Gradient for the bars
+        const gradientPosts = ctx.createLinearGradient(0, 0, 0, 400);
+        gradientPosts.addColorStop(0, 'rgba(59, 130, 246, 0.8)'); // Blue
+        gradientPosts.addColorStop(1, 'rgba(37, 99, 235, 0.2)');
+
+        const gradientQuestions = ctx.createLinearGradient(0, 0, 0, 400);
+        gradientQuestions.addColorStop(0, 'rgba(16, 185, 129, 0.8)'); // Green
+        gradientQuestions.addColorStop(1, 'rgba(5, 150, 105, 0.2)');
+
+        const gradientAnswers = ctx.createLinearGradient(0, 0, 0, 400);
+        gradientAnswers.addColorStop(0, 'rgba(245, 158, 11, 0.8)'); // Yellow/Orange
+        gradientAnswers.addColorStop(1, 'rgba(217, 119, 6, 0.2)');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Published Articles', 'Forum Questions', 'Forum Answers'],
+                datasets: [{
+                    label: 'Total Count',
+                    data: [totalPosts, totalQuestions, totalAnswers],
+                    backgroundColor: [gradientPosts, gradientQuestions, gradientAnswers],
+                    borderColor: [
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(5, 150, 105, 1)',
+                        'rgba(217, 119, 6, 1)'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    barPercentage: 0.6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(17, 24, 39, 0.9)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' Items';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(243, 244, 246, 1)',
+                            drawBorder: false,
+                        },
+                        ticks: {
+                            precision: 0,
+                            font: {
+                                family: "'Inter', sans-serif",
+                                size: 12
+                            },
+                            color: '#6B7280'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false,
+                        },
+                        ticks: {
+                            font: {
+                                family: "'Inter', sans-serif",
+                                size: 13,
+                                weight: '500'
+                            },
+                            color: '#4B5563'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>

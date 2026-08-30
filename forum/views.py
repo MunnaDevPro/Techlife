@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from blog_post.models import BlogPost
-from forum.models import Question, Answer
+from forum.models import Question, Answer, Question_view_ip
 from django.shortcuts import redirect, get_object_or_404
 from django.db.models import Q, Count
 from django.core.paginator import Paginator
@@ -12,6 +12,23 @@ from tags.models import Tag
 def questions(request, slug):
     blogs = BlogPost.objects.filter(status='published').order_by('-created_at')
     particular_question = Question.objects.select_related('author').prefetch_related('answers__author').get(slug=slug)
+
+    # Track question view
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+        
+    try:
+        if not Question_view_ip.objects.filter(question=particular_question, ip_address=ip).exists():
+            Question_view_ip.objects.create(
+                question=particular_question,
+                user=request.user if request.user.is_authenticated else None,
+                ip_address=ip
+            )
+    except Exception:
+        pass
 
     right_side_questions = Question.objects.select_related('author').prefetch_related('answers').all() 
 

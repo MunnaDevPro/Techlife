@@ -15,6 +15,7 @@ urlpatterns = [
     
     path('profile/edit/', views.profile_update_view, name='profile_update'),
     path('check-email/', views.check_email_exists, name='check_email'),
+    path('api/traffic-data/', views.user_traffic_api, name='user_traffic_api'),
     
     # API Token dashboard page
     path('api-tokens/', views.user_api_tokens_view, name='user_api_tokens'),
@@ -23,4 +24,5 @@ urlpatterns = [
     path('notifications/', views.user_notifications, name='user_notifications'),
     path('notifications/read/', views.mark_notifications_read, name='mark_notifications_read'),
     path('notifications/delete/<int:notif_id>/', views.delete_notification, name='delete_notification'),
+    path('notifications/bulk-delete/', views.bulk_delete_notifications, name='bulk_delete_notifications'),
 ]

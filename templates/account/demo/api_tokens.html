@@ -126,7 +126,7 @@
                     </thead>
                     <tbody>
                         {% for token in tokens %}
-                        <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                        <tr class="hover:bg-gray-50 transition">
                             <td class="py-2.5 pr-4 text-gray-800 font-medium max-w-[140px] truncate">
                                 {{ token.name|default:"Unnamed" }}
                             </td>
@@ -322,7 +322,7 @@
                     </thead>
                     <tbody>
                         {% for log in recent_logs %}
-                        <tr class="border-b border-gray-50 hover:bg-gray-50">
+                        <tr class="hover:bg-gray-50 transition-colors">
                             <td class="py-2 pr-4 text-gray-500 whitespace-nowrap">{{ log.created_at|date:"M d H:i" }}</td>
                             <td class="py-2 pr-4">
                                 <span class="inline-block rounded-full px-2 py-0.5 font-medium

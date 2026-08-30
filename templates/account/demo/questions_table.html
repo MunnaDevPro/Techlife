@@ -1,0 +1,48 @@
+{% load static %} {% load humanize %} {% load custom_filters %}
+
+<div class="bg-white border border-gray-300 shadow-sm rounded-none">
+    <div class="px-4 py-3 border-b border-gray-200 flex flex-wrap justify-between items-center bg-gray-50/50 gap-3">
+        <h3 class="text-sm font-bold text-gray-800">Your Forum Questions</h3>
+    </div>
+    <div class="px-4 py-2 border-b border-gray-100 bg-white">
+        <p class="text-[11px] text-gray-500">List of all the questions you have asked in the community forum and their engagement.</p>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-white border-b border-gray-300">
+                <tr class="text-[11px] text-gray-900 font-bold tracking-tight text-left">
+                    <th class="py-3 px-4 w-1/2">Question Title</th>
+                    <th class="py-3 px-4 text-center">Answers</th>
+                    <th class="py-3 px-4 text-right">Asked On</th>
+                    <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 text-sm">
+                {% for question in user_questions %}
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="py-3 px-4 font-medium text-[13px]">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100 flex-shrink-0">
+                                <i class="fas fa-question text-[12px]"></i>
+                            </div>
+                            <a href="{% url 'questions' slug=question.slug %}" class="text-blue-600 hover:underline">{{ question.title|truncatechars:60 }}</a>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 text-center text-gray-800 text-[13px] font-semibold">{{ question.answers.count }}</td>
+                    <td class="py-3 px-4 text-right text-gray-600 text-[13px]">{{ question.created_at|date:"M d, Y" }}</td>
+                    <td class="py-3 px-4 text-right">
+                        <a href="{% url 'questions' slug=question.slug %}" class="text-[12px] font-semibold text-[#1e3a6e] hover:text-[#152d56] bg-gray-100 hover:bg-gray-200 px-2.5 py-1 rounded transition-colors">
+                            View
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="py-8 text-center text-gray-500 text-sm">You haven't asked any questions yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
