@@ -242,8 +242,12 @@ def user_dashboard_view(request):
     ).aggregate(total_replies=Sum('num_replies'))['total_replies'] or 0
     total_comments = comment_count + reply_count
 
-
-
+    # Mark notifications as read if visiting the notifications section
+    if section == 'notifications':
+        user.notifications.filter(is_read=False).update(is_read=True)
+        notifications = user.notifications.all().order_by('-created_at')
+    else:
+        notifications = None
 
     context = {
         "user": user,
@@ -266,7 +270,7 @@ def user_dashboard_view(request):
         'recent_7_days': recent_answers_7_days,
         'last_follower':last_follower,
         'section': section,
-        'notifications': user.notifications.all().order_by('-created_at') if section == 'notifications' else None
+        'notifications': notifications
     }
 
     return render(request, "account/demo/user_dashboard.html", context)

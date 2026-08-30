@@ -608,7 +608,6 @@ def edit_blog(request, slug):
         if form.is_valid():
             updated_post = form.save(commit=False)
             updated_post.author = request.user
-            updated_post.status = "edited"
 
             category = form.cleaned_data.get("category")
             subcategory = form.cleaned_data.get("subcategory")

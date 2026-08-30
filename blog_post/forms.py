@@ -38,7 +38,6 @@ class BlogPostForm(forms.ModelForm):
             "featured_image_url",
             "category",
             "subcategory",
-            "tags",
         ]
 
     def clean(self):

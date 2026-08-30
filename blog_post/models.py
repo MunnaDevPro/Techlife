@@ -244,13 +244,6 @@ class BlogPost(models.Model):
             if score is not None and (score < 0 or score > 100):
                 raise ValidationError({field_name: f"{field_name.replace('_', ' ').title()} must be between 0 and 100."})
 
-        valid_decisions = [c[0] for c in self.REVIEW_DECISION_CHOICES]
-        if self.review_decision and self.review_decision not in valid_decisions:
-            raise ValidationError({"review_decision": f"Invalid review decision '{self.review_decision}'."})
-
-        valid_img_statuses = [c[0] for c in self.IMAGE_PROCESSING_STATUS_CHOICES]
-        if self.image_processing_status and self.image_processing_status not in valid_img_statuses:
-            raise ValidationError({"image_processing_status": f"Invalid image processing status '{self.image_processing_status}'."})
 
     def save(self, *args, **kwargs):
         """

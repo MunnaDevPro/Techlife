@@ -98,6 +98,10 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
                     Generate Token
                 </button>
+                <a href="{% url 'user_dashboard' %}?section=submit-token-post"
+                   class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold px-5 py-2 rounded-lg transition min-h-[42px]">
+                   <i class="fas fa-edit text-sm"></i> Create Post
+                </a>
             </form>
         </div>
 
@@ -187,140 +191,6 @@
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════
-             USAGE DOCUMENTATION & CURL EXAMPLE
-             ══════════════════════════════════════════════════════════= -->
-        <div class="px-6 py-5 border-b border-gray-100">
-            <h3 class="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                How to Use
-            </h3>
-
-            <div class="space-y-4 text-sm text-gray-700">
-                <div class="bg-gray-50 rounded-xl p-4 space-y-2">
-                    <p class="font-medium text-gray-800">Endpoint</p>
-                    <code class="block text-xs bg-white border border-gray-200 rounded-lg px-3 py-2 text-blue-700">
-                        POST https://techlife.com.bd/api/blog/posts/
-                    </code>
-                </div>
-
-                <div class="bg-gray-50 rounded-xl p-4 space-y-2">
-                    <p class="font-medium text-gray-800">Authorization header</p>
-                    <code class="block text-xs bg-white border border-gray-200 rounded-lg px-3 py-2 text-purple-700">
-                        Authorization: Bearer techlife_user_YOUR_TOKEN_HERE
-                    </code>
-                    <p class="text-xs text-gray-500">⚠ Must use HTTPS in production. Never share your token in public code.</p>
-                </div>
-
-                <div class="bg-gray-50 rounded-xl p-4 space-y-2">
-                    <p class="font-medium text-gray-800 mb-1">Required request fields</p>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs">
-                            <thead>
-                                <tr class="text-left text-gray-500 border-b border-gray-200">
-                                    <th class="pb-1 pr-4 font-medium">Field</th>
-                                    <th class="pb-1 pr-4 font-medium">Type</th>
-                                    <th class="pb-1 font-medium">Description</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-gray-700">
-                                <tr class="border-b border-gray-100">
-                                    <td class="py-1.5 pr-4"><code>title</code> <span class="text-red-500">*</span></td>
-                                    <td class="py-1.5 pr-4">string</td>
-                                    <td class="py-1.5">Post title</td>
-                                </tr>
-                                <tr class="border-b border-gray-100">
-                                    <td class="py-1.5 pr-4"><code>description</code> <span class="text-red-500">*</span></td>
-                                    <td class="py-1.5 pr-4">string (HTML)</td>
-                                    <td class="py-1.5">Post body content (HTML is sanitized server-side)</td>
-                                </tr>
-                                <tr class="border-b border-gray-100">
-                                    <td class="py-1.5 pr-4"><code>category_slug</code> <span class="text-red-500">*</span></td>
-                                    <td class="py-1.5 pr-4">string</td>
-                                    <td class="py-1.5">Category slug (e.g. <code>technology</code>)</td>
-                                </tr>
-                                <tr class="border-b border-gray-100">
-                                    <td class="py-1.5 pr-4"><code>subcategory_slug</code></td>
-                                    <td class="py-1.5 pr-4">string</td>
-                                    <td class="py-1.5">Optional subcategory slug</td>
-                                </tr>
-                                <tr class="border-b border-gray-100">
-                                    <td class="py-1.5 pr-4"><code>tags_list</code></td>
-                                    <td class="py-1.5 pr-4">array</td>
-                                    <td class="py-1.5">Tag names e.g. <code>["AI", "tech"]</code></td>
-                                </tr>
-                                <tr class="border-b border-gray-100">
-                                    <td class="py-1.5 pr-4"><code>source_url</code></td>
-                                    <td class="py-1.5 pr-4">URL</td>
-                                    <td class="py-1.5">Original article URL (used for idempotency)</td>
-                                </tr>
-                                <tr class="border-b border-gray-100">
-                                    <td class="py-1.5 pr-4"><code>source_image_url</code></td>
-                                    <td class="py-1.5 pr-4">URL</td>
-                                    <td class="py-1.5">Remote image — safely downloaded &amp; converted to WebP</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-1.5 pr-4"><code>original_content_hash</code></td>
-                                    <td class="py-1.5 pr-4">string</td>
-                                    <td class="py-1.5">SHA-256 of your content (prevents duplicate submissions)</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-1">Fields marked <span class="text-red-500 font-bold">*</span> are required.</p>
-                </div>
-
-                <div class="bg-gray-50 rounded-xl p-4 space-y-2">
-                    <div class="flex items-center justify-between mb-1">
-                        <p class="font-medium text-gray-800">curl example</p>
-                        <button onclick="copyCurl()" class="text-xs text-[#1e3a6e] hover:underline cursor-pointer">Copy</button>
-                    </div>
-                    <pre id="curl-example" class="text-xs bg-[#1a1a2e] text-green-300 rounded-lg px-4 py-3 overflow-x-auto leading-relaxed whitespace-pre-wrap">curl -X POST https://techlife.com.bd/api/blog/posts/ \
-  -H "Authorization: Bearer techlife_user_YOUR_TOKEN_HERE" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "My Article Title",
-    "description": "&lt;p&gt;Article body content goes here.&lt;/p&gt;",
-    "category_slug": "technology",
-    "tags_list": ["tech", "tutorial"],
-    "source_url": "https://yoursite.com/article/my-article",
-    "source_image_url": "https://yoursite.com/images/hero.jpg"
-  }'</pre>
-                </div>
-
-                <div class="bg-white border border-blue-100 rounded-xl overflow-hidden shadow-sm mt-6">
-                    <div class="bg-blue-50/70 px-4 py-3 border-b border-blue-100 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        <h4 class="font-bold text-blue-800 text-sm">Rate Limits & Policies <span class="font-normal text-blue-600 text-xs ml-1">(per token)</span></h4>
-                    </div>
-                    <div class="p-5 bg-white grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="flex items-start gap-3">
-                            <div class="mt-0.5 flex-shrink-0 text-blue-600 bg-blue-50 rounded-lg p-1.5"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-                            <div>
-                                <p class="text-[13px] font-semibold text-gray-800">20 requests / hour</p>
-                                <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">Returns HTTP 429 when exceeded to prevent abuse.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="mt-0.5 flex-shrink-0 text-indigo-600 bg-indigo-50 rounded-lg p-1.5"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-                            <div>
-                                <p class="text-[13px] font-semibold text-gray-800">4 posts / day</p>
-                                <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">Quota resets at midnight (Bangladesh Time).</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="mt-0.5 flex-shrink-0 text-amber-600 bg-amber-50 rounded-lg p-1.5"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-                            <div>
-                                <p class="text-[13px] font-semibold text-gray-800">Pending Review</p>
-                                <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">Submitted posts require admin approval before publishing.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="mt-0.5 flex-shrink-0 text-emerald-600 bg-emerald-50 rounded-lg p-1.5"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-                            <div>
-                                <p class="text-[13px] font-semibold text-gray-800">Idempotency</p>
-                                <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">Re-submitting the same <code class="bg-gray-100 text-gray-600 px-1 rounded border border-gray-200">hash</code> returns HTTP 200 safely.</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

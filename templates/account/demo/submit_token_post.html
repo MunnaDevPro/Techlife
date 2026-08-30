@@ -1,0 +1,340 @@
+<div class="bg-white shadow-sm border border-gray-200 overflow-hidden mx-auto my-4 max-w-3xl" style="border-radius: 4px;">
+    <div class="px-5 py-4 border-b border-gray-200 bg-gray-50/50">
+        <h2 class="text-[15px] font-semibold text-[#1e3a6e] flex items-center gap-2">
+            <i class="fas fa-edit"></i>
+            Create a New Blog Post (API Token)
+        </h2>
+        <p class="text-[13px] text-gray-500 mt-1">
+            Fill out the form below to publish a post directly using your API token.
+        </p>
+    </div>
+
+    <div class="p-5">
+        <form id="tokenSubmitForm" class="space-y-4">
+            <!-- Token Field -->
+            <div>
+                <label for="api_token" class="block text-[13px] font-medium text-gray-700 mb-1">Your API Token <span class="text-red-500">*</span></label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                        <i class="fas fa-key text-gray-400 text-xs"></i>
+                    </div>
+                    <input type="password" id="api_token" name="api_token" required
+                           class="block w-full pl-9 pr-3 py-2 border border-gray-200 rounded text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e] transition-colors"
+                           placeholder="techlife_user_...">
+                </div>
+                <p id="token_error" class="mt-1.5 text-[12px] text-red-600 font-medium items-center gap-1" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i> <span>Invalid or expired token.</span>
+                </p>
+            </div>
+
+            <!-- Title -->
+            <div>
+                <label for="post_title" class="block text-[13px] font-medium text-gray-700 mb-1">Post Title <span class="text-red-500">*</span></label>
+                <input type="text" id="post_title" name="title" required
+                       class="block w-full px-3 py-2 border border-gray-200 rounded text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e] transition-colors"
+                       placeholder="Enter an engaging title">
+            </div>
+
+            <!-- Subtitle -->
+            <div>
+                <label for="post_subtitle" class="block text-[13px] font-medium text-gray-700 mb-1">Subtitle <span class="text-gray-400 font-normal">(Optional)</span></label>
+                <input type="text" id="post_subtitle" name="subtitle"
+                       class="block w-full px-3 py-2 border border-gray-200 rounded text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e] transition-colors"
+                       placeholder="A brief subtitle or summary">
+            </div>
+
+            <!-- Tags -->
+            <div>
+                <label for="tags_list" class="block text-[13px] font-medium text-gray-700 mb-1">Tags <span class="text-gray-400 font-normal">(Comma separated)</span></label>
+                <input type="text" id="tags_list" name="tags_list"
+                       class="block w-full px-3 py-2 border border-gray-200 rounded text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e] transition-colors"
+                       placeholder="tech, tutorial, code">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Category -->
+                <div>
+                    <label class="block text-[13px] font-medium text-gray-700 mb-1">Category <span class="text-red-500">*</span></label>
+                    <input type="hidden" id="category_slug" name="category_slug" required>
+                    <div class="relative">
+                        <button type="button" id="category_trigger" class="flex items-center justify-between w-full px-3 py-2 border border-gray-200 rounded text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e] transition-colors bg-white text-left text-gray-700 cursor-pointer">
+                            <span id="category_display">Select a category...</span>
+                            <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
+                        </button>
+                        <div id="category_dropdown" class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded shadow-lg hidden max-h-64 overflow-y-auto">
+                            <!-- Populated by JS -->
+                            <div class="p-4 text-center text-gray-500 text-xs"><i class="fas fa-spinner fa-spin mr-1"></i> Loading...</div>
+                        </div>
+                    </div>
+                    <p id="category_error" class="mt-1 text-[12px] text-red-600 hidden font-medium">Please select a category.</p>
+                </div>
+                
+                <!-- Subcategory -->
+                <div>
+                    <label class="block text-[13px] font-medium text-gray-700 mb-1">Subcategory <span class="text-gray-400 font-normal">(Optional)</span></label>
+                    <input type="hidden" id="subcategory_slug" name="subcategory_slug">
+                    <div class="relative">
+                        <button type="button" id="subcategory_trigger" class="flex items-center justify-between w-full px-3 py-2 border border-gray-200 rounded text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e] transition-colors bg-gray-50 text-left text-gray-500 cursor-not-allowed" disabled>
+                            <span id="subcategory_display">Select category first</span>
+                            <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
+                        </button>
+                        <div id="subcategory_dropdown" class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded shadow-lg hidden max-h-64 overflow-y-auto">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Image File Upload -->
+                <div>
+                    <label for="source_image_file" class="block text-[13px] font-medium text-gray-700 mb-1 cursor-pointer">Featured Image File <span class="text-gray-400 font-normal">(Optional)</span></label>
+                    <input type="file" id="source_image_file" name="featured_image_file" accept="image/*"
+                           class="block w-full px-3 py-1.5 border border-gray-200 rounded text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e] transition-colors file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer file:cursor-pointer">
+                </div>
+
+                <!-- Image URL -->
+                <div>
+                    <label for="source_image_url" class="block text-[13px] font-medium text-gray-700 mb-1">Or Image URL <span class="text-gray-400 font-normal">(Optional)</span></label>
+                    <input type="url" id="source_image_url" name="source_image_url"
+                           class="block w-full px-3 py-2 border border-gray-200 rounded text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e] transition-colors"
+                           placeholder="https://example.com/image.jpg">
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label for="post_description" class="block text-[13px] font-medium text-gray-700 mb-1">Content <span class="text-red-500">*</span></label>
+                <textarea id="post_description" name="description" rows="5" required
+                          class="block w-full px-3 py-2 border border-gray-200 rounded text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e] transition-colors resize-y"
+                          placeholder="Write your article content here... (HTML tags are supported)"></textarea>
+            </div>
+
+            <!-- Global Error/Success message -->
+            <div id="form_message" class="hidden p-3 rounded text-[13px] font-medium border"></div>
+
+            <!-- Submit Button -->
+            <div class="pt-2 border-t border-gray-100 mt-2 flex justify-end">
+                <button type="submit" id="submitBtn"
+                        class="inline-flex items-center gap-2 bg-[#1e3a6e] hover:bg-[#163059] text-white text-[13px] font-semibold px-6 py-2 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a6e] cursor-pointer">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Submit Post</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('tokenSubmitForm');
+    const tokenError = document.getElementById('token_error');
+    const formMessage = document.getElementById('form_message');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Custom Dropdown Logic
+    const catTrigger = document.getElementById('category_trigger');
+    const catDropdown = document.getElementById('category_dropdown');
+    const catDisplay = document.getElementById('category_display');
+    const catInput = document.getElementById('category_slug');
+    const catError = document.getElementById('category_error');
+
+    const subTrigger = document.getElementById('subcategory_trigger');
+    const subDropdown = document.getElementById('subcategory_dropdown');
+    const subDisplay = document.getElementById('subcategory_display');
+    const subInput = document.getElementById('subcategory_slug');
+
+    let allSubcategories = [];
+
+    // Toggle dropdowns
+    catTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        catDropdown.classList.toggle('hidden');
+        subDropdown.classList.add('hidden');
+    });
+
+    subTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!subTrigger.disabled) {
+            subDropdown.classList.toggle('hidden');
+            catDropdown.classList.add('hidden');
+        }
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+        if (!catTrigger.contains(e.target) && !catDropdown.contains(e.target)) {
+            catDropdown.classList.add('hidden');
+        }
+        if (!subTrigger.contains(e.target) && !subDropdown.contains(e.target)) {
+            subDropdown.classList.add('hidden');
+        }
+    });
+    
+    // Fetch categories and subcategories
+    Promise.all([
+        fetch('/api/blog/categories/').then(res => res.json()),
+        fetch('/api/blog/subcategories/').then(res => res.json())
+    ]).then(([catData, subData]) => {
+        const categories = Array.isArray(catData) ? catData : (catData.results || []);
+        allSubcategories = Array.isArray(subData) ? subData : (subData.results || []);
+        
+        catDropdown.innerHTML = '';
+        if (categories.length === 0) {
+            catDropdown.innerHTML = '<div class="p-3 text-xs text-gray-500">No categories found.</div>';
+            return;
+        }
+
+        categories.forEach(cat => {
+            const catEl = document.createElement('div');
+            catEl.className = 'px-3 py-2 text-[13px] font-medium text-gray-700 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0';
+            catEl.innerHTML = `<i class="${cat.font_awesome_icon || 'fas fa-folder'} w-4 mr-1 text-gray-400"></i> ${cat.name}`;
+            catEl.addEventListener('click', () => {
+                catInput.value = cat.slug;
+                catDisplay.textContent = cat.name;
+                catDisplay.className = 'text-gray-900 font-medium';
+                catError.classList.add('hidden');
+                catDropdown.classList.add('hidden');
+
+                // Reset subcategory
+                subInput.value = '';
+                subDisplay.textContent = 'Select a subcategory...';
+                subDisplay.className = 'text-gray-700';
+                subTrigger.disabled = false;
+                subTrigger.classList.remove('bg-gray-50', 'text-gray-500', 'cursor-not-allowed');
+                subTrigger.classList.add('bg-white', 'cursor-pointer');
+
+                // Populate subcategories for this category
+                populateSubcategories(cat.id, cat.name);
+            });
+            catDropdown.appendChild(catEl);
+        });
+    }).catch(err => {
+        console.error("Failed to load taxonomy", err);
+        catDropdown.innerHTML = '<div class="p-3 text-xs text-red-500">Failed to load categories.</div>';
+    });
+
+    function populateSubcategories(categoryId, categoryName) {
+        subDropdown.innerHTML = '';
+        const subs = allSubcategories.filter(s => s.category === categoryId || s.category_name === categoryName);
+        
+        if (subs.length === 0) {
+            subDropdown.innerHTML = '<div class="p-3 text-xs text-gray-500">No subcategories available.</div>';
+            return;
+        }
+
+        subs.forEach(sub => {
+            const subEl = document.createElement('div');
+            subEl.className = 'px-3 py-2 text-[13px] text-gray-700 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors';
+            subEl.textContent = sub.name;
+            subEl.addEventListener('click', () => {
+                subInput.value = sub.slug;
+                subDisplay.textContent = sub.name;
+                subDisplay.className = 'text-gray-900 font-medium';
+                subDropdown.classList.add('hidden');
+            });
+            subDropdown.appendChild(subEl);
+        });
+    }
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!catInput.value) {
+            catError.classList.remove('hidden');
+            return;
+        }
+        catError.classList.add('hidden');
+
+        // Reset states
+        tokenError.style.display = 'none';
+        document.getElementById('api_token').classList.remove('border-red-500', 'focus:ring-red-500');
+        formMessage.classList.add('hidden');
+        formMessage.className = 'hidden p-3 rounded text-[13px] font-medium border'; // reset classes
+        
+        // Disable button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Submitting...</span>';
+        
+        // Gather data
+        const token = document.getElementById('api_token').value.trim();
+        const payload = new FormData();
+        
+        payload.append('title', document.getElementById('post_title').value.trim());
+        payload.append('subtitle', document.getElementById('post_subtitle').value.trim());
+        payload.append('category_slug', catInput.value);
+        payload.append('description', document.getElementById('post_description').value.trim());
+        
+        if (subInput.value) {
+            payload.append('subcategory_slug', subInput.value);
+        }
+        
+        const tagsRaw = document.getElementById('tags_list').value.trim();
+        if (tagsRaw) {
+            tagsRaw.split(',').map(t => t.trim()).filter(t => t).forEach(t => payload.append('tags_list', t));
+        }
+        
+        const imageFile = document.getElementById('source_image_file').files[0];
+        if (imageFile) {
+            payload.append('featured_image_file', imageFile);
+        } else {
+            const imageUrl = document.getElementById('source_image_url').value.trim();
+            if (imageUrl) {
+                payload.append('source_image_url', imageUrl);
+            }
+        }
+        
+        try {
+            const response = await fetch('/api/blog/posts/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: payload
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Success!
+                formMessage.classList.remove('hidden');
+                formMessage.classList.add('bg-green-50', 'text-green-700', 'border-green-200');
+                formMessage.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Post submitted successfully! It is now pending admin approval.';
+                form.reset();
+                catInput.value = '';
+                subInput.value = '';
+                catDisplay.textContent = 'Select a category...';
+                catDisplay.className = 'text-gray-700';
+                subDisplay.textContent = 'Select category first';
+                subDisplay.className = 'text-gray-500';
+                subTrigger.disabled = true;
+                subTrigger.className = 'flex items-center justify-between w-full px-3 py-2 border border-gray-200 rounded text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e] transition-colors bg-gray-50 text-left text-gray-500 cursor-not-allowed';
+            } else {
+                // Error handling
+                if (response.status === 401 || response.status === 403 || (data.message && data.message.toLowerCase().includes('token'))) {
+                    // Token specific error
+                    tokenError.style.display = 'flex';
+                    const msg = data.detail || data.message || 'Invalid or expired token.';
+                    tokenError.querySelector('span').textContent = msg;
+                    document.getElementById('api_token').classList.add('border-red-500', 'focus:ring-red-500');
+                    document.getElementById('api_token').focus();
+                } else {
+                    // General error
+                    formMessage.classList.remove('hidden');
+                    formMessage.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
+                    const errText = data.message || data.detail || JSON.stringify(data);
+                    formMessage.innerHTML = `<i class="fas fa-exclamation-triangle mr-1"></i> ${errText}`;
+                }
+            }
+        } catch (error) {
+            formMessage.classList.remove('hidden');
+            formMessage.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
+            formMessage.innerHTML = '<i class="fas fa-wifi mr-1"></i> Network error. Please try again.';
+        } finally {
+            // Re-enable button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> <span>Submit Post</span>';
+        }
+    });
+});
+</script>

@@ -717,7 +717,11 @@ def process_user_token_post_creation(data, user, token_id=None, source_ip=None):
     # Inject [] so the shared resolver doesn't reject INVALID_TAGS_LIST,
     # then if error is TOO_FEW_TAGS we resolve category/subcategory directly.
     data_for_taxonomy = dict(data)
-    if 'tags_list' not in data_for_taxonomy or data_for_taxonomy['tags_list'] is None:
+    
+    # Handle QueryDict arrays from FormData
+    if hasattr(data, 'getlist') and 'tags_list' in data:
+        data_for_taxonomy['tags_list'] = data.getlist('tags_list')
+    elif 'tags_list' not in data_for_taxonomy or data_for_taxonomy['tags_list'] is None:
         data_for_taxonomy['tags_list'] = []
 
     tax_success, tax_err_code, tax_err_msg, resolved_tax = resolve_automation_taxonomy(data_for_taxonomy)

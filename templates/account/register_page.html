@@ -4,15 +4,23 @@
 {% block meta_description %}Create your free TechLife BD account and start writing tech articles today.{% endblock %}
 
 {% block content %}
-<div class="-mt-[60px] flex items-center justify-center min-h-screen px-4 py-8"
-     style="background-image: linear-gradient(rgba(15,30,70,0.80), rgba(15,30,70,0.80)), url('{% static 'image/authentication.jpg' %}'); background-size: cover; background-position: center;">
+<style>
+    main#container {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        max-width: 100% !important; /* Ensure it stretches fully */
+    }
+</style>
+<div class="flex items-center justify-center w-full px-4 py-12"
+     style="min-height: calc(100vh - 64px); background-image: linear-gradient(rgba(15,30,70,0.85), rgba(15,30,70,0.85)), url('{% static 'image/authentication.jpg' %}'); background-size: cover; background-position: center; background-attachment: fixed;">
 
-    <div class="w-full max-w-sm">
-        <form id="signup-form" class="bg-white rounded-2xl shadow-2xl p-6" method="post" enctype="multipart/form-data" action="{% url 'signup' %}">
+    <div class="w-full mx-auto" style="max-width: 480px;">
+        <form id="signup-form" class="bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/30 p-8 sm:p-10" method="post" enctype="multipart/form-data" action="{% url 'signup' %}">
             <!-- Logo -->
-            <div class="text-center mb-6">
-                <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-8 w-auto mx-auto mb-2" />
-                <p class="text-gray-500 text-[13px]">Create a new account</p>
+            <div class="text-center mb-8">
+                <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-9 w-auto mx-auto mb-3" />
+                <p class="text-gray-500 text-sm font-medium">Create a new account</p>
             </div>
 
             {% csrf_token %}

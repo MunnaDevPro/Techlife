@@ -32,13 +32,24 @@
             <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Questions</span>
         </a>
 
-        <a href="{% url 'user_dashboard' %}?section=notifications" class="flex items-center gap-3 px-3 py-2 rounded-md {% if section == 'notifications' %}bg-gray-100 text-gray-900 font-semibold{% else %}text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900{% endif %} transition-colors group" title="Notifications">
-            <i class="fas fa-bell w-4 text-center text-[15px] flex-shrink-0 group-hover:text-gray-800"></i>
-            <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Notifications</span>
+        <a href="{% url 'user_dashboard' %}?section=notifications" class="flex items-center justify-between px-3 py-2 rounded-md {% if section == 'notifications' %}bg-gray-100 text-gray-900 font-semibold{% else %}text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900{% endif %} transition-colors group" title="Notifications">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-bell w-4 text-center text-[15px] flex-shrink-0 group-hover:text-gray-800"></i>
+                <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Notifications</span>
+            </div>
+            {% if unread_notifications_count > 0 and section != 'notifications' %}
+            <span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                {{ unread_notifications_count }}
+            </span>
+            {% endif %}
         </a>
         <a href="{% url 'user_api_tokens' %}" class="flex items-center gap-3 px-3 py-2 rounded-md {% if action == 'api_tokens' %}bg-gray-100 text-gray-900 font-semibold{% else %}text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900{% endif %} transition-colors group" title="API Tokens">
             <i class="fas fa-key w-4 text-center text-[15px] flex-shrink-0 group-hover:text-gray-800"></i>
             <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">API Tokens</span>
+        </a>
+        <a href="{% url 'user_dashboard' %}?section=submit-token-post" class="flex items-center gap-3 px-3 py-2 rounded-md {% if section == 'submit-token-post' %}bg-gray-100 text-gray-900 font-semibold{% else %}text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900{% endif %} transition-colors group" title="Create Post (Token)">
+            <i class="fas fa-edit w-4 text-center text-[15px] flex-shrink-0 group-hover:text-gray-800"></i>
+            <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Create Post (Token)</span>
         </a>
         <a href="{% url 'user_dashboard' %}?section=edit-profile" class="flex items-center gap-3 px-3 py-2 rounded-md {% if section == 'edit-profile' %}bg-gray-100 text-gray-900 font-semibold{% else %}text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900{% endif %} transition-colors group" title="Edit Profile">
             <i class="fas fa-user-edit w-4 text-center text-[15px] flex-shrink-0 group-hover:text-gray-800"></i>
@@ -49,7 +60,7 @@
         
         <!-- Push logout to bottom -->
         <div class="mt-auto pt-3 border-t border-gray-100 flex-shrink-0">
-            <a href="{% url 'logout' %}" class="flex items-center gap-3 px-3 py-2 rounded-md text-red-600 font-medium transition-colors hover:bg-red-50 group" title="Logout">
+            <a href="{% url 'logout' %}" hx-boost="false" class="flex items-center gap-3 px-3 py-2 rounded-md text-red-600 font-medium transition-colors hover:bg-red-50 group" title="Logout">
                 <i class="fas fa-sign-out-alt w-4 text-center text-[15px] flex-shrink-0 group-hover:text-red-700"></i>
                 <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Logout</span>
             </a>
