@@ -9,17 +9,55 @@
 
 <style>
     main#container { margin-top: 0 !important; padding-top: 0 !important; }
+    
+    /* Sidebar Collapsed State (Desktop) */
+    @media (min-width: 768px) {
+        #sidebar { transition: width 0.3s ease; }
+        #sidebar.collapsed { width: 4.5rem !important; }
+        #sidebar.collapsed .sidebar-text { opacity: 0; display: none; }
+        #sidebar.collapsed nav a { 
+            justify-content: center; 
+            padding: 0; 
+            width: 2.5rem; 
+            height: 2.5rem; 
+            margin-left: auto; 
+            margin-right: auto;
+            position: relative;
+        }
+        #sidebar.collapsed nav a i { margin: 0; padding: 0; }
+        #sidebar.collapsed #mobile-menu-btn { margin-left: auto; margin-right: auto; }
+        
+        /* Turn notification badge into a small dot when collapsed */
+        #sidebar.collapsed nav a .bg-red-500 {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            padding: 0;
+            min-width: 0;
+            font-size: 0;
+            color: transparent;
+        }
+    }
+
 </style>
 
 <div id="dashboard-container" class="container max-w-7xl mx-auto flex bg-white text-gray-800">
 
+    <!-- Mobile Sidebar Overlay -->
+    <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-gray-900/50 z-40 hidden opacity-0 transition-opacity duration-300 ease-in-out md:hidden backdrop-blur-sm"></div>
+
     {% include 'account/demo/sidebar.html' %}
 
-    <div class="flex-1 flex flex-col overflow-hidden bg-gray-50/30">
+    <div class="flex-1 flex flex-col overflow-hidden bg-gray-50/30 w-full relative">
 
         <!-- Top Header for Right Side Content -->
-        <header class="h-14 flex items-center justify-end px-4 md:px-6 border-b border-gray-100 bg-white flex-shrink-0">
-            <a href="{% url 'homepage' %}" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-gray-600 hover:text-[#1e3a6e] hover:border-[#1e3a6e] transition-all group" title="Back to Home">
+        <header class="h-14 flex items-center justify-between px-4 md:px-6 border-b border-gray-100 bg-white flex-shrink-0">
+            <button id="mobile-menu-open-btn" class="md:hidden text-gray-500 hover:text-[#1e3a6e] focus:outline-none p-2 rounded-lg hover:bg-blue-50 transition-all duration-200 w-9 h-9 flex items-center justify-center">
+                <i class="fas fa-bars text-[18px]"></i>
+            </button>
+            <a href="{% url 'homepage' %}" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-gray-600 hover:text-[#1e3a6e] hover:border-[#1e3a6e] transition-all group ml-auto" title="Back to Home">
                 <i class="fas fa-arrow-left text-[11px] group-hover:-translate-x-0.5 transition-transform"></i>
                 <span class="text-[12px] font-bold">Back to Home</span>
             </a>
@@ -51,52 +89,100 @@
 </div>
 
 <script>
-    function initializeSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar && window.innerWidth < 768) {
-            if (!sidebar.classList.contains('hidden-mobile')) {
-                sidebar.classList.add('hidden-mobile');
-            }
+    // ── Dashboard Sidebar Controller ──────────────────────────────────────
+    // Uses document-level delegation so listeners survive HTMX body swaps.
+    // The flag prevents duplicate registration across HTMX navigations.
+
+    function _toggleMobileOverlay(show) {
+        const overlay = document.getElementById('mobile-sidebar-overlay');
+        if (!overlay) return;
+        if (show) {
+            overlay.classList.remove('hidden');
+            requestAnimationFrame(() => overlay.classList.remove('opacity-0'));
+        } else {
+            overlay.classList.add('opacity-0');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
         }
     }
 
-    document.addEventListener('DOMContentLoaded', initializeSidebar);
-    document.body.addEventListener('htmx:load', initializeSidebar);
-
-    document.addEventListener('click', (e) => {
-        const mobileMenuBtn = e.target.closest('#mobile-menu-btn');
-        const mobileMenuOpenBtn = e.target.closest('#mobile-menu-open-btn');
+    function _hideSidebarOnMobile() {
         const sidebar = document.getElementById('sidebar');
+        if (sidebar && window.innerWidth < 768) {
+            sidebar.classList.add('hidden-mobile');
+            _toggleMobileOverlay(false);
+        }
+    }
 
-        if (mobileMenuBtn && sidebar) {
-            if (window.innerWidth >= 768) {
-                sidebar.classList.toggle('collapsed');
-            } else {
-                sidebar.classList.add('hidden-mobile');
+    function _openSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        if (!sidebar) return;
+        sidebar.classList.remove('hidden-mobile');
+        _toggleMobileOverlay(true);
+    }
+
+    function _closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        if (!sidebar) return;
+        sidebar.classList.add('hidden-mobile');
+        _toggleMobileOverlay(false);
+    }
+
+    // Run immediately so sidebar never flashes open on mobile
+    _hideSidebarOnMobile();
+
+    // Attach listeners to document ONCE — document is never replaced by HTMX
+    if (!window._dashboardListenersAttached) {
+        window._dashboardListenersAttached = true;
+
+        // Re-hide sidebar after every HTMX page swap
+        document.addEventListener('htmx:afterSwap', function() {
+            _hideSidebarOnMobile();
+        });
+
+        // Unified click handler using event delegation on document
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar) return;
+
+            // ☰ / ✕ Toggle button (in the top header) — toggles open/close
+            if (e.target.closest('#mobile-menu-open-btn')) {
+                const isOpen = !sidebar.classList.contains('hidden-mobile');
+                if (isOpen) {
+                    _closeSidebar();
+                } else {
+                    _openSidebar();
+                }
+                return;
             }
-        }
 
-        if (mobileMenuOpenBtn && sidebar) {
-            sidebar.classList.remove('hidden-mobile');
-        }
-    });
+            // ☰ button inside sidebar header — mobile: close, desktop: toggle collapse
+            if (e.target.closest('#mobile-menu-btn')) {
+                if (window.innerWidth < 768) {
+                    _closeSidebar();
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                }
+                return;
+            }
 
-    document.addEventListener('change', (e) => {
-        if (e.target.matches('.form-checkbox')) {
-            const label = e.target.closest('label');
-            if (label) {
-                const span = label.querySelector('span');
+            // Clicking the dark overlay closes the sidebar
+            if (e.target.closest('#mobile-sidebar-overlay')) {
+                _closeSidebar();
+                return;
+            }
+        });
+
+        // Checkbox styling
+        document.addEventListener('change', function(e) {
+            if (e.target.matches('.form-checkbox')) {
+                const span = e.target.closest('label')?.querySelector('span');
                 if (span) {
-                    if (e.target.checked) {
-                        span.classList.add('line-through', 'text-gray-500');
-                        span.classList.remove('text-gray-800');
-                    } else {
-                        span.classList.remove('line-through', 'text-gray-500');
-                        span.classList.add('text-gray-800');
-                    }
+                    span.classList.toggle('line-through', e.target.checked);
+                    span.classList.toggle('text-gray-500', e.target.checked);
+                    span.classList.toggle('text-gray-800', !e.target.checked);
                 }
             }
-        }
-    });
+        });
+    }
 </script>
 {% endblock %}

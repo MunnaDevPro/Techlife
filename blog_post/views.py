@@ -317,7 +317,7 @@ def home(request):
     ).order_by("-views", "-likes", "-created_at")
 
     logos    = compnay_logo.objects.all()
-    top_tags = Tag.objects.annotate(num_posts=Count('blog_posts')).order_by('-num_posts')
+    top_tags = Tag.objects.exclude(slug='').annotate(num_posts=Count('blog_posts')).order_by('-num_posts')
 
     context = {
         "first_category":   first_category,

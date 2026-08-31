@@ -238,6 +238,7 @@
     }
 
     function _createEditor(textarea, form) {
+        textarea.removeAttribute('required');
         var config = buildEditorConfig(form);
 
         ClassicEditor.create(textarea, config)
@@ -246,7 +247,12 @@
 
                 // Sync data back to textarea on every change (for form validation)
                 editor.model.document.on('change:data', function () {
-                    textarea.value = editor.getData();
+                    var data = editor.getData();
+                    textarea.value = data;
+                    var errEl = document.getElementById('desc-error');
+                    if (errEl && data.trim()) {
+                        errEl.classList.add('hidden');
+                    }
                 });
             })
             .catch(function (err) {

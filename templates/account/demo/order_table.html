@@ -25,16 +25,24 @@
             <tbody class="divide-y divide-gray-100 text-sm">
                 {% for post in user_blog_posts %}
                 <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="py-3 px-4 font-medium text-[13px]">
-                        <div class="flex items-center space-x-3">
-                            <img src="{% if post.featured_image %}{{ post.featured_image.url }}{% elif post.featured_image_url %}{{ post.featured_image_url }}{% else %}{% static 'path/to/default/image.png' %}{% endif %}" alt="Thumbnail" class="w-8 h-8 rounded object-cover border border-gray-300 flex-shrink-0">
-                            <a href="{% url 'blog_details' post.slug %}" class="text-blue-600 hover:underline">{{ post.title|truncatechars:40 }}</a>
+                    <td class="py-1.5 px-4 font-medium text-[13px]">
+                        <div class="flex items-center gap-3">
+                            {% if post.featured_image %}
+                                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-8 h-8 rounded object-cover flex-shrink-0">
+                            {% elif post.featured_image_url %}
+                                <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-8 h-8 rounded object-cover flex-shrink-0">
+                            {% else %}
+                                <div class="w-8 h-8 rounded bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 flex-shrink-0">
+                                    <i class="far fa-image text-sm"></i>
+                                </div>
+                            {% endif %}
+                            <a href="{% url 'blog_details' post.slug %}" class="text-blue-600 hover:text-blue-800 transition-colors line-clamp-2" title="{{ post.title }}">{{ post.title|truncatechars:40 }}</a>
                         </div>
                     </td>
-                    <td class="py-3 px-4 text-gray-600 text-[13px]">{{ post.category.name|default:"General" }}</td>
-                    <td class="py-3 px-4 text-right text-gray-800 text-[13px] font-semibold">{{ post.views|humanize_number }}</td>
-                    <td class="py-3 px-4 text-center text-gray-800 text-[13px]">{{ post.likes.count|humanize_number }}</td>
-                    <td class="py-3 px-4 text-center text-[13px]">
+                    <td class="py-1.5 px-4 text-gray-600 text-[13px]">{{ post.category.name|default:"General" }}</td>
+                    <td class="py-1.5 px-4 text-right text-gray-800 text-[13px] font-semibold">{{ post.views|humanize_number }}</td>
+                    <td class="py-1.5 px-4 text-center text-gray-800 text-[13px]">{{ post.likes.count|humanize_number }}</td>
+                    <td class="py-1.5 px-4 text-center text-[13px]">
                         {% if post.status == 'published' %}
                             <span class="text-green-600 font-bold text-[11px]"><i class="fas fa-check-circle mr-1"></i>Published</span>
                         {% elif post.status == 'pending' %}
@@ -43,16 +51,16 @@
                             <span class="text-red-600 font-bold text-[11px]"><i class="fas fa-times-circle mr-1"></i>{{ post.status|title }}</span>
                         {% endif %}
                     </td>
-                    <td class="py-3 px-4 text-right text-gray-600 text-[13px]">{{ post.created_at|date:"M d, Y" }}</td>
-                    <td class="py-3 px-4 text-right">
-                        <a href="{% url 'edit_blog' post.slug %}" class="text-[12px] font-semibold text-[#1e3a6e] hover:text-[#152d56] bg-gray-100 hover:bg-gray-200 px-2.5 py-1 rounded transition-colors">
+                    <td class="py-1.5 px-4 text-right text-gray-600 text-[13px]">{{ post.created_at|date:"M d, Y" }}</td>
+                    <td class="py-1.5 px-4 text-right">
+                        <a href="{% url 'edit_blog' post.slug %}" class="text-[12px] font-semibold text-[#1e3a6e] hover:text-[#152d56] bg-gray-100 hover:bg-gray-200 px-2.5 py-1 rounded transition-colors whitespace-nowrap">
                             Edit
                         </a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="py-8 text-center text-gray-500 text-sm">No blog posts found.</td>
+                    <td colspan="7" class="py-6 text-center text-gray-500 text-sm">No blog posts found.</td>
                 </tr>
                 {% endfor %}
             </tbody>
