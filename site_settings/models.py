@@ -32,6 +32,12 @@ class SiteSettings(models.Model):
         null=True,
         help_text="Website এর Meta Description (160 character এর মধ্যে রাখুন)"
     )
+    favicon = models.ImageField(
+        upload_to="site/favicon/",
+        blank=True,
+        null=True,
+        help_text="Website এর Favicon আপলোড করুন (Standard size: 32x32 or 16x16)"
+    )
 
     class Meta:
         verbose_name = "Site Settings"

@@ -72,7 +72,11 @@ def validate_image_file(image):
 @staff_required
 def footer_logo_config(request):
     """CRUD interface for footer configuration and company logos."""
+    from site_settings.models import SiteSettings
+    
     footer_set = FooterSettings.objects.first()
+    site_set = SiteSettings.objects.first()
+    
     if not footer_set:
         # Create default
         footer_set = FooterSettings.objects.create(
@@ -81,6 +85,9 @@ def footer_logo_config(request):
             phone="+8801700895489",
             address="Dhaka, Bangladesh"
         )
+        
+    if not site_set:
+        site_set = SiteSettings.objects.create()
         
     if request.method == "POST":
         action = request.POST.get('action')
@@ -96,6 +103,15 @@ def footer_logo_config(request):
             footer_set.developer_company_name = request.POST.get('developer_company_name')
             footer_set.developer_company_url = request.POST.get('developer_company_url')
             
+            if 'favicon' in request.FILES:
+                try:
+                    validate_image_file(request.FILES['favicon'])
+                    site_set.favicon = request.FILES['favicon']
+                    site_set.save()
+                except ValueError as ve:
+                    messages.error(request, str(ve))
+                    return redirect("dashboard:settings_footer")
+                    
             if 'logo' in request.FILES:
                 try:
                     validate_image_file(request.FILES['logo'])
@@ -105,7 +121,7 @@ def footer_logo_config(request):
                     return redirect("dashboard:settings_footer")
                 
             footer_set.save()
-            messages.success(request, "Footer configuration saved.")
+            messages.success(request, "Settings saved successfully.")
             
         elif action == "add_logo":
             name = request.POST.get('name')
@@ -137,6 +153,7 @@ def footer_logo_config(request):
     ctx = get_dashboard_context(request, "Footer Management", "Site Settings", "dashboard:settings_footer")
     ctx.update({
         "footer": footer_set,
+        "site_set": site_set,
         "logos": logos,
     })
     return render(request, "dashboard/site_config/footer.html", ctx)

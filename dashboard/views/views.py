@@ -90,6 +90,9 @@ SIDEBAR_MENU = [
 ]
 
 def get_dashboard_context(request, page_title, active_menu, active_submenu=None):
+    from site_settings.models import SiteSettings
+    site_set = SiteSettings.objects.first()
+    
     unread_notifications = Notification.objects.filter(is_read=False).count()
     return {
         "page_title": page_title,
@@ -98,6 +101,7 @@ def get_dashboard_context(request, page_title, active_menu, active_submenu=None)
         "sidebar_menu": SIDEBAR_MENU,
         "base_template": "dashboard/partial.html" if request.htmx else "dashboard/base.html",
         "unread_notifications": unread_notifications,
+        "site_set": site_set,
     }
 
 # View list:
