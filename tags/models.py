@@ -10,6 +10,9 @@ class Tag(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.name)
+            if not base_slug:
+                import uuid
+                base_slug = str(uuid.uuid4())[:8]
             slug = base_slug
             counter = 1
             while Tag.objects.filter(slug=slug).exists():

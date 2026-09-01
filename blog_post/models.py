@@ -43,6 +43,9 @@ class Category(models.Model):
         # Ensure the slug is unique
         if not self.slug:
             base_slug = slugify(self.name)
+            if not base_slug:
+                import uuid
+                base_slug = str(uuid.uuid4())[:8]
             slug = base_slug
             counter = 1
             # While the generated slug exists in the database, keep adding a counter
@@ -79,6 +82,9 @@ class SubCategory(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.name)
+            if not base_slug:
+                import uuid
+                base_slug = str(uuid.uuid4())[:8]
             slug = base_slug
             counter = 1
             while SubCategory.objects.filter(slug=slug).exists():
@@ -258,6 +264,9 @@ class BlogPost(models.Model):
         # Generate slug if not provided
         if not self.slug:
             base_slug = slugify(self.title)
+            if not base_slug:
+                import uuid
+                base_slug = str(uuid.uuid4())[:8]
             slug = base_slug
             counter = 1
             while BlogPost.objects.filter(slug=slug).exclude(pk=self.pk).exists():
