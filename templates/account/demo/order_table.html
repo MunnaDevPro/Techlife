@@ -3,7 +3,9 @@
 <div class="bg-white border border-gray-300 shadow-sm rounded-none">
     <div class="px-4 py-3 border-b border-gray-200 flex flex-wrap justify-between items-center bg-gray-50/50 gap-3">
         <h3 class="text-sm font-bold text-gray-800">All Blog Posts</h3>
-        <a href="{% url 'create_blog' %}" class="text-xs font-semibold px-3 py-1.5 bg-[#1e3a6e] text-white rounded hover:bg-[#152d56] transition-colors whitespace-nowrap">Create New Post</a>
+        <a href="{% url 'create_blog' %}" class="text-xs font-semibold px-3 py-1.5 bg-[#1e3a6e] text-white rounded hover:bg-[#152d56] transition-colors whitespace-nowrap flex items-center gap-1.5">
+            <i class="fas fa-plus"></i> Create New Post
+        </a>
     </div>
     <div class="px-4 py-2 border-b border-gray-100 bg-white">
         <p class="text-[11px] text-gray-500">List of all your published and pending blog posts and their performance metrics.</p>

@@ -81,10 +81,10 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                 Generate New Token
             </h3>
-            <form method="POST" action="{% url 'user_api_tokens' %}" class="flex items-end gap-3 flex-wrap" id="generate-token-form">
+            <form method="POST" action="{% url 'user_api_tokens' %}" class="flex flex-col sm:flex-row sm:items-end gap-3 w-full" id="generate-token-form">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="generate">
-                <div class="flex-1 min-w-[200px]">
+                <div class="flex-1 w-full">
                     <label for="token-name" class="block text-xs text-gray-600 mb-1">Token label <span class="text-gray-400">(optional)</span></label>
                     <input type="text"
                            id="token-name"
@@ -93,15 +93,17 @@
                            placeholder="e.g. My Portfolio Site"
                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/30 focus:border-[#1e3a6e]">
                 </div>
-                <button type="submit"
-                        class="inline-flex items-center gap-2 bg-[#1e3a6e] hover:bg-[#163059] text-white text-sm font-semibold px-5 py-2 rounded-lg transition min-h-[42px] cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                    Generate Token
-                </button>
-                <a href="{% url 'user_dashboard' %}?section=submit-token-post"
-                   class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold px-5 py-2 rounded-lg transition min-h-[42px]">
-                   <i class="fas fa-edit text-sm"></i> Create Post
-                </a>
+                <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                    <button type="submit"
+                            class="w-full sm:w-auto h-[38px] justify-center inline-flex items-center gap-1.5 bg-[#1e3a6e] hover:bg-[#163059] text-white text-[13px] font-semibold px-4 rounded-md transition cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                        Generate Token
+                    </button>
+                    <a href="{% url 'user_dashboard' %}?section=submit-token-post"
+                       class="w-full sm:w-auto h-[38px] justify-center inline-flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-[13px] font-semibold px-4 rounded-md transition">
+                       <i class="fas fa-edit text-[13px]"></i> Create Post
+                    </a>
+                </div>
             </form>
         </div>
 
@@ -131,7 +133,7 @@
                     <tbody>
                         {% for token in tokens %}
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="py-2.5 pr-4 text-gray-800 font-medium max-w-[140px] truncate">
+                            <td class="py-2.5 pr-4 text-gray-800 font-medium max-w-[140px] break-words whitespace-normal">
                                 {{ token.name|default:"Unnamed" }}
                             </td>
                             <td class="py-2.5 pr-4">

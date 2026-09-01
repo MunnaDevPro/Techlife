@@ -54,11 +54,11 @@
 
                         <!-- Content -->
                         <div class="flex-1 min-w-0">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 mb-1">
-                                <h3 class="text-sm font-bold {% if not notif.is_read %}text-gray-900{% else %}text-gray-700{% endif %} truncate">
+                            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-1 sm:gap-4 mb-1">
+                                <h3 class="text-sm font-bold {% if not notif.is_read %}text-gray-900{% else %}text-gray-700{% endif %} break-words line-clamp-2">
                                     {{ notif.title }}
                                 </h3>
-                                <span class="text-[11px] text-gray-400 whitespace-nowrap">{{ notif.created_at|timesince }} ago</span>
+                                <span class="text-[11px] text-gray-400 whitespace-nowrap mt-1 sm:mt-0">{{ notif.created_at|timesince }} ago</span>
                             </div>
                             <p class="text-[13px] leading-relaxed {% if not notif.is_read %}text-gray-700 font-medium{% else %}text-gray-500{% endif %}">
                                 {{ notif.message }}

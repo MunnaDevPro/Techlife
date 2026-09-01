@@ -9,10 +9,11 @@
             <span class="text-[15px] font-extrabold text-gray-800 tracking-tight whitespace-nowrap">Dashboard</span>
         </div>
 
-        <!-- Always ✕ close button inside sidebar -->
+        <!-- Mobile: ✕ close button, Desktop: ☰ toggle button -->
         <button id="mobile-menu-btn"
-            class="text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors focus:outline-none p-2 rounded-lg flex items-center justify-center flex-shrink-0 ml-auto cursor-pointer w-9 h-9">
-            <i class="fas fa-times text-[20px]"></i>
+            class="text-gray-400 transition-colors focus:outline-none p-2 rounded-lg flex items-center justify-center flex-shrink-0 ml-auto cursor-pointer w-9 h-9 hover:bg-blue-50 hover:text-[#1e3a6e]">
+            <i class="fas fa-times sidebar-close-icon" style="font-size: 20px;"></i>
+            <i class="fas fa-bars sidebar-menu-icon" style="font-size: 15px;"></i>
         </button>
     </div>
     
@@ -72,7 +73,16 @@
 </aside>
 
 <style>
+    /* Sidebar Icons visibility */
+    .sidebar-close-icon { display: inline-block; }
+    .sidebar-menu-icon { display: none; }
+    
     /* Collapsed state for Desktop */
+    @media (min-width: 768px) {
+        .sidebar-close-icon { display: none !important; }
+        .sidebar-menu-icon { display: inline-block !important; }
+    }
+
     aside#sidebar.collapsed {
         width: 64px; /* More compact icon width */
     }

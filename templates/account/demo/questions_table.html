@@ -1,48 +1,76 @@
 {% load static %} {% load humanize %} {% load custom_filters %}
 
+<style>
+    @media (min-width: 640px) {
+        .col-answers { width: 80px !important; text-align: center; flex-shrink: 0; }
+        .col-asked { width: 120px !important; text-align: right; flex-shrink: 0; }
+        .col-actions { width: 80px !important; text-align: right; flex-shrink: 0; }
+    }
+</style>
+
 <div class="bg-white border border-gray-300 shadow-sm rounded-none">
     <div class="px-4 py-3 border-b border-gray-200 flex flex-wrap justify-between items-center bg-gray-50/50 gap-3">
         <h3 class="text-sm font-bold text-gray-800">Your Forum Questions</h3>
+        <a href="{% url 'create_question' %}" class="bg-[#1e3a6e] hover:bg-[#152d56] text-white px-3 py-1.5 rounded text-[13px] font-semibold transition-colors flex items-center gap-2">
+            <i class="fas fa-plus"></i> Add Question
+        </a>
     </div>
     <div class="px-4 py-2 border-b border-gray-100 bg-white">
         <p class="text-[11px] text-gray-500">List of all the questions you have asked in the community forum and their engagement.</p>
     </div>
     
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-white border-b border-gray-300">
-                <tr class="text-[11px] text-gray-900 font-bold tracking-tight text-left">
-                    <th class="py-3 px-4 w-1/2">Question Title</th>
-                    <th class="py-3 px-4 text-center">Answers</th>
-                    <th class="py-3 px-4 text-right">Asked On</th>
-                    <th class="py-3 px-4 text-right">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100 text-sm">
-                {% for question in user_questions %}
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="py-3 px-4 font-medium text-[13px]">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-blue-50 text-blue-600 border border-blue-100 flex-shrink-0">
-                                <i class="fas fa-question text-[12px]"></i>
-                            </div>
-                            <a href="{% url 'questions' slug=question.slug %}" class="text-blue-600 hover:underline">{{ question.title|truncatechars:60 }}</a>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-center text-gray-800 text-[13px] font-semibold">{{ question.answers.count }}</td>
-                    <td class="py-3 px-4 text-right text-gray-600 text-[13px]">{{ question.created_at|date:"M d, Y" }}</td>
-                    <td class="py-3 px-4 text-right">
-                        <a href="{% url 'questions' slug=question.slug %}" class="text-[12px] font-semibold text-[#1e3a6e] hover:text-[#152d56] bg-gray-100 hover:bg-gray-200 px-2.5 py-1 rounded transition-colors">
-                            View
-                        </a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4" class="py-8 text-center text-gray-500 text-sm">You haven't asked any questions yet.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <!-- Table Header (Hidden on Mobile) -->
+    <div class="hidden sm:flex justify-between items-center px-4 py-3 bg-white border-b border-gray-200 text-[11px] text-gray-900 font-bold tracking-tight">
+        <div class="flex-1">Image & Title</div>
+        <div class="flex sm:flex-row justify-end items-center sm:space-x-4 flex-shrink-0">
+            <div class="col-answers">Answers</div>
+            <div class="col-asked">Asked On</div>
+            <div class="col-actions">Actions</div>
+        </div>
+    </div>
+    
+    <div class="divide-y divide-gray-100">
+        {% for question in user_questions %}
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center p-4 hover:bg-gray-50 transition-colors gap-3 sm:gap-4">
+            <!-- Left side: Icon and Title -->
+            <div class="flex items-start space-x-3 flex-1 min-w-0">
+                {% if question.image %}
+                    <img src="{{ question.image.url }}" alt="{{ question.title }}" class="w-8 h-8 rounded border border-gray-200 flex-shrink-0 object-cover mt-0.5" />
+                {% else %}
+                    <div class="w-8 h-8 rounded bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 flex-shrink-0 mt-0.5">
+                        <i class="far fa-image text-[12px]"></i>
+                    </div>
+                {% endif %}
+                <div class="flex-1 min-w-0">
+                    <a href="{% url 'questions' slug=question.slug %}" class="text-[13px] font-medium text-blue-600 hover:text-blue-800 transition-colors block break-words line-clamp-2" title="{{ question.title }}">
+                        {{ question.title }}
+                    </a>
+                    <p class="text-[11px] text-gray-500 mt-1 sm:hidden">Asked: {{ question.created_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+            
+            <!-- Right side: Stats and Actions -->
+            <div class="flex sm:flex-row justify-between sm:justify-end items-center sm:space-x-4 pl-11 sm:pl-0 flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                <div class="col-answers text-center">
+                    <span class="text-[11px] text-gray-500 block sm:hidden">Answers</span>
+                    <span class="text-[13px] font-semibold text-gray-800">{{ question.answers.count }}</span>
+                </div>
+                
+                <div class="col-asked text-right hidden sm:block">
+                    <span class="text-[13px] text-gray-600">{{ question.created_at|date:"M d, Y" }}</span>
+                </div>
+                
+                <div class="col-actions text-right">
+                    <a href="{% url 'questions' slug=question.slug %}" class="text-[12px] font-semibold text-[#1e3a6e] hover:text-[#152d56] bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded transition-colors whitespace-nowrap inline-block">
+                        View
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="p-8 text-center">
+            <p class="text-gray-500 text-sm">You haven't asked any questions yet.</p>
+        </div>
+        {% endfor %}
     </div>
 </div>
