@@ -11,7 +11,7 @@ from django.db.models import Count
 from dashboard.permissions import staff_required
 from dashboard.views.views import get_dashboard_context
 from dashboard.filters import BlogPostFilter
-from dashboard.tables import BlogPostTable
+from dashboard.tables import BlogPostTable, CompanyTable
 from dashboard.services import content_service
 from blog_post.models import BlogPost, Category, SubCategory, HomepageConfig
 from tags.models import Tag
@@ -32,19 +32,52 @@ def validate_featured_image(image):
         raise ValidationError("File size too large. Maximum allowed size is 5MB.")
 
 @staff_required
-def post_list(request):
-    """List blog posts with filters, pagination, and sorting."""
-    qs = content_service.get_posts_queryset()
-    filter_set = BlogPostFilter(request.GET, queryset=qs)
+def post_list(request, is_company_view=False):
+    """View to display and filter posts (table) with integrated filters, pagination, and bulk actions."""
+    # Allow legacy query param fallback
+    post_type = request.GET.get('type')
+    if post_type == 'company':
+        is_company_view = True
+        
+    filter_set = BlogPostFilter(request.GET, queryset=BlogPost.objects.all().order_by('-created_at'))
+    queryset = filter_set.qs
     
-    table = BlogPostTable(filter_set.qs)
+    if is_company_view:
+        queryset = queryset.filter(is_company=True)
+        table = CompanyTable(queryset, request=request)
+        page_title = "Companies"
+        page_subtitle = "Manage all registered companies on your site"
+        add_button_text = "Add New Company"
+        item_name_lower = "company"
+        item_name_title = "Company"
+        base_url_path = "/dashboard/company/"
+        bulk_action_url = reverse("dashboard:company_bulk")
+    else:
+        queryset = queryset.filter(is_company=False)
+        table = BlogPostTable(queryset, request=request)
+        page_title = "Blog Posts"
+        page_subtitle = "Manage, filter and review all your published and pending posts."
+        add_button_text = "Add New Post"
+        item_name_lower = "post"
+        item_name_title = "Post"
+        base_url_path = "/dashboard/content/posts/"
+        bulk_action_url = reverse("dashboard:post_bulk")
+
     # Paginate table to 10 items per page
     RequestConfig(request, paginate={"per_page": 10}).configure(table)
     
-    ctx = get_dashboard_context(request, "Content Posts", "Content", "dashboard:content_posts")
+    ctx = get_dashboard_context(request, page_title, "Content", "dashboard:company_list" if is_company_view else "dashboard:content_posts")
     ctx.update({
         "table": table,
         "filter": filter_set,
+        "page_title": page_title,
+        "page_subtitle": page_subtitle,
+        "add_button_text": add_button_text,
+        "is_company_view": is_company_view,
+        "item_name_lower": item_name_lower,
+        "item_name_title": item_name_title,
+        "base_url_path": base_url_path,
+        "bulk_action_url": bulk_action_url,
     })
     
     template = "dashboard/content/post_list.html"
@@ -80,8 +113,12 @@ def post_reject(request, pk):
 def post_delete(request, pk):
     """Delete a post."""
     try:
+        post = get_object_or_404(BlogPost, pk=pk)
+        is_company = post.is_company
         content_service.delete_post(pk, request.user)
         messages.success(request, f"Post deleted successfully.")
+        if is_company:
+            return redirect(f"{reverse('dashboard:content_posts')}?type=company")
     except Exception as e:
         messages.error(request, str(e))
     return redirect("dashboard:content_posts")
@@ -110,6 +147,9 @@ def post_bulk_action(request):
     else:
         messages.error(request, "Invalid action selected.")
         
+    referer = request.META.get('HTTP_REFERER', '')
+    if 'type=company' in referer:
+        return redirect(f"{reverse('dashboard:content_posts')}?type=company")
     return redirect("dashboard:content_posts")
 
 @require_POST
@@ -127,8 +167,12 @@ def post_update_status(request, pk):
     return redirect("dashboard:content_posts")
 
 @staff_required
-def post_create(request):
+def post_create(request, is_company_view=False):
     """Dashboard-native view to create a new blog post with full section-by-section layout and SEO integration."""
+    post_type = request.GET.get('type')
+    if post_type == 'company' or is_company_view:
+        return redirect("dashboard:company_create")
+        
     if request.method == "POST":
         form = BlogPostForm(request.POST, request.FILES)
         meta_title = request.POST.get('meta_title', '')
@@ -145,6 +189,8 @@ def post_create(request):
             post.author = request.user
             post.meta_title = meta_title
             post.meta_description = meta_description
+            if is_company_view:
+                post.is_company = True
             
             # Status based on superuser/staff approval rules
             if request.user.is_superuser:
@@ -154,7 +200,9 @@ def post_create(request):
                 
             post.save()
             form.save_m2m() # save tags
-            messages.success(request, f"Article '{post.title}' created successfully!")
+            messages.success(request, f"Successfully created {'company' if is_company_view else 'article'} '{post.title}'!")
+            if is_company_view:
+                return redirect("dashboard:company_list")
             return redirect("dashboard:content_posts")
         else:
             messages.error(request, "Failed to create post. Please check errors below.")
@@ -200,7 +248,7 @@ def post_detail(request, pk):
     return render(request, "dashboard/content/post_detail.html", ctx)
 
 @staff_required
-def post_detail_edit(request, pk):
+def post_detail_edit(request, pk, is_company_view=False):
     """Tabbed view for post detail / edit."""
     post = get_object_or_404(BlogPost, pk=pk)
     
@@ -231,6 +279,8 @@ def post_detail_edit(request, pk):
             saved_post.save(skip_auto_status=True)
             form.save_m2m()
             messages.success(request, "Post updated successfully.")
+            if saved_post.is_company:
+                return redirect(f"{reverse('dashboard:content_posts')}?type=company")
             return redirect("dashboard:content_posts")
         else:
             messages.error(request, "Failed to save. Please review the errors below.")
@@ -444,3 +494,151 @@ def homepage_sections(request):
         "categories": categories,
     })
     return render(request, "dashboard/content/homepage_sections.html", ctx)
+
+import json
+from blog_post.forms import CompanyProfileForm
+from blog_post.models import CompanyService, CompanyIndustryFocus, CompanyClientFocus, CompanyClient, CompanyLocation
+
+@staff_required
+def company_create(request):
+    """Multi-step wizard view for creating a company profile."""
+    if request.method == "POST":
+        form = CompanyProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.is_company = True
+            if request.user.is_superuser:
+                post.status = "published"
+            else:
+                post.status = "pending"
+            post.save()
+            form.save_m2m() # save tags
+            
+            # Process JSON payloads for dynamic models
+            try:
+                services_data = json.loads(request.POST.get('company_services', '[]'))
+                for s in services_data:
+                    CompanyService.objects.create(company=post, name=s.get('name'), percentage=int(s.get('percentage', 0)))
+                
+                industries_data = json.loads(request.POST.get('company_industries', '[]'))
+                for s in industries_data:
+                    CompanyIndustryFocus.objects.create(company=post, name=s.get('name'), percentage=int(s.get('percentage', 0)))
+                
+                clients_focus_data = json.loads(request.POST.get('company_client_focuses', '[]'))
+                for s in clients_focus_data:
+                    CompanyClientFocus.objects.create(company=post, name=s.get('name'), percentage=int(s.get('percentage', 0)))
+                
+                locations_data = json.loads(request.POST.get('company_locations', '[]'))
+                for s in locations_data:
+                    CompanyLocation.objects.create(company=post, name=s.get('name'))
+                
+                clients_data = json.loads(request.POST.get('company_clients', '[]'))
+                for s in clients_data:
+                    CompanyClient.objects.create(company=post, name=s.get('name'))
+            except Exception as e:
+                # If json parsing fails, at least the company is saved. We log or ignore.
+                pass
+
+            messages.success(request, f"Successfully created company '{post.title}'!")
+            return redirect("dashboard:company_list")
+        else:
+            messages.error(request, "Failed to create company. Please check errors in the form.")
+    else:
+        form = CompanyProfileForm()
+
+    categories = Category.objects.all().order_by('name')
+    subcategories = SubCategory.objects.select_related('category').all()
+    
+    ctx = get_dashboard_context(request, "Add New Company", "Company Management", "dashboard:company_create")
+    ctx.update({
+        "form": form,
+        "categories": categories,
+        "subcategories": subcategories,
+    })
+    return render(request, "dashboard/content/company_wizard.html", ctx)
+
+
+@staff_required
+def company_detail_edit(request, pk, is_company_view=True):
+    """Multi-step wizard view for editing a company profile."""
+    post = get_object_or_404(BlogPost, pk=pk)
+    
+    if request.method == "POST":
+        form = CompanyProfileForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.is_company = True
+            post.save()
+            form.save_m2m() # save tags
+            
+            # Process JSON payloads for dynamic models
+            try:
+                # Services
+                services_data = json.loads(request.POST.get('company_services', '[]'))
+                post.company_services.all().delete()
+                for s in services_data:
+                    if s.get('name'):
+                        CompanyService.objects.create(company=post, name=s.get('name'), percentage=int(s.get('percentage') or 0))
+                
+                # Industries
+                industries_data = json.loads(request.POST.get('company_industries', '[]'))
+                post.company_industry_focuses.all().delete()
+                for s in industries_data:
+                    if s.get('name'):
+                        CompanyIndustryFocus.objects.create(company=post, name=s.get('name'), percentage=int(s.get('percentage') or 0))
+                
+                # Client Focus
+                clients_focus_data = json.loads(request.POST.get('company_client_focuses', '[]'))
+                post.company_client_focuses.all().delete()
+                for s in clients_focus_data:
+                    if s.get('name'):
+                        CompanyClientFocus.objects.create(company=post, name=s.get('name'), percentage=int(s.get('percentage') or 0))
+                
+                # Locations
+                locations_data = json.loads(request.POST.get('company_locations', '[]'))
+                post.company_locations.all().delete()
+                for s in locations_data:
+                    if s.get('name'):
+                        CompanyLocation.objects.create(company=post, name=s.get('name'))
+                
+                # Clients
+                clients_data = json.loads(request.POST.get('company_clients', '[]'))
+                post.company_clients.all().delete()
+                for s in clients_data:
+                    if s.get('name'):
+                        CompanyClient.objects.create(company=post, name=s.get('name'))
+            except Exception as e:
+                pass
+
+            messages.success(request, f"Successfully updated company '{post.title}'!")
+            return redirect("dashboard:company_list")
+        else:
+            messages.error(request, "Failed to update company. Please check errors in the form.")
+    else:
+        form = CompanyProfileForm(instance=post)
+
+    categories = Category.objects.all().order_by('name')
+    subcategories = SubCategory.objects.select_related('category').all()
+    
+    # Prefetch data for Alpine.js
+    services = list(post.company_services.values('name', 'percentage'))
+    industries = list(post.company_industry_focuses.values('name', 'percentage'))
+    client_focuses = list(post.company_client_focuses.values('name', 'percentage'))
+    locations = list(post.company_locations.values('name'))
+    clients = list(post.company_clients.values('name'))
+    
+    ctx = get_dashboard_context(request, "Edit Company", "Company Management", "dashboard:company_edit")
+    ctx.update({
+        "form": form,
+        "post": post,
+        "categories": categories,
+        "subcategories": subcategories,
+        "services_json": json.dumps(services if services else [{"name": "", "percentage": ""}]),
+        "industries_json": json.dumps(industries if industries else [{"name": "", "percentage": ""}]),
+        "client_focuses_json": json.dumps(client_focuses if client_focuses else [{"name": "", "percentage": ""}]),
+        "locations_json": json.dumps(locations if locations else [{"name": ""}]),
+        "clients_json": json.dumps(clients if clients else [{"name": ""}]),
+        "is_edit_mode": True,
+    })
+    return render(request, "dashboard/content/company_wizard.html", ctx)

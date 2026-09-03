@@ -1,0 +1,308 @@
+<style>
+    .ft-input, .company-wiz-input {
+        border: 1px solid #d1d5db !important;
+        background-color: #ffffff !important;
+        border-radius: 8px !important;
+        padding: 9px 13px !important;
+        font-size: 13.5px !important;
+        color: #111827 !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+    }
+    .ft-input:focus, .company-wiz-input:focus {
+        border-color: #1e3a6e !important;
+        box-shadow: 0 0 0 3px rgba(30, 58, 110, 0.15) !important;
+        outline: none !important;
+    }
+    .ft-label, .company-wiz-label {
+        display: block !important;
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        color: #374151 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        margin-bottom: 5px !important;
+    }
+    select.ft-input, select.company-wiz-input {
+        cursor: pointer !important;
+        appearance: auto !important;
+    }
+</style>
+
+<div class="flex flex-col gap-6 p-2 sm:p-4 bg-gray-50/30 rounded-2xl max-w-5xl mx-auto w-full" x-data="companyWizard()">
+
+    <!-- Page Header -->
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid rgba(229, 231, 235, 0.8);">
+        <div>
+            <h2 style="font-size: 20px; font-weight: 700; color: #111827; margin: 0; line-height: 26px;">{% if is_edit_mode %}Edit Company Profile{% else %}Add New Company{% endif %}</h2>
+            <p style="font-size: 13px; color: #6b7280; margin-top: 3px; margin-bottom: 0;">Follow the steps to create a comprehensive company profile.</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0; white-space: nowrap;">
+            <a href="{{ cancel_url|default:'/account/user_dashboard/?section=companies' }}" 
+               style="display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #374151; background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; text-decoration: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                Cancel
+            </a>
+            
+            <div x-show="step > 1">
+                <button type="button" @click="prevStep()" 
+                        style="display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #374151; background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                    Previous
+                </button>
+            </div>
+            
+            <div x-show="step === 4">
+                <button type="submit" form="companyForm" 
+                        style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 20px; font-size: 13px; font-weight: 700; color: #ffffff; background: #1e3a6e; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(30,58,110,0.25);">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:15px; height:15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <span>Save Company</span>
+                </button>
+            </div>
+            
+            <div x-show="step < 4">
+                <button type="button" @click="nextStep()" 
+                        style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 20px; font-size: 13px; font-weight: 700; color: #ffffff; background: #1e3a6e; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(30,58,110,0.25);">
+                    <span>Next Step</span>
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:15px; height:15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stepper -->
+    <div style="width: 100%; max-width: 540px; margin-left: auto; margin-right: auto; margin-top: 8px; margin-bottom: 20px;">
+        <div style="position: relative; display: flex; align-items: flex-start; justify-content: space-between;">
+            <!-- Connecting Line Background -->
+            <div style="position: absolute; left: 20px; right: 20px; top: 18px; height: 3px; background-color: #e5e7eb; border-radius: 9999px; z-index: 0;">
+                <!-- Active Connecting Line -->
+                <div style="height: 100%; background-color: #1e3a6e; border-radius: 9999px; transition: width 0.4s ease-in-out;" 
+                     :style="'width: ' + ((step - 1) / 3 * 100) + '%'"></div>
+            </div>
+
+            <!-- Steps -->
+            <template x-for="(label, idx) in ['Basic Info', 'Details', 'Focus Areas', 'Portfolio']" :key="idx">
+                <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 80px;" @click="if(step > idx+1) step = idx+1">
+                    <!-- Circle -->
+                    <div :class="step >= idx + 1 ? 'bg-[#1e3a6e] text-white ring-4 ring-blue-50' : 'bg-white text-gray-400 ring-1 ring-gray-200'" 
+                         class="rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 shadow-sm"
+                         style="width: 36px; height: 36px; min-width: 36px; min-height: 36px; border-radius: 9999px;">
+                        <span x-show="step <= idx + 1" x-text="idx + 1"></span>
+                        <svg x-show="step > idx + 1" class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <!-- Label below circle -->
+                    <span :class="step >= idx + 1 ? 'text-gray-900 font-semibold' : 'text-gray-400 font-medium'" 
+                          class="whitespace-nowrap text-xs transition-colors duration-300"
+                          style="margin-top: 6px; font-size: 11.5px; line-height: 14px; text-align: center;" 
+                          x-text="label"></span>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <form id="companyForm" method="POST" action="{{ form_action_url|default:'' }}" enctype="multipart/form-data" class="flex flex-col gap-6">
+        {% csrf_token %}
+        <input type="hidden" name="company_services" :value="JSON.stringify(services)">
+        <input type="hidden" name="company_industries" :value="JSON.stringify(industries)">
+        <input type="hidden" name="company_client_focuses" :value="JSON.stringify(clientFocuses)">
+        <input type="hidden" name="company_locations" :value="JSON.stringify(locations)">
+        <input type="hidden" name="company_clients" :value="JSON.stringify(clients)">
+
+        <!-- Step 1: Basic Info -->
+        <div x-show="step === 1" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm" style="padding: 1.75rem 2rem;">
+            <h3 class="text-base font-bold text-gray-900" style="margin-bottom: 18px;">Step 1: Basic Information</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); column-gap: 36px; row-gap: 22px;">
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Company Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="title" class="company-wiz-input w-full" required value="{{ form.title.value|default_if_none:'' }}">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Tagline (Subtitle)</label>
+                    <input type="text" name="subtitle" class="company-wiz-input w-full" value="{{ form.subtitle.value|default_if_none:'' }}">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Business Email</label>
+                    <input type="email" name="company_email" class="company-wiz-input w-full" value="{{ form.company_email.value|default_if_none:'' }}">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Business Phone</label>
+                    <input type="text" name="company_phone" class="company-wiz-input w-full" value="{{ form.company_phone.value|default_if_none:'' }}">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Website URL</label>
+                    <input type="url" name="company_website" class="company-wiz-input w-full" value="{{ form.company_website.value|default_if_none:'' }}">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Company Logo (Featured Image)</label>
+                    <input type="file" name="featured_image" class="company-wiz-input w-full cursor-pointer file:cursor-pointer">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Company Industry <span class="text-red-500">*</span></label>
+                    {{ form.category }}
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Trade License Document</label>
+                    <input type="file" name="trade_license" class="company-wiz-input w-full cursor-pointer file:cursor-pointer">
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Details -->
+        <div x-show="step === 2" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm" style="display: none; padding: 1.75rem 2rem;">
+            <h3 class="text-base font-bold text-gray-900" style="margin-bottom: 18px;">Step 2: Company Details</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); column-gap: 36px; row-gap: 22px;">
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Founded Year</label>
+                    <input type="number" name="company_founded_year" class="company-wiz-input w-full" placeholder="e.g. 2010" value="{{ form.company_founded_year.value|default_if_none:'' }}">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Employees Count</label>
+                    <input type="text" name="company_employees_count" class="company-wiz-input w-full" placeholder="e.g. 50-249" value="{{ form.company_employees_count.value|default_if_none:'' }}">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Hourly Rate</label>
+                    <input type="text" name="company_hourly_rate" class="company-wiz-input w-full" placeholder="e.g. $25 - $49 / hr" value="{{ form.company_hourly_rate.value|default_if_none:'' }}">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="company-wiz-label">Min. Project Size</label>
+                    <input type="text" name="company_min_project_size" class="company-wiz-input w-full" placeholder="e.g. $10,000+" value="{{ form.company_min_project_size.value|default_if_none:'' }}">
+                </div>
+                <div class="flex flex-col gap-1 md:col-span-2" style="grid-column: 1 / -1;">
+                    <label class="company-wiz-label">About the Company</label>
+                    {{ form.description }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Focus Areas -->
+        <div x-show="step === 3" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm" style="display: none; padding: 1.75rem 2rem;">
+            <h3 class="text-base font-bold text-gray-900" style="margin-bottom: 18px;">Step 3: Focus Areas (Percentages)</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); column-gap: 32px; row-gap: 24px;">
+                <!-- Services -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Services</h4>
+                    <template x-for="(item, index) in services" :key="index">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; width: 100%;">
+                            <input type="text" x-model="item.name" class="company-wiz-input" style="flex: 1 1 0%; min-width: 110px;" placeholder="Service Name">
+                            <input type="number" x-model="item.percentage" class="company-wiz-input" style="width: 75px; min-width: 75px; flex-shrink: 0; text-align: center;" placeholder="%">
+                            <button type="button" @click="services.splice(index, 1)" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </template>
+                    <button type="button" @click="services.push({name: '', percentage: ''})" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
+                        + Add Service
+                    </button>
+                </div>
+
+                <!-- Industries -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Industries</h4>
+                    <template x-for="(item, index) in industries" :key="index">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; width: 100%;">
+                            <input type="text" x-model="item.name" class="company-wiz-input" style="flex: 1 1 0%; min-width: 110px;" placeholder="Industry Name">
+                            <input type="number" x-model="item.percentage" class="company-wiz-input" style="width: 75px; min-width: 75px; flex-shrink: 0; text-align: center;" placeholder="%">
+                            <button type="button" @click="industries.splice(index, 1)" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </template>
+                    <button type="button" @click="industries.push({name: '', percentage: ''})" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
+                        + Add Industry
+                    </button>
+                </div>
+
+                <!-- Client Focus -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Client Focus</h4>
+                    <template x-for="(item, index) in clientFocuses" :key="index">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; width: 100%;">
+                            <input type="text" x-model="item.name" class="company-wiz-input" style="flex: 1 1 0%; min-width: 110px;" placeholder="Client Focus Name">
+                            <input type="number" x-model="item.percentage" class="company-wiz-input" style="width: 75px; min-width: 75px; flex-shrink: 0; text-align: center;" placeholder="%">
+                            <button type="button" @click="clientFocuses.splice(index, 1)" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </template>
+                    <button type="button" @click="clientFocuses.push({name: '', percentage: ''})" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
+                        + Add Client Focus
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Locations & Portfolio -->
+        <div x-show="step === 4" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm" style="display: none; padding: 1.75rem 2rem;">
+            <h3 class="text-base font-bold text-gray-900" style="margin-bottom: 18px;">Step 4: Locations & Clients</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); column-gap: 32px; row-gap: 24px;">
+                <!-- Locations -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Office Locations</h4>
+                    <template x-for="(item, index) in locations" :key="index">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; width: 100%;">
+                            <input type="text" x-model="item.name" class="company-wiz-input" style="flex: 1 1 0%; min-width: 130px;" placeholder="City, Country">
+                            <button type="button" @click="locations.splice(index, 1)" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </template>
+                    <button type="button" @click="locations.push({name: ''})" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
+                        + Add Location
+                    </button>
+                </div>
+
+                <!-- Clients -->
+                <div style="display: flex; flex-direction: column;">
+                    <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Key Clients / Portfolio</h4>
+                    <template x-for="(item, index) in clients" :key="index">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; width: 100%;">
+                            <input type="text" x-model="item.name" class="company-wiz-input" style="flex: 1 1 0%; min-width: 130px;" placeholder="Client Name">
+                            <button type="button" @click="clients.splice(index, 1)" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </template>
+                    <button type="button" @click="clients.push({name: ''})" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
+                        + Add Client
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function companyWizard() {
+        return {
+            step: 1,
+            services: {% if services_json %}{{ services_json|safe }}{% else %}[{name: '', percentage: ''}]{% endif %},
+            industries: {% if industries_json %}{{ industries_json|safe }}{% else %}[{name: '', percentage: ''}]{% endif %},
+            clientFocuses: {% if client_focuses_json %}{{ client_focuses_json|safe }}{% else %}[{name: '', percentage: ''}]{% endif %},
+            locations: {% if locations_json %}{{ locations_json|safe }}{% else %}[{name: ''}]{% endif %},
+            clients: {% if clients_json %}{{ clients_json|safe }}{% else %}[{name: ''}]{% endif %},
+            
+            nextStep() {
+                if (this.step < 4) {
+                    let currentStepDiv = document.querySelector(`div[x-show="step === ${this.step}"]`);
+                    if (currentStepDiv) {
+                        let inputs = currentStepDiv.querySelectorAll('input, select, textarea');
+                        for (let input of inputs) {
+                            if (!input.checkValidity()) {
+                                input.reportValidity();
+                                return;
+                            }
+                        }
+                    }
+                    this.step++;
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                }
+            },
+            prevStep() {
+                if (this.step > 1) {
+                    this.step--;
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                }
+            }
+        }
+    }
+</script>

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+<header class="bg-white border-b border-gray-100 w-full z-50 sticky top-0 shadow-sm">
+    <div class="h-16 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <a href="{% url 'homepage' %}" class="flex-shrink-0">
+            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-7 sm:h-8 lg:h-9 w-auto" />
+        </a>
+        <div class="flex items-center gap-4">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-6 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
+                    Sign In
+                </a>
+            {% else %}
+                <span class="text-sm font-medium text-gray-700">Welcome, {{ user.username }}</span>
+            {% endif %}
+        </div>
+    </div>
+</header>
+{% endblock navbar %}
+
+{% block content %}
+<div class="bg-gray-900 py-20 min-h-screen text-white flex flex-col justify-center">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <!-- Stars Header -->
+        <div class="flex justify-center mb-6 space-x-2 text-yellow-400">
+            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
+            Share your experience.<br/>
+            <span class="text-yellow-500">Help thousands of buyers choose better.</span>
+        </h1>
+        
+        <p class="text-lg sm:text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+            Your honest review reaches buyers around the world — every month — looking for a partner they can trust.
+        </p>
+
+        <!-- Search Form -->
+        <div class="max-w-2xl mx-auto mb-8 bg-white p-2 rounded-full shadow-lg flex flex-wrap sm:flex-nowrap items-center">
+            <form method="GET" action="" class="w-full flex items-center">
+                <div class="flex-grow pl-4 relative text-gray-700">
+                    <svg class="h-5 w-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    {{ form.query }}
+                </div>
+                <button type="submit" class="bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-3 px-8 rounded-full transition-colors ml-2">
+                    Search
+                </button>
+            </form>
+        </div>
+
+        <!-- Search Results -->
+        {% if form.is_valid and form.cleaned_data.query %}
+            <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl text-left overflow-hidden">
+                {% if results %}
+                    <ul class="divide-y divide-gray-200">
+                        {% for post in results %}
+                            <li class="p-4 hover:bg-gray-50 flex justify-between items-center transition-colors">
+                                <div class="text-gray-900 font-semibold">{{ post.title }}</div>
+                                <a href="{% url 'write_review_step1' post.id %}" class="bg-indigo-600 text-white text-sm px-4 py-2 rounded shadow hover:bg-indigo-500 transition-colors">
+                                    Write a Review
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="p-6 text-gray-500 text-center">No results found for "{{ form.cleaned_data.query }}".</div>
+                {% endif %}
+            </div>
+        {% endif %}
+        
+        <!-- Steps Indicator -->
+        <div class="mt-12 flex justify-center space-x-8 text-sm text-gray-400">
+            <div class="flex items-center"><span class="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center mr-2">1</span> Find your company</div>
+            <div class="hidden sm:block border-t border-gray-600 w-12 mt-3"></div>
+            <div class="flex items-center"><span class="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center mr-2">2</span> Quick sign-in</div>
+            <div class="hidden sm:block border-t border-gray-600 w-12 mt-3"></div>
+            <div class="flex items-center"><span class="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center mr-2">3</span> Answer & done &bull; 5-7 min</div>
+        </div>
+    </div>
+</div>
+
+<!-- Trust Bar -->
+<div class="bg-gray-100 py-6 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-8 text-sm text-gray-500">
+        <div class="flex items-center"><svg class="h-4 w-4 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Verified by humans within 48 hours</div>
+        <div class="flex items-center"><svg class="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg> Anonymous option available</div>
+        <div class="flex items-center"><svg class="h-4 w-4 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" /></svg> Read by buyers in 100+ countries</div>
+    </div>
+</div>
+{% endblock content %}

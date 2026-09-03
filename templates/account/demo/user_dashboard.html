@@ -46,7 +46,7 @@
 
 </style>
 
-<div id="dashboard-container" class="container max-w-7xl mx-auto flex bg-white text-gray-800">
+<div id="dashboard-container" class="w-full flex bg-white text-gray-800 min-h-screen">
 
     <!-- Mobile Sidebar Overlay -->
     <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-gray-900/50 z-40 hidden opacity-0 transition-opacity duration-300 ease-in-out md:hidden backdrop-blur-sm"></div>
@@ -68,23 +68,27 @@
 
 
         <main class="flex-1 overflow-x-hidden overflow-y-auto p-2 sm:p-4 md:p-6 lg:p-10">
-
-            {% if section == 'overview' %}
-                {% include 'account/demo/overview_grid.html' %}
-            {% elif section == 'blog-posts' %}
-                {% include 'account/demo/order_table.html' %} 
-            {% elif section == 'activities' %}
-                {% include 'account/demo/data_rows.html' %} 
-            {% elif section == 'questions' %}
-                {% include 'account/demo/questions_table.html' %} 
-            {% elif section == 'notifications' %}
-                {% include 'account/demo/dashboard_notifications.html' %}
-            {% elif section == 'edit-profile' %}
-                {% include 'account/demo/dashboard_edit_profile.html' %}
-            {% elif section == 'submit-token-post' %}
-                {% include 'account/demo/submit_token_post.html' %}
-            {% endif %}
-
+            {% block dashboard_content %}
+                {% if section == 'overview' %}
+                    {% include 'account/demo/overview_grid.html' %}
+                {% elif section == 'blog-posts' %}
+                    {% include 'account/demo/order_table.html' %} 
+                {% elif section == 'companies' %}
+                    {% include 'account/demo/dashboard_companies.html' %} 
+                {% elif section == 'edit-company' %}
+                    {% include 'dashboard/content/company_wizard_form.html' %} 
+                {% elif section == 'activities' %}
+                    {% include 'account/demo/data_rows.html' %} 
+                {% elif section == 'questions' %}
+                    {% include 'account/demo/questions_table.html' %} 
+                {% elif section == 'notifications' %}
+                    {% include 'account/demo/dashboard_notifications.html' %}
+                {% elif section == 'edit-profile' %}
+                    {% include 'account/demo/dashboard_edit_profile.html' %}
+                {% elif section == 'submit-token-post' %}
+                    {% include 'account/demo/submit_token_post.html' %}
+                {% endif %}
+            {% endblock dashboard_content %}
         </main>
 
         {% include 'account/demo/footer.html' %}

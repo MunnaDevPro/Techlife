@@ -33,8 +33,8 @@ class Category(models.Model):
     name = models.CharField(max_length=500, unique=True)
     slug = models.SlugField(unique=True, blank=True)
     font_awesome_icon = models.CharField(default="layers", max_length=500, null=True, blank=True, verbose_name="Lucide icon name", help_text="e.g: layers, tag, heart")
-    # description = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+    is_company_category = models.BooleanField(default=False, verbose_name="Is Industry / Company Category")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -124,6 +124,23 @@ class BlogPost(models.Model):
     meta_title = models.CharField(max_length=500, blank=True)
     meta_description = models.CharField(max_length=1000, blank=True)
     slug = models.SlugField(max_length=600, unique=True, blank=True)
+    is_company = models.BooleanField(default=False)
+    
+    # Company Specific Details
+    company_email = models.EmailField(blank=True, null=True, verbose_name="Business Email")
+    company_phone = models.CharField(max_length=50, blank=True, null=True, verbose_name="Business Phone")
+    trade_license = models.FileField(
+        upload_to="trade_licenses/",
+        blank=True,
+        null=True,
+        verbose_name="Trade License / Registration Document"
+    )
+    company_website = models.URLField(max_length=500, blank=True, null=True, verbose_name="Website URL")
+    company_founded_year = models.PositiveIntegerField(blank=True, null=True, verbose_name="Founded Year")
+    company_employees_count = models.CharField(max_length=50, blank=True, null=True, verbose_name="Employees Count (e.g., 50-249)")
+    company_hourly_rate = models.CharField(max_length=50, blank=True, null=True, verbose_name="Hourly Rate (e.g., $25 - $49 / hr)")
+    company_min_project_size = models.CharField(max_length=50, blank=True, null=True, verbose_name="Min. Project Size (e.g., $10,000+)")
+
     # description = models.TextField()
     description = models.TextField(blank=True, null=True)
     featured_image = ProcessedImageField(
@@ -360,23 +377,42 @@ class Review(models.Model):
         (5, " 5 - Excellent"),
     )
 
-    post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name="reviews")
-    user = models.ForeignKey(CustomUserModel, on_delete=models.CASCADE)
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('published', 'Published'),
+        ('rejected', 'Rejected'),
+    )
 
-    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
-    comment = models.TextField(blank=True, null=True)
+    post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name="reviews")
+    reviewer = models.ForeignKey(CustomUserModel, on_delete=models.CASCADE, related_name="submitted_reviews")
+    
+    title = models.CharField(max_length=255, blank=True, null=True)
+    body = models.TextField(blank=True, null=True)
+
+    quality_rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES, default=5)
+    communication_rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES, default=5)
+    timeliness_rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES, default=5)
+    
+    is_anonymous = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    
+    admin_note = models.TextField(blank=True, null=True)
+    reviewed_by = models.ForeignKey(CustomUserModel, on_delete=models.SET_NULL, null=True, blank=True, related_name="moderated_reviews")
+    reviewed_at = models.DateTimeField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = (
-            "post",
-            "user",
-        )  # akta user double review dite parbena 1 ta post er jonno
         ordering = ["-created_at"]
 
+    @property
+    def overall_rating(self):
+        return round((self.quality_rating + self.communication_rating + self.timeliness_rating) / 3.0, 1)
+
     def __str__(self):
-        return f"{self.user.first_name} rated {self.rating}⭐ on {self.post.title}"
+        reviewer_name = "Anonymous" if self.is_anonymous else self.reviewer.first_name
+        return f"{reviewer_name} rated {self.overall_rating}⭐ on {self.post.title}"
 
 # view count system (Ip tracking)
 class Post_view_ip(models.Model):
@@ -545,3 +581,58 @@ class AutomationPublishLog(models.Model):
 
 
 
+
+# Company Profile Extension Models
+
+class CompanyService(models.Model):
+    company = models.ForeignKey(BlogPost, related_name='company_services', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    percentage = models.PositiveSmallIntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
+
+    class Meta:
+        ordering = ['-percentage']
+        
+    def __str__(self):
+        return f"{self.name} ({self.percentage}%)"
+
+class CompanyIndustryFocus(models.Model):
+    company = models.ForeignKey(BlogPost, related_name='company_industry_focuses', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    percentage = models.PositiveSmallIntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
+
+    class Meta:
+        ordering = ['-percentage']
+        
+    def __str__(self):
+        return f"{self.name} ({self.percentage}%)"
+
+class CompanyClientFocus(models.Model):
+    company = models.ForeignKey(BlogPost, related_name='company_client_focuses', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    percentage = models.PositiveSmallIntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
+
+    class Meta:
+        ordering = ['-percentage']
+        
+    def __str__(self):
+        return f"{self.name} ({self.percentage}%)"
+
+class CompanyClient(models.Model):
+    company = models.ForeignKey(BlogPost, related_name='company_clients', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+class CompanyLocation(models.Model):
+    company = models.ForeignKey(BlogPost, related_name='company_locations', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name

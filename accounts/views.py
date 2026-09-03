@@ -21,6 +21,10 @@ from forum.models import Question, Answer
 from django.utils import timezone
 from datetime import timedelta
 from django.http import JsonResponse
+import json
+from django.urls import reverse
+from blog_post.models import BlogPost, CompanyService, CompanyIndustryFocus, CompanyClientFocus, CompanyLocation, CompanyClient, Category, SubCategory
+from blog_post.forms import CompanyProfileForm
 
 def check_email_exists(request):
     email = request.GET.get('email', None)
@@ -191,7 +195,10 @@ def contact_us_view(request):
 def user_dashboard_view(request):
     user = request.user
     section = request.GET.get('section', 'overview')
-    user_blog_posts = BlogPost.objects.filter(author=user).select_related('author','category').prefetch_related('comments').order_by('-created_at')
+    
+    user_blog_posts = BlogPost.objects.filter(author=user, is_company=False).select_related('author','category').prefetch_related('comments').order_by('-created_at')
+    user_companies = BlogPost.objects.filter(author=user, is_company=True).select_related('author','category').prefetch_related('comments').order_by('-created_at')
+    all_user_posts = BlogPost.objects.filter(author=user)
     
     # forum section
     user_questions = Question.objects.filter(author=user).prefetch_related('answers').order_by('-created_at')
@@ -211,12 +218,12 @@ def user_dashboard_view(request):
         ).count()
 
 
-    total_reaction = BlogPost.objects.filter(author=request.user).annotate(
+    total_reaction = all_user_posts.annotate(
         like_count=Count('likes')
         ).aggregate(total_likes=Sum('like_count'))['total_likes'] or 0
         
-    total_views = user_blog_posts.aggregate(total=Sum('views'))['total'] or 0
-    total_quality = user_blog_posts.aggregate(total=Sum('content_quality'))['total'] or 0
+    total_views = all_user_posts.aggregate(total=Sum('views'))['total'] or 0
+    total_quality = all_user_posts.aggregate(total=Sum('content_quality'))['total'] or 0
     
     
     last_week_start = timezone.now() - timedelta(days=7)
@@ -249,9 +256,95 @@ def user_dashboard_view(request):
     else:
         notifications = None
 
+    company = None
+    form = None
+    categories = None
+    subcategories = None
+    services_json = "[]"
+    industries_json = "[]"
+    client_focuses_json = "[]"
+    locations_json = "[]"
+    clients_json = "[]"
+    form_action_url = ""
+
+    if section == 'edit-company':
+        company_id = request.GET.get('company_id') or request.POST.get('company_id')
+        if company_id:
+            company = get_object_or_404(BlogPost, pk=company_id, author=user, is_company=True)
+            form_action_url = f"{reverse('user_dashboard')}?section=edit-company&company_id={company.id}"
+            
+            if request.method == 'POST':
+                form = CompanyProfileForm(request.POST, request.FILES, instance=company)
+                if form.is_valid():
+                    company = form.save(commit=False)
+                    company.is_company = True
+                    company.save()
+                    form.save_m2m()
+                    
+                    try:
+                        # Services
+                        services_data = json.loads(request.POST.get('company_services', '[]'))
+                        company.company_services.all().delete()
+                        for s in services_data:
+                            if s.get('name'):
+                                CompanyService.objects.create(company=company, name=s.get('name'), percentage=int(s.get('percentage') or 0))
+                        
+                        # Industries
+                        industries_data = json.loads(request.POST.get('company_industries', '[]'))
+                        company.company_industry_focuses.all().delete()
+                        for s in industries_data:
+                            if s.get('name'):
+                                CompanyIndustryFocus.objects.create(company=company, name=s.get('name'), percentage=int(s.get('percentage') or 0))
+                        
+                        # Client Focus
+                        clients_focus_data = json.loads(request.POST.get('company_client_focuses', '[]'))
+                        company.company_client_focuses.all().delete()
+                        for s in clients_focus_data:
+                            if s.get('name'):
+                                CompanyClientFocus.objects.create(company=company, name=s.get('name'), percentage=int(s.get('percentage') or 0))
+                        
+                        # Locations
+                        locations_data = json.loads(request.POST.get('company_locations', '[]'))
+                        company.company_locations.all().delete()
+                        for s in locations_data:
+                            if s.get('name'):
+                                CompanyLocation.objects.create(company=company, name=s.get('name'))
+                        
+                        # Clients
+                        clients_data = json.loads(request.POST.get('company_clients', '[]'))
+                        company.company_clients.all().delete()
+                        for s in clients_data:
+                            if s.get('name'):
+                                CompanyClient.objects.create(company=company, name=s.get('name'))
+                    except Exception:
+                        pass
+                        
+                    messages.success(request, f"Successfully updated company '{company.title}'!")
+                    return redirect(reverse('user_dashboard') + '?section=companies')
+                else:
+                    messages.error(request, "Failed to update company. Please check errors in the form.")
+            else:
+                form = CompanyProfileForm(instance=company)
+
+            categories = Category.objects.filter(is_company_category=True).order_by('name')
+            subcategories = SubCategory.objects.select_related('category').all()
+            
+            services = list(company.company_services.values('name', 'percentage'))
+            industries = list(company.company_industry_focuses.values('name', 'percentage'))
+            client_focuses = list(company.company_client_focuses.values('name', 'percentage'))
+            locations = list(company.company_locations.values('name'))
+            clients = list(company.company_clients.values('name'))
+
+            services_json = json.dumps(services if services else [{"name": "", "percentage": ""}])
+            industries_json = json.dumps(industries if industries else [{"name": "", "percentage": ""}])
+            client_focuses_json = json.dumps(client_focuses if client_focuses else [{"name": "", "percentage": ""}])
+            locations_json = json.dumps(locations if locations else [{"name": ""}])
+            clients_json = json.dumps(clients if clients else [{"name": ""}])
+
     context = {
         "user": user,
         "user_blog_posts": user_blog_posts,
+        "user_companies": user_companies,
         "total_views": total_views,
         "total_comments": total_comments,
         "total_reaction" : total_reaction,
@@ -270,7 +363,21 @@ def user_dashboard_view(request):
         'recent_7_days': recent_answers_7_days,
         'last_follower':last_follower,
         'section': section,
-        'notifications': notifications
+        'notifications': notifications,
+
+        "form": form,
+        "post": company,
+        "company": company,
+        "categories": categories,
+        "subcategories": subcategories,
+        "services_json": services_json,
+        "industries_json": industries_json,
+        "client_focuses_json": client_focuses_json,
+        "locations_json": locations_json,
+        "clients_json": clients_json,
+        "is_edit_mode": True,
+        "form_action_url": form_action_url,
+        "cancel_url": reverse('user_dashboard') + '?section=companies',
     }
 
     return render(request, "account/demo/user_dashboard.html", context)
@@ -478,4 +585,84 @@ def user_traffic_api(request):
         'visits': visits_data,
         'users': users_data
     })
+
+from blog_post.models import CompanyService, CompanyClientFocus, CompanyClient, CompanyLocation
+from blog_post.forms import CompanyServiceForm, CompanyClientFocusForm, CompanyClientForm, CompanyLocationForm
+
+@login_required
+def manage_company_view(request, company_id):
+    company = get_object_or_404(BlogPost, pk=company_id, author=request.user)
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'add_service':
+            form = CompanyServiceForm(request.POST)
+            if form.is_valid():
+                service = form.save(commit=False)
+                service.company = company
+                service.save()
+                messages.success(request, "Service added successfully.")
+        
+        elif action == 'add_focus':
+            form = CompanyClientFocusForm(request.POST)
+            if form.is_valid():
+                focus = form.save(commit=False)
+                focus.company = company
+                focus.save()
+                messages.success(request, "Client focus added successfully.")
+                
+        elif action == 'add_client':
+            form = CompanyClientForm(request.POST)
+            if form.is_valid():
+                client = form.save(commit=False)
+                client.company = company
+                client.save()
+                messages.success(request, "Client added successfully.")
+                
+        elif action == 'add_location':
+            form = CompanyLocationForm(request.POST)
+            if form.is_valid():
+                location = form.save(commit=False)
+                location.company = company
+                location.save()
+                messages.success(request, "Location added successfully.")
+                
+        return redirect('manage_company', company_id=company.id)
+        
+    context = {
+        'company': company,
+        'service_form': CompanyServiceForm(),
+        'focus_form': CompanyClientFocusForm(),
+        'client_form': CompanyClientForm(),
+        'location_form': CompanyLocationForm(),
+    }
+    return render(request, 'account/demo/manage_company.html', context)
+
+@login_required
+def delete_company_item_view(request, company_id, item_type, item_id):
+    company = get_object_or_404(BlogPost, pk=company_id, author=request.user)
+    
+    if request.method == 'POST':
+        if item_type == 'service':
+            item = get_object_or_404(CompanyService, pk=item_id, company=company)
+        elif item_type == 'focus':
+            item = get_object_or_404(CompanyClientFocus, pk=item_id, company=company)
+        elif item_type == 'client':
+            item = get_object_or_404(CompanyClient, pk=item_id, company=company)
+        elif item_type == 'location':
+            item = get_object_or_404(CompanyLocation, pk=item_id, company=company)
+        else:
+            return redirect('manage_company', company_id=company.id)
+            
+        item.delete()
+        messages.success(request, f"{item_type.capitalize()} deleted successfully.")
+        
+    return redirect('manage_company', company_id=company.id)
+
+
+@login_required
+def user_company_edit_view(request, pk):
+    """Redirect to user dashboard section=edit-company."""
+    return redirect(f"{reverse('user_dashboard')}?section=edit-company&company_id={pk}")
 

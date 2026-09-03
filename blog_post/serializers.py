@@ -187,14 +187,16 @@ class LikeSerializer(serializers.ModelSerializer):
         read_only_fields = ['user']
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    reviewer = UserSerializer(read_only=True)
     
     class Meta:
         model = Review
         fields = [
-            'id', 'post', 'user', 'rating', 'comment', 'created_at'
+            'id', 'post', 'reviewer', 'title', 'body', 
+            'quality_rating', 'communication_rating', 'timeliness_rating', 
+            'is_anonymous', 'status', 'created_at', 'updated_at'
         ]
-        read_only_fields = ['user']
+        read_only_fields = ['reviewer']
 
 class PostViewIpSerializer(serializers.ModelSerializer):
     class Meta:

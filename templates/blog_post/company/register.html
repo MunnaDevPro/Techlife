@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+<header class="bg-white border-b border-gray-100 w-full z-50 sticky top-0 shadow-sm">
+    <div class="h-16 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <a href="{% url 'homepage' %}" class="flex-shrink-0">
+            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-7 sm:h-8 lg:h-9 w-auto" />
+        </a>
+        <div class="flex items-center gap-4">
+            {% if not user.is_authenticated %}
+            <a href="{% url 'login' %}?next={{ request.path }}"
+                class="flex items-center gap-2 px-6 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
+                Sign In
+            </a>
+            {% else %}
+            <span class="text-sm font-medium text-gray-700">Welcome, {{ request.user.get_full_name|default:request.user.username }}</span>
+            <a href="{% url 'user_dashboard' %}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-semibold transition-colors">
+                Dashboard
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+{% endblock navbar %}
+
+{% block content %}
+<style>
+    main#container { margin: 0 !important; padding: 0 !important; }
+    footer { margin-top: 0 !important; }
+</style>
+
+<div class="bg-gray-50/50 min-h-screen py-10 md:py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Main Form Container -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200/80 p-6 sm:p-8 md:p-10">
+            <div class="mb-8 pb-6 border-b border-gray-100">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Register Your Company</h1>
+                <p class="text-sm text-gray-500 mt-2">
+                    Enter your core business details to register your company profile. You can manage and add complete info, services, and locations anytime from your dashboard.
+                </p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="bg-red-50 border border-red-200 text-red-700 text-sm p-4 rounded-xl">
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                <!-- Company Name -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                        Company / Business Name <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                    <p class="text-red-500 text-xs mt-1.5">{{ form.title.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Subtitle / Tagline -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                        Subtitle / Tagline <span class="text-gray-400 font-normal lowercase">(optional)</span>
+                    </label>
+                    {{ form.subtitle }}
+                    {% if form.subtitle.errors %}
+                    <p class="text-red-500 text-xs mt-1.5">{{ form.subtitle.errors|striptags }}</p>
+                    {% else %}
+                    <p class="text-[12px] text-gray-400 mt-1.5">A short tagline summarizing your company.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Email & Phone Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                            Business Email
+                        </label>
+                        {{ form.company_email }}
+                        {% if form.company_email.errors %}
+                        <p class="text-red-500 text-xs mt-1.5">{{ form.company_email.errors|striptags }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                            Business Phone
+                        </label>
+                        {{ form.company_phone }}
+                        {% if form.company_phone.errors %}
+                        <p class="text-red-500 text-xs mt-1.5">{{ form.company_phone.errors|striptags }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Category & Subcategory Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                            Company Industry <span class="text-red-500">*</span>
+                        </label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                        <p class="text-red-500 text-xs mt-1.5">{{ form.category.errors|striptags }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                            Industry Sector <span class="text-gray-400 font-normal lowercase">(optional)</span>
+                        </label>
+                        {{ form.subcategory }}
+                        {% if form.subcategory.errors %}
+                        <p class="text-red-500 text-xs mt-1.5">{{ form.subcategory.errors|striptags }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- About the Company / Description -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                        About the Company
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                    <p class="text-red-500 text-xs mt-1.5">{{ form.description.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Logo & Trade License Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                            Company Logo (Featured Image)
+                        </label>
+                        {{ form.featured_image }}
+                        {% if form.featured_image.errors %}
+                        <p class="text-red-500 text-xs mt-1.5">{{ form.featured_image.errors|striptags }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                            Trade License Document <span class="text-gray-400 font-normal lowercase">(optional)</span>
+                        </label>
+                        {{ form.trade_license }}
+                        {% if form.trade_license.errors %}
+                        <p class="text-red-500 text-xs mt-1.5">{{ form.trade_license.errors|striptags }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Submit Button Container -->
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding-top: 24px; margin-top: 32px; border-top: 1px solid #f3f4f6;">
+                    <a href="{% url 'homepage' %}" 
+                       style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; font-size: 13px; font-weight: 600; color: #374151; background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; text-decoration: none; white-space: nowrap; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        <span>Return to Homepage</span>
+                    </a>
+                    
+                    <button type="submit" 
+                            style="display: inline-flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: center; gap: 8px; padding: 12px 28px; font-size: 14px; font-weight: 700; color: #ffffff; background: #1e3a6e; border: none; border-radius: 8px; cursor: pointer; white-space: nowrap; flex-shrink: 0; box-shadow: 0 2px 4px rgba(30,58,110,0.25); transition: all 0.2s;">
+                        <span style="white-space: nowrap;">Register Company</span>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0; display: inline-block;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

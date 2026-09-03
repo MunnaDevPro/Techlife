@@ -6,7 +6,7 @@ from django.views.decorators.vary import vary_on_headers
 from django.db.models import Q
 from .models import BlogPost, Category, Review, SubCategory
 from .models import BlogPost, BlogAdditionalImage, Category, Tag
-from .forms import BlogPostForm
+from .forms import BlogPostForm, CompanyStep1Form, CompanyStep2Form, CompanyStep3Form, PublicCompanyRegistrationForm
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -91,10 +91,14 @@ def get_display_like_count(post):
 
 
 def blog_details_view(request, slug):
-    blog_detail = (
+    blog_detail = get_object_or_404(
         BlogPost.objects.select_related("category", "author")
-        .prefetch_related("reviews", "additional_images", "tags", "likes")
-        .get(slug=slug, status="published")
+        .prefetch_related(
+            "reviews", "additional_images", "tags", "likes", 
+            "company_services", "company_industry_focuses", 
+            "company_client_focuses", "company_locations", "company_clients"
+        ),
+        slug=slug
     )
 
     related_news = BlogPost.objects.filter(
@@ -163,6 +167,12 @@ def blog_details_view(request, slug):
     context = {
         "blog_detail":    blog_detail,
         "post":           blog_detail,
+        "company":        blog_detail,
+        "company_services": blog_detail.company_services.all() if blog_detail.is_company else [],
+        "company_industries": blog_detail.company_industry_focuses.all() if blog_detail.is_company else [],
+        "company_client_focuses": blog_detail.company_client_focuses.all() if blog_detail.is_company else [],
+        "company_locations": blog_detail.company_locations.all() if blog_detail.is_company else [],
+        "company_clients": blog_detail.company_clients.all() if blog_detail.is_company else [],
         "display_views":  get_display_views(blog_detail),
         "display_link_count": get_display_link_count(blog_detail),
         "display_like_count": get_display_like_count(blog_detail),
@@ -175,6 +185,11 @@ def blog_details_view(request, slug):
         "sort_by":        sort_by,
         "action":         "blog_details",
     }
+
+    if blog_detail.is_company:
+        if request.headers.get("HX-Request"):
+            return render(request, "components/blog_details/partial_company_details_page.html", context)
+        return render(request, "components/blog_details/company_details_page.html", context)
 
     if request.headers.get("HX-Request"):
         return render(request, "components/blog_details/partial_blog_details_page.html", context)
@@ -813,3 +828,177 @@ def popular_tags_modal(request):
         'components/home/partials/popular_tags_modal_content.html',
         {'all_tags': all_tags},
     )
+
+from .forms import ReviewSearchForm, ReviewRatingForm, ReviewDetailsForm, ReviewIdentityForm
+
+def write_review_landing(request):
+    form = ReviewSearchForm(request.GET or None)
+    results = None
+    if form.is_valid() and form.cleaned_data.get('query'):
+        query = form.cleaned_data['query']
+        results = BlogPost.objects.filter(Q(title__icontains=query) | Q(subtitle__icontains=query)).distinct()[:10]
+    
+    return render(request, 'blog_post/review/landing.html', {
+        'form': form,
+        'results': results,
+    })
+
+@login_required
+def write_review_step1(request, post_id):
+    post = get_object_or_404(BlogPost, pk=post_id)
+    # Check if already submitted
+    if Review.objects.filter(post=post, reviewer=request.user).exists():
+        messages.error(request, "You have already submitted a review for this.")
+        return redirect('blog_details', slug=post.slug)
+
+    # Initialize session for this review if not exists or if starting fresh
+    if request.method == 'POST':
+        form = ReviewRatingForm(request.POST)
+        if form.is_valid():
+            request.session[f'review_{post_id}_rating'] = form.cleaned_data
+            return redirect('write_review_step2', post_id=post_id)
+    else:
+        initial = request.session.get(f'review_{post_id}_rating', {})
+        form = ReviewRatingForm(initial=initial)
+        
+    return render(request, 'blog_post/review/step1.html', {'form': form, 'post': post})
+
+@login_required
+def write_review_step2(request, post_id):
+    post = get_object_or_404(BlogPost, pk=post_id)
+    if f'review_{post_id}_rating' not in request.session:
+        return redirect('write_review_step1', post_id=post_id)
+
+    if request.method == 'POST':
+        form = ReviewDetailsForm(request.POST)
+        if form.is_valid():
+            request.session[f'review_{post_id}_details'] = form.cleaned_data
+            return redirect('write_review_step3', post_id=post_id)
+    else:
+        initial = request.session.get(f'review_{post_id}_details', {})
+        form = ReviewDetailsForm(initial=initial)
+        
+    return render(request, 'blog_post/review/step2.html', {'form': form, 'post': post})
+
+@login_required
+def write_review_step3(request, post_id):
+    post = get_object_or_404(BlogPost, pk=post_id)
+    if f'review_{post_id}_details' not in request.session:
+        return redirect('write_review_step2', post_id=post_id)
+
+    if request.method == 'POST':
+        form = ReviewIdentityForm(request.POST)
+        if form.is_valid():
+            rating_data = request.session.get(f'review_{post_id}_rating')
+            details_data = request.session.get(f'review_{post_id}_details')
+            identity_data = form.cleaned_data
+            
+            # Create review
+            review = Review.objects.create(
+                post=post,
+                reviewer=request.user,
+                quality_rating=rating_data['quality_rating'],
+                communication_rating=rating_data['communication_rating'],
+                timeliness_rating=rating_data['timeliness_rating'],
+                title=details_data['title'],
+                body=details_data['body'],
+                is_anonymous=identity_data['is_anonymous'],
+                status='pending'
+            )
+            
+            # Clear session
+            del request.session[f'review_{post_id}_rating']
+            del request.session[f'review_{post_id}_details']
+            
+            return redirect('write_review_success', post_id=post_id)
+    else:
+        form = ReviewIdentityForm()
+        
+    return render(request, 'blog_post/review/step3.html', {'form': form, 'post': post})
+
+@login_required
+def write_review_success(request, post_id):
+    post = get_object_or_404(BlogPost, pk=post_id)
+    return render(request, 'blog_post/review/success.html', {'post': post})
+
+@login_required
+def add_company_step1(request):
+    """Single-page public registration form for new companies."""
+    if request.method == 'POST':
+        form = PublicCompanyRegistrationForm(request.POST, request.FILES)
+        if form.is_valid():
+            company = form.save(commit=False)
+            company.author = request.user
+            company.status = 'pending'
+            company.is_company = True
+            company.save(skip_auto_status=True)
+            
+            messages.success(request, f"Company '{company.title}' registered successfully! You can manage your company details from your dashboard.")
+            return redirect('user_dashboard')
+    else:
+        form = PublicCompanyRegistrationForm()
+        
+    return render(request, 'blog_post/company/register.html', {'form': form})
+
+@login_required
+def add_company_step2(request):
+    if 'company_step1' not in request.session:
+        return redirect('add_company_step1')
+
+    if request.method == 'POST':
+        form = CompanyStep2Form(request.POST)
+        if form.is_valid():
+            request.session['company_step2'] = form.cleaned_data
+            return redirect('add_company_step3')
+    else:
+        initial = request.session.get('company_step2', {})
+        form = CompanyStep2Form(initial=initial)
+        
+    return render(request, 'blog_post/company/step2.html', {'form': form})
+
+@login_required
+def add_company_step3(request):
+    if 'company_step2' not in request.session:
+        return redirect('add_company_step2')
+
+    if request.method == 'POST':
+        form = CompanyStep3Form(request.POST, request.FILES)
+        if form.is_valid():
+            step1_data = request.session.get('company_step1')
+            step2_data = request.session.get('company_step2')
+            
+            # Create the company (BlogPost)
+            company = BlogPost(
+                title=step1_data['title'],
+                subtitle=step1_data.get('subtitle', ''),
+                category_id=step1_data['category'],
+                subcategory_id=step1_data.get('subcategory') or None,
+                company_email=step1_data.get('company_email', ''),
+                company_phone=step1_data.get('company_phone', ''),
+                description=step2_data.get('description', ''),
+                author=request.user,
+                status='pending',
+                is_company=True
+            )
+            
+            if 'featured_image' in request.FILES:
+                company.featured_image = request.FILES['featured_image']
+            
+            if 'trade_license' in request.FILES:
+                company.trade_license = request.FILES['trade_license']
+                
+            company.save(skip_auto_status=True)
+            
+            # Clear session
+            del request.session['company_step1']
+            del request.session['company_step2']
+            
+            return redirect('add_company_success')
+    else:
+        form = CompanyStep3Form()
+        
+    return render(request, 'blog_post/company/step3.html', {'form': form})
+
+@login_required
+def add_company_success(request):
+    return render(request, 'blog_post/company/success.html')

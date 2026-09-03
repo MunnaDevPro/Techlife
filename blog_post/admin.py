@@ -379,14 +379,14 @@ class BlogAdditionalImageAdmin(ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(ModelAdmin):
-    list_display = ("post", "user", "star_rating", "created_at")
-    list_filter = ("rating", "created_at")
-    search_fields = ("post__title", "user__email")
-    autocomplete_fields = ("post", "user")
+    list_display = ("post", "reviewer", "status", "star_rating", "created_at")
+    list_filter = ("status", "created_at")
+    search_fields = ("post__title", "reviewer__email")
+    autocomplete_fields = ("post", "reviewer")
     ordering = ("-created_at",)
 
     def star_rating(self, obj):
-        return "⭐" * obj.rating
+        return "⭐" * int(obj.overall_rating)
     star_rating.short_description = "Rating"
 
 

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+<header class="bg-white border-b border-gray-100 w-full z-50 sticky top-0 shadow-sm">
+    <div class="h-16 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <a href="{% url 'homepage' %}" class="flex-shrink-0">
+            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-7 sm:h-8 lg:h-9 w-auto" />
+        </a>
+        <div class="flex items-center gap-4">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-6 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
+                    Sign In
+                </a>
+            {% else %}
+                <span class="text-sm font-medium text-gray-700">Welcome, {{ user.username }}</span>
+            {% endif %}
+        </div>
+    </div>
+</header>
+{% endblock navbar %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-12">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <!-- Header -->
+            <div class="bg-indigo-600 px-6 py-8 text-white">
+                <h2 class="text-2xl font-bold">Reviewing {{ post.title }}</h2>
+                <p class="mt-2 text-indigo-100">Step 1 of 3: Rate your experience</p>
+                <!-- Progress bar -->
+                <div class="mt-4 w-full bg-indigo-800 rounded-full h-2">
+                    <div class="bg-yellow-400 h-2 rounded-full" style="width: 33%"></div>
+                </div>
+            </div>
+            
+            <!-- Form -->
+            <div class="p-6 sm:p-10">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                        <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700">
+                            Please correct the errors below.
+                        </div>
+                    {% endif %}
+
+                    <div class="space-y-8">
+                        {% for field in form %}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ field.label }}</label>
+                                <div class="mt-1">
+                                    {{ field }}
+                                </div>
+                                {% if field.help_text %}
+                                    <p class="mt-2 text-sm text-gray-500">{{ field.help_text }}</p>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <p class="mt-2 text-sm text-red-600">{{ field.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mt-10 flex justify-end">
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded shadow transition-colors">
+                            Next Step
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

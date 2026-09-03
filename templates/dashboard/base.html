@@ -854,10 +854,16 @@
         /* ── Page content ──────────────────────────────────────────── */
         .ft-page {
             flex: 1;
-            padding: 20px;
+            padding: 16px;
             overflow-y: auto;
             overflow-x: hidden;
             max-width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .ft-page {
+                padding: 20px;
+            }
         }
 
         .ft-page-title {

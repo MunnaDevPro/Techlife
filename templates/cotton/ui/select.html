@@ -30,10 +30,12 @@ Slot: <option> elements or Django select field
     syncOptions() {
       const select = this.getSelect();
       if (!select) return;
-      this.options = Array.from(select.options).map((opt, index) => ({
-        value: opt.value,
-        label: opt.text.trim(),
-        index: index
+      this.options = Array.from(select.options)
+        .filter(opt => !opt.disabled)
+        .map((opt, index) => ({
+          value: opt.value,
+          label: opt.text.trim(),
+          index: index
       }));
       this.selectedValue = select.value;
       const selectedOpt = Array.from(select.options).find(opt => opt.selected) || select.options[select.selectedIndex];
@@ -102,7 +104,7 @@ Slot: <option> elements or Django select field
         this.selectOption(opts[this.activeIndex].value);
       }
     }
-  }" x-modelable="selectedValue" {{ attrs|safe }} @click.outside="open = false" class="flex flex-col gap-0.5 relative {{ extra_class }}">
+  }" x-modelable="selectedValue" {{ attrs|safe }} @click.outside="open = false" class="flex flex-col gap-0.5 relative z-50 {{ extra_class }}">
     {% if label %}
     <label for="{{ id|default:name }}" class="!text-[13px] !font-semibold !text-gray-700 !mb-1.5 !block">
       {{ label }}{% if required %}<span class="!text-red-500 !ml-0.5">*</span>{% endif %}
@@ -139,39 +141,33 @@ Slot: <option> elements or Django select field
         x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
         x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 translate-y-1"
-        class="absolute z-[100] w-full mt-1.5 rounded-md overflow-hidden flex flex-col focus:outline-none"
-        style="background: var(--surface) !important; border: 1px solid var(--border) !important; box-shadow: var(--shadow-dropdown) !important; display: none; margin-top: 6px !important; border-radius: 6px !important; overflow: hidden !important;">
+        class="absolute z-[100] w-full mt-1.5 rounded-md overflow-hidden flex flex-col focus:outline-none bg-white border border-gray-200 shadow-lg"
+        style="display: none;">
+        {% if searchable != 'False' and searchable != False %}
         <!-- Search Input -->
-        <div
-          style="padding: 10px 12px !important; border-bottom: 1px solid var(--border) !important; background: var(--surface) !important;">
-          <div
-            style="display: flex !important; align-items: center !important; gap: 8px !important; padding: 0 !important;">
-            <i data-lucide="search" class="w-4 h-4 opacity-40" style="color: var(--text) !important;"></i>
+        <div class="p-2 border-b border-gray-100 bg-gray-50">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             <input type="text" x-ref="searchInput" x-model="search" @input="activeIndex = -1"
               @keydown.down.prevent="navigateOptions('down')" @keydown.up.prevent="navigateOptions('up')"
               @keydown.enter.prevent="selectActive()" @keydown.escape.prevent.stop="open = false"
               placeholder="Search..."
-              style="width: 100% !important; background: transparent !important; border: none !important; padding: 0 !important; font-size: 13px !important; color: var(--text) !important; outline: none !important; box-shadow: none !important;"
+              style="width: 100%; background: transparent; border: none; padding: 0; font-size: 13px; color: #374151; outline: none; box-shadow: none;"
               @click.stop />
           </div>
         </div>
+        {% endif %}
 
         <!-- Options List -->
-        <div x-ref="listContainer" class="overflow-y-auto scrollbar-thin max-h-60"
-          style="padding: 6px !important; display: flex !important; flex-direction: column !important; gap: 2px !important; max-height: 240px !important; overflow-y: auto !important;">
+        <div x-ref="listContainer" class="overflow-y-auto scrollbar-thin max-h-60" style="padding: 6px; display: flex; flex-direction: column; gap: 2px;">
           <template x-for="(opt, idx) in filteredOptions" :key="opt.value + '_' + idx">
             <button type="button" @click="selectOption(opt.value)"
-              class="w-full text-left rounded-md cursor-pointer transition-colors duration-150" :style="
-              'display: flex !important; align-items: center !important; justify-content: space-between !important; padding: 10px 12px !important; font-size: 13px !important; text-align: left !important; border: none !important; width: 100% !important; border-radius: 6px !important; ' +
-              (selectedValue === opt.value
-                ? 'background: var(--surface-2) !important; color: var(--text) !important; font-weight: 600 !important;'
-                : activeIndex === idx
-                  ? 'background: var(--surface-2) !important; color: var(--text) !important;'
-                  : 'background: transparent !important; color: var(--text) !important;')
-            " :data-active="activeIndex === idx" @mouseenter="activeIndex = idx">
-              <span x-text="opt.label" class="truncate" style="flex: 1 !important; text-align: left !important;"></span>
-              <div x-show="selectedValue === opt.value" class="flex-shrink-0 flex items-center justify-center w-4 h-4"
-                style="color: var(--primary) !important;">
+              class="w-full text-left rounded-md cursor-pointer transition-colors duration-150 flex items-center justify-between text-[13px]"
+              :class="selectedValue === opt.value ? 'bg-gray-100 text-gray-900 font-semibold' : activeIndex === idx ? 'bg-gray-50 text-gray-900' : 'bg-transparent text-gray-700'"
+              :data-active="activeIndex === idx" @mouseenter="activeIndex = idx"
+              style="padding: 8px 12px; min-height: 32px;">
+              <span x-text="opt.label" class="truncate flex-1 text-left"></span>
+              <div x-show="selectedValue === opt.value" class="flex-shrink-0 flex items-center justify-center w-4 h-4 text-blue-600">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                 </svg>
@@ -180,10 +176,9 @@ Slot: <option> elements or Django select field
           </template>
 
           <!-- Empty State -->
-          <div x-show="filteredOptions.length === 0" class="flex flex-col items-center justify-center gap-1.5"
-            style="padding: 20px 10px !important; color: var(--text-muted) !important;">
-            <i data-lucide="inbox" class="w-5 h-5 opacity-40"></i>
-            <span style="font-size: 12.5px !important; font-style: italic !important;">No matches found</span>
+          <div x-show="filteredOptions.length === 0" class="flex flex-col items-center justify-center gap-1.5 p-5 text-gray-400">
+            <svg class="w-5 h-5 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+            <span class="text-[12.5px] italic">No matches found</span>
           </div>
         </div>
       </div>

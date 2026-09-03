@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+<header class="bg-white border-b border-gray-100 w-full z-50 sticky top-0 shadow-sm">
+    <div class="h-16 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <a href="{% url 'homepage' %}" class="flex-shrink-0">
+            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-7 sm:h-8 lg:h-9 w-auto" />
+        </a>
+        <div class="flex items-center gap-4">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-6 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
+                    Sign In
+                </a>
+            {% else %}
+                <span class="text-sm font-medium text-gray-700">Welcome, {{ user.username }}</span>
+            {% endif %}
+        </div>
+    </div>
+</header>
+{% endblock navbar %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-20">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="bg-white rounded-xl shadow-lg p-10">
+            <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
+                <svg class="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Review Submitted!</h2>
+            
+            <p class="text-lg text-gray-600 mb-8">
+                Thank you for reviewing <strong>{{ post.title }}</strong>. Your review has been submitted successfully and is currently pending approval by our moderators. 
+                It will be published once it passes our verification process.
+            </p>
+            
+            <div class="flex justify-center space-x-4">
+                <a href="{% url 'blog_details' post.slug %}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded shadow transition-colors">
+                    Back to Post
+                </a>
+                <a href="{% url 'write_review_landing' %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded shadow transition-colors">
+                    Write Another
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

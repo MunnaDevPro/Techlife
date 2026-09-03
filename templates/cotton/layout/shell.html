@@ -116,6 +116,27 @@ Slot (default): page body content
         </div>
       </div>
 
+      {# Company Tree #}
+      <div class="mt-2">
+        <button type="button" @click="toggleDropdown('company')"
+          class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Company' %}text-[var(--primary)] font-semibold{% endif %}">
+          <div class="flex items-center gap-2">
+            <i data-lucide="building-2"></i>
+            <span>Company</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
+            :class="activeDropdown === 'company' ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="activeDropdown === 'company'" x-collapse.duration.500ms class="ft-tree-group py-1 space-y-1">
+          <a href="{% url 'dashboard:company_list' %}"
+            class="ft-nav-sub-item {% if active_menu == 'Company' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="building"
+              class="w-3.5 h-3.5 {% if active_menu == 'Company' %}!text-white{% endif %}"></i>
+            <span class="{% if active_menu == 'Company' %}!text-white{% endif %}">All Companies</span>
+          </a>
+        </div>
+      </div>
+
       {# Forum Tree #}
       <div class="mt-2">
         <button type="button" @click="toggleDropdown('forum')"

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}{{ company.title }} - Company Profile | TechLife BD{% endblock %}
+{% block meta_description %}{{ company.subtitle|default:company.description|striptags|truncatechars:155 }}{% endblock %}
+
+{% block content %}
+<style>
+    /* Remove default base.html container margin and padding to close the gap between navbar and footer */
+    main#container {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    /* Remove footer's default top margin to close the gap */
+    footer {
+        margin-top: 0 !important;
+    }
+    /* Infinite Marquee Animation for Featured Companies */
+    @keyframes scroll-marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+        animation: scroll-marquee 25s linear infinite;
+        will-change: transform;
+    }
+    .animate-marquee:hover {
+        animation-play-state: paused;
+    }
+</style>
+{% include 'components/blog_details/partial_company_details_page.html' %}
+{% endblock content %}

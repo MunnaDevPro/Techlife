@@ -34,6 +34,14 @@ urlpatterns = [
     path("content/posts/<int:pk>/edit/", content.post_detail_edit, name="post_edit"),
     path("content/posts/<int:post_pk>/comments/<int:comment_pk>/delete/", content.post_comment_delete, name="post_comment_delete"),
     
+    # Companies
+    path("company/", content.post_list, {'is_company_view': True}, name="company_list"),
+    path("company/create/", content.company_create, name="company_create"),
+    path("company/<int:pk>/edit/", content.company_detail_edit, name="company_edit"),
+    path("company/<int:pk>/delete/", content.post_delete, name="company_delete"),
+    path("company/bulk/", content.post_bulk_action, name="company_bulk"),
+    path("company/<int:pk>/status/", content.post_update_status, name="company_status_update"),
+    
     path("content/pending/", content.post_list, name="content_pending"),
     path("content/subcategories/", content.subcategory_list_crud, name="content_subcategories"),
     path("content/categories/", content.category_list_crud, name="content_categories"),

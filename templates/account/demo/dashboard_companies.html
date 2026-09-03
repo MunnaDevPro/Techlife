@@ -1,0 +1,52 @@
+<c-ui.card title="My Companies" subtitle="Manage your registered companies and their details." extra_class="max-w-5xl">
+    <c-slot name="actions">
+        <c-ui.button href="{% url 'add_company_step1' %}" icon="plus" size="sm" extra_class="rounded font-semibold transition-opacity hover:opacity-90 shadow-sm" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; font-size: 12px; background-color: #1e3a6e !important; color: white !important; border: none;">
+            Add Company
+        </c-ui.button>
+    </c-slot>
+
+    <div class="space-y-4">
+        {% for company in user_companies %}
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-lg border border-gray-200 hover:border-[#1e3a6e]/30 hover:bg-gray-50/50 transition-all gap-4">
+            <div class="flex items-start gap-4">
+                {% if company.featured_image %}
+                <img src="{{ company.featured_image.url }}" alt="{{ company.title }}" class="w-16 h-16 rounded-lg object-cover border border-gray-100 shadow-sm">
+                {% else %}
+                <div class="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 border border-gray-200 shadow-sm">
+                    <i class="fas fa-building text-2xl"></i>
+                </div>
+                {% endif %}
+                <div>
+                    <h3 class="font-bold text-gray-900 text-lg">{{ company.title }}</h3>
+                    <p class="text-sm text-gray-500 line-clamp-1 mt-0.5">{{ company.subtitle|default:"No subtitle" }}</p>
+                    <div class="flex items-center gap-3 mt-2 text-[11px] font-medium text-gray-400">
+                        <span class="flex items-center gap-1.5"><i class="fas fa-calendar-alt"></i> {{ company.created_at|date:"M d, Y" }}</span>
+                        <span class="flex items-center gap-1.5"><i class="fas fa-check-circle text-green-500"></i> Active</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                <a href="{% url 'user_company_edit' company.id %}" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-xs font-semibold rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a6e] transition-colors w-full sm:w-auto">
+                    <i class="fas fa-edit mr-1.5"></i> Edit
+                </a>
+                <a href="{% url 'company_details' company.slug %}" target="_blank" class="inline-flex justify-center items-center px-4 py-2 border border-[#1e3a6e] shadow-sm text-xs font-semibold rounded-lg text-white bg-[#1e3a6e] hover:bg-[#152d56] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1e3a6e] transition-colors w-full sm:w-auto">
+                    <i class="fas fa-external-link-alt mr-1.5"></i> Details
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="py-8 bg-gray-50/50 rounded-xl border border-gray-100">
+            <c-ui.empty-state 
+                icon="building-2"
+                title="No Companies Found"
+                description="You haven't registered any companies yet. Add your first company to start building your profile."
+            >
+                <c-ui.button href="{% url 'add_company_step1' %}" icon="plus" size="sm" extra_class="mt-3 rounded font-semibold transition-opacity hover:opacity-90 shadow-sm" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; font-size: 12px; background-color: #1e3a6e !important; color: white !important; border: none;">
+                    Add New Company
+                </c-ui.button>
+            </c-ui.empty-state>
+        </div>
+        {% endfor %}
+    </div>
+</c-ui.card>

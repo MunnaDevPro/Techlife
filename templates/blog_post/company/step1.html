@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+<header class="bg-white border-b border-gray-100 w-full z-50 sticky top-0 shadow-sm">
+    <div class="h-16 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <a href="{% url 'homepage' %}" class="flex-shrink-0">
+            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-7 sm:h-8 lg:h-9 w-auto" />
+        </a>
+        <div class="flex items-center gap-4">
+            {% if not user.is_authenticated %}
+            <a href="{% url 'login' %}?next={{ request.path }}"
+                class="flex items-center gap-2 px-6 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
+                Sign In
+            </a>
+            {% else %}
+            <span class="text-sm font-medium text-gray-700">Welcome, {{ request.user.get_full_name|default:request.user.username }}</span>
+            {% endif %}
+        </div>
+    </div>
+</header>
+{% endblock navbar %}
+
+{% block content %}
+<style>
+    main#container { margin: 0 !important; padding: 0 !important; }
+    footer { margin-top: 0 !important; }
+</style>
+<div class="bg-gray-50 min-h-screen py-12">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Progress Bar -->
+        <div class="mb-20 mt-4">
+            <div class="relative max-w-xl mx-auto pb-6">
+                <!-- Connecting Line (Background) -->
+                <div class="absolute left-16 right-16 top-[22px] h-[3px] bg-gray-300 z-0 rounded-full"></div>
+                <!-- Connecting Line (Active) -->
+                <div class="absolute left-16 top-[22px] w-0 h-[3px] bg-[#1e3a6e] z-0 transition-all duration-700 ease-in-out rounded-full"></div>
+                
+                <ul class="flex justify-between relative z-10 w-full">
+                    <!-- Step 1: Active -->
+                    <li class="flex flex-col items-center w-32 cursor-pointer">
+                        <div class="w-11 h-11 rounded-full flex items-center justify-center bg-[#1e3a6e] text-white font-bold text-lg shadow-[0_0_0_6px_#f9fafb] ring-1 ring-gray-100 transition-all">
+                            1
+                        </div>
+                        <span class="mt-4 text-sm font-bold text-[#1e3a6e] tracking-wide">Basic Info</span>
+                    </li>
+                    <!-- Step 2: Inactive -->
+                    <li class="flex flex-col items-center w-32">
+                        <div class="w-11 h-11 rounded-full flex items-center justify-center bg-white text-gray-400 font-bold text-lg shadow-[0_0_0_6px_#f9fafb] ring-1 ring-gray-200 transition-all">
+                            2
+                        </div>
+                        <span class="mt-4 text-[13px] font-semibold text-gray-400 tracking-wide">Description</span>
+                    </li>
+                    <!-- Step 3: Inactive -->
+                    <li class="flex flex-col items-center w-32">
+                        <div class="w-11 h-11 rounded-full flex items-center justify-center bg-white text-gray-400 font-bold text-lg shadow-[0_0_0_6px_#f9fafb] ring-1 ring-gray-200 transition-all">
+                            3
+                        </div>
+                        <span class="mt-4 text-[13px] font-semibold text-gray-400 tracking-wide">Media</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-300">
+            <div class="p-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-1">Company Basics</h2>
+                <p class="text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">Enter your company's core details and industry to get started.</p>
+
+                <form method="POST" class="space-y-6">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="bg-red-50 text-red-700 p-4 rounded-md mb-6">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="space-y-6">
+                        <!-- Company Name -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Business / Company Name
+                                <span class="text-red-500">*</span></label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <p class="text-red-500 text-xs mt-1.5">{{ form.title.errors|striptags }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Email & Phone Row -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Business Email</label>
+                                {{ form.company_email }}
+                                {% if form.company_email.errors %}
+                                <p class="text-red-500 text-xs mt-1.5">{{ form.company_email.errors|striptags }}</p>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Business Phone</label>
+                                {{ form.company_phone }}
+                                {% if form.company_phone.errors %}
+                                <p class="text-red-500 text-xs mt-1.5">{{ form.company_phone.errors|striptags }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Subtitle -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Subtitle / Tagline
+                                <span class="text-gray-400 font-normal">(Optional)</span></label>
+                            {{ form.subtitle }}
+                            {% if form.subtitle.errors %}
+                            <p class="text-red-500 text-xs mt-1.5">{{ form.subtitle.errors|striptags }}</p>
+                            {% else %}
+                            <p class="text-[12px] text-gray-400 mt-1.5 ml-1"><i class="fas fa-info-circle mr-1"></i> A short catchy phrase about your business.</p>
+                            {% endif %}
+                        </div>
+
+                        <hr class="border-gray-100 my-6">
+
+                        <!-- Categories Row -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <c-ui.select name="category" is_django_form="True" label="Industry / Category" required="True">
+                                    {{ form.category }}
+                                </c-ui.select>
+                            </div>
+                            <div>
+                                <c-ui.select name="subcategory" is_django_form="True" label="Subcategory (Optional)">
+                                    {{ form.subcategory }}
+                                </c-ui.select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 mt-6 border-t border-gray-100 flex justify-end">
+                        <button type="submit"
+                            class="bg-[#1e3a6e] hover:bg-[#152d56] text-white text-sm font-semibold py-2.5 px-6 rounded-md shadow-sm hover:shadow transition-all duration-300 flex items-center group cursor-pointer">
+                            Next Step 
+                            <i class="fas fa-arrow-right ml-2 text-xs group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
