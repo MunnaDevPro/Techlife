@@ -91,6 +91,99 @@ class BlogPostForm(forms.ModelForm):
             for name in tag_names:
                 # get or create tag (case-insensitive)
                 tag, created = Tag.objects.get_or_create(name__iexact=name, defaults={"name": name})
+import hashlib
+from django import forms
+
+from tags.models import Tag
+from .models import BlogPost, Category
+
+
+class IconForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ["name", "font_awesome_icon" , "description"]
+
+
+class BlogPostForm(forms.ModelForm):
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), required=True)
+    tags = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput(attrs={"id": "post_tags_hidden"}),
+    )
+    description = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                "id": "post_description",
+                "rows": 12,
+                "class": "ft-input w-full",
+                # CKEditor 5 replaces this textarea on the client side
+            }
+        ),
+        required=False,
+    )
+
+    class Meta:
+        model = BlogPost
+        fields = [
+            "title",
+            "description",
+            "featured_image",
+            "featured_image_url",
+            "category",
+            "subcategory",
+        ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        title = cleaned_data.get("title") or getattr(self.instance, "title", "")
+        description = cleaned_data.get("description") or getattr(self.instance, "description", "")
+        if title:
+            raw_content = (title + str(description or "")).encode("utf-8")
+            c_hash = hashlib.md5(raw_content).hexdigest()
+            qs = BlogPost.objects.filter(content_hash=c_hash)
+            if self.instance and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise forms.ValidationError("A blog post with duplicate content already exists.")
+
+        featured_image = cleaned_data.get("featured_image")
+        if featured_image and hasattr(featured_image, "read"):
+            try:
+                featured_image.seek(0)
+                img_bytes = featured_image.read()
+                featured_image.seek(0)
+                img_hash = hashlib.md5(img_bytes).hexdigest()
+                img_qs = BlogPost.objects.filter(image_hash=img_hash)
+                if self.instance and self.instance.pk:
+                    img_qs = img_qs.exclude(pk=self.instance.pk)
+                if img_qs.exists():
+                    raise forms.ValidationError("A blog post with a duplicate image already exists.")
+            except Exception:
+                pass
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=commit)
+        if commit:
+            self._save_tags()
+        else:
+            # If commit=False, override save_m2m so that tags are saved when save_m2m is called
+            original_save_m2m = self.save_m2m
+            def save_m2m_override():
+                original_save_m2m()
+                self._save_tags()
+            self.save_m2m = save_m2m_override
+        return instance
+
+    def _save_tags(self):
+        tags_str = self.cleaned_data.get('tags', '')
+        tag_objs = []
+        if tags_str:
+            tag_names = [t.strip() for t in tags_str.split(',') if t.strip()]
+            for name in tag_names:
+                # get or create tag (case-insensitive)
+                tag, created = Tag.objects.get_or_create(name__iexact=name, defaults={"name": name})
                 tag_objs.append(tag)
         self.instance.tags.set(tag_objs)
 
@@ -104,38 +197,46 @@ class ReviewSearchForm(forms.Form):
         required=False, 
         widget=forms.TextInput(attrs={
             "placeholder": "Search the company or software you worked with...", 
-            "class": "w-full rounded-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-6 py-4"
+            "class": "w-full rounded-full border-gray-300 shadow-sm focus:border-[#1e3a6e] focus:ring-[#1e3a6e] text-sm px-6 py-3"
         })
     )
+
+select_attrs = {
+    'class': 'w-full rounded-xl border border-slate-300 bg-white text-slate-800 text-sm p-3.5 focus:border-[#1e3a6e] focus:ring-2 focus:ring-[#1e3a6e]/20 transition-all duration-200 cursor-pointer shadow-sm font-medium hover:border-[#1e3a6e]'
+}
 
 class ReviewRatingForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['quality_rating', 'communication_rating', 'timeliness_rating']
         labels = {
-            'quality_rating': 'Quality',
-            'communication_rating': 'Communication',
-            'timeliness_rating': 'Timeliness',
+            'quality_rating': 'Quality Rating',
+            'communication_rating': 'Communication Rating',
+            'timeliness_rating': 'Timeliness Rating',
         }
         widgets = {
-            'quality_rating': forms.Select(attrs={'class': 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3'}),
-            'communication_rating': forms.Select(attrs={'class': 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3'}),
-            'timeliness_rating': forms.Select(attrs={'class': 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3'}),
+            'quality_rating': forms.Select(attrs=select_attrs),
+            'communication_rating': forms.Select(attrs=select_attrs),
+            'timeliness_rating': forms.Select(attrs=select_attrs),
         }
 
 class ReviewDetailsForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['title', 'body']
+        labels = {
+            'title': 'Review Headline',
+            'body': 'Detailed Review',
+        }
         widgets = {
             'title': forms.TextInput(attrs={
-                'class': 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3', 
-                'placeholder': 'Summarize your experience...'
+                'class': 'w-full rounded-xl border border-slate-300 bg-white text-slate-800 text-sm p-3.5 focus:border-[#1e3a6e] focus:ring-2 focus:ring-[#1e3a6e]/20 transition-all duration-200 shadow-sm font-medium placeholder-slate-400', 
+                'placeholder': 'e.g. Working with Intelligence System solution limited was excellent'
             }),
             'body': forms.Textarea(attrs={
-                'class': 'w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3', 
+                'class': 'w-full rounded-xl border border-slate-300 bg-white text-slate-800 text-sm p-3.5 focus:border-[#1e3a6e] focus:ring-2 focus:ring-[#1e3a6e]/20 transition-all duration-200 shadow-sm font-medium placeholder-slate-400', 
                 'rows': 5, 
-                'placeholder': 'Tell us more about your experience...'
+                'placeholder': 'e.g. They delivered software solutions on time with absolute professionalism. Their technical team demonstrated deep domain expertise throughout the project.'
             }),
         }
 
@@ -147,7 +248,7 @@ class ReviewIdentityForm(forms.ModelForm):
             'is_anonymous': 'Submit anonymously (Your name will not be displayed publicly)'
         }
         widgets = {
-            'is_anonymous': forms.CheckboxInput(attrs={'class': 'h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'}),
+            'is_anonymous': forms.CheckboxInput(attrs={'class': 'h-4 w-4 rounded border-slate-300 text-[#1e3a6e] focus:ring-[#1e3a6e] cursor-pointer'}),
         }
 
 
@@ -284,10 +385,11 @@ class CompanyLocationForm(forms.ModelForm):
 class CompanyProfileForm(forms.ModelForm):
     category = forms.ModelChoiceField(
         queryset=Category.objects.filter(is_company_category=True).order_by('name'), 
-        required=True,
+        required=False,
         label="Company Industry",
         widget=forms.Select(attrs={"class": "ft-input w-full cursor-pointer"})
     )
+    custom_category = forms.CharField(required=False, label="Custom Industry Name")
     tags = forms.CharField(
         required=False,
         widget=forms.HiddenInput(attrs={"id": "post_tags_hidden"}),
@@ -298,6 +400,7 @@ class CompanyProfileForm(forms.ModelForm):
                 "id": "post_description",
                 "rows": 8,
                 "class": "ft-input w-full",
+                "placeholder": "Provide a comprehensive summary of your company's mission, expertise, core services, and key achievements...",
             }
         ),
         required=False,
@@ -337,9 +440,32 @@ class CompanyProfileForm(forms.ModelForm):
             self.fields['subcategory'].label = "Industry Sector"
             self.fields['subcategory'].empty_label = "Select Industry Sector (Optional)"
 
+    def clean(self):
+        cleaned_data = super().clean()
+        category = cleaned_data.get('category')
+        custom_category = (cleaned_data.get('custom_category') or '').strip()
+        if not category and not custom_category:
+            self.add_error('category', 'Please select a company industry or type a custom one.')
+        return cleaned_data
+
     def save(self, commit=True):
-        instance = super().save(commit=commit)
+        instance = super().save(commit=False)
+        custom_category = (self.cleaned_data.get('custom_category') or '').strip()
+        if custom_category:
+            cat_obj = Category.objects.filter(name__iexact=custom_category).first()
+            if not cat_obj:
+                cat_obj = Category.objects.create(
+                    name=custom_category,
+                    is_company_category=True,
+                    font_awesome_icon='briefcase'
+                )
+            elif not cat_obj.is_company_category:
+                cat_obj.is_company_category = True
+                cat_obj.save()
+            instance.category = cat_obj
+
         if commit:
+            instance.save()
             self._save_tags()
         else:
             original_save_m2m = self.save_m2m

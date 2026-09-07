@@ -1,30 +1,20 @@
-# accounts/views.py
-
+import json
+from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.utils import timezone
-from accounts.models import CustomUserModel, EmailVerificationCode
-from blog_post.models import BlogPost 
-from django.shortcuts import render
-from django.db.models import Sum, Count
 from django.contrib.auth.decorators import login_required
-from blog_post.models import BlogPost
-from comments.models import Comment
-from earnings.models import EarningSetting  # replace 'your_app_name' with the actual app name where EarningSetting is defined
 from django.utils import timezone
-from datetime import timedelta
-from accounts.utils import send_verification_code_email
-from blog_post.models import BlogPost
-from accounts.models import CustomUserModel
-from forum.models import Question, Answer
-from django.utils import timezone
-from datetime import timedelta
+from django.db.models import Sum, Count, Q
 from django.http import JsonResponse
-import json
 from django.urls import reverse
-from blog_post.models import BlogPost, CompanyService, CompanyIndustryFocus, CompanyClientFocus, CompanyLocation, CompanyClient, Category, SubCategory
+
+from accounts.models import CustomUserModel, EmailVerificationCode
+from accounts.utils import send_verification_code_email
+from blog_post.models import BlogPost, Review, CompanyService, CompanyIndustryFocus, CompanyClientFocus, CompanyLocation, CompanyClient, Category, SubCategory
 from blog_post.forms import CompanyProfileForm
+from comments.models import Comment
+from forum.models import Question, Answer
 
 def check_email_exists(request):
     email = request.GET.get('email', None)
@@ -266,6 +256,7 @@ def user_dashboard_view(request):
     locations_json = "[]"
     clients_json = "[]"
     form_action_url = ""
+    is_edit_mode = (section == 'edit-company')
 
     if section == 'edit-company':
         company_id = request.GET.get('company_id') or request.POST.get('company_id')
@@ -341,10 +332,91 @@ def user_dashboard_view(request):
             locations_json = json.dumps(locations if locations else [{"name": ""}])
             clients_json = json.dumps(clients if clients else [{"name": ""}])
 
+    elif section == 'add-company':
+        form_action_url = f"{reverse('user_dashboard')}?section=add-company"
+        
+        if request.method == 'POST':
+            form = CompanyProfileForm(request.POST, request.FILES)
+            if form.is_valid():
+                company = form.save(commit=False)
+                company.author = user
+                company.is_company = True
+                if user.is_superuser or user.is_staff:
+                    company.status = 'published'
+                else:
+                    company.status = 'pending'
+                company.save()
+                form.save_m2m()
+                
+                try:
+                    # Services
+                    services_data = json.loads(request.POST.get('company_services', '[]'))
+                    for s in services_data:
+                        if s.get('name'):
+                            CompanyService.objects.create(company=company, name=s.get('name'), percentage=int(s.get('percentage') or 0))
+                    
+                    # Industries
+                    industries_data = json.loads(request.POST.get('company_industries', '[]'))
+                    for s in industries_data:
+                        if s.get('name'):
+                            CompanyIndustryFocus.objects.create(company=company, name=s.get('name'), percentage=int(s.get('percentage') or 0))
+                    
+                    # Client Focus
+                    clients_focus_data = json.loads(request.POST.get('company_client_focuses', '[]'))
+                    for s in clients_focus_data:
+                        if s.get('name'):
+                            CompanyClientFocus.objects.create(company=company, name=s.get('name'), percentage=int(s.get('percentage') or 0))
+                    
+                    # Locations
+                    locations_data = json.loads(request.POST.get('company_locations', '[]'))
+                    for s in locations_data:
+                        if s.get('name'):
+                            CompanyLocation.objects.create(company=company, name=s.get('name'))
+                    
+                    # Clients
+                    clients_data = json.loads(request.POST.get('company_clients', '[]'))
+                    for s in clients_data:
+                        if s.get('name'):
+                            CompanyClient.objects.create(company=company, name=s.get('name'))
+                except Exception:
+                    pass
+                    
+                messages.success(request, f"Successfully created company '{company.title}'!")
+                return redirect(reverse('user_dashboard') + '?section=companies')
+            else:
+                messages.error(request, "Failed to create company. Please check errors in the form.")
+        else:
+            form = CompanyProfileForm()
+
+        categories = Category.objects.filter(is_company_category=True).order_by('name')
+        subcategories = SubCategory.objects.select_related('category').all()
+
+        services_json = json.dumps([{"name": "", "percentage": ""}])
+        industries_json = json.dumps([{"name": "", "percentage": ""}])
+        client_focuses_json = json.dumps([{"name": "", "percentage": ""}])
+        locations_json = json.dumps([{"name": ""}])
+        clients_json = json.dumps([{"name": ""}])
+
+    # Review section query
+    if user.is_superuser or user.is_staff:
+        user_reviews = Review.objects.select_related('post', 'reviewer').order_by('-created_at')
+    else:
+        user_reviews = Review.objects.filter(
+            Q(post__author=user) | Q(reviewer=user)
+        ).select_related('post', 'reviewer').order_by('-created_at').distinct()
+
+    reviews_count = user_reviews.count()
+    published_reviews_count = user_reviews.filter(status='published').count()
+    pending_reviews_count = user_reviews.filter(status='pending').count()
+
     context = {
         "user": user,
         "user_blog_posts": user_blog_posts,
         "user_companies": user_companies,
+        "user_reviews": user_reviews,
+        "reviews_count": reviews_count,
+        "published_reviews_count": published_reviews_count,
+        "pending_reviews_count": pending_reviews_count,
         "total_views": total_views,
         "total_comments": total_comments,
         "total_reaction" : total_reaction,
@@ -375,7 +447,7 @@ def user_dashboard_view(request):
         "client_focuses_json": client_focuses_json,
         "locations_json": locations_json,
         "clients_json": clients_json,
-        "is_edit_mode": True,
+        "is_edit_mode": is_edit_mode,
         "form_action_url": form_action_url,
         "cancel_url": reverse('user_dashboard') + '?section=companies',
     }

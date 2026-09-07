@@ -831,6 +831,39 @@ def popular_tags_modal(request):
 
 from .forms import ReviewSearchForm, ReviewRatingForm, ReviewDetailsForm, ReviewIdentityForm
 
+from django.http import JsonResponse
+
+def company_search_api(request):
+    query = request.GET.get('q', '').strip()
+    if not query:
+        return JsonResponse({'results': []})
+    
+    companies = BlogPost.objects.filter(
+        Q(title__icontains=query) | Q(subtitle__icontains=query) | Q(category__name__icontains=query) | Q(subcategory__name__icontains=query)
+    ).select_related('category', 'subcategory').distinct()[:10]
+    
+    results = []
+    for comp in companies:
+        image_url = None
+        if comp.featured_image:
+            image_url = comp.featured_image.url
+        elif comp.featured_image_url:
+            image_url = comp.featured_image_url
+            
+        category_name = comp.category.name if comp.category else (comp.subcategory.name if comp.subcategory else "Company")
+        
+        results.append({
+            'id': comp.id,
+            'title': comp.title,
+            'subtitle': comp.subtitle or '',
+            'category': category_name,
+            'image': image_url,
+            'review_url': reverse('write_review_step1', kwargs={'post_id': comp.id}),
+            'detail_url': reverse('blog_details', kwargs={'slug': comp.slug}) if comp.slug else '#'
+        })
+        
+    return JsonResponse({'results': results})
+
 def write_review_landing(request):
     form = ReviewSearchForm(request.GET or None)
     results = None
@@ -838,9 +871,14 @@ def write_review_landing(request):
         query = form.cleaned_data['query']
         results = BlogPost.objects.filter(Q(title__icontains=query) | Q(subtitle__icontains=query)).distinct()[:10]
     
+    popular_companies = BlogPost.objects.filter(is_company=True).select_related('category', 'subcategory').order_by('-id')[:8]
+    if not popular_companies.exists():
+        popular_companies = BlogPost.objects.select_related('category', 'subcategory').order_by('-id')[:8]
+
     return render(request, 'blog_post/review/landing.html', {
         'form': form,
         'results': results,
+        'popular_companies': popular_companies,
     })
 
 @login_required
@@ -903,7 +941,7 @@ def write_review_step3(request, post_id):
                 title=details_data['title'],
                 body=details_data['body'],
                 is_anonymous=identity_data['is_anonymous'],
-                status='pending'
+                status='published'
             )
             
             # Clear session
@@ -923,22 +961,8 @@ def write_review_success(request, post_id):
 
 @login_required
 def add_company_step1(request):
-    """Single-page public registration form for new companies."""
-    if request.method == 'POST':
-        form = PublicCompanyRegistrationForm(request.POST, request.FILES)
-        if form.is_valid():
-            company = form.save(commit=False)
-            company.author = request.user
-            company.status = 'pending'
-            company.is_company = True
-            company.save(skip_auto_status=True)
-            
-            messages.success(request, f"Company '{company.title}' registered successfully! You can manage your company details from your dashboard.")
-            return redirect('user_dashboard')
-    else:
-        form = PublicCompanyRegistrationForm()
-        
-    return render(request, 'blog_post/company/register.html', {'form': form})
+    """Redirect to user dashboard section=add-company."""
+    return redirect(f"{reverse('user_dashboard')}?section=add-company")
 
 @login_required
 def add_company_step2(request):

@@ -1,6 +1,6 @@
 <c-ui.card title="My Companies" subtitle="Manage your registered companies and their details." extra_class="max-w-5xl">
     <c-slot name="actions">
-        <c-ui.button href="{% url 'add_company_step1' %}" icon="plus" size="sm" extra_class="rounded font-semibold transition-opacity hover:opacity-90 shadow-sm" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; font-size: 12px; background-color: #1e3a6e !important; color: white !important; border: none;">
+        <c-ui.button href="{% url 'user_dashboard' %}?section=add-company" icon="plus" size="sm" extra_class="rounded font-semibold transition-opacity hover:opacity-90 shadow-sm" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; font-size: 12px; background-color: #1e3a6e !important; color: white !important; border: none;">
             Add Company
         </c-ui.button>
     </c-slot>
@@ -42,7 +42,7 @@
                 title="No Companies Found"
                 description="You haven't registered any companies yet. Add your first company to start building your profile."
             >
-                <c-ui.button href="{% url 'add_company_step1' %}" icon="plus" size="sm" extra_class="mt-3 rounded font-semibold transition-opacity hover:opacity-90 shadow-sm" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; font-size: 12px; background-color: #1e3a6e !important; color: white !important; border: none;">
+                <c-ui.button href="{% url 'user_dashboard' %}?section=add-company" icon="plus" size="sm" extra_class="mt-3 rounded font-semibold transition-opacity hover:opacity-90 shadow-sm" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; font-size: 12px; background-color: #1e3a6e !important; color: white !important; border: none;">
                     Add New Company
                 </c-ui.button>
             </c-ui.empty-state>

@@ -31,13 +31,34 @@
             <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Overview</span>
         </a>
         
-        <!-- My Company -->
-        <a href="{% url 'user_dashboard' %}?section=companies" hx-boost="false"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'companies' or section == 'edit-company' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
-            title="My Company">
-            <i class="fas fa-building w-4 text-center text-[15px] flex-shrink-0 {% if section == 'companies' or section == 'edit-company' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
-            <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">My Company</span>
-        </a>
+        <!-- My Company & Reviews Dropdown -->
+        <div x-data="{ open: {% if section == 'companies' or section == 'reviews' or section == 'edit-company' or section == 'add-company' %}true{% else %}false{% endif %} }" class="w-full">
+            <button @click="open = !open" type="button"
+                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg {% if section == 'companies' or section == 'reviews' or section == 'edit-company' or section == 'add-company' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
+                title="My Company">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-building w-4 text-center text-[15px] flex-shrink-0 {% if section == 'companies' or section == 'reviews' or section == 'edit-company' or section == 'add-company' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
+                    <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">My Company</span>
+                </div>
+                <i class="fas fa-chevron-down text-[11px] transition-transform duration-200 sidebar-text flex-shrink-0" :class="{ 'rotate-180': open }"></i>
+            </button>
+            
+            <div x-show="open" x-transition class="pl-6 pr-1 py-1 space-y-1">
+                <!-- 1st Item: My Company -->
+                <a href="{% url 'user_dashboard' %}?section=companies" hx-boost="false"
+                    class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-medium transition-all {% if section == 'companies' or section == 'edit-company' or section == 'add-company' %}text-[#1e3a6e] font-bold bg-blue-50/80{% else %}text-gray-600 hover:text-[#1e3a6e] hover:bg-slate-100/70{% endif %}">
+                    <i class="fas fa-city text-[12px] w-4 text-center"></i>
+                    <span class="sidebar-text whitespace-nowrap">My Company</span>
+                </a>
+                
+                <!-- 2nd Item: Total Review -->
+                <a href="{% url 'user_dashboard' %}?section=reviews" hx-boost="false"
+                    class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-medium transition-all {% if section == 'reviews' %}text-[#1e3a6e] font-bold bg-blue-50/80{% else %}text-gray-600 hover:text-[#1e3a6e] hover:bg-slate-100/70{% endif %}">
+                    <i class="fas fa-star text-[12px] w-4 text-center"></i>
+                    <span class="sidebar-text whitespace-nowrap">Total Review</span>
+                </a>
+            </div>
+        </div>
         
         <!-- Blog Posts -->
         <a href="{% url 'user_dashboard' %}?section=blog-posts" hx-boost="false"

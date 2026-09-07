@@ -1,0 +1,178 @@
+{% load static %}
+<div class="space-y-6">
+    <!-- Header Title & Subtitle -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <div>
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+                <i class="fas fa-star text-[#fbbf24]"></i>
+                Total Reviews
+            </h1>
+            <p class="text-xs sm:text-sm text-gray-500 mt-1">Manage and track all company and software reviews.</p>
+        </div>
+        <a href="{% url 'write_review_landing' %}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#1e3a6e] hover:bg-[#152952] text-white text-xs font-bold rounded-xl shadow-sm transition-all duration-200 whitespace-nowrap">
+            <i class="fas fa-plus"></i>
+            <span>Write New Review</span>
+        </a>
+    </div>
+
+    <!-- Overview Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Total Reviews -->
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Reviews</p>
+                <h3 class="text-2xl font-extrabold text-gray-900 mt-1">{{ reviews_count }}</h3>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-xl font-bold">
+                <i class="fas fa-star"></i>
+            </div>
+        </div>
+
+        <!-- Published -->
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Published</p>
+                <h3 class="text-2xl font-extrabold text-emerald-600 mt-1">{{ published_reviews_count }}</h3>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+
+        <!-- Pending -->
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Pending Review</p>
+                <h3 class="text-2xl font-extrabold text-amber-600 mt-1">{{ pending_reviews_count }}</h3>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold">
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews List -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+            <h2 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                <i class="fas fa-list text-gray-400 text-sm"></i>
+                All Submitted Reviews
+            </h2>
+            <span class="text-xs font-medium text-gray-500">Showing {{ user_reviews.count }} reviews</span>
+        </div>
+
+        {% if user_reviews %}
+            <div class="divide-y divide-gray-100">
+                {% for review in user_reviews %}
+                    <div class="p-6 hover:bg-slate-50/50 transition-colors">
+                        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                            
+                            <!-- Left: User & Company info + Content -->
+                            <div class="flex-1 space-y-3">
+                                <!-- Reviewer Header -->
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-[#1e3a6e]/10 text-[#1e3a6e] font-bold flex items-center justify-center text-sm uppercase flex-shrink-0">
+                                        {% if review.is_anonymous %}
+                                            <i class="fas fa-user-secret"></i>
+                                        {% else %}
+                                            {{ review.reviewer.first_name|default:review.reviewer.email|slice:":1" }}
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-sm font-bold text-gray-900">
+                                                {% if review.is_anonymous %}
+                                                    Anonymous Reviewer
+                                                {% else %}
+                                                    {% if review.reviewer.first_name %}{{ review.reviewer.first_name }} {{ review.reviewer.last_name }}{% else %}{{ review.reviewer.email }}{% endif %}
+                                                {% endif %}
+                                            </span>
+                                            {% if review.is_anonymous %}
+                                                <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold rounded-full">Anonymous</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-xs text-gray-500 flex items-center gap-2 mt-0.5">
+                                            <span>Reviewed <strong class="text-gray-800">{{ review.post.title }}</strong></span>
+                                            <span>•</span>
+                                            <span class="text-gray-400"><i class="far fa-clock mr-1"></i>{{ review.created_at|date:"M d, Y, h:i A" }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Review Headline -->
+                                {% if review.title %}
+                                    <h3 class="text-base font-bold text-gray-900 pt-1 leading-snug">
+                                        "{{ review.title }}"
+                                    </h3>
+                                {% endif %}
+
+                                <!-- Review Body -->
+                                {% if review.body %}
+                                    <p class="text-sm text-gray-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                        {{ review.body }}
+                                    </p>
+                                {% endif %}
+
+                                <!-- Breakdown Ratings -->
+                                <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-500 pt-1">
+                                    <span class="bg-blue-50 text-[#1e3a6e] px-2.5 py-1 rounded-lg border border-blue-100">Quality: <strong class="text-[#1e3a6e]">{{ review.quality_rating }}/5</strong></span>
+                                    <span class="bg-blue-50 text-[#1e3a6e] px-2.5 py-1 rounded-lg border border-blue-100">Communication: <strong class="text-[#1e3a6e]">{{ review.communication_rating }}/5</strong></span>
+                                    <span class="bg-blue-50 text-[#1e3a6e] px-2.5 py-1 rounded-lg border border-blue-100">Timeliness: <strong class="text-[#1e3a6e]">{{ review.timeliness_rating }}/5</strong></span>
+                                </div>
+                            </div>
+
+                            <!-- Right: Rating & Actions -->
+                            <div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-start gap-3 flex-shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-gray-100">
+                                <!-- Status Badge -->
+                                <div>
+                                    {% if review.status == 'published' %}
+                                        <span class="px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-full inline-flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                            Published
+                                        </span>
+                                    {% elif review.status == 'pending' %}
+                                        <span class="px-3 py-1 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold rounded-full inline-flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                            Pending
+                                        </span>
+                                    {% else %}
+                                        <span class="px-3 py-1 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold rounded-full inline-flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                            Rejected
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Overall Score Badge -->
+                                <div class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm font-black">
+                                    <i class="fas fa-star text-amber-400"></i>
+                                    <span>{{ review.overall_rating }} / 5.0</span>
+                                </div>
+
+                                <!-- View Company Link -->
+                                <a href="{% url 'blog_details' review.post.slug %}" class="text-xs font-bold text-[#1e3a6e] hover:underline flex items-center gap-1 pt-1">
+                                    <span>View Company</span>
+                                    <i class="fas fa-chevron-right text-[10px]"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="p-12 text-center">
+                <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-2xl mx-auto mb-4">
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+                <h3 class="text-base font-bold text-gray-800 mb-1">No Reviews Found</h3>
+                <p class="text-xs text-gray-500 max-w-sm mx-auto mb-6">There are no reviews submitted yet for your account or company.</p>
+                <a href="{% url 'write_review_landing' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1e3a6e] text-white text-xs font-bold rounded-xl shadow-sm hover:opacity-90 transition">
+                    <i class="fas fa-pen"></i>
+                    <span>Write First Review</span>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>

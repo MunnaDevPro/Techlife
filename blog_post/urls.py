@@ -67,6 +67,7 @@ urlpatterns = [
 
     # Review Flow
     path('write-review/', __import__('blog_post.views').views.write_review_landing, name='write_review_landing'),
+    path('write-review/api/search/', __import__('blog_post.views').views.company_search_api, name='company_search_api'),
     path('write-review/<int:post_id>/step-1/', __import__('blog_post.views').views.write_review_step1, name='write_review_step1'),
     path('write-review/<int:post_id>/step-2/', __import__('blog_post.views').views.write_review_step2, name='write_review_step2'),
     path('write-review/<int:post_id>/step-3/', __import__('blog_post.views').views.write_review_step3, name='write_review_step3'),

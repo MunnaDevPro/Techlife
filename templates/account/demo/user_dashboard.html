@@ -75,7 +75,9 @@
                     {% include 'account/demo/order_table.html' %} 
                 {% elif section == 'companies' %}
                     {% include 'account/demo/dashboard_companies.html' %} 
-                {% elif section == 'edit-company' %}
+                {% elif section == 'reviews' or section == 'total-reviews' %}
+                    {% include 'account/demo/dashboard_reviews.html' %}
+                {% elif section == 'edit-company' or section == 'add-company' %}
                     {% include 'dashboard/content/company_wizard_form.html' %} 
                 {% elif section == 'activities' %}
                     {% include 'account/demo/data_rows.html' %} 

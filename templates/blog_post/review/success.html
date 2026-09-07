@@ -1,19 +1,25 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Review Submitted Successfully | TechLife BD{% endblock %}
+
 {% block navbar %}
-<header class="bg-white border-b border-gray-100 w-full z-50 sticky top-0 shadow-sm">
+<header class="bg-white border-b border-gray-200 w-full z-50 sticky top-0 shadow-sm">
     <div class="h-16 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        <a href="{% url 'homepage' %}" class="flex-shrink-0">
+        <a href="{% url 'homepage' %}" class="flex-shrink-0 flex items-center gap-2">
             <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-7 sm:h-8 lg:h-9 w-auto" />
         </a>
         <div class="flex items-center gap-4">
             {% if not user.is_authenticated %}
-                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-6 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
+                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-5 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                     Sign In
                 </a>
             {% else %}
-                <span class="text-sm font-medium text-gray-700">Welcome, {{ user.username }}</span>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-medium text-gray-700 hidden sm:inline">Welcome, <strong style="color: #1e3a6e;">{% if request.user.first_name %}{{ request.user.first_name }}{% elif request.user.get_full_name %}{{ request.user.get_full_name }}{% elif request.user.username and request.user.username != 'None' %}{{ request.user.username }}{% else %}{{ request.user.email }}{% endif %}</strong></span>
+                    <a href="{% url 'user_dashboard' %}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-lg transition">Dashboard</a>
+                </div>
             {% endif %}
         </div>
     </div>
@@ -21,28 +27,39 @@
 {% endblock navbar %}
 
 {% block content %}
-<div class="bg-gray-50 min-h-screen py-20">
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div class="bg-white rounded-xl shadow-lg p-10">
-            <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
-                <svg class="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<style>
+    #container {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
+        min-height: 0 !important;
+        background-color: #f8fafc !important;
+    }
+</style>
+
+<div class="bg-slate-50 py-16 min-h-[75vh] flex flex-col justify-center">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
+        <div class="bg-white rounded-2xl shadow-none border border-slate-200 p-8 sm:p-12">
+            <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-emerald-100 mb-6">
+                <svg class="h-10 w-10 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
             </div>
             
-            <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Review Submitted!</h2>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-3 tracking-tight">Review Submitted!</h2>
             
-            <p class="text-lg text-gray-600 mb-8">
-                Thank you for reviewing <strong>{{ post.title }}</strong>. Your review has been submitted successfully and is currently pending approval by our moderators. 
-                It will be published once it passes our verification process.
+            <p class="text-base text-slate-600 mb-8 max-w-lg mx-auto leading-relaxed">
+                Thank you for reviewing <strong class="text-slate-900">{{ post.title }}</strong>. Your review has been submitted successfully and is currently pending moderator approval. It will be published once verified.
             </p>
             
-            <div class="flex justify-center space-x-4">
-                <a href="{% url 'blog_details' post.slug %}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded shadow transition-colors">
-                    Back to Post
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="{% url 'blog_details' post.slug %}" class="text-white font-semibold py-3 px-7 rounded-xl transition-all text-sm inline-flex items-center justify-center gap-2 whitespace-nowrap hover:opacity-95" style="background-color: #1e3a6e;">
+                    <span>View Company Details</span>
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </a>
-                <a href="{% url 'write_review_landing' %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded shadow transition-colors">
-                    Write Another
+                <a href="{% url 'write_review_landing' %}" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-3 px-7 rounded-xl border border-slate-300 text-sm transition inline-flex items-center justify-center whitespace-nowrap">
+                    Write Another Review
                 </a>
             </div>
         </div>

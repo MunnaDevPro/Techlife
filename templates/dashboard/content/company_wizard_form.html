@@ -1,5 +1,6 @@
 <style>
-    .ft-input, .company-wiz-input {
+    .ft-input,
+    .company-wiz-input {
         border: 1px solid #d1d5db !important;
         background-color: #ffffff !important;
         border-radius: 8px !important;
@@ -9,12 +10,16 @@
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
         transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
     }
-    .ft-input:focus, .company-wiz-input:focus {
+
+    .ft-input:focus,
+    .company-wiz-input:focus {
         border-color: #1e3a6e !important;
         box-shadow: 0 0 0 3px rgba(30, 58, 110, 0.15) !important;
         outline: none !important;
     }
-    .ft-label, .company-wiz-label {
+
+    .ft-label,
+    .company-wiz-label {
         display: block !important;
         font-size: 11.5px !important;
         font-weight: 700 !important;
@@ -23,82 +28,127 @@
         letter-spacing: 0.04em !important;
         margin-bottom: 5px !important;
     }
-    select.ft-input, select.company-wiz-input {
+
+    select.ft-input,
+    select.company-wiz-input {
         cursor: pointer !important;
         appearance: auto !important;
+    }
+
+    /* CKEditor Custom Styling */
+    .ck-editor {
+        width: 100% !important;
+    }
+    .ck-editor__editable_inline {
+        min-height: 220px !important;
+        max-height: 500px !important;
+        border-radius: 0 0 12px 12px !important;
+        font-size: 14px !important;
+        color: #111827 !important;
+        padding: 14px 18px !important;
+        background-color: #ffffff !important;
+    }
+    .ck-toolbar {
+        border-radius: 12px 12px 0 0 !important;
+        border-color: #d1d5db !important;
+        background-color: #f9fafb !important;
+    }
+    .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+        border-color: #d1d5db !important;
+    }
+    .ck.ck-editor__main>.ck-editor__editable.ck-focused {
+        border-color: #1e3a6e !important;
+        box-shadow: 0 0 0 3px rgba(30, 58, 110, 0.15) !important;
     }
 </style>
 
 <div class="flex flex-col gap-6 p-2 sm:p-4 bg-gray-50/30 rounded-2xl max-w-5xl mx-auto w-full" x-data="companyWizard()">
 
     <!-- Page Header -->
-    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid rgba(229, 231, 235, 0.8);">
+    <div
+        style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid rgba(229, 231, 235, 0.8);">
         <div>
-            <h2 style="font-size: 20px; font-weight: 700; color: #111827; margin: 0; line-height: 26px;">{% if is_edit_mode %}Edit Company Profile{% else %}Add New Company{% endif %}</h2>
-            <p style="font-size: 13px; color: #6b7280; margin-top: 3px; margin-bottom: 0;">Follow the steps to create a comprehensive company profile.</p>
+            <h2 style="font-size: 20px; font-weight: 700; color: #111827; margin: 0; line-height: 26px;">{% if
+                is_edit_mode %}Edit Company Profile{% else %}Add New Company{% endif %}</h2>
+            <p style="font-size: 13px; color: #6b7280; margin-top: 3px; margin-bottom: 0;">Follow the steps to create a
+                comprehensive company profile.</p>
         </div>
         <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0; white-space: nowrap;">
-            <a href="{{ cancel_url|default:'/account/user_dashboard/?section=companies' }}" 
-               style="display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #374151; background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; text-decoration: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <a href="{{ cancel_url|default:'/account/user_dashboard/?section=companies' }}"
+                style="display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #374151; background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; text-decoration: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                 Cancel
             </a>
-            
+
             <div x-show="step > 1">
-                <button type="button" @click="prevStep()" 
-                        style="display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #374151; background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                <button type="button" @click="prevStep()"
+                    style="display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #374151; background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                     Previous
                 </button>
             </div>
-            
+
             <div x-show="step === 4">
-                <button type="submit" form="companyForm" 
-                        style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 20px; font-size: 13px; font-weight: 700; color: #ffffff; background: #1e3a6e; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(30,58,110,0.25);">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:15px; height:15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <button type="submit" form="companyForm"
+                    style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 20px; font-size: 13px; font-weight: 700; color: #ffffff; background: #1e3a6e; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(30,58,110,0.25);">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        style="width:15px; height:15px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
                     <span>Save Company</span>
                 </button>
             </div>
-            
+
             <div x-show="step < 4">
-                <button type="button" @click="nextStep()" 
-                        style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 20px; font-size: 13px; font-weight: 700; color: #ffffff; background: #1e3a6e; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(30,58,110,0.25);">
+                <button type="button" @click="nextStep()"
+                    style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 20px; font-size: 13px; font-weight: 700; color: #ffffff; background: #1e3a6e; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(30,58,110,0.25);">
                     <span>Next Step</span>
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:15px; height:15px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        style="width:15px; height:15px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
                 </button>
             </div>
         </div>
     </div>
 
     <!-- Stepper -->
-    <div style="width: 100%; max-width: 540px; margin-left: auto; margin-right: auto; margin-top: 8px; margin-bottom: 20px;">
+    <div
+        style="width: 100%; max-width: 540px; margin-left: auto; margin-right: auto; margin-top: 8px; margin-bottom: 20px;">
         <div style="position: relative; display: flex; align-items: flex-start; justify-content: space-between;">
             <!-- Connecting Line Background -->
-            <div style="position: absolute; left: 20px; right: 20px; top: 18px; height: 3px; background-color: #e5e7eb; border-radius: 9999px; z-index: 0;">
+            <div
+                style="position: absolute; left: 20px; right: 20px; top: 18px; height: 3px; background-color: #e5e7eb; border-radius: 9999px; z-index: 0;">
                 <!-- Active Connecting Line -->
-                <div style="height: 100%; background-color: #1e3a6e; border-radius: 9999px; transition: width 0.4s ease-in-out;" 
-                     :style="'width: ' + ((step - 1) / 3 * 100) + '%'"></div>
+                <div style="height: 100%; background-color: #1e3a6e; border-radius: 9999px; transition: width 0.4s ease-in-out;"
+                    :style="'width: ' + ((step - 1) / 3 * 100) + '%'"></div>
             </div>
 
             <!-- Steps -->
             <template x-for="(label, idx) in ['Basic Info', 'Details', 'Focus Areas', 'Portfolio']" :key="idx">
-                <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 80px;" @click="if(step > idx+1) step = idx+1">
+                <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 80px;"
+                    @click="if(step > idx+1) step = idx+1">
                     <!-- Circle -->
-                    <div :class="step >= idx + 1 ? 'bg-[#1e3a6e] text-white ring-4 ring-blue-50' : 'bg-white text-gray-400 ring-1 ring-gray-200'" 
-                         class="rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 shadow-sm"
-                         style="width: 36px; height: 36px; min-width: 36px; min-height: 36px; border-radius: 9999px;">
+                    <div :class="step >= idx + 1 ? 'bg-[#1e3a6e] text-white ring-4 ring-blue-50' : 'bg-white text-gray-400 ring-1 ring-gray-200'"
+                        class="rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 shadow-sm"
+                        style="width: 36px; height: 36px; min-width: 36px; min-height: 36px; border-radius: 9999px;">
                         <span x-show="step <= idx + 1" x-text="idx + 1"></span>
-                        <svg x-show="step > idx + 1" class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <svg x-show="step > idx + 1" class="w-4 h-4 text-white" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
                     </div>
                     <!-- Label below circle -->
-                    <span :class="step >= idx + 1 ? 'text-gray-900 font-semibold' : 'text-gray-400 font-medium'" 
-                          class="whitespace-nowrap text-xs transition-colors duration-300"
-                          style="margin-top: 6px; font-size: 11.5px; line-height: 14px; text-align: center;" 
-                          x-text="label"></span>
+                    <span :class="step >= idx + 1 ? 'text-gray-900 font-semibold' : 'text-gray-400 font-medium'"
+                        class="whitespace-nowrap text-xs transition-colors duration-300"
+                        style="margin-top: 6px; font-size: 11.5px; line-height: 14px; text-align: center;"
+                        x-text="label"></span>
                 </div>
             </template>
         </div>
     </div>
 
-    <form id="companyForm" method="POST" action="{{ form_action_url|default:'' }}" enctype="multipart/form-data" class="flex flex-col gap-6">
+    <form id="companyForm" method="POST" action="{{ form_action_url|default:'' }}" enctype="multipart/form-data"
+        class="flex flex-col gap-6">
         {% csrf_token %}
         <input type="hidden" name="company_services" :value="JSON.stringify(services)">
         <input type="hidden" name="company_industries" :value="JSON.stringify(industries)">
@@ -107,63 +157,297 @@
         <input type="hidden" name="company_clients" :value="JSON.stringify(clients)">
 
         <!-- Step 1: Basic Info -->
-        <div x-show="step === 1" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm" style="padding: 1.75rem 2rem;">
+        <div x-show="step === 1" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm"
+            style="padding: 1.75rem 2rem;">
             <h3 class="text-base font-bold text-gray-900" style="margin-bottom: 18px;">Step 1: Basic Information</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); column-gap: 36px; row-gap: 22px;">
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); column-gap: 36px; row-gap: 22px;">
                 <div class="flex flex-col gap-1">
                     <label class="company-wiz-label">Company Name <span class="text-red-500">*</span></label>
-                    <input type="text" name="title" class="company-wiz-input w-full" required value="{{ form.title.value|default_if_none:'' }}">
+                    <input type="text" name="title" class="company-wiz-input w-full" placeholder="e.g. TechWave Solutions Ltd." required
+                        value="{{ form.title.value|default_if_none:'' }}">
                 </div>
                 <div class="flex flex-col gap-1">
                     <label class="company-wiz-label">Tagline (Subtitle)</label>
-                    <input type="text" name="subtitle" class="company-wiz-input w-full" value="{{ form.subtitle.value|default_if_none:'' }}">
+                    <input type="text" name="subtitle" class="company-wiz-input w-full" placeholder="e.g. Empowering Next-Gen Digital Products"
+                        value="{{ form.subtitle.value|default_if_none:'' }}">
                 </div>
                 <div class="flex flex-col gap-1">
                     <label class="company-wiz-label">Business Email</label>
-                    <input type="email" name="company_email" class="company-wiz-input w-full" value="{{ form.company_email.value|default_if_none:'' }}">
+                    <input type="email" name="company_email" class="company-wiz-input w-full" placeholder="e.g. contact@company.com"
+                        value="{{ form.company_email.value|default_if_none:'' }}">
                 </div>
                 <div class="flex flex-col gap-1">
                     <label class="company-wiz-label">Business Phone</label>
-                    <input type="text" name="company_phone" class="company-wiz-input w-full" value="{{ form.company_phone.value|default_if_none:'' }}">
+                    <input type="text" name="company_phone" class="company-wiz-input w-full" placeholder="e.g. +1 (555) 019-2834 or +880 1700-000000"
+                        value="{{ form.company_phone.value|default_if_none:'' }}">
+                </div>
+                <div class="flex flex-col gap-1 relative" x-data="{
+                    open: false,
+                    search: '',
+                    selectedId: '{{ form.category.value|default_if_none:"" }}',
+                    selectedName: '{% if form.instance.category %}{{ form.instance.category.name|escapejs }}{% endif %}',
+                    isCustom: false,
+                    customName: '',
+                    categories: [
+                        {% for cat in categories %}
+                        { id: '{{ cat.id }}', name: '{{ cat.name|escapejs }}' }{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    ],
+                    init() {
+                        if (!this.selectedName && this.selectedId) {
+                            let found = this.categories.find(c => String(c.id) === String(this.selectedId));
+                            if (found) {
+                                this.selectedName = found.name;
+                            }
+                        }
+                    },
+                    get filteredCategories() {
+                        if (!this.search.trim()) return this.categories;
+                        let q = this.search.toLowerCase();
+                        return this.categories.filter(c => c.name.toLowerCase().includes(q));
+                    },
+                    selectCategory(id, name) {
+                        if (id === 'other') {
+                            this.isCustom = true;
+                            this.selectedId = '';
+                            this.selectedName = 'Other (Write manually)';
+                        } else {
+                            this.isCustom = false;
+                            this.selectedId = id;
+                            this.selectedName = name;
+                            this.customName = '';
+                        }
+                        this.open = false;
+                    }
+                }" @click.away="open = false">
+                    <label class="company-wiz-label">Company Industry <span class="text-red-500">*</span></label>
+
+                    <!-- Hidden Inputs for Form Submission -->
+                    <input type="hidden" name="category" :value="selectedId">
+                    <input type="hidden" name="custom_category" :value="customName">
+
+                    <!-- Dropdown Trigger Button -->
+                    <button type="button" @click="open = !open"
+                        class="company-wiz-input w-full flex items-center justify-between text-left cursor-pointer bg-white transition-all hover:border-[#1e3a6e]"
+                        style="cursor: pointer !important;">
+                        <span class="flex items-center gap-2 text-sm font-medium truncate" :class="selectedName ? 'text-gray-900 font-semibold' : 'text-gray-400'">
+                            <span x-text="selectedName || 'Select Company Industry...'"></span>
+                        </span>
+                        <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:15px; height:15px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown Menu Popover -->
+                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
+                        class="absolute left-0 top-full mt-1.5 w-full bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden flex flex-col"
+                        style="display: none; max-height: 320px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);">
+                        
+                        <!-- Real-time Search Box -->
+                        <div class="p-2 border-b border-gray-100 bg-gray-50/50 sticky top-0 z-10">
+                            <div class="relative flex items-center">
+                                <svg class="w-3.5 h-3.5 text-gray-400 absolute left-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px; height:14px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                <input type="text" x-model="search" placeholder="Search industry (e.g. Software, Finance)..."
+                                    class="w-full text-xs py-1.5 pl-8 pr-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#1e3a6e] transition-colors"
+                                    @keydown.escape="open = false">
+                            </div>
+                        </div>
+
+                        <!-- Industry Options List -->
+                        <div class="overflow-y-auto flex-1 p-1 space-y-0.5" style="max-height: 200px;">
+                            <template x-for="cat in filteredCategories" :key="cat.id">
+                                <button type="button" @click="selectCategory(cat.id, cat.name)"
+                                    class="w-full text-left px-3 py-2 text-xs font-medium rounded-lg flex items-center justify-between transition-colors cursor-pointer"
+                                    style="cursor: pointer !important;"
+                                    :class="String(selectedId) === String(cat.id) ? 'bg-blue-50 text-[#1e3a6e] font-semibold' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'">
+                                    <span x-text="cat.name"></span>
+                                    <svg x-show="String(selectedId) === String(cat.id)" class="w-4 h-4 text-[#1e3a6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px; height:14px;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </button>
+                            </template>
+                            
+                            <div x-show="filteredCategories.length === 0" class="px-3 py-2.5 text-xs text-gray-400 text-center italic">
+                                No matching industry found. Select "Other" below to write manually.
+                            </div>
+                        </div>
+
+                        <!-- Manual Entry / Other Option -->
+                        <div class="p-1 border-t border-gray-100 bg-gray-50/80">
+                            <button type="button" @click="selectCategory('other', 'Other')"
+                                class="w-full text-left px-3 py-2 text-xs font-semibold rounded-lg flex items-center gap-2 text-[#1e3a6e] hover:bg-blue-50 transition-colors cursor-pointer"
+                                style="cursor: pointer !important;">
+                                <svg class="w-4 h-4 text-[#1e3a6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px; height:14px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                <span>+ Other (Write custom industry)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Custom Industry Manual Text Field -->
+                    <div x-show="isCustom" x-transition class="mt-2 flex flex-col gap-1">
+                        <label class="text-[11px] font-bold text-[#1e3a6e] uppercase tracking-wider flex items-center gap-1">
+                            <svg class="w-3 h-3 text-[#1e3a6e]" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:12px; height:12px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            Type Custom Industry Name <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" x-model="customName" placeholder="e.g. Artificial Intelligence, BioTech, Renewable Energy"
+                            class="company-wiz-input w-full text-xs border-blue-300 focus:border-[#1e3a6e]"
+                            :required="isCustom">
+                        <span class="text-[11px] text-gray-500">This custom industry will be added to your company profile automatically.</span>
+                    </div>
                 </div>
                 <div class="flex flex-col gap-1">
                     <label class="company-wiz-label">Website URL</label>
-                    <input type="url" name="company_website" class="company-wiz-input w-full" value="{{ form.company_website.value|default_if_none:'' }}">
+                    <input type="url" name="company_website" class="company-wiz-input w-full" placeholder="e.g. https://www.company.com"
+                        value="{{ form.company_website.value|default_if_none:'' }}">
                 </div>
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-1" x-data="{
+                    previewUrl: '{% if form.instance.featured_image %}{{ form.instance.featured_image.url }}{% endif %}',
+                    fileName: '',
+                    handleFile(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            this.fileName = file.name;
+                            if (file.type.startsWith('image/')) {
+                                this.previewUrl = URL.createObjectURL(file);
+                            }
+                        }
+                    },
+                    removeFile() {
+                        this.previewUrl = '';
+                        this.fileName = '';
+                        this.$refs.fileInput.value = '';
+                    }
+                }">
                     <label class="company-wiz-label">Company Logo (Featured Image)</label>
-                    <input type="file" name="featured_image" class="company-wiz-input w-full cursor-pointer file:cursor-pointer">
+
+                    <div class="relative border-2 border-dashed border-gray-200 rounded-xl p-3.5 transition-all hover:border-[#1e3a6e] bg-gray-50/50 hover:bg-blue-50/20 group cursor-pointer"
+                        style="cursor: pointer !important;"
+                        @click="$refs.fileInput.click()">
+                        
+                        <input type="file" name="featured_image" x-ref="fileInput" @change="handleFile($event)" accept="image/*" class="hidden">
+
+                        <!-- When Image exists or selected -->
+                        <div x-show="previewUrl" class="flex items-center gap-3">
+                            <div class="w-14 h-14 rounded-lg border border-gray-200 bg-white p-1 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-sm">
+                                <img :src="previewUrl" class="w-full h-full object-contain rounded-md">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-semibold text-gray-800 truncate" x-text="fileName || 'Company Logo Uploaded'"></p>
+                                <p class="text-[11px] text-gray-500 mt-0.5">Click to replace image</p>
+                            </div>
+                            <button type="button" @click.stop="removeFile()" class="p-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors" title="Remove image">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px; height:16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Empty Upload State -->
+                        <div x-show="!previewUrl" class="flex flex-col items-center justify-center py-2 text-center">
+                            <div class="w-9 h-9 rounded-full bg-blue-50 text-[#1e3a6e] flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px; height:18px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-xs font-semibold text-[#1e3a6e]">Click to upload company logo</span>
+                            <span class="text-[11px] text-gray-400 mt-0.5">PNG, JPG, WEBP or GIF (Max 5MB)</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex flex-col gap-1">
-                    <label class="company-wiz-label">Company Industry <span class="text-red-500">*</span></label>
-                    {{ form.category }}
-                </div>
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-1" x-data="{
+                    docUrl: '{% if form.instance.trade_license %}{{ form.instance.trade_license.url }}{% endif %}',
+                    fileName: '',
+                    handleFile(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            this.fileName = file.name;
+                            this.docUrl = 'selected';
+                        }
+                    },
+                    removeFile() {
+                        this.docUrl = '';
+                        this.fileName = '';
+                        this.$refs.docInput.value = '';
+                    }
+                }">
                     <label class="company-wiz-label">Trade License Document</label>
-                    <input type="file" name="trade_license" class="company-wiz-input w-full cursor-pointer file:cursor-pointer">
+
+                    <div class="relative border-2 border-dashed border-gray-200 rounded-xl p-3.5 transition-all hover:border-[#1e3a6e] bg-gray-50/50 hover:bg-blue-50/20 group cursor-pointer"
+                        style="cursor: pointer !important;"
+                        @click="$refs.docInput.click()">
+                        
+                        <input type="file" name="trade_license" x-ref="docInput" @change="handleFile($event)" accept=".pdf,image/*,.doc,.docx" class="hidden">
+
+                        <!-- When Document exists or selected -->
+                        <div x-show="docUrl" class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 text-[#1e3a6e] flex-shrink-0 flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:20px; height:20px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-semibold text-gray-800 truncate" x-text="fileName || 'Trade License Document'"></p>
+                                <p class="text-[11px] text-gray-500 mt-0.5">Document attached • Click to replace</p>
+                            </div>
+                            <button type="button" @click.stop="removeFile()" class="p-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors" title="Remove document">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px; height:16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Empty Upload State -->
+                        <div x-show="!docUrl" class="flex flex-col items-center justify-center py-2 text-center">
+                            <div class="w-9 h-9 rounded-full bg-blue-50 text-[#1e3a6e] flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:18px; height:18px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                </svg>
+                            </div>
+                            <span class="text-xs font-semibold text-[#1e3a6e]">Click to upload Trade License</span>
+                            <span class="text-[11px] text-gray-400 mt-0.5">PDF, PNG, JPG or DOCX (Max 10MB)</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Step 2: Details -->
-        <div x-show="step === 2" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm" style="display: none; padding: 1.75rem 2rem;">
+        <div x-show="step === 2" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm"
+            style="display: none; padding: 1.75rem 2rem;">
             <h3 class="text-base font-bold text-gray-900" style="margin-bottom: 18px;">Step 2: Company Details</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); column-gap: 36px; row-gap: 22px;">
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); column-gap: 36px; row-gap: 22px;">
                 <div class="flex flex-col gap-1">
                     <label class="company-wiz-label">Founded Year</label>
-                    <input type="number" name="company_founded_year" class="company-wiz-input w-full" placeholder="e.g. 2010" value="{{ form.company_founded_year.value|default_if_none:'' }}">
+                    <input type="number" name="company_founded_year" class="company-wiz-input w-full"
+                        placeholder="e.g. 2018" value="{{ form.company_founded_year.value|default_if_none:'' }}">
                 </div>
                 <div class="flex flex-col gap-1">
                     <label class="company-wiz-label">Employees Count</label>
-                    <input type="text" name="company_employees_count" class="company-wiz-input w-full" placeholder="e.g. 50-249" value="{{ form.company_employees_count.value|default_if_none:'' }}">
+                    <input type="text" name="company_employees_count" class="company-wiz-input w-full"
+                        placeholder="e.g. 50 - 249 employees" value="{{ form.company_employees_count.value|default_if_none:'' }}">
                 </div>
                 <div class="flex flex-col gap-1">
                     <label class="company-wiz-label">Hourly Rate</label>
-                    <input type="text" name="company_hourly_rate" class="company-wiz-input w-full" placeholder="e.g. $25 - $49 / hr" value="{{ form.company_hourly_rate.value|default_if_none:'' }}">
+                    <input type="text" name="company_hourly_rate" class="company-wiz-input w-full"
+                        placeholder="e.g. $25 - $49 / hr"
+                        value="{{ form.company_hourly_rate.value|default_if_none:'' }}">
                 </div>
                 <div class="flex flex-col gap-1">
                     <label class="company-wiz-label">Min. Project Size</label>
-                    <input type="text" name="company_min_project_size" class="company-wiz-input w-full" placeholder="e.g. $10,000+" value="{{ form.company_min_project_size.value|default_if_none:'' }}">
+                    <input type="text" name="company_min_project_size" class="company-wiz-input w-full"
+                        placeholder="e.g. $10,000+"
+                        value="{{ form.company_min_project_size.value|default_if_none:'' }}">
                 </div>
                 <div class="flex flex-col gap-1 md:col-span-2" style="grid-column: 1 / -1;">
                     <label class="company-wiz-label">About the Company</label>
@@ -173,23 +457,35 @@
         </div>
 
         <!-- Step 3: Focus Areas -->
-        <div x-show="step === 3" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm" style="display: none; padding: 1.75rem 2rem;">
-            <h3 class="text-base font-bold text-gray-900" style="margin-bottom: 18px;">Step 3: Focus Areas (Percentages)</h3>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); column-gap: 32px; row-gap: 24px;">
+        <div x-show="step === 3" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm"
+            style="display: none; padding: 1.75rem 2rem;">
+            <h3 class="text-base font-bold text-gray-900" style="margin-bottom: 18px;">Step 3: Focus Areas (Percentages)
+            </h3>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); column-gap: 32px; row-gap: 24px;">
                 <!-- Services -->
                 <div style="display: flex; flex-direction: column;">
                     <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Services</h4>
                     <template x-for="(item, index) in services" :key="index">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; width: 100%;">
-                            <input type="text" x-model="item.name" class="company-wiz-input" style="flex: 1 1 0%; min-width: 110px;" placeholder="Service Name">
-                            <input type="number" x-model="item.percentage" class="company-wiz-input" style="width: 75px; min-width: 75px; flex-shrink: 0; text-align: center;" placeholder="%">
-                            <button type="button" @click="services.splice(index, 1)" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
-                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            <input type="text" x-model="item.name" class="company-wiz-input"
+                                style="flex: 1 1 0%; min-width: 110px;" placeholder="e.g. Web & Mobile App Development">
+                            <input type="number" x-model="item.percentage" class="company-wiz-input"
+                                style="width: 75px; min-width: 75px; flex-shrink: 0; text-align: center;"
+                                placeholder="%">
+                            <button type="button" @click="services.splice(index, 1)"
+                                style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                    </path>
+                                </svg>
                             </button>
                         </div>
                     </template>
-                    <button type="button" @click="services.push({name: '', percentage: ''})" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
+                    <button type="button" @click="services.push({name: '', percentage: ''})"
+                        style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
                         + Add Service
                     </button>
                 </div>
@@ -199,31 +495,50 @@
                     <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Industries</h4>
                     <template x-for="(item, index) in industries" :key="index">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; width: 100%;">
-                            <input type="text" x-model="item.name" class="company-wiz-input" style="flex: 1 1 0%; min-width: 110px;" placeholder="Industry Name">
-                            <input type="number" x-model="item.percentage" class="company-wiz-input" style="width: 75px; min-width: 75px; flex-shrink: 0; text-align: center;" placeholder="%">
-                            <button type="button" @click="industries.splice(index, 1)" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
-                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            <input type="text" x-model="item.name" class="company-wiz-input"
+                                style="flex: 1 1 0%; min-width: 110px;" placeholder="e.g. Healthcare & Fintech">
+                            <input type="number" x-model="item.percentage" class="company-wiz-input"
+                                style="width: 75px; min-width: 75px; flex-shrink: 0; text-align: center;"
+                                placeholder="%">
+                            <button type="button" @click="industries.splice(index, 1)"
+                                style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                    </path>
+                                </svg>
                             </button>
                         </div>
                     </template>
-                    <button type="button" @click="industries.push({name: '', percentage: ''})" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
+                    <button type="button" @click="industries.push({name: '', percentage: ''})"
+                        style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
                         + Add Industry
                     </button>
                 </div>
 
                 <!-- Client Focus -->
                 <div style="display: flex; flex-direction: column;">
-                    <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Client Focus</h4>
+                    <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Client Focus
+                    </h4>
                     <template x-for="(item, index) in clientFocuses" :key="index">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; width: 100%;">
-                            <input type="text" x-model="item.name" class="company-wiz-input" style="flex: 1 1 0%; min-width: 110px;" placeholder="Client Focus Name">
-                            <input type="number" x-model="item.percentage" class="company-wiz-input" style="width: 75px; min-width: 75px; flex-shrink: 0; text-align: center;" placeholder="%">
-                            <button type="button" @click="clientFocuses.splice(index, 1)" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
-                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            <input type="text" x-model="item.name" class="company-wiz-input"
+                                style="flex: 1 1 0%; min-width: 110px;" placeholder="e.g. Enterprise (1000+ employees)">
+                            <input type="number" x-model="item.percentage" class="company-wiz-input"
+                                style="width: 75px; min-width: 75px; flex-shrink: 0; text-align: center;"
+                                placeholder="%">
+                            <button type="button" @click="clientFocuses.splice(index, 1)"
+                                style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                    </path>
+                                </svg>
                             </button>
                         </div>
                     </template>
-                    <button type="button" @click="clientFocuses.push({name: '', percentage: ''})" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
+                    <button type="button" @click="clientFocuses.push({name: '', percentage: ''})"
+                        style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
                         + Add Client Focus
                     </button>
                 </div>
@@ -231,38 +546,56 @@
         </div>
 
         <!-- Step 4: Locations & Portfolio -->
-        <div x-show="step === 4" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm" style="display: none; padding: 1.75rem 2rem;">
+        <div x-show="step === 4" class="bg-white rounded-2xl border border-gray-200/80 shadow-sm"
+            style="display: none; padding: 1.75rem 2rem;">
             <h3 class="text-base font-bold text-gray-900" style="margin-bottom: 18px;">Step 4: Locations & Clients</h3>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); column-gap: 32px; row-gap: 24px;">
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); column-gap: 32px; row-gap: 24px;">
                 <!-- Locations -->
                 <div style="display: flex; flex-direction: column;">
-                    <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Office Locations</h4>
+                    <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Office Locations
+                    </h4>
                     <template x-for="(item, index) in locations" :key="index">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; width: 100%;">
-                            <input type="text" x-model="item.name" class="company-wiz-input" style="flex: 1 1 0%; min-width: 130px;" placeholder="City, Country">
-                            <button type="button" @click="locations.splice(index, 1)" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
-                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            <input type="text" x-model="item.name" class="company-wiz-input"
+                                style="flex: 1 1 0%; min-width: 130px;" placeholder="e.g. New York, USA or Dhaka, Bangladesh">
+                            <button type="button" @click="locations.splice(index, 1)"
+                                style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                    </path>
+                                </svg>
                             </button>
                         </div>
                     </template>
-                    <button type="button" @click="locations.push({name: ''})" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
+                    <button type="button" @click="locations.push({name: ''})"
+                        style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
                         + Add Location
                     </button>
                 </div>
 
                 <!-- Clients -->
                 <div style="display: flex; flex-direction: column;">
-                    <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Key Clients / Portfolio</h4>
+                    <h4 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">Key Clients /
+                        Portfolio</h4>
                     <template x-for="(item, index) in clients" :key="index">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; width: 100%;">
-                            <input type="text" x-model="item.name" class="company-wiz-input" style="flex: 1 1 0%; min-width: 130px;" placeholder="Client Name">
-                            <button type="button" @click="clients.splice(index, 1)" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
-                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            <input type="text" x-model="item.name" class="company-wiz-input"
+                                style="flex: 1 1 0%; min-width: 130px;" placeholder="e.g. Microsoft, Google, Samsung">
+                            <button type="button" @click="clients.splice(index, 1)"
+                                style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; min-width: 36px; border: 1px solid #fee2e2; background: #fef2f2; color: #dc2626; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: all 0.2s;">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                    </path>
+                                </svg>
                             </button>
                         </div>
                     </template>
-                    <button type="button" @click="clients.push({name: ''})" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
+                    <button type="button" @click="clients.push({name: ''})"
+                        style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e3a6e; background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; text-align: left;">
                         + Add Client
                     </button>
                 </div>
@@ -275,12 +608,12 @@
     function companyWizard() {
         return {
             step: 1,
-            services: {% if services_json %}{{ services_json|safe }}{% else %}[{name: '', percentage: ''}]{% endif %},
-            industries: {% if industries_json %}{{ industries_json|safe }}{% else %}[{name: '', percentage: ''}]{% endif %},
-            clientFocuses: {% if client_focuses_json %}{{ client_focuses_json|safe }}{% else %}[{name: '', percentage: ''}]{% endif %},
-            locations: {% if locations_json %}{{ locations_json|safe }}{% else %}[{name: ''}]{% endif %},
-            clients: {% if clients_json %}{{ clients_json|safe }}{% else %}[{name: ''}]{% endif %},
-            
+            services: {% if services_json %}{{ services_json|safe }}{% else %}[{ name: '', percentage: '' }]{% endif %},
+            industries: {% if industries_json %}{{ industries_json|safe }}{% else %}[{ name: '', percentage: '' }]{% endif %},
+            clientFocuses: {% if client_focuses_json %}{{ client_focuses_json|safe }}{% else %}[{ name: '', percentage: '' }]{% endif %},
+            locations: {% if locations_json %}{{ locations_json|safe }}{% else %}[{ name: '' }]{% endif %},
+            clients: {% if clients_json %}{{ clients_json|safe }}{% else %}[{ name: '' }]{% endif %},
+
             nextStep() {
                 if (this.step < 4) {
                     let currentStepDiv = document.querySelector(`div[x-show="step === ${this.step}"]`);
@@ -294,15 +627,101 @@
                         }
                     }
                     this.step++;
-                    window.scrollTo({top: 0, behavior: 'smooth'});
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             },
             prevStep() {
                 if (this.step > 1) {
                     this.step--;
-                    window.scrollTo({top: 0, behavior: 'smooth'});
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             }
+        };
+    }
+
+    // ── CKEditor 5 Initialization for About the Company ──────────────────
+    function initCompanyCkeditor() {
+        var textarea = document.getElementById('post_description');
+        if (!textarea) return;
+        if (window.__ck5Instances && window.__ck5Instances['company_description']) return;
+
+        function createCK() {
+            if (!window.ClassicEditor) return;
+            ClassicEditor.create(textarea, {
+                toolbar: {
+                    items: [
+                        'heading', '|',
+                        'bold', 'italic', 'underline', 'strikethrough', '|',
+                        'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+                        'alignment', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'outdent', 'indent', '|',
+                        'link', 'blockQuote', 'insertTable', '|',
+                        'undo', 'redo'
+                    ],
+                    shouldNotGroupWhenFull: true
+                },
+                heading: {
+                    options: [
+                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                    ]
+                }
+            }).then(function (editor) {
+                window.__ck5Instances = window.__ck5Instances || {};
+                window.__ck5Instances['company_description'] = editor;
+
+                // Sync data to textarea on change
+                editor.model.document.on('change:data', function () {
+                    textarea.value = editor.getData();
+                });
+            }).catch(function (err) {
+                console.warn('[Company CKEditor] Init error:', err);
+            });
         }
+
+        if (window.ClassicEditor) {
+            createCK();
+        } else {
+            if (!document.getElementById('ckeditor5-cdn')) {
+                var script = document.createElement('script');
+                script.id = 'ckeditor5-cdn';
+                script.src = 'https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js';
+                script.onload = function () {
+                    if (window.CKEditor5 && window.CKEditor5.ClassicEditor) {
+                        window.ClassicEditor = window.CKEditor5.ClassicEditor;
+                    }
+                    createCK();
+                };
+                document.head.appendChild(script);
+            } else {
+                var checkInterval = setInterval(function () {
+                    if (window.ClassicEditor || (window.CKEditor5 && window.CKEditor5.ClassicEditor)) {
+                        if (!window.ClassicEditor) window.ClassicEditor = window.CKEditor5.ClassicEditor;
+                        clearInterval(checkInterval);
+                        createCK();
+                    }
+                }, 100);
+            }
+        }
+
+        var form = document.getElementById('companyForm');
+        if (form && !form.dataset.ckSynced) {
+            form.dataset.ckSynced = 'true';
+            form.addEventListener('submit', function () {
+                var inst = window.__ck5Instances && window.__ck5Instances['company_description'];
+                if (inst && textarea) {
+                    textarea.value = inst.getData();
+                }
+            });
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCompanyCkeditor);
+    } else {
+        setTimeout(initCompanyCkeditor, 150);
     }
 </script>

@@ -1,19 +1,25 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Write a Review | TechLife BD{% endblock %}
+
 {% block navbar %}
-<header class="bg-white border-b border-gray-100 w-full z-50 sticky top-0 shadow-sm">
+<header class="bg-white border-b border-gray-200 w-full z-50 sticky top-0 shadow-sm">
     <div class="h-16 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        <a href="{% url 'homepage' %}" class="flex-shrink-0">
+        <a href="{% url 'homepage' %}" class="flex-shrink-0 flex items-center gap-2">
             <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-7 sm:h-8 lg:h-9 w-auto" />
         </a>
         <div class="flex items-center gap-4">
             {% if not user.is_authenticated %}
-                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-6 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
+                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-5 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                     Sign In
                 </a>
             {% else %}
-                <span class="text-sm font-medium text-gray-700">Welcome, {{ user.username }}</span>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-medium text-gray-700 hidden sm:inline">Welcome, <strong style="color: #1e3a6e;">{% if request.user.first_name %}{{ request.user.first_name }}{% elif request.user.get_full_name %}{{ request.user.get_full_name }}{% elif request.user.username and request.user.username != 'None' %}{{ request.user.username }}{% else %}{{ request.user.email }}{% endif %}</strong></span>
+                    <a href="{% url 'user_dashboard' %}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-lg transition">Dashboard</a>
+                </div>
             {% endif %}
         </div>
     </div>
@@ -21,78 +27,287 @@
 {% endblock navbar %}
 
 {% block content %}
-<div class="bg-gray-900 py-20 min-h-screen text-white flex flex-col justify-center">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <!-- Stars Header -->
-        <div class="flex justify-center mb-6 space-x-2 text-yellow-400">
-            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+<style>
+    #container {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
+        min-height: 0 !important;
+        background-color: #f8fafc !important;
+    }
+    .review-hero-container {
+        background: #0f172a;
+        background: linear-gradient(180deg, #0f172a 0%, #1e3a6e 50%, #0f172a 100%);
+        color: #ffffff;
+    }
+    .hero-gold-text {
+        color: #f59e0b;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #eab308 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .hero-badge {
+        background-color: rgba(245, 158, 11, 0.18);
+        border: 1px solid rgba(245, 158, 11, 0.4);
+        color: #fbbf24;
+    }
+    .step-box {
+        background-color: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .company-card-item {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease-in-out;
+    }
+    .company-card-item:hover {
+        box-shadow: 0 6px 16px rgba(30, 58, 110, 0.1);
+        border-color: #cbd5e1;
+    }
+    .suggest-dropdown-menu {
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+        z-index: 9999 !important;
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="review-hero-container py-16 sm:py-20 px-4 sm:px-6 lg:px-8 flex flex-col justify-center relative overflow-visible z-20" style="padding-top: 4.5rem !important; padding-bottom: 4.5rem !important;">
+    <div class="max-w-4xl mx-auto text-center relative z-10 w-full">
+        
+        <!-- 5-Star Rating Header -->
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full hero-badge mb-4">
+            <div class="flex items-center text-amber-400 gap-1">
+                <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <span class="text-[11px] font-bold uppercase tracking-wider ml-1" style="color: #fbbf24;">TRUSTED TECH REVIEWS</span>
         </div>
         
-        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
+        <!-- Main Headline -->
+        <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-3 leading-tight text-white">
             Share your experience.<br/>
-            <span class="text-yellow-500">Help thousands of buyers choose better.</span>
+            <span class="hero-gold-text">
+                Help thousands of buyers choose better.
+            </span>
         </h1>
         
-        <p class="text-lg sm:text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-            Your honest review reaches buyers around the world — every month — looking for a partner they can trust.
+        <p class="text-sm sm:text-base mb-9 max-w-xl mx-auto font-medium" style="color: #cbd5e1;">
+            Your honest review reaches business leaders & tech buyers worldwide looking for partners they can trust.
         </p>
 
-        <!-- Search Form -->
-        <div class="max-w-2xl mx-auto mb-8 bg-white p-2 rounded-full shadow-lg flex flex-wrap sm:flex-nowrap items-center">
-            <form method="GET" action="" class="w-full flex items-center">
-                <div class="flex-grow pl-4 relative text-gray-700">
-                    <svg class="h-5 w-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <!-- Live Auto-Suggest Search Box (Alpine.js) -->
+        <div x-data="{ 
+                query: '', 
+                results: [], 
+                open: false, 
+                loading: false,
+                fetchResults() {
+                    if (this.query.trim().length === 0) {
+                        this.results = [];
+                        this.open = false;
+                        return;
+                    }
+                    this.loading = true;
+                    fetch('{% url "company_search_api" %}?q=' + encodeURIComponent(this.query))
+                        .then(res => res.json())
+                        .then(data => {
+                            this.results = data.results || [];
+                            this.open = true;
+                            this.loading = false;
+                        })
+                        .catch(() => {
+                            this.loading = false;
+                        });
+                }
+             }" 
+             @click.outside="open = false" 
+             class="max-w-xl mx-auto relative my-8" style="margin-top: 2rem !important; margin-bottom: 2.5rem !important;">
+            
+            <div class="relative flex items-center bg-white rounded-full px-4 py-2.5 border border-slate-200 shadow-xl">
+                <!-- Search Icon (Fixed Position) -->
+                <div class="text-slate-400 flex items-center flex-shrink-0 pointer-events-none mr-3">
+                    <svg class="h-4 sm:h-5 w-4 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                    {{ form.query }}
                 </div>
-                <button type="submit" class="bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-3 px-8 rounded-full transition-colors ml-2">
-                    Search
+
+                <!-- Input Field -->
+                <input type="text" 
+                       x-model="query" 
+                       @input.debounce.300ms="fetchResults()"
+                       @focus="if(query.trim().length > 0) open = true"
+                       placeholder="Search company or software name..." 
+                       class="w-full text-slate-900 placeholder-slate-400 bg-transparent text-sm sm:text-base font-medium focus:outline-none"
+                       autocomplete="off" />
+
+                <!-- Loading Spinner -->
+                <template x-if="loading">
+                    <div class="ml-2 text-amber-500 flex items-center">
+                        <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </template>
+
+                <!-- Clear Button -->
+                <button type="button" 
+                        x-show="query.length > 0" 
+                        @click="query = ''; results = []; open = false" 
+                        class="text-slate-400 hover:text-slate-600 ml-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
-            </form>
-        </div>
-
-        <!-- Search Results -->
-        {% if form.is_valid and form.cleaned_data.query %}
-            <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl text-left overflow-hidden">
-                {% if results %}
-                    <ul class="divide-y divide-gray-200">
-                        {% for post in results %}
-                            <li class="p-4 hover:bg-gray-50 flex justify-between items-center transition-colors">
-                                <div class="text-gray-900 font-semibold">{{ post.title }}</div>
-                                <a href="{% url 'write_review_step1' post.id %}" class="bg-indigo-600 text-white text-sm px-4 py-2 rounded shadow hover:bg-indigo-500 transition-colors">
-                                    Write a Review
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <div class="p-6 text-gray-500 text-center">No results found for "{{ form.cleaned_data.query }}".</div>
-                {% endif %}
             </div>
-        {% endif %}
-        
-        <!-- Steps Indicator -->
-        <div class="mt-12 flex justify-center space-x-8 text-sm text-gray-400">
-            <div class="flex items-center"><span class="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center mr-2">1</span> Find your company</div>
-            <div class="hidden sm:block border-t border-gray-600 w-12 mt-3"></div>
-            <div class="flex items-center"><span class="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center mr-2">2</span> Quick sign-in</div>
-            <div class="hidden sm:block border-t border-gray-600 w-12 mt-3"></div>
-            <div class="flex items-center"><span class="w-6 h-6 border border-gray-400 rounded-full flex items-center justify-center mr-2">3</span> Answer & done &bull; 5-7 min</div>
+
+            <!-- Auto-suggest Dropdown Modal -->
+            <div x-show="open" 
+                 x-transition
+                 class="suggest-dropdown-menu absolute left-0 right-0 top-full mt-2 rounded-2xl text-left overflow-hidden z-50 max-h-96 overflow-y-auto">
+                
+                <!-- Matching Results -->
+                <template x-if="results.length > 0">
+                    <div class="py-2">
+                        <div class="px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-100 border-b border-gray-200">
+                            Suggested Companies (<span x-text="results.length"></span>)
+                        </div>
+                        <template x-for="comp in results" :key="comp.id">
+                            <a :href="comp.review_url" class="flex items-center justify-between p-3.5 px-4 hover:bg-amber-50 border-b border-gray-100 transition-colors cursor-pointer">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-11 h-11 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                        <template x-if="comp.image">
+                                            <img :src="comp.image" :alt="comp.title" class="w-full h-full object-cover" />
+                                        </template>
+                                        <template x-if="!comp.image">
+                                            <span class="font-black text-[#1e3a6e] text-lg" x-text="comp.title.charAt(0).toUpperCase()"></span>
+                                        </template>
+                                    </div>
+                                    <div class="truncate">
+                                        <div class="text-gray-900 font-bold text-base truncate" x-text="comp.title"></div>
+                                        <div class="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
+                                            <span class="bg-gray-200 text-gray-800 px-2 py-0.5 rounded font-semibold" x-text="comp.category"></span>
+                                            <span class="truncate" x-text="comp.subtitle"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0 ml-3 flex items-center gap-1.5" @click.stop>
+                                    <a :href="comp.review_url" class="inline-flex items-center bg-[#1e3a6e] text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm hover:opacity-90">
+                                        <span>Write Review</span>
+                                    </a>
+                                    <a :href="comp.detail_url" class="inline-flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-gray-300">
+                                        <span>Details</span>
+                                        <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                    </a>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Empty Search Results -->
+                <template x-if="results.length === 0 && !loading && query.trim().length > 0">
+                    <div class="p-8 text-center bg-white">
+                        <div class="w-12 h-12 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </div>
+                        <h4 class="text-gray-900 font-bold text-base mb-1">No company found for "<span x-text="query" class="text-[#1e3a6e]"></span>"</h4>
+                        <p class="text-xs text-gray-500 mb-4">Don't see your company? Register it on TechLife BD so users can write reviews!</p>
+                        <a href="{% url 'add_company_step1' %}" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-lg transition shadow">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Add New Company Now
+                        </a>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Step Indicator Flow -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto text-left" style="margin-top: 2.5rem !important;">
+            <div class="step-box p-3 rounded-lg flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-full text-slate-950 font-black flex items-center justify-center text-xs flex-shrink-0 shadow" style="background-color: #fbbf24;">1</div>
+                <div>
+                    <h5 class="text-xs font-bold text-white">Find your company</h5>
+                    <p class="text-[11px]" style="color: #94a3b8;">Search by name or industry</p>
+                </div>
+            </div>
+            <div class="step-box p-3 rounded-lg flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-full text-white font-bold flex items-center justify-center text-xs flex-shrink-0" style="background-color: rgba(255, 255, 255, 0.2);">2</div>
+                <div>
+                    <h5 class="text-xs font-bold text-white">Rate & answer</h5>
+                    <p class="text-[11px]" style="color: #94a3b8;">Takes only 3-5 minutes</p>
+                </div>
+            </div>
+            <div class="step-box p-3 rounded-lg flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-full text-white font-bold flex items-center justify-center text-xs flex-shrink-0" style="background-color: rgba(255, 255, 255, 0.2);">3</div>
+                <div>
+                    <h5 class="text-xs font-bold text-white">Publish review</h5>
+                    <p class="text-[11px]" style="color: #94a3b8;">Verified & shared globally</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Trust Bar -->
-<div class="bg-gray-100 py-6 border-t border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-8 text-sm text-gray-500">
-        <div class="flex items-center"><svg class="h-4 w-4 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Verified by humans within 48 hours</div>
-        <div class="flex items-center"><svg class="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg> Anonymous option available</div>
-        <div class="flex items-center"><svg class="h-4 w-4 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" /></svg> Read by buyers in 100+ countries</div>
+<!-- Popular Companies Section -->
+{% if popular_companies %}
+<section class="pt-12 pb-16 border-t border-gray-200" style="background-color: #f8fafc;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-10">
+            <h2 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">Popular Companies Ready for Review</h2>
+            <p class="text-gray-600 text-sm mt-1">Select any company below to start writing your review immediately.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for company in popular_companies %}
+                <div class="company-card-item rounded-2xl p-5 shadow-sm flex flex-col justify-between group">
+                    <div>
+                        <!-- Logo & Category -->
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-14 h-14 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden p-1">
+                                {% if company.featured_image %}
+                                    <img src="{{ company.featured_image.url }}" alt="{{ company.title }}" class="max-h-full max-w-full object-contain" />
+                                {% elif company.featured_image_url %}
+                                    <img src="{{ company.featured_image_url }}" alt="{{ company.title }}" class="max-h-full max-w-full object-contain" />
+                                {% else %}
+                                    <span class="font-black text-xl" style="color: #1e3a6e;">{{ company.title|slice:":1"|upper }}</span>
+                                {% endif %}
+                            </div>
+                            {% if company.category %}
+                                <span class="bg-gray-100 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded-full border border-gray-200">{{ company.category.name }}</span>
+                            {% elif company.subcategory %}
+                                <span class="bg-gray-100 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded-full border border-gray-200">{{ company.subcategory.name }}</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Company Title & Tagline -->
+                        <h3 class="font-bold text-gray-900 text-lg group-hover:text-[#1e3a6e] transition-colors line-clamp-1 mb-1">
+                            {{ company.title }}
+                        </h3>
+                        <p class="text-gray-500 text-xs line-clamp-2 mb-6 min-h-[32px]">
+                            {% if company.subtitle %}{{ company.subtitle }}{% else %}Leading company listed on TechLife BD review platform.{% endif %}
+                        </p>
+                    </div>
+
+                    <!-- Action Buttons (Left: Write Review, Right: Details) -->
+                    <div class="flex items-center gap-2 pt-2 border-t border-gray-100">
+                        <a href="{% url 'write_review_step1' company.id %}" class="flex-1 py-2 px-2.5 text-white text-xs font-bold rounded-xl text-center transition-all flex items-center justify-center shadow-sm hover:opacity-90" style="background-color: #1e3a6e;">
+                            <span>Write Review</span>
+                        </a>
+                        <a href="{% url 'blog_details' company.slug %}" class="flex-1 py-2 px-2.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-800 text-xs font-bold rounded-xl text-center transition-all flex items-center justify-center gap-1">
+                            <span>Details</span>
+                            <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
+</section>
+{% endif %}
+
 {% endblock content %}
