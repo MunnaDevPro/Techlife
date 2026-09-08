@@ -98,14 +98,15 @@
 
                         <!-- Rating Row -->
                         <div class="flex items-center gap-3 mt-3">
-                            <div class="flex text-[#ffb800] text-[15px] gap-0.5">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            <div class="flex text-[15px] gap-0.5">
+                                {{ overall_avg_rating|render_stars }}
                             </div>
-                            <span class="text-[15px] font-bold text-white">5.0 <span
-                                    class="text-gray-300 font-normal">(1 Review)</span></span>
+                            <span class="text-[15px] font-bold text-white">
+                                {% if reviews_count > 0 %}{{ overall_avg_rating }}{% else %}0.0{% endif %}
+                                <span class="text-gray-300 font-normal">({{ reviews_count }} Review{% if reviews_count != 1 %}s{% endif %})</span>
+                            </span>
                             <span class="text-gray-600 font-light mx-1">|</span>
-                            <a href="#reviews"
+                            <a href="{% url 'write_review_step1' company.id %}"
                                 class="text-[#60a5fa] font-semibold text-[15px] hover:text-white transition-colors flex items-center gap-1.5">
                                 <i class="fas fa-tag text-[13px]"></i> Write a Review
                             </a>
@@ -284,7 +285,7 @@
                 <div>
                     <span class="text-xs font-bold text-[#1e3a6e] uppercase tracking-wider">Ratings & Reviews</span>
                     <h3 class="text-xl font-bold text-gray-900 mt-1">Review Analytics of {{ company.title }}</h3>
-                    <p class="text-xs text-gray-500">1 review process completed. Based on verified client feedback.</p>
+                    <p class="text-xs text-gray-500">{{ reviews_count }} review{{ reviews_count|pluralize }} completed. Based on verified client feedback.</p>
                 </div>
 
                 <!-- Rating Scores Grid -->
@@ -292,33 +293,34 @@
                     <!-- Left Rating Box -->
                     <div
                         class="bg-white p-6 rounded-xl border border-gray-200 text-center flex flex-col items-center justify-center shadow-2xs">
-                        <span class="text-4xl font-extrabold text-gray-900">5.0</span>
-                        <div class="flex text-[#ffb800] text-sm gap-1 my-1">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <span class="text-4xl font-extrabold text-gray-900">{{ overall_avg_rating }}</span>
+                        <div class="flex text-sm gap-1 my-1">
+                            {{ overall_avg_rating|render_stars }}
                         </div>
-                        <span class="text-xs font-bold text-gray-500">5.0 out of 5</span>
+                        <span class="text-xs font-bold text-gray-500">{{ overall_avg_rating }} out of 5</span>
 
                         <div class="w-full mt-4 space-y-1.5 text-[11px] text-left">
-                            <div class="flex justify-between font-medium text-gray-600"><span>Service</span><span
-                                    class="font-bold text-gray-900">5.0</span></div>
+                            <div class="flex justify-between font-medium text-gray-600"><span>Quality of Work</span><span
+                                    class="font-bold text-gray-900">{{ avg_quality }}</span></div>
                             <div class="w-full bg-gray-200 h-1.5 rounded-full">
-                                <div class="bg-[#1e3a6e] h-1.5 rounded-full" style="width: 100%;"></div>
+                                <div class="bg-[#1e3a6e] h-1.5 rounded-full" style="width: {{ avg_quality_pct }}%;"></div>
                             </div>
-                            <div class="flex justify-between font-medium text-gray-600"><span>Value for
-                                    Money</span><span class="font-bold text-gray-900">5.0</span></div>
+                            <div class="flex justify-between font-medium text-gray-600"><span>Communication</span><span
+                                    class="font-bold text-gray-900">{{ avg_communication }}</span></div>
                             <div class="w-full bg-gray-200 h-1.5 rounded-full">
-                                <div class="bg-[#1e3a6e] h-1.5 rounded-full" style="width: 100%;"></div>
+                                <div class="bg-[#1e3a6e] h-1.5 rounded-full" style="width: {{ avg_comm_pct }}%;"></div>
                             </div>
-                            <div class="flex justify-between font-medium text-gray-600"><span>Transparency</span><span
-                                    class="font-bold text-gray-900">5.0</span></div>
+                            <div class="flex justify-between font-medium text-gray-600"><span>On-Time Delivery</span><span
+                                    class="font-bold text-gray-900">{{ avg_timeliness }}</span></div>
                             <div class="w-full bg-gray-200 h-1.5 rounded-full">
-                                <div class="bg-[#1e3a6e] h-1.5 rounded-full" style="width: 100%;"></div>
+                                <div class="bg-[#1e3a6e] h-1.5 rounded-full" style="width: {{ avg_time_pct }}%;"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Right Review Card -->
+                    {% if published_reviews %}
+                    {% with latest_review=published_reviews.first %}
                     <div
                         class="md:col-span-2 bg-white p-6 rounded-xl border border-gray-200 flex flex-col justify-between shadow-2xs">
                         <div>
@@ -326,31 +328,45 @@
                                 <div class="flex items-center gap-2.5">
                                     <div
                                         class="w-9 h-9 rounded-full bg-blue-100 text-[#1e3a6e] font-bold flex items-center justify-center text-xs">
-                                        K</div>
+                                        {% if latest_review.is_anonymous %}A{% else %}{{ latest_review.reviewer.first_name|default:latest_review.reviewer.username|slice:":1"|upper }}{% endif %}</div>
                                     <div>
-                                        <h4 class="text-xs font-bold text-gray-900">Khaled Al-Mansoor</h4>
-                                        <span class="text-[10px] text-gray-500">Director, E-Commerce Firm, Sydney,
-                                            August
-                                            2023</span>
+                                        <h4 class="text-xs font-bold text-gray-900">
+                                            {% if latest_review.is_anonymous %}Anonymous Client{% else %}{{ latest_review.reviewer.get_full_name|default:latest_review.reviewer.username }}{% endif %}
+                                        </h4>
+                                        <span class="text-[10px] text-gray-500">Verified Client • {{ latest_review.created_at|date:"F d, Y" }}</span>
                                     </div>
                                 </div>
                                 <span class="text-xs text-green-600 font-bold flex items-center gap-1"><i
                                         class="fas fa-check-circle"></i> Verified</span>
                             </div>
-                            <h4 class="text-sm font-bold text-gray-900 mt-3 mb-1">"Working with {{ company.title }} was
-                                excellent"</h4>
+                            {% if latest_review.title %}
+                            <h4 class="text-sm font-bold text-gray-900 mt-3 mb-1">"{{ latest_review.title }}"</h4>
+                            {% endif %}
                             <p class="text-xs text-gray-700 leading-relaxed italic">
-                                "They delivered software solutions on time with absolute professionalism. Their
-                                technical
-                                team demonstrated deep domain expertise throughout the project."
+                                "{{ latest_review.body }}"
                             </p>
                         </div>
                         <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                            <span class="font-bold text-gray-500 text-[11px]">Services: Custom Web & Mobile Dev</span>
-                            <a href="#reviews" class="text-[#1e3a6e] font-bold hover:underline">Show Project Details
+                            <span class="font-bold text-gray-500 text-[11px]">Rating: {{ latest_review.overall_rating }} / 5.0</span>
+                            <a href="#reviews-list" class="text-[#1e3a6e] font-bold hover:underline">Show All Reviews
                                 &rarr;</a>
                         </div>
                     </div>
+                    {% endwith %}
+                    {% else %}
+                    <div
+                        class="md:col-span-2 bg-white p-6 rounded-xl border border-gray-200 flex flex-col justify-center items-center text-center shadow-2xs">
+                        <div class="w-12 h-12 rounded-full bg-blue-50 text-[#1e3a6e] flex items-center justify-center mb-3">
+                            <i class="fas fa-star text-xl"></i>
+                        </div>
+                        <h4 class="text-sm font-bold text-gray-900">No Client Reviews Yet</h4>
+                        <p class="text-xs text-gray-500 mt-1 max-w-sm">Be the first to review {{ company.title }} and share your feedback with verified clients.</p>
+                        <a href="{% url 'write_review_step1' company.id %}"
+                            class="mt-4 inline-flex items-center gap-2 bg-[#1e3a6e] hover:bg-[#152d56] text-white text-xs font-bold py-2 px-4 rounded transition-colors">
+                            Write a Review
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
 
                 <!-- Detailed Reviews Search & Filter Bar -->
@@ -441,10 +457,10 @@
                                 </ul>
                             </div>
 
-                            <button
-                                class="bg-[#1e3a6e] hover:bg-[#152d56] text-white text-[13px] font-bold py-2.5 px-5 rounded transition-colors sm:ml-2">
+                            <a href="{% url 'write_review_step1' company.id %}"
+                                class="inline-flex items-center justify-center bg-[#1e3a6e] hover:bg-[#152d56] text-white text-[13px] font-bold py-2.5 px-5 rounded transition-colors sm:ml-2">
                                 Write a Review
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -459,44 +475,109 @@
                             <button
                                 class="bg-[#141824] border border-[#141824] text-white px-3.5 py-1.5 rounded-full text-[13px] font-bold flex items-center gap-2 hover:bg-gray-800 transition-colors">
                                 <i class="fas fa-check text-white"></i> All Reviews <span
-                                    class="text-white font-medium">1</span>
+                                    class="text-white font-medium">{{ reviews_count }}</span>
                             </button>
                             <button
                                 class="bg-white border border-gray-200 text-gray-900 px-3.5 py-1.5 rounded-full text-[13px] font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-check text-green-500"></i> Communication <span
-                                    class="text-gray-500 font-medium">1</span>
+                                    class="text-gray-500 font-medium">{{ reviews_count }}</span>
                             </button>
                             <button
                                 class="bg-white border border-gray-200 text-gray-900 px-3.5 py-1.5 rounded-full text-[13px] font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-check text-green-500"></i> Quality of Work <span
-                                    class="text-gray-500 font-medium">1</span>
+                                    class="text-gray-500 font-medium">{{ reviews_count }}</span>
                             </button>
                             <button
                                 class="bg-white border border-gray-200 text-gray-900 px-3.5 py-1.5 rounded-full text-[13px] font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-check text-green-500"></i> On-Time Delivery <span
-                                    class="text-gray-500 font-medium">1</span>
+                                    class="text-gray-500 font-medium">{{ reviews_count }}</span>
                             </button>
                             <button
                                 class="bg-white border border-gray-200 text-gray-900 px-3.5 py-1.5 rounded-full text-[13px] font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-check text-green-500"></i> Technical Expertise <span
-                                    class="text-gray-500 font-medium">1</span>
+                                    class="text-gray-500 font-medium">{{ reviews_count }}</span>
                             </button>
                             <button
                                 class="bg-white border border-gray-200 text-gray-900 px-3.5 py-1.5 rounded-full text-[13px] font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-check text-green-500"></i> Problem Understanding <span
-                                    class="text-gray-500 font-medium">1</span>
+                                    class="text-gray-500 font-medium">{{ reviews_count }}</span>
                             </button>
                             <button
                                 class="bg-white border border-gray-200 text-gray-900 px-3.5 py-1.5 rounded-full text-[13px] font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-check text-green-500"></i> Professionalism <span
-                                    class="text-gray-500 font-medium">1</span>
+                                    class="text-gray-500 font-medium">{{ reviews_count }}</span>
                             </button>
                             <button
                                 class="bg-white border border-gray-200 text-gray-900 px-3.5 py-1.5 rounded-full text-[13px] font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-check text-green-500"></i> Support <span
-                                    class="text-gray-500 font-medium">1</span>
+                                    class="text-gray-500 font-medium">{{ reviews_count }}</span>
                             </button>
                         </div>
+                    </div>
+
+                    <!-- Detailed Reviews List -->
+                    <div id="reviews-list" class="mt-6 space-y-4">
+                        {% if published_reviews %}
+                            {% for review in published_reviews %}
+                            <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-gray-100 gap-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-[#1e3a6e] text-white font-bold flex items-center justify-center text-sm shadow-2xs">
+                                            {% if review.is_anonymous %}A{% else %}{{ review.reviewer.first_name|default:review.reviewer.username|slice:":1"|upper }}{% endif %}
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-gray-900">
+                                                {% if review.is_anonymous %}Anonymous Client{% else %}{{ review.reviewer.get_full_name|default:review.reviewer.username }}{% endif %}
+                                            </h4>
+                                            <span class="text-xs text-gray-500">Verified Client • {{ review.created_at|date:"F d, Y" }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex text-sm gap-0.5">
+                                            {{ review.overall_rating|render_stars }}
+                                        </div>
+                                        <span class="text-xs font-bold text-gray-900 bg-blue-50 px-2.5 py-1 rounded border border-blue-100">{{ review.overall_rating }} / 5.0</span>
+                                    </div>
+                                </div>
+
+                                {% if review.title %}
+                                <h4 class="text-base font-bold text-gray-900 mt-4 mb-2">"{{ review.title }}"</h4>
+                                {% endif %}
+
+                                <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-normal">
+                                    {{ review.body }}
+                                </p>
+
+                                <!-- Ratings Breakdown Badges -->
+                                <div class="mt-4 pt-3 border-t border-gray-100 flex flex-wrap gap-4 text-xs text-gray-600">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-medium text-gray-500">Quality of Work:</span>
+                                        <span class="font-bold text-gray-900">{{ review.quality_rating }}/5</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-medium text-gray-500">Communication:</span>
+                                        <span class="font-bold text-gray-900">{{ review.communication_rating }}/5</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-medium text-gray-500">On-Time Delivery:</span>
+                                        <span class="font-bold text-gray-900">{{ review.timeliness_rating }}/5</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="bg-white p-8 rounded-xl border border-gray-200 text-center flex flex-col items-center justify-center">
+                                <div class="w-12 h-12 rounded-full bg-blue-50 text-[#1e3a6e] flex items-center justify-center mb-3">
+                                    <i class="fas fa-comment-alt text-xl"></i>
+                                </div>
+                                <h4 class="text-base font-bold text-gray-900">No Detailed Reviews Yet</h4>
+                                <p class="text-xs text-gray-500 mt-1 max-w-md">There are no client reviews recorded for {{ company.title }} yet. Be the first client to submit a review.</p>
+                                <a href="{% url 'write_review_step1' company.id %}"
+                                    class="mt-4 inline-flex items-center gap-2 bg-[#1e3a6e] hover:bg-[#152d56] text-white text-xs font-bold py-2.5 px-5 rounded transition-colors shadow-2xs">
+                                    Write First Review
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </section>

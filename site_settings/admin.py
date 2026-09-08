@@ -5,8 +5,11 @@ from .models import SiteSettings
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(ModelAdmin):
     fieldsets = (
-        ("SEO Settings & Branding", {
-            "fields": ("site_title", "meta_description", "favicon"),
+        ("Branding & Logo", {
+            "fields": ("logo", "logo_dark", "favicon"),
+        }),
+        ("SEO Settings", {
+            "fields": ("site_title", "meta_description"),
         }),
         ("Analytics", {
             "fields": ("google_analytics_id",),

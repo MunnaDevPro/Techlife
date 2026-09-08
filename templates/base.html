@@ -84,7 +84,7 @@
             --navy-dark: #152d56;
             --navy-light: #dbeafe;
             --accent: #2563eb;
-            --bg-page: #f0f2f5;
+            --bg-page: #ffffff;
             --bg-card: #ffffff;
             --border: #e2e8f0;
             --text-primary: #1c1c1e;
@@ -519,7 +519,7 @@
     {% endblock %}
 
     <!-- Main Content -->
-    <main id="container" class="mt-9 mx-auto flex-grow min-h-[calc(100vh-128px)] py-4">
+    <main id="container" class="mx-auto flex-grow min-h-[calc(100vh-128px)] py-4">
         {% block content %}
         {% if action == 'post_create' or action == 'post_edit' %} {% include
         'components/blogs/partial_create_blog_content.html' %}

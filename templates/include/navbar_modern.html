@@ -1,483 +1,359 @@
 {% load static %}
 
-<header class="bg-white w-full font-inter shadow-sm">
+<header class="bg-white w-full font-inter">
 
-    <div
-        class="hidden lg:flex justify-between items-center py-2 px-4 border-b border-gray-100 text-[12px] text-gray-600 max-w-7xl mx-auto w-full">
-        {% if trending_post %}
-        <div class="flex items-center gap-2">
-            <span class="text-[#2563eb] font-bold tracking-wide">TRENDING</span>
-            <span class="w-1 h-1 rounded-full bg-gray-400"></span>
-            <a href="{% url 'blog_details' trending_post.slug %}"
-                class="hover:text-[#1e3a6e] transition-colors truncate max-w-2xl">
-                {{ trending_post.title }}
-            </a>
-        </div>
-        {% elif latest_blogs %}
-        {% with top_story=latest_blogs|first %}
-        <div class="flex items-center gap-2">
-            <span class="text-[#2563eb] font-bold tracking-wide">TRENDING</span>
-            <span class="w-1 h-1 rounded-full bg-gray-400"></span>
-            <a href="{% url 'blog_details' top_story.slug %}"
-                class="hover:text-[#1e3a6e] transition-colors truncate max-w-2xl">
-                {{ top_story.title }}
-            </a>
-        </div>
-        {% endwith %}
-        {% else %}
-        <div class="flex items-center gap-2">
-            <span class="text-[#2563eb] font-bold tracking-wide">TRENDING</span>
-            <span class="w-1 h-1 rounded-full bg-gray-400"></span>
-            <span class="text-gray-500">Latest stories will appear here soon.</span>
-        </div>
-        {% endif %}
-        <div class="flex items-center gap-6">
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'user_dashboard' %}?section=add-company" class="flex items-center gap-1.5 px-3 py-1 bg-[#1e3a6e] text-white rounded text-[11px] font-bold hover:bg-[#152d56] transition-colors">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="12" y1="8" x2="12" y2="16"></line>
-                    <line x1="8" y1="12" x2="16" y2="12"></line>
-                </svg>
-                Add Company
-            </a>
-            {% else %}
-            <button type="button" data-login-alert-trigger class="flex items-center gap-1.5 px-3 py-1 bg-[#1e3a6e] text-white rounded text-[11px] font-bold hover:bg-[#152d56] transition-colors cursor-pointer">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="12" y1="8" x2="12" y2="16"></line>
-                    <line x1="8" y1="12" x2="16" y2="12"></line>
-                </svg>
-                Add Company
-            </button>
-            {% endif %}
-            <div class="flex items-center gap-1.5">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
+    <!-- 1. TOP BAR: Date/Time & Top Links / Socials (Navy Blue Theme) -->
+    <div class="bg-[#152d56] text-gray-200 text-[11px] py-1.5 px-4 hidden lg:block border-b border-blue-900/40" style="background-color: #152d56;">
+        <div class="max-w-7xl mx-auto flex justify-between items-center w-full">
+            <!-- Left: Current Date -->
+            <div class="flex items-center gap-2 font-medium tracking-wide uppercase text-blue-200">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#2563eb]" style="color: #60a5fa;">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                     <line x1="16" y1="2" x2="16" y2="6"></line>
                     <line x1="8" y1="2" x2="8" y2="6"></line>
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                 </svg>
-                <span class="font-medium">{{ current_date }}</span>
+                <span>{% if current_date %}{{ current_date }}{% else %}{% now "l, F j, Y" %}{% endif %}</span>
             </div>
-            <div class="flex items-center gap-3">
-                <span class="font-medium">Follow Us:</span>
-                {% if footer.facebook_url %}
-                <a href="{{ footer.facebook_url }}" target="_blank" rel="noopener noreferrer"
-                    class="text-[#1877F2] hover:opacity-80 transition-opacity"><svg width="16" height="16"
-                        viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                    </svg></a>
-                {% endif %}
 
-                {% if footer.twitter_url %}
-                <a href="{{ footer.twitter_url }}" target="_blank" rel="noopener noreferrer"
-                    class="text-black hover:opacity-80 transition-opacity"><svg width="16" height="16"
-                        viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg></a>
-                {% endif %}
-
-                <!-- YouTube is not in FooterSettings, so kept static or hid if you prefer, leaving for now as # -->
-                <a href="#" target="_blank" rel="noopener noreferrer"
-                    class="text-[#FF0000] hover:opacity-80 transition-opacity"><svg width="16" height="16"
-                        viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                    </svg></a>
-
-                {% if footer.linkedin_url %}
-                <a href="{{ footer.linkedin_url }}" target="_blank" rel="noopener noreferrer"
-                    class="text-[#0A66C2] hover:opacity-80 transition-opacity"><svg width="16" height="16"
-                        viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg></a>
-                {% endif %}
+            <!-- Right: Top Links & Social Icons -->
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-4 text-blue-100 font-medium">
+                    <a href="{% url 'homepage' %}" class="hover:text-white transition-colors">Home</a>
+                    <a href="{% url 'contact_page' %}" class="hover:text-white transition-colors">Contact Us</a>
+                    <a href="{% url 'blogs' %}" class="hover:text-white transition-colors">News</a>
+                </div>
+                <div class="h-3 w-px bg-blue-800"></div>
+                <div class="flex items-center gap-3 text-blue-200">
+                    {% if footer.facebook_url %}
+                    <a href="{{ footer.facebook_url }}" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    {% endif %}
+                    {% if footer.twitter_url %}
+                    <a href="{{ footer.twitter_url }}" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="Twitter">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </a>
+                    {% endif %}
+                    {% if footer.linkedin_url %}
+                    <a href="{{ footer.linkedin_url }}" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="LinkedIn">
+                        <i class="fa-brands fa-linkedin-in"></i>
+                    </a>
+                    {% endif %}
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="YouTube">
+                        <i class="fa-brands fa-youtube"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <div
-        class="max-w-7xl mx-auto px-3 lg:px-4 py-2 lg:py-2.5 flex items-center justify-between gap-3 lg:gap-6 relative bg-white">
-
-        <button id="menu-toggle" aria-label="Open navigation menu"
-            class="lg:hidden w-8 h-8 flex items-center justify-center text-gray-800 hover:text-[#1e3a6e] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer outline-none">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-        </button>
-
-        <a href="{% url 'homepage' %}" aria-label="TechLife BD - Home" class="flex-shrink-0">
-            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-7 sm:h-8 lg:h-9 w-auto"
-                loading="eager" fetchpriority="high" />
-        </a>
-
-        <div class="hidden lg:flex flex-1 max-w-2xl px-8">
-            <form action="{% url 'redirect_search_results' %}" method="GET" class="w-full relative flex items-center">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 pointer-events-none">
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.3-4.3" />
-                </svg>
-                <input type="search" id="desktop-search-input" name="q" placeholder="Search blogs, tech, startups..."
-                    class="w-full pl-11 pr-20 py-2 text-[14px] border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#1e3a6e] focus:ring-1 focus:ring-[#1e3a6e] transition-all shadow-sm" />
-                <div class="absolute right-3 flex items-center gap-1">
-                    <span
-                        class="text-[11px] text-gray-400 font-medium px-1.5 py-0.5 border border-gray-200 rounded">Ctrl
-                        + K</span>
-                </div>
-            </form>
-        </div>
-
-        <div class="flex items-center gap-4">
-            <div class="lg:hidden">
-                <button onclick="toggleMobileSearch()"
-                    class="w-8 h-8 flex items-center justify-center text-gray-800 hover:bg-gray-100 rounded-lg">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="m21 21-4.3-4.3" />
-                    </svg>
-                </button>
-            </div>
-
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'create_blog' %}"
-                class="hidden sm:flex items-center gap-2 px-4 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 20h9" />
-                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                </svg>
-                Write Blog
-            </a>
-
-
-            
-            <a href="{% url 'write_review_landing' %}"
-                class="hidden sm:flex items-center gap-2 px-4 py-2 bg-[#1e3a6e] text-white rounded-lg text-[14px] font-semibold hover:bg-[#152d56] transition-colors">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
-                Write a Review
-            </a>
-            {% else %}
-            <button type="button" data-login-alert-trigger
-                class="hidden sm:flex items-center gap-2 px-4 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors cursor-pointer">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 20h9" />
-                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                </svg>
-                Write
-            </button>
-            {% endif %}
-
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'user_dashboard' %}?section=notifications"
-                class="relative w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#1e3a6e] hover:bg-gray-50 rounded-full transition-colors">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                </svg>
-                {% if unread_notifications_count > 0 %}
-                <span
-                    class="absolute top-0.5 right-0.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">{{
-                    unread_notifications_count }}</span>
-                {% endif %}
-            </a>
-            {% else %}
-            <button data-login-alert-trigger
-                class="relative w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#1e3a6e] hover:bg-gray-50 rounded-full transition-colors cursor-pointer">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    <!-- 2. MAIN HEADER: Logo & Leaderboard Banner Ad -->
+    <div class="py-3 lg:py-4">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4">
+            <!-- Mobile Menu Toggle Button (Opens right-sliding sidebar) -->
+            <button onclick="openSidebar()" aria-label="Open navigation menu" class="lg:hidden p-2 text-gray-800 hover:text-[#1e3a6e] hover:bg-gray-100 rounded-md transition-colors cursor-pointer outline-none">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
                 </svg>
             </button>
-            {% endif %}
 
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'user_dashboard' %}"
-                class="hidden sm:flex items-center gap-3 flex-shrink-0 rounded-lg px-2 py-1 hover:bg-gray-50 transition-colors"
-                aria-label="Dashboard">
-                {% if request.user.profile_picture %}
-                <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.first_name }}"
-                    class="w-8 h-8 lg:w-9 lg:h-9 rounded-lg object-cover border border-gray-200" />
+            <!-- Brand Logo -->
+            <a href="{% url 'homepage' %}" aria-label="TechLife BD - Home" class="flex items-center gap-2 flex-shrink-0">
+                {% if site_settings and site_settings.logo %}
+                <img src="{{ site_settings.logo.url }}" alt="TechLife BD" class="h-8 sm:h-[38px] w-auto object-contain" loading="eager" fetchpriority="high" />
+                {% elif footer and footer.logo %}
+                <img src="{{ footer.logo.url }}" alt="TechLife BD" class="h-8 sm:h-[38px] w-auto object-contain" loading="eager" fetchpriority="high" />
                 {% else %}
-                <div
-                    class="w-8 h-8 lg:w-9 lg:h-9 rounded-lg bg-[#1e3a6e] flex items-center justify-center text-white text-sm font-bold">
-                    {{ request.user.first_name|default:request.user.email|slice:":1"|upper }}
-                </div>
+                <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-8 sm:h-[38px] w-auto object-contain" loading="eager" fetchpriority="high" />
                 {% endif %}
-                <div class="hidden xl:block text-left">
-                    <p class="text-[11px] text-gray-500 leading-none">Welcome back</p>
-                    <p class="text-[13px] font-semibold text-gray-800 leading-tight">{{
-                        request.user.first_name|default:request.user.email }}</p>
+            </a>
+
+            <!-- Header Leaderboard Ad (728x90 style banner) -->
+            <div class="hidden lg:flex items-center justify-end flex-1">
+                {% if ad_1 %}
+                <div class="w-full flex justify-end">
+                    {{ ad_1.ad_code|safe }}
                 </div>
-            </a>
-            {% else %}
-            <a href="{% url 'login' %}"
-                class="hidden sm:flex items-center gap-2 px-4 py-2 bg-[#1e3a6e] text-white rounded-lg text-[14px] font-semibold hover:bg-[#152d56] transition-colors shadow-md">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-16a2 2 0 0 1 2-2z" />
-                    <polyline points="10 17 15 12 10 7" />
-                    <line x1="15" y1="12" x2="3" y2="12" />
-                </svg>
-                Login / Sign Up
-            </a>
-            {% endif %}
+                {% else %}
+                <a href="#" class="w-full max-w-[728px] h-[90px] text-white rounded flex items-center justify-between px-6 shadow-sm overflow-hidden relative group" style="background: linear-gradient(135deg, #1e3a6e 0%, #152d56 100%);">
+                    <div class="z-10">
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-blue-200 block mb-0.5">Special Promotion</span>
+                        <h4 class="text-lg font-extrabold tracking-tight group-hover:text-blue-100 transition-colors">Smart Technology &amp; Electronics Cable</h4>
+                        <p class="text-xs text-blue-100/90">Discover premium deals and digital insights in Bangladesh</p>
+                    </div>
+                    <span class="z-10 bg-[#2563eb] hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded uppercase tracking-wider shadow transition-all shrink-0" style="background-color: #2563eb;">Shop Now</span>
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+                </a>
+                {% endif %}
+            </div>
         </div>
     </div>
+</header>
 
-    <nav class="hidden lg:block bg-[#1e3a6e] w-full sticky top-0 z-50 relative">
-        <div
-            class="max-w-7xl mx-auto px-3 lg:px-4 flex items-center justify-between text-white text-[14px] font-medium h-[48px]">
+    <!-- 3. NAVIGATION BAR (Sticky + Top Border Divider + Enhanced Search Icon) -->
+    <nav class="bg-white text-gray-800 w-full sticky top-0 z-50 border-t border-b border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.03)] py-1.5 font-inter">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-[52px]">
 
-            <div
-                class="flex items-center overflow-x-auto scrollbar-hide whitespace-nowrap flex-1 h-full min-w-0 static">
-
-                <a href="{% url 'homepage' %}"
-                    class="flex items-center gap-2 px-4 h-full hover:bg-white/10 transition-colors shrink-0">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
+            <!-- Desktop Navigation Links -->
+            <div class="hidden lg:flex items-center space-x-1 overflow-x-auto scrollbar-hide whitespace-nowrap flex-1 h-full font-bold text-[13px] tracking-wide uppercase">
+                <a href="{% url 'homepage' %}" class="flex items-center gap-1.5 px-4 h-full text-[#1e3a6e] border-b-2 border-[#1e3a6e] bg-blue-50/50 hover:bg-blue-50 transition-colors shrink-0">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                         <polyline points="9 22 9 12 15 12 15 22" />
                     </svg>
                     Home
                 </a>
 
-                <a href="{% url 'blogs' %}"
-                    class="flex items-center gap-2 px-4 h-full hover:bg-white/10 transition-colors relative shrink-0">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
-                        <path d="M18 14h-8" />
-                        <path d="M15 18h-5" />
-                        <path d="M10 6h8v4h-8V6Z" />
-                    </svg>
-                    News
-                    <span
-                        class="absolute top-1.5 right-1 bg-green-500 text-white text-[9px] font-bold px-1 rounded-sm tracking-wider uppercase">New</span>
+                <a href="{% url 'blogs' %}" class="flex items-center gap-1.5 px-4 h-full text-gray-700 hover:text-[#1e3a6e] hover:bg-gray-50 transition-colors shrink-0">
+                    All Article
                 </a>
 
-                <div class="group static shrink-0 h-full">
-                    <button
-                        class="flex items-center gap-1.5 px-4 h-full hover:bg-white/10 transition-colors cursor-pointer outline-none">
-                        Technology
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="transition-transform group-hover:rotate-180">
+                <div class="group relative shrink-0 h-full flex items-center">
+                    <button class="flex items-center gap-1 px-4 h-full text-gray-700 hover:text-[#1e3a6e] hover:bg-gray-50 transition-colors cursor-pointer outline-none uppercase font-bold">
+                        Category
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:rotate-180">
                             <polyline points="6 9 12 15 18 9" />
                         </svg>
                     </button>
-
-                    <div
-                        class="absolute left-0 top-full w-full bg-white shadow-2xl border-t border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 text-gray-800 rounded-b-xl border-b-4 border-b-gray-100">
-                        <div class="max-w-7xl mx-auto p-8 flex gap-8">
-                            <div class="flex-1 grid grid-cols-4 gap-6">
-                                {% for category in categories|slice:":4" %}
-                                <div class="flex flex-col space-y-4">
-                                    <h4
-                                        class="text-[11px] font-bold text-[#1e3a6e] uppercase tracking-wider mb-2 flex items-center gap-2 border-b border-gray-100 pb-2">
-                                        {% if category.font_awesome_icon %}
-                                        {% if "fa-" in category.font_awesome_icon %}
-                                        <i class="{{ category.font_awesome_icon }} text-gray-400"></i>
-                                        {% else %}
-                                        <i data-lucide="{{ category.font_awesome_icon }}"
-                                            class="w-4 h-4 text-gray-400 inline-block"></i>
-                                        {% endif %}
-                                        {% endif %}
-                                        {{ category.name }}
-                                    </h4>
-                                    <ul class="space-y-3">
-                                        {% for sub in category.subcategories.all %}
-                                        <li>
-                                            <a href="{% url 'category_post' sub.slug %}"
-                                                class="flex items-center gap-2.5 text-[13px] text-gray-600 hover:text-[#1e3a6e] hover:font-medium transition-colors">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2"
-                                                    class="text-gray-400 shrink-0">
-                                                    <path d="M5 12h14M12 5l7 7-7 7" />
-                                                </svg>
-                                                <span class="truncate">{{ sub.name }}</span>
-                                            </a>
-                                        </li>
-                                        {% empty %}
-                                        <li><span class="text-[12px] text-gray-400 italic">No subcategories</span></li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="w-[300px] pl-6 border-l border-gray-100 flex flex-col shrink-0 h-full">
-                                <h4 class="text-[11px] font-bold text-[#1e3a6e] uppercase tracking-wider mb-4">Trending
-                                    Now</h4>
-                                <div class="space-y-4 flex-1">
-                                    {% if trending_post %}
-                                    <a href="{% url 'blog_details' trending_post.slug %}"
-                                        class="flex items-start gap-3 group/trend">
-                                        {% if trending_post.featured_image %}
-                                        <img src="{{ trending_post.featured_image.url }}"
-                                            alt="{{ trending_post.title }}"
-                                            class="w-16 h-16 rounded-lg object-cover bg-gray-200 shrink-0 border border-gray-100 group-hover/trend:border-[#1e3a6e] transition-colors" />
-                                        {% else %}
-                                        <img src="{% static 'images/default_og_image.png' %}" alt="Trending"
-                                            class="w-16 h-16 rounded-lg object-cover bg-gray-200 shrink-0 border border-gray-100 group-hover/trend:border-[#1e3a6e] transition-colors" />
-                                        {% endif %}
-                                        <div>
-                                            <h5
-                                                class="text-[13px] font-bold text-gray-800 leading-tight group-hover/trend:text-[#1e3a6e] transition-colors">
-                                                {{ trending_post.title }}</h5>
-                                            <span class="text-[11px] text-gray-500 mt-1 block">Latest story</span>
-                                        </div>
-                                    </a>
-                                    {% elif latest_blogs %}
-                                    {% for story in latest_blogs|slice:":3" %}
-                                    <a href="{% url 'blog_details' story.slug %}"
-                                        class="flex items-start gap-3 group/trend">
-                                        {% if story.featured_image %}
-                                        <img src="{{ story.featured_image.url }}" alt="{{ story.title }}"
-                                            class="w-16 h-16 rounded-lg object-cover bg-gray-200 shrink-0 border border-gray-100 group-hover/trend:border-[#1e3a6e] transition-colors" />
-                                        {% else %}
-                                        <img src="{% static 'images/default_og_image.png' %}" alt="Trending"
-                                            class="w-16 h-16 rounded-lg object-cover bg-gray-200 shrink-0 border border-gray-100 group-hover/trend:border-[#1e3a6e] transition-colors" />
-                                        {% endif %}
-                                        <div>
-                                            <h5
-                                                class="text-[13px] font-bold text-gray-800 leading-tight group-hover/trend:text-[#1e3a6e] transition-colors">
-                                                {{ story.title }}</h5>
-                                            <span class="text-[11px] text-gray-500 mt-1 block">{{
-                                                story.created_at|timesince }} ago</span>
-                                        </div>
-                                    </a>
-                                    {% endfor %}
-                                    {% else %}
-                                    <div
-                                        class="rounded-lg border border-dashed border-gray-200 p-4 text-sm text-gray-500">
-                                        No recent posts available.</div>
-                                    {% endif %}
-                                </div>
-                                <a href="{% url 'popular_blogs' %}"
-                                    class="mt-4 block w-full text-center py-2.5 bg-[#dbeafe]/50 text-[#1e3a6e] text-[13px] font-semibold rounded-lg hover:bg-[#dbeafe] transition-colors">
-                                    View All Trending <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="inline-block ml-1">
-                                        <line x1="5" y1="12" x2="19" y2="12" />
-                                        <polyline points="12 5 19 12 12 19" />
-                                    </svg>
+                    <!-- Category Mega Menu -->
+                    <div class="absolute left-0 top-full w-[650px] bg-white shadow-2xl border-t-2 border-[#1e3a6e] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-gray-800 rounded-b-md p-6 normal-case font-normal">
+                        <div class="grid grid-cols-3 gap-6">
+                            {% for category in categories %}
+                            <div>
+                                <a href="{% url 'category_post' category.slug %}" class="text-xs font-bold text-[#1e3a6e] uppercase tracking-wider mb-2 pb-1 border-b border-gray-100 flex items-center gap-1.5 hover:underline" style="color: #1e3a6e;">
+                                    {{ category.name }}
                                 </a>
+                                <ul class="space-y-2 text-xs">
+                                    {% for sub in category.subcategories.all %}
+                                    <li>
+                                        <a href="{% url 'category_post' sub.slug %}" class="text-gray-600 hover:text-[#1e3a6e] transition-colors flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                            {{ sub.name }}
+                                        </a>
+                                    </li>
+                                    {% empty %}
+                                    <li class="text-gray-400 italic text-[11px]">No subcategories</li>
+                                    {% endfor %}
+                                </ul>
                             </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
 
-                {% for category in categories|slice:":7" %}
-                <a href="{% url 'category_post' category.slug %}"
-                    class="px-4 h-full flex items-center hover:bg-white/10 transition-colors shrink-0">{{ category.name
-                    }}</a>
-                {% endfor %}
-                <a href="{% url 'questions_list' %}"
-                    class="px-4 h-full flex items-center hover:bg-white/10 transition-colors shrink-0">Questions</a>
-                <a href="#"
-                    class="px-4 h-full flex items-center hover:bg-white/10 transition-colors shrink-0">Resources</a>
-                <a href="#"
-                    class="px-4 h-full flex items-center hover:bg-white/10 transition-colors shrink-0">Freelancing</a>
-                <a href="#"
-                    class="px-4 h-full flex items-center hover:bg-white/10 transition-colors shrink-0">International</a>
+                <a href="{% url 'questions_list' %}" class="flex items-center gap-1.5 px-4 h-full text-gray-700 hover:text-[#1e3a6e] hover:bg-gray-50 transition-colors shrink-0">
+                    Job Question
+                </a>
 
+                <a href="{% url 'popular_blogs' %}" class="flex items-center gap-1.5 px-4 h-full text-gray-700 hover:text-[#1e3a6e] hover:bg-gray-50 transition-colors shrink-0">
+                    Top Review
+                </a>
+
+                <a href="{% url 'questions_list' %}" class="flex items-center gap-1.5 px-4 h-full text-gray-700 hover:text-[#1e3a6e] hover:bg-gray-50 transition-colors shrink-0">
+                    Question
+                </a>
             </div>
 
-            <div class="group relative shrink-0 flex items-center h-full border-l border-white/10 pl-1 ml-1 z-50">
-                <button
-                    class="flex items-center gap-1.5 px-4 h-full hover:bg-white/10 transition-colors bg-[#152d56] rounded-t-lg cursor-pointer outline-none">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="7" height="7" />
-                        <rect x="14" y="3" width="7" height="7" />
-                        <rect x="14" y="14" width="7" height="7" />
-                        <rect x="3" y="14" width="7" height="7" />
-                    </svg>
-                    More
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round"
-                        class="transition-transform group-hover:rotate-180">
-                        <polyline points="6 9 12 15 18 9" />
+            <!-- Right Side Controls: Search + Dashboard / Sign In + MENU ICON BUTTON -->
+            <div class="flex items-center gap-2 shrink-0">
+                <!-- Search Icon Button (Beautiful Pill Circle) -->
+                <button onclick="toggleMobileSearch()" aria-label="Search"
+                    class="w-[38px] h-[38px] flex items-center justify-center bg-gray-100/90 hover:bg-[#1e3a6e] hover:text-white text-gray-700 rounded-full transition-all duration-200 border border-gray-200 cursor-pointer outline-none shadow-2xs group"
+                    title="Search">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
                     </svg>
                 </button>
 
-                <div
-                    class="absolute right-0 top-full w-64 bg-white shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-gray-800 rounded-b-lg rounded-tl-lg p-2">
-                    {% for category in popular_categories|slice:"6" %}
-                    <a href="{% url 'category_post' category.slug %}"
-                        class="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-600 font-medium rounded-lg hover:bg-[#dbeafe]/50 hover:text-[#1e3a6e] transition-colors whitespace-nowrap">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-                        </svg>
-                        {{ category.name }}
-                    </a>
-                    {% endfor %}
-                    <div class="border-t border-gray-100 mt-2 pt-2">
-                        <a href="{% url 'contact_page' %}"
-                            class="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-600 font-medium rounded-lg hover:bg-[#dbeafe]/50 hover:text-[#1e3a6e] transition-colors">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                                <polyline points="22,6 12,13 2,6" />
-                            </svg>
-                            Contact Us
-                        </a>
-                    </div>
-                </div>
-            </div>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'user_dashboard' %}" class="flex items-center gap-2 px-3.5 h-[38px] bg-gray-100 hover:bg-[#1e3a6e] hover:text-white text-gray-700 rounded-sm text-xs font-semibold transition-colors border border-gray-200">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Dashboard</span>
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="flex items-center gap-1.5 px-3.5 h-[38px] bg-gray-100 hover:bg-[#1e3a6e] hover:text-white text-gray-700 rounded-sm text-xs font-semibold transition-colors border border-gray-200">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Sign In</span>
+                </a>
+                {% endif %}
 
+                <!-- MENU ICON BUTTON (Click opens right-sliding sidebar drawer) -->
+                <button onclick="openSidebar()" aria-label="Open sidebar menu" class="h-[38px] px-3.5 bg-[#1e3a6e] hover:bg-[#152d56] text-white rounded-sm flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors outline-none cursor-pointer" style="background-color: #1e3a6e;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                    <span class="hidden sm:inline">MENU</span>
+                </button>
+            </div>
         </div>
     </nav>
 
-    <div id="mobile-search-container"
-        class="lg:hidden fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm p-4 shadow-lg hidden z-[60] border-b border-gray-100">
-        <div class="flex items-center gap-3 max-w-xl mx-auto">
-            <button onclick="toggleMobileSearch()" aria-label="Close search"
-                class="flex-shrink-0 w-9 h-9 flex items-center justify-center text-gray-500 hover:text-[#1e3a6e] hover:bg-[#dbeafe]/40 rounded-lg transition-colors">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- 4. TRENDING NEWS TICKER BAR (Blue Accent Badge) -->
+    <div class="bg-white border-b border-gray-100 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+        <div class="max-w-7xl mx-auto px-4 flex items-center gap-3 text-sm">
+            <!-- Blue Badge Label -->
+            <span class="text-white font-extrabold uppercase px-3 py-1 text-[10px] tracking-wider shrink-0 rounded-sm flex items-center gap-1.5" style="background-color: #1e3a6e; color: #ffffff;">
+                <i class="fa-solid fa-bolt text-[10px]"></i>
+                TRENDING NEWS
+            </span>
+
+            <!-- News Ticker: hidden list of items, JS cycles through them -->
+            <div id="ticker-items" class="hidden">
+                {% if trending_post %}
+                <span data-href="{% url 'blog_details' trending_post.slug %}">{{ trending_post.title }}</span>
+                {% endif %}
+                {% for post in latest_popular_blogs|slice:"10" %}
+                <span data-href="{% url 'blog_details' post.slug %}">{{ post.title }}</span>
+                {% empty %}
+                {% for post in latest_blogs|slice:"10" %}
+                <span data-href="{% url 'blog_details' post.slug %}">{{ post.title }}</span>
+                {% endfor %}
+                {% endfor %}
+                {% if not trending_post and not latest_popular_blogs and not latest_blogs %}
+                <span data-href="#">Welcome to TechLife BD – Latest Technology &amp; Digital Insights.</span>
+                {% endif %}
+            </div>
+
+            <!-- Visible ticker display — takes all remaining width -->
+            <div class="flex-1 min-w-0 overflow-hidden">
+                <a id="ticker-display"
+                   href="#"
+                   class="block w-full whitespace-nowrap overflow-hidden text-ellipsis text-gray-800 font-medium hover:text-[#1e3a6e] transition-all duration-300"
+                   style="opacity: 1;">
+                </a>
+            </div>
+
+            <!-- Ticker Controls (< > arrows) -->
+            <div class="hidden sm:flex items-center gap-1 shrink-0 ml-2">
+                <button id="ticker-prev" onclick="tickerPrev()"
+                    class="w-7 h-7 flex items-center justify-center border border-gray-200 hover:border-[#1e3a6e] hover:text-[#1e3a6e] text-gray-500 rounded transition-colors cursor-pointer"
+                    aria-label="Previous headline">
+                    <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                </button>
+                <button id="ticker-next" onclick="tickerNext()"
+                    class="w-7 h-7 flex items-center justify-center border border-gray-200 hover:border-[#1e3a6e] hover:text-[#1e3a6e] text-gray-500 rounded transition-colors cursor-pointer"
+                    aria-label="Next headline">
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+    (function() {
+        var items = [];
+        document.querySelectorAll('#ticker-items span').forEach(function(el) {
+            items.push({ title: el.textContent.trim(), href: el.getAttribute('data-href') || '#' });
+        });
+
+        if (items.length === 0) return;
+
+        var currentIndex = 0;
+        var display = document.getElementById('ticker-display');
+        var autoTimer = null;
+        var isAnimating = false;
+
+        function showItem(index, direction) {
+            if (!display || isAnimating) return;
+            isAnimating = true;
+
+            currentIndex = ((index % items.length) + items.length) % items.length;
+            var item = items[currentIndex];
+
+            // ── FADE OUT (slow) ──
+            display.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-in-out';
+            display.style.opacity   = '0';
+            display.style.transform = direction === 'next' ? 'translateY(-14px)' : 'translateY(14px)';
+
+            // Wait for fade-out to finish, then swap text and fade back in
+            setTimeout(function() {
+                display.textContent = item.title;
+                display.href        = item.href;
+
+                // Reset position instantly (no transition) before fading in
+                display.style.transition = 'none';
+                display.style.transform  = direction === 'next' ? 'translateY(14px)' : 'translateY(-14px)';
+
+                // Force reflow so the "none" transition takes effect
+                void display.offsetHeight;
+
+                // ── FADE IN (slow) ──
+                display.style.transition = 'opacity 0.7s ease-in-out, transform 0.7s ease-in-out';
+                display.style.opacity    = '1';
+                display.style.transform  = 'translateY(0)';
+
+                setTimeout(function() { isAnimating = false; }, 750);
+            }, 620);
+        }
+
+        function startAuto() {
+            stopAuto();
+            autoTimer = setInterval(function() {
+                showItem(currentIndex + 1, 'next');
+            }, 5000);
+        }
+
+        function stopAuto() {
+            if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+        }
+
+        window.tickerNext = function() {
+            stopAuto();
+            showItem(currentIndex + 1, 'next');
+            startAuto();
+        };
+
+        window.tickerPrev = function() {
+            stopAuto();
+            showItem(currentIndex - 1, 'prev');
+            startAuto();
+        };
+
+        // Init — show first item instantly
+        display.style.transition = 'none';
+        display.style.opacity    = '0';
+        setTimeout(function() {
+            display.textContent = items[0].title;
+            display.href        = items[0].href;
+            display.style.transition = 'opacity 0.8s ease-in-out';
+            display.style.opacity    = '1';
+            startAuto();
+        }, 100);
+    })();
+    </script>
+
+
+    <!-- MOBILE / DESKTOP SEARCH OVERLAY -->
+    <div id="mobile-search-container" class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md p-4 shadow-xl hidden z-[60] border-b border-gray-200">
+        <div class="flex items-center gap-3 max-w-2xl mx-auto">
+            <button onclick="toggleMobileSearch()" aria-label="Close search" class="flex-shrink-0 w-9 h-9 flex items-center justify-center text-gray-500 hover:text-[#1e3a6e] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M19 12H5M12 5l-7 7 7 7" />
                 </svg>
             </button>
             <form action="{% url 'redirect_search_results' %}" method="GET" class="flex flex-1 gap-0">
-                <input type="search" name="q" placeholder="Search news, tech, startups..." autofocus
-                    class="flex-1 px-4 py-2.5 text-sm border border-gray-200 border-r-0 rounded-l-lg focus:outline-none focus:border-[#1e3a6e] bg-gray-50" />
-                <button type="submit" aria-label="Search"
-                    class="px-4 py-2.5 bg-[#1e3a6e] text-white rounded-r-lg hover:bg-[#152d56] transition-colors">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="m21 21-4.35-4.35" />
-                    </svg>
+                <input type="search" name="q" id="desktop-search-input" placeholder="Search news, tech, articles..." autofocus class="flex-1 px-4 py-2.5 text-sm border border-gray-300 border-r-0 rounded-l-md focus:outline-none focus:border-[#1e3a6e] bg-gray-50" />
+                <button type="submit" aria-label="Search" class="px-5 py-2.5 text-white font-bold text-xs uppercase tracking-wider rounded-r-md transition-colors cursor-pointer" style="background-color: #1e3a6e; color: #ffffff;">
+                    Search
                 </button>
             </form>
         </div>
     </div>
 
-    <div id="mobile-sidebar"
-        class="fixed top-0 right-0 h-full w-[300px] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-[70] lg:hidden flex flex-col font-inter">
+    <!-- 5. RIGHT SLIDING MOBILE & MENU SIDEBAR (Opens when MENU icon is clicked) -->
+    <div id="mobile-sidebar" class="fixed top-0 right-0 h-full w-[320px] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-[70] flex flex-col font-inter">
 
-        <div class="bg-[#1e3a6e] px-5 py-4 flex-shrink-0 relative">
-            <button id="close-sidebar" class="absolute top-4 right-4 text-white/70 hover:text-white p-1 cursor-pointer outline-none">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
+        <div class="bg-[#152d56] px-5 py-4 flex-shrink-0 relative border-b border-blue-900/40" style="background-color: #152d56;">
+            <button onclick="closeSidebar()" class="absolute top-4 right-4 text-white/70 hover:text-white p-1 cursor-pointer outline-none">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -486,229 +362,112 @@
             {% if request.user.is_authenticated %}
             <div class="flex items-center gap-3">
                 {% if request.user.profile_picture %}
-                <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.first_name }}"
-                    class="w-12 h-12 rounded-full border-2 border-white object-cover" />
+                <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.first_name }}" class="w-12 h-12 rounded-full border-2 border-[#2563eb] object-cover" />
                 {% else %}
-                <div
-                    class="w-12 h-12 rounded-full bg-white text-[#1e3a6e] flex items-center justify-center text-lg font-bold border-2 border-white">
+                <div class="w-12 h-12 rounded-full bg-[#1e3a6e] text-white flex items-center justify-center text-lg font-bold border-2 border-white" style="background-color: #1e3a6e;">
                     {{ request.user.first_name|default:request.user.email|slice:":1"|upper }}
                 </div>
                 {% endif %}
                 <div class="text-white">
-                    <p class="text-[12px] text-blue-200">Hello,</p>
-                    <p class="text-[15px] font-bold leading-tight">{{ request.user.first_name|default:request.user.email
-                        }}</p>
+                    <p class="text-[12px] text-blue-200">Welcome,</p>
+                    <p class="text-[15px] font-bold leading-tight truncate max-w-[170px]">{{ request.user.first_name|default:request.user.email }}</p>
                 </div>
             </div>
             {% else %}
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white">
+                <div class="w-12 h-12 rounded-full bg-blue-950 flex items-center justify-center text-white">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                         <circle cx="12" cy="7" r="4" />
                     </svg>
                 </div>
                 <div class="text-white">
-                    <p class="text-[15px] font-bold leading-tight">Hello, Tech Enthusiast</p>
-                    <a href="{% url 'login' %}"
-                        class="text-[12px] text-blue-200 hover:text-white underline mt-0.5 inline-block">Login or Sign
-                        up</a>
+                    <p class="text-[15px] font-bold leading-tight">TechLife BD</p>
+                    <a href="{% url 'login' %}" class="text-[12px] text-blue-200 hover:text-white underline mt-0.5 inline-block">Login or Sign up</a>
                 </div>
             </div>
             {% endif %}
         </div>
 
-        <div class="flex-1 overflow-y-auto py-2">
-            <nav class="flex flex-col px-3 space-y-1">
+        <div class="flex-1 overflow-y-auto py-3">
+            <nav class="flex flex-col px-3 space-y-1 text-sm font-medium">
                 {% if request.user.is_authenticated %}
-                <a href="{% url 'user_dashboard' %}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-800 text-[14px] font-medium hover:bg-gray-100 transition-colors">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        class="text-gray-500">
-                        <rect x="3" y="3" width="7" height="7" rx="1" />
-                        <rect x="14" y="3" width="7" height="7" rx="1" />
-                        <rect x="14" y="14" width="7" height="7" rx="1" />
-                        <rect x="3" y="14" width="7" height="7" rx="1" />
-                    </svg>
+                <a href="{% url 'user_dashboard' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-800 hover:bg-gray-100 transition-colors">
+                    <i class="fa-solid fa-gauge-high text-gray-500 w-5"></i>
                     Dashboard
                 </a>
                 {% endif %}
 
-                <a href="{% url 'homepage' %}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-800 text-[14px] font-medium hover:bg-gray-100 transition-colors">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        class="text-gray-500">
-                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                        <polyline points="9 22 9 12 15 12 15 22" />
-                    </svg>
+                <a href="{% url 'homepage' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-800 hover:bg-gray-100 transition-colors font-bold text-[#1e3a6e]">
+                    <i class="fa-solid fa-house w-5"></i>
                     Home
                 </a>
 
-                <a href="{% url 'blogs' %}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-800 text-[14px] font-medium hover:bg-gray-100 transition-colors">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        class="text-gray-500">
-                        <path
-                            d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
-                        <path d="M18 14h-8" />
-                        <path d="M15 18h-5" />
-                        <path d="M10 6h8v4h-8V6Z" />
-                    </svg>
+                <a href="{% url 'blogs' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-800 hover:bg-gray-100 transition-colors">
+                    <i class="fa-solid fa-newspaper text-gray-500 w-5"></i>
                     News
-                    <span
-                        class="ml-1 bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-sm uppercase">New</span>
                 </a>
 
-                <div x-data="{ techOpen: false }">
-                    <button @click="techOpen = !techOpen"
-                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-800 text-[14px] font-medium hover:bg-gray-100 transition-colors outline-none cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" class="text-gray-500">
-                                <path d="M12 2a10 10 0 1 0 10 10H12V2z" />
-                                <path d="M12 12 2.1 7.1" />
-                                <path d="M12 12l9.9 4.9" />
-                            </svg>
-                            Technology
-                        </div>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" :class="{'rotate-180': techOpen}"
-                            class="transition-transform text-gray-400">
-                            <polyline points="6 9 12 15 18 9" />
-                        </svg>
-                    </button>
-                    <div x-show="techOpen" style="display: none;" class="pl-11 pr-3 py-2 space-y-4 text-[13px]">
-                        {% for category in categories|slice:":4" %}
-                        <div>
-                            <h5 class="font-bold text-[#1e3a6e] mb-1.5 uppercase text-[10px]">{{ category.name }}</h5>
-                            <div class="flex flex-col space-y-1.5 pl-2 border-l-2 border-gray-100">
-                                {% for sub in category.subcategories.all %}
-                                <a href="{% url 'category_post' sub.slug %}"
-                                    class="text-gray-600 hover:text-[#1e3a6e] py-1 flex items-center gap-2">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" class="text-gray-400 shrink-0">
-                                        <path d="M5 12h14M12 5l7 7-7 7" />
-                                    </svg>
-                                    {{ sub.name }}
-                                </a>
-                                {% empty %}
-                                <span class="text-gray-400 italic text-[11px]">No subcategories</span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-800 text-[14px] font-medium hover:bg-gray-100 transition-colors">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        class="text-gray-500">
-                        <path
-                            d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-                        <path
-                            d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
-                    </svg>
-                    Startups
+                <a href="{% url 'popular_blogs' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-800 hover:bg-gray-100 transition-colors">
+                    <i class="fa-solid fa-fire text-gray-500 w-5"></i>
+                    Popular
                 </a>
 
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-800 text-[14px] font-medium hover:bg-gray-100 transition-colors">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        class="text-gray-500">
-                        <polygon
-                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                    </svg>
-                    Reviews
-                </a>
-
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-800 text-[14px] font-medium hover:bg-gray-100 transition-colors">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        class="text-gray-500">
-                        <circle cx="12" cy="12" r="10" />
-                        <polygon points="10 8 16 12 10 16 10 8" />
-                    </svg>
-                    Tutorials
-                </a>
-
-                <a href="{% url 'questions_list' %}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-800 text-[14px] font-medium hover:bg-gray-100 transition-colors">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        class="text-gray-500">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                        <line x1="12" y1="17" x2="12.01" y2="17" />
-                    </svg>
+                <a href="{% url 'questions_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-800 hover:bg-gray-100 transition-colors">
+                    <i class="fa-solid fa-circle-question text-gray-500 w-5"></i>
                     Questions
                 </a>
+
+                <div class="border-t border-gray-100 my-2 pt-2">
+                    <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Categories</p>
+                    {% for category in categories|slice:":6" %}
+                    <a href="{% url 'category_post' category.slug %}" class="flex items-center justify-between px-3 py-2 rounded-md text-gray-700 text-xs hover:bg-gray-50 transition-colors">
+                        <span>{{ category.name }}</span>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                    </a>
+                    {% endfor %}
+                </div>
             </nav>
 
-            <div class="px-5 mt-6 mb-4">
+            <div class="px-5 mt-4 mb-4 border-t border-gray-100 pt-4">
                 {% if request.user.is_authenticated %}
-                <div class="flex flex-col gap-3">
-                    <a href="{% url 'create_blog' %}"
-                        class="w-full flex justify-center items-center gap-2 px-4 py-2.5 border border-gray-200 text-gray-800 rounded-lg text-[13px] font-bold hover:bg-gray-50 transition-colors shadow-sm">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                        </svg> Write
+                <div class="flex flex-col gap-2">
+                    <a href="{% url 'create_blog' %}" class="w-full flex justify-center items-center gap-2 px-4 py-2.5 text-white rounded-md text-xs font-bold hover:bg-blue-900 transition-colors uppercase tracking-wider" style="background-color: #1e3a6e; color: #ffffff;">
+                        <i class="fa-solid fa-pen-to-square"></i> Write Blog
                     </a>
-                    <a href="{% url 'logout' %}"
-                        class="w-full flex justify-center items-center gap-2 px-4 py-2.5 bg-red-50 text-red-600 rounded-lg text-[13px] font-bold hover:bg-red-100 transition-colors shadow-sm">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout
+                    <a href="{% url 'logout' %}" class="w-full flex justify-center items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md text-xs font-bold hover:bg-gray-200 transition-colors">
+                        Logout
                     </a>
                 </div>
                 {% else %}
-                <div class="flex flex-col gap-3">
-                    <button type="button" data-login-alert-trigger
-                        class="w-full flex justify-center items-center gap-2 px-4 py-2.5 border border-gray-200 text-gray-800 rounded-lg text-[13px] font-bold hover:bg-gray-50 transition-colors shadow-sm">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                        </svg> Write
-                    </button>
-                    <a href="{% url 'login' %}"
-                        class="w-full flex justify-center items-center gap-2 px-4 py-2.5 bg-[#1e3a6e] text-white rounded-lg text-[13px] font-bold hover:bg-[#152d56] transition-colors shadow-sm">
-                        Login / Sign Up
-                    </a>
-                </div>
+                <a href="{% url 'login' %}" class="w-full flex justify-center items-center gap-2 px-4 py-2.5 text-white rounded-md text-xs font-bold hover:bg-blue-900 transition-colors uppercase tracking-wider" style="background-color: #1e3a6e; color: #ffffff;">
+                    Login / Sign Up
+                </a>
                 {% endif %}
             </div>
         </div>
     </div>
 
-    <div id="sidebar-overlay"
-        class="fixed inset-0 bg-black/50 opacity-0 invisible transition-opacity duration-300 z-[69] lg:hidden"></div>
+    <!-- SIDEBAR OVERLAY & MODALS -->
+    <div id="sidebar-overlay" onclick="closeSidebar()" class="fixed inset-0 bg-black/60 opacity-0 invisible transition-opacity duration-300 z-[69]"></div>
 
     <div id="login-alert-modal" class="fixed inset-0 z-[90] hidden">
-        <div id="login-alert-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
+        <div id="login-alert-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"></div>
         <div class="relative min-h-full flex items-center justify-center p-4">
-            <div class="w-full rounded-3xl bg-white p-6 shadow-2xl border border-gray-100 transform transition-all text-center mx-auto" style="max-width: 360px;">
-                
-                <div class="mx-auto w-14 h-14 rounded-full bg-blue-50 text-[#1e3a6e] flex items-center justify-center mb-4 ring-4 ring-blue-50/50">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
+            <div class="w-full rounded-2xl bg-white p-6 shadow-2xl border border-gray-100 transform transition-all text-center mx-auto" style="max-width: 360px;">
+                <div class="mx-auto w-14 h-14 rounded-full bg-blue-50 text-[#1e3a6e] flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-lock text-xl"></i>
                 </div>
-                
                 <h3 class="text-lg font-bold text-gray-900 mb-1.5">Sign in Required</h3>
-                <p class="text-[13px] text-gray-500 leading-relaxed mb-6 px-2">
-                    You need to be signed in to write and publish articles. Join our community to share your thoughts!
+                <p class="text-xs text-gray-500 leading-relaxed mb-5">
+                    Please sign in to publish articles and participate in the community.
                 </p>
-                
-                <div class="flex flex-col gap-2.5">
-                    <a href="{% url 'login' %}?next={% url 'create_blog' %}"
-                        class="w-full inline-flex justify-center items-center rounded-xl bg-[#1e3a6e] text-white text-[14px] font-semibold px-4 py-2.5 hover:bg-[#152d56] transition-all cursor-pointer">
+                <div class="flex flex-col gap-2">
+                    <a href="{% url 'login' %}?next={% url 'create_blog' %}" class="w-full inline-flex justify-center items-center rounded-lg text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 hover:bg-blue-900 transition-all" style="background-color: #1e3a6e; color: #ffffff;">
                         Sign In Now
                     </a>
-                    <button type="button" data-login-alert-close
-                        class="w-full inline-flex justify-center items-center rounded-xl border border-gray-200 text-gray-600 text-[14px] font-semibold px-4 py-2.5 hover:border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer">
-                        Maybe Later
+                    <button type="button" data-login-alert-close class="w-full inline-flex justify-center items-center rounded-lg border border-gray-200 text-gray-600 text-xs font-semibold px-4 py-2 hover:bg-gray-50 transition-colors">
+                        Cancel
                     </button>
                 </div>
             </div>
@@ -718,6 +477,24 @@
 </header>
 
 <script>
+    function openSidebar() {
+        var sidebar = document.getElementById('mobile-sidebar');
+        var overlay = document.getElementById('sidebar-overlay');
+        if (sidebar) sidebar.classList.remove('translate-x-full');
+        if (overlay) { overlay.classList.remove('opacity-0', 'invisible'); overlay.classList.add('opacity-100'); }
+        document.body.classList.add('overflow-hidden');
+    }
+    window.openSidebar = openSidebar;
+
+    function closeSidebar() {
+        var sidebar = document.getElementById('mobile-sidebar');
+        var overlay = document.getElementById('sidebar-overlay');
+        if (sidebar) sidebar.classList.add('translate-x-full');
+        if (overlay) { overlay.classList.add('opacity-0', 'invisible'); overlay.classList.remove('opacity-100'); }
+        document.body.classList.remove('overflow-hidden');
+    }
+    window.closeSidebar = closeSidebar;
+
     (function () {
         function toggleMobileSearch() {
             var c = document.getElementById('mobile-search-container');
@@ -729,101 +506,5 @@
             }
         }
         window.toggleMobileSearch = toggleMobileSearch;
-
-        function closeSidebar() {
-            var s = document.getElementById('mobile-sidebar');
-            var o = document.getElementById('sidebar-overlay');
-            if (s) s.classList.add('translate-x-full');
-            if (o) { o.classList.add('opacity-0', 'invisible'); o.classList.remove('opacity-100'); }
-            document.body.classList.remove('overflow-hidden');
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var toggle = document.getElementById('menu-toggle');
-            var close = document.getElementById('close-sidebar');
-            var sidebar = document.getElementById('mobile-sidebar');
-            var overlay = document.getElementById('sidebar-overlay');
-            var loginAlertModal = document.getElementById('login-alert-modal');
-            var loginAlertBackdrop = document.getElementById('login-alert-backdrop');
-
-            function openSidebar() {
-                if (sidebar) sidebar.classList.remove('translate-x-full');
-                if (overlay) { overlay.classList.remove('opacity-0', 'invisible'); overlay.classList.add('opacity-100'); }
-                document.body.classList.add('overflow-hidden');
-            }
-
-            function openLoginAlertModal() {
-                if (!loginAlertModal) return;
-                loginAlertModal.classList.remove('hidden');
-                document.body.classList.add('overflow-hidden');
-            }
-
-            function closeLoginAlertModal() {
-                if (!loginAlertModal) return;
-                loginAlertModal.classList.add('hidden');
-                document.body.classList.remove('overflow-hidden');
-            }
-
-            if (toggle) toggle.addEventListener('click', openSidebar);
-            if (close) close.addEventListener('click', closeSidebar);
-            if (overlay) overlay.addEventListener('click', closeSidebar);
-            document.querySelectorAll('#mobile-sidebar a').forEach(function (l) {
-                if (!l.hasAttribute('@click')) l.addEventListener('click', closeSidebar);
-            });
-
-            document.querySelectorAll('[data-login-alert-trigger]').forEach(function (trigger) {
-                trigger.addEventListener('click', function () {
-                    closeSidebar();
-                    openLoginAlertModal();
-                });
-            });
-
-            document.querySelectorAll('[data-login-alert-close]').forEach(function (btn) {
-                btn.addEventListener('click', closeLoginAlertModal);
-            });
-
-            if (loginAlertBackdrop) {
-                loginAlertBackdrop.addEventListener('click', closeLoginAlertModal);
-            }
-
-            document.addEventListener('keydown', function (event) {
-                if (event.key === 'Escape') {
-                    closeLoginAlertModal();
-                    closeSidebar();
-                }
-                if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
-                    event.preventDefault(); // Prevent default browser behavior
-                    var desktopInput = document.getElementById('desktop-search-input');
-                    var mobileContainer = document.getElementById('mobile-search-container');
-
-                    // If we are on desktop
-                    if (window.innerWidth >= 1024 && desktopInput) {
-                        desktopInput.focus();
-                    } else if (mobileContainer) {
-                        // On mobile, show the mobile search overlay if it's hidden
-                        if (mobileContainer.classList.contains('hidden')) {
-                            toggleMobileSearch();
-                        } else {
-                            var mobileInput = mobileContainer.querySelector('input[type="search"]');
-                            if (mobileInput) mobileInput.focus();
-                        }
-                    }
-                }
-            });
-
-            // Mobile Technology Dropdown Logic
-            var techToggle = document.getElementById('mobile-tech-toggle');
-            var techMenu = document.getElementById('mobile-tech-menu');
-            var techIcon = document.getElementById('mobile-tech-icon');
-
-            if (techToggle && techMenu && techIcon) {
-                techToggle.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    techMenu.classList.toggle('hidden');
-                    techIcon.classList.toggle('rotate-180');
-                });
-            }
-        });
     })();
 </script>

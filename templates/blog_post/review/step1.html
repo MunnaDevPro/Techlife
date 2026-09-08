@@ -36,69 +36,141 @@
         min-height: 0 !important;
         background-color: #f8fafc !important;
     }
-    select {
-        cursor: pointer !important;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231e3a6e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
-        background-repeat: no-repeat !important;
-        background-position: right 1rem center !important;
-        background-size: 1.2em 1.2em !important;
-        padding-right: 2.75rem !important;
-        -webkit-appearance: none !important;
-        -moz-appearance: none !important;
-        appearance: none !important;
-    }
-    select option {
-        padding: 10px !important;
-        cursor: pointer !important;
-    }
     button, a, label, select, input {
         cursor: pointer !important;
     }
 </style>
 
-<div class="bg-slate-50 py-8 sm:py-10 min-h-[75vh] flex flex-col justify-center">
+<div class="bg-slate-50 py-8 sm:py-12 min-h-[75vh] flex flex-col justify-center">
     <div class="max-w-xl mx-auto px-4 sm:px-6 w-full">
-        <div class="bg-white rounded-2xl shadow-none border border-slate-200 overflow-hidden">
-            <!-- Header Card -->
-            <div class="px-6 sm:px-7 py-5 text-white rounded-t-2xl flex flex-col gap-1.5" style="background-color: #1e3a6e;">
-                <h2 class="text-lg sm:text-xl font-bold tracking-tight text-white leading-snug">Reviewing {{ post.title }}</h2>
-                <p class="text-xs sm:text-sm text-slate-200 font-medium">Step 1 of 3: Rate your experience</p>
-                <!-- Progress bar -->
-                <div class="mt-2 w-full bg-white/20 rounded-full h-1.5 overflow-hidden">
-                    <div class="h-full rounded-full transition-all duration-300" style="width: 33%; background-color: #fbbf24;"></div>
-                </div>
+        
+        <!-- Stepper Header -->
+        <div class="flex items-center justify-between mb-6 px-2">
+            <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-none text-white font-bold text-xs flex items-center justify-center shadow-sm" style="background-color: #1e3a6e;">1</span>
+                <span class="text-xs font-bold text-slate-900 uppercase tracking-wider">Rate Experience</span>
             </div>
-            
+            <div class="h-0.5 w-12 bg-slate-200"></div>
+            <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-none bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">2</span>
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wider hidden sm:inline">Details</span>
+            </div>
+            <div class="h-0.5 w-12 bg-slate-200"></div>
+            <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-none bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">3</span>
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wider hidden sm:inline">Publish</span>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-none border border-slate-200 shadow-sm overflow-hidden">
             <!-- Form Body -->
-            <div class="p-6 sm:p-7">
+            <div class="p-6 sm:p-7" x-data="{
+                quality: parseInt('{{ form.quality_rating.value|default:0 }}') || 0,
+                qHover: 0,
+                comm: parseInt('{{ form.communication_rating.value|default:0 }}') || 0,
+                cHover: 0,
+                time: parseInt('{{ form.timeliness_rating.value|default:0 }}') || 0,
+                tHover: 0,
+                labels: {
+                    0: 'Select Rating',
+                    1: '1/5 - Poor',
+                    2: '2/5 - Below Average',
+                    3: '3/5 - Average',
+                    4: '4/5 - Good',
+                    5: '5/5 - Excellent'
+                }
+            }">
                 <form method="POST">
                     {% csrf_token %}
                     
                     {% if form.errors %}
-                        <div class="mb-5 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-semibold rounded-r-lg">
+                        <div class="mb-5 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-semibold rounded-none">
                             Please correct the errors below.
                         </div>
                     {% endif %}
 
-                    <div class="space-y-5">
-                        {% for field in form %}
-                            <div>
-                                <label class="block text-sm font-bold text-slate-800 mb-1.5">{{ field.label }}</label>
-                                <div class="mt-1">
-                                    {{ field }}
-                                </div>
-                                {% if field.help_text %}
-                                    <p class="mt-1 text-xs text-slate-500">{{ field.help_text }}</p>
-                                {% endif %}
-                                {% if field.errors %}
-                                    <p class="mt-1 text-xs text-red-600 font-medium">{{ field.errors.0 }}</p>
-                                {% endif %}
+                    <div class="space-y-6">
+                        <!-- Quality Rating -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-sm font-bold text-slate-800">1. Quality Rating</label>
+                                <span class="text-xs font-bold text-[#1e3a6e] bg-blue-50/80 px-2.5 py-1 rounded-none border border-blue-200/80" x-text="labels[qHover || quality]"></span>
                             </div>
-                        {% endfor %}
+                            <div class="hidden">{{ form.quality_rating }}</div>
+                            <div class="flex items-center justify-around p-3.5 bg-slate-50 border border-slate-200 rounded-none">
+                                <template x-for="star in [1, 2, 3, 4, 5]" :key="star">
+                                    <button type="button" 
+                                            @click="quality = star; $nextTick(() => { const sel = $el.closest('.space-y-2').querySelector('select'); if(sel) sel.value = star; })"
+                                            @mouseenter="qHover = star"
+                                            @mouseleave="qHover = 0"
+                                            class="p-1.5 rounded-none transition-transform active:scale-95 focus:outline-none">
+                                        <svg class="w-8 h-8 sm:w-9 sm:h-9 transition-colors duration-150" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                                  :fill="(qHover || quality) >= star ? '#ffb800' : '#ffffff'"
+                                                  :stroke="(qHover || quality) >= star ? '#e5a100' : '#94a3b8'"
+                                                  stroke-width="1.5"
+                                                  stroke-linejoin="round" />
+                                        </svg>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Communication Rating -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-sm font-bold text-slate-800">2. Communication Rating</label>
+                                <span class="text-xs font-bold text-[#1e3a6e] bg-blue-50/80 px-2.5 py-1 rounded-none border border-blue-200/80" x-text="labels[cHover || comm]"></span>
+                            </div>
+                            <div class="hidden">{{ form.communication_rating }}</div>
+                            <div class="flex items-center justify-around p-3.5 bg-slate-50 border border-slate-200 rounded-none">
+                                <template x-for="star in [1, 2, 3, 4, 5]" :key="star">
+                                    <button type="button" 
+                                            @click="comm = star; $nextTick(() => { const sel = $el.closest('.space-y-2').querySelector('select'); if(sel) sel.value = star; })"
+                                            @mouseenter="cHover = star"
+                                            @mouseleave="cHover = 0"
+                                            class="p-1.5 rounded-none transition-transform active:scale-95 focus:outline-none">
+                                        <svg class="w-8 h-8 sm:w-9 sm:h-9 transition-colors duration-150" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                                  :fill="(cHover || comm) >= star ? '#ffb800' : '#ffffff'"
+                                                  :stroke="(cHover || comm) >= star ? '#e5a100' : '#94a3b8'"
+                                                  stroke-width="1.5"
+                                                  stroke-linejoin="round" />
+                                        </svg>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Timeliness Rating -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-sm font-bold text-slate-800">3. Timeliness Rating</label>
+                                <span class="text-xs font-bold text-[#1e3a6e] bg-blue-50/80 px-2.5 py-1 rounded-none border border-blue-200/80" x-text="labels[tHover || time]"></span>
+                            </div>
+                            <div class="hidden">{{ form.timeliness_rating }}</div>
+                            <div class="flex items-center justify-around p-3.5 bg-slate-50 border border-slate-200 rounded-none">
+                                <template x-for="star in [1, 2, 3, 4, 5]" :key="star">
+                                    <button type="button" 
+                                            @click="time = star; $nextTick(() => { const sel = $el.closest('.space-y-2').querySelector('select'); if(sel) sel.value = star; })"
+                                            @mouseenter="tHover = star"
+                                            @mouseleave="tHover = 0"
+                                            class="p-1.5 rounded-none transition-transform active:scale-95 focus:outline-none">
+                                        <svg class="w-8 h-8 sm:w-9 sm:h-9 transition-colors duration-150" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                                  :fill="(tHover || time) >= star ? '#ffb800' : '#ffffff'"
+                                                  :stroke="(tHover || time) >= star ? '#e5a100' : '#94a3b8'"
+                                                  stroke-width="1.5"
+                                                  stroke-linejoin="round" />
+                                        </svg>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="mt-7 pt-4 border-t border-slate-100 flex justify-end">
-                        <button type="submit" class="text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-200 text-sm inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer hover:opacity-90 flex-shrink-0" style="background-color: #1e3a6e;">
+                        <button type="submit" class="text-white font-semibold py-2.5 px-6 rounded-none transition-colors duration-200 text-sm inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer hover:bg-[#152d56] flex-shrink-0" style="background-color: #1e3a6e;">
                             <span>Next Step</span>
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                         </button>

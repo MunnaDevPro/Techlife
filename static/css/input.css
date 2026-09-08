@@ -17,6 +17,11 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Ensure all clickable interactive elements display cursor: pointer */
+a, button, [role="button"], input[type="submit"], input[type="button"], select, summary, label[for] {
+  cursor: pointer !important;
+}
+
 @supports (-webkit-overflow-scrolling: touch) {
   .scrollbar-hide {
     overflow: -moz-scrollbars-none;

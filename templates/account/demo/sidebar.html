@@ -20,7 +20,7 @@
     </div>
 
     <!-- Navigation Links -->
-    <nav hx-boost="true" hx-push-url="true" hx-target="body" hx-swap="outerHTML transition:true"
+    <nav hx-boost="true" hx-push-url="true" hx-target="#dashboard-container" hx-select="#dashboard-container" hx-swap="outerHTML"
         class="flex-1 px-3 py-3 space-y-1 overflow-y-auto scrollbar-hide flex flex-col">
         
         <!-- Overview -->
@@ -31,37 +31,44 @@
             <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Overview</span>
         </a>
         
-        <!-- My Company & Reviews Dropdown -->
+        <!-- Company & Reviews Dropdown -->
         <div x-data="{ open: {% if section == 'companies' or section == 'reviews' or section == 'edit-company' or section == 'add-company' %}true{% else %}false{% endif %} }" class="w-full">
             <button @click="open = !open" type="button"
-                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg {% if section == 'companies' or section == 'reviews' or section == 'edit-company' or section == 'add-company' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
-                title="My Company">
+                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer text-gray-700 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e] transition-all duration-300 group"
+                title="Company">
                 <div class="flex items-center gap-3">
-                    <i class="fas fa-building w-4 text-center text-[15px] flex-shrink-0 {% if section == 'companies' or section == 'reviews' or section == 'edit-company' or section == 'add-company' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
-                    <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">My Company</span>
+                    <i class="fas fa-building w-4 text-center text-[15px] flex-shrink-0 text-gray-500 group-hover:text-[#1e3a6e]"></i>
+                    <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Company</span>
                 </div>
-                <i class="fas fa-chevron-down text-[11px] transition-transform duration-200 sidebar-text flex-shrink-0" :class="{ 'rotate-180': open }"></i>
+                <i class="fas fa-chevron-down text-[11px] transition-transform duration-500 ease-in-out sidebar-text text-gray-400 group-hover:text-[#1e3a6e] flex-shrink-0" :class="{ 'rotate-180': open }"></i>
             </button>
             
-            <div x-show="open" x-transition class="pl-6 pr-1 py-1 space-y-1">
+            <div x-show="open"
+                 x-transition:enter="transition-all ease-out duration-500"
+                 x-transition:enter-start="opacity-0 max-h-0 -translate-y-2"
+                 x-transition:enter-end="opacity-100 max-h-48 translate-y-0"
+                 x-transition:leave="transition-all ease-in duration-400"
+                 x-transition:leave-start="opacity-100 max-h-48 translate-y-0"
+                 x-transition:leave-end="opacity-0 max-h-0 -translate-y-2"
+                 class="pl-6 pr-1 py-1 space-y-1 overflow-hidden">
                 <!-- 1st Item: My Company -->
-                <a href="{% url 'user_dashboard' %}?section=companies" hx-boost="false"
-                    class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-medium transition-all {% if section == 'companies' or section == 'edit-company' or section == 'add-company' %}text-[#1e3a6e] font-bold bg-blue-50/80{% else %}text-gray-600 hover:text-[#1e3a6e] hover:bg-slate-100/70{% endif %}">
-                    <i class="fas fa-city text-[12px] w-4 text-center"></i>
+                <a href="{% url 'user_dashboard' %}?section=companies"
+                    class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-semibold transition-all duration-200 {% if section == 'companies' or section == 'edit-company' or section == 'add-company' %}bg-[#1e3a6e] text-white shadow-sm{% else %}text-gray-600 font-medium hover:text-[#1e3a6e] hover:bg-slate-100/70{% endif %}">
+                    <i class="fas fa-city text-[12px] w-4 text-center {% if section == 'companies' or section == 'edit-company' or section == 'add-company' %}text-white{% else %}text-gray-400{% endif %}"></i>
                     <span class="sidebar-text whitespace-nowrap">My Company</span>
                 </a>
                 
                 <!-- 2nd Item: Total Review -->
-                <a href="{% url 'user_dashboard' %}?section=reviews" hx-boost="false"
-                    class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-medium transition-all {% if section == 'reviews' %}text-[#1e3a6e] font-bold bg-blue-50/80{% else %}text-gray-600 hover:text-[#1e3a6e] hover:bg-slate-100/70{% endif %}">
-                    <i class="fas fa-star text-[12px] w-4 text-center"></i>
+                <a href="{% url 'user_dashboard' %}?section=reviews"
+                    class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-semibold transition-all duration-200 {% if section == 'reviews' %}bg-[#1e3a6e] text-white shadow-sm{% else %}text-gray-600 font-medium hover:text-[#1e3a6e] hover:bg-slate-100/70{% endif %}">
+                    <i class="fas fa-star text-[12px] w-4 text-center {% if section == 'reviews' %}text-white{% else %}text-gray-400{% endif %}"></i>
                     <span class="sidebar-text whitespace-nowrap">Total Review</span>
                 </a>
             </div>
         </div>
         
         <!-- Blog Posts -->
-        <a href="{% url 'user_dashboard' %}?section=blog-posts" hx-boost="false"
+        <a href="{% url 'user_dashboard' %}?section=blog-posts"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'blog-posts' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
             title="Blog Posts">
             <i class="fas fa-newspaper w-4 text-center text-[15px] flex-shrink-0 {% if section == 'blog-posts' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
@@ -69,7 +76,7 @@
         </a>
 
         <!-- Recent Activities -->
-        <a href="{% url 'user_dashboard' %}?section=activities" hx-boost="false"
+        <a href="{% url 'user_dashboard' %}?section=activities"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'activities' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
             title="Recent Activities">
             <i class="fas fa-chart-line w-4 text-center text-[15px] flex-shrink-0 {% if section == 'activities' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
@@ -77,7 +84,7 @@
         </a>
 
         <!-- Questions -->
-        <a href="{% url 'user_dashboard' %}?section=questions" hx-boost="false"
+        <a href="{% url 'user_dashboard' %}?section=questions"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'questions' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
             title="Questions">
             <i class="fas fa-question-circle w-4 text-center text-[15px] flex-shrink-0 {% if section == 'questions' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
@@ -85,7 +92,7 @@
         </a>
 
         <!-- Notifications -->
-        <a href="{% url 'user_dashboard' %}?section=notifications" hx-boost="false"
+        <a href="{% url 'user_dashboard' %}?section=notifications"
             class="flex items-center justify-between px-3 py-2.5 rounded-lg {% if section == 'notifications' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
             title="Notifications">
             <div class="flex items-center gap-3">
@@ -108,7 +115,7 @@
         </a>
 
         <!-- Create Post (Token) -->
-        <a href="{% url 'user_dashboard' %}?section=submit-token-post" hx-boost="false"
+        <a href="{% url 'user_dashboard' %}?section=submit-token-post"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'submit-token-post' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
             title="Create Post (Token)">
             <i class="fas fa-edit w-4 text-center text-[15px] flex-shrink-0 {% if section == 'submit-token-post' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
@@ -116,7 +123,7 @@
         </a>
 
         <!-- Edit Profile -->
-        <a href="{% url 'user_dashboard' %}?section=edit-profile" hx-boost="false"
+        <a href="{% url 'user_dashboard' %}?section=edit-profile"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'edit-profile' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
             title="Edit Profile">
             <i class="fas fa-user-edit w-4 text-center text-[15px] flex-shrink-0 {% if section == 'edit-profile' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
@@ -138,6 +145,12 @@
 </aside>
 
 <style>
+    /* Ensure hand/pointer cursor on buttons and links */
+    aside#sidebar button,
+    aside#sidebar a {
+        cursor: pointer !important;
+    }
+
     /* Sidebar Icons visibility */
     .sidebar-close-icon {
         display: inline-block;

@@ -1,17 +1,20 @@
 {% comment %} most viewed section {% endcomment %}
 
-<section class="max-w-7xl mx-auto px-3 mt-4 mb-4">
+<section>
 
     <!-- Section Header -->
-    <div class="flex items-center gap-2 mb-3">
-        <span class="w-1 h-5 rounded bg-[#1e3a6e] inline-block"></span>
-        <h2 class="font-bold text-[15px] text-gray-800 tracking-tight">MOST VIEWED</h2>
+    <div class="relative border-b border-gray-200 mb-5">
+        <div class="inline-block pb-1.5 -mb-[2px]" style="border-bottom: 3px solid #1e3a6e;">
+            <h2 class="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">
+                Most Viewed
+            </h2>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
         <!-- Left numbered list -->
-        <div class="tl-card rounded-xl overflow-hidden">
+        <div class="overflow-hidden border border-gray-100 rounded-sm">
             <div class="flex items-center gap-2 px-3 py-2.5 border-b border-gray-100 bg-[#1e3a6e]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><rect width="6" height="4" x="13" y="14" rx=".5"/><path d="M15 10h2a.5.5 0 0 1 0 4h-2"/></svg>
                 <span class="text-[12px] font-bold text-white">Top Picks</span>
@@ -37,7 +40,7 @@
 
         <!-- Center: Featured Post -->
         {% for most_blogs in most_viewed_blogs|slice:"1" %}
-        <div class="tl-card rounded-xl overflow-hidden flex flex-col">
+        <div class="overflow-hidden flex flex-col border border-gray-100 rounded-sm">
             <a href="{% url 'blog_details' most_blogs.slug %}" class="block group overflow-hidden cursor-pointer">
                 <div class="overflow-hidden" style="aspect-ratio: 16/9;">
                     {% if most_blogs.featured_image %}
@@ -61,7 +64,7 @@
         {% endfor %}
 
         <!-- Right numbered list (reversed) -->
-        <div class="tl-card rounded-xl overflow-hidden">
+        <div class="overflow-hidden border border-gray-100 rounded-sm">
             <div class="flex items-center gap-2 px-3 py-2.5 border-b border-gray-100 bg-[#1e3a6e]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><rect width="6" height="4" x="13" y="14" rx=".5"/><path d="M15 10h2a.5.5 0 0 1 0 4h-2"/></svg>
                 <span class="text-[12px] font-bold text-white">Trending</span>

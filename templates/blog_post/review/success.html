@@ -40,7 +40,7 @@
 
 <div class="bg-slate-50 py-16 min-h-[75vh] flex flex-col justify-center">
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
-        <div class="bg-white rounded-2xl shadow-none border border-slate-200 p-8 sm:p-12">
+        <div class="bg-white rounded-none shadow-sm border border-slate-200 p-8 sm:p-12">
             <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-emerald-100 mb-6">
                 <svg class="h-10 w-10 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -49,17 +49,17 @@
             
             <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-3 tracking-tight">Review Submitted!</h2>
             
-            <p class="text-base text-slate-600 mb-8 max-w-lg mx-auto leading-relaxed">
-                Thank you for reviewing <strong class="text-slate-900">{{ post.title }}</strong>. Your review has been submitted successfully and is currently pending moderator approval. It will be published once verified.
+            <p class="text-base text-slate-600 mb-8 max-w-lg mx-auto leading-relaxed font-medium">
+                Thank you for reviewing <strong class="text-slate-900">{{ post.title }}</strong>. Your review has been submitted successfully and is currently pending moderator approval.
             </p>
             
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{% url 'blog_details' post.slug %}" class="text-white font-semibold py-3 px-7 rounded-xl transition-all text-sm inline-flex items-center justify-center gap-2 whitespace-nowrap hover:opacity-95" style="background-color: #1e3a6e;">
-                    <span>View Company Details</span>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full">
+                <a href="{% url 'blog_details' post.slug %}" class="w-full sm:w-auto text-white font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-none transition-colors text-sm inline-flex items-center justify-center gap-2 hover:bg-[#152d56] shadow-sm" style="background-color: #1e3a6e;">
+                    <span>View Company Profile</span>
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </a>
-                <a href="{% url 'write_review_landing' %}" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-3 px-7 rounded-xl border border-slate-300 text-sm transition inline-flex items-center justify-center whitespace-nowrap">
-                    Write Another Review
+                <a href="{% url 'write_review_landing' %}" class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-none border border-slate-300 text-sm transition inline-flex items-center justify-center shadow-sm">
+                    <span>Write Another Review</span>
                 </a>
             </div>
         </div>

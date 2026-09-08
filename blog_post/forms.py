@@ -220,6 +220,17 @@ class ReviewRatingForm(forms.ModelForm):
             'timeliness_rating': forms.Select(attrs=select_attrs),
         }
 
+    def __init__(self, *args, **kwargs):
+        user_initial = kwargs.get('initial') or {}
+        super().__init__(*args, **kwargs)
+        empty_choice = [('', 'Select Rating')]
+        for field_name in ['quality_rating', 'communication_rating', 'timeliness_rating']:
+            self.fields[field_name].choices = empty_choice + [c for c in self.fields[field_name].choices if c[0] != '']
+            self.fields[field_name].required = True
+            if field_name not in user_initial:
+                self.initial[field_name] = ''
+                self.fields[field_name].initial = ''
+
 class ReviewDetailsForm(forms.ModelForm):
     class Meta:
         model = Review

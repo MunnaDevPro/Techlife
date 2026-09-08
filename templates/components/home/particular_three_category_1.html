@@ -1,209 +1,329 @@
-<!-- Category Section -->
-<div class="mx-auto max-w-7xl px-3 mb-4">
+{% load static %}
 
-    <!-- Category Tabs Header -->
-    <div class="tl-card rounded-xl overflow-hidden mb-3">
-        <div class="flex items-center border-b border-gray-100 overflow-x-auto scrollbar-hide">
-            {% for category in top_categories %}
-            <a href="{% url 'category_post' category.slug %}"
-                class="flex-shrink-0 px-4 py-3 text-[12px] font-bold text-gray-600 border-b-2 border-transparent hover:border-[#1e3a6e] hover:text-[#1e3a6e] transition-all duration-150 uppercase tracking-wide">
-                {{ category.name }}
-            </a>
-            {% endfor %}
-            <div class="flex-1"></div>
-            <a href="{% url 'popular_blogs' %}"
-                class="flex-shrink-0 flex items-center gap-1.5 px-4 py-3 text-[12px] font-bold text-white bg-[#1e3a6e] hover:bg-[#152d56] transition-colors whitespace-nowrap">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                Popular
-            </a>
-        </div>
-    </div>
+<!-- MAIN 2-COLUMN SECTION: LEFT CATEGORY FEED & RIGHT SIDEBAR -->
+<div class="max-w-7xl mx-auto px-4 my-8 font-inter w-full overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full">
 
-    <!-- 3 Category Columns + Sidebar -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
+        <!-- ================================================================= -->
+        <!-- LEFT COLUMN: MAIN CATEGORY NEWS STREAM (2/3 width / lg:col-span-2) -->
+        <!-- ================================================================= -->
+        <div class="lg:col-span-2 flex flex-col gap-8 w-full min-w-0 overflow-hidden">
 
-        <!-- Category 1 -->
-        {% if first_category %}
-        <div class="tl-card rounded-xl overflow-hidden flex flex-col">
-            <!-- Featured Post -->
-            {% for post in first_blogs|slice:"1" %}
-            <a href="{% url 'blog_details' post.slug %}" class="block group overflow-hidden cursor-pointer">
-                <div class="relative overflow-hidden" style="aspect-ratio: 16/9;">
-                    {% if post.featured_image %}
-                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
-                    {% elif post.featured_image_url %}
-                    <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
-                    {% endif %}
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2">
-                        <div class="flex items-center gap-2 text-[10px] text-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <span>{{ post.view_count|default:"0" }}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                            <span>{{ post.reaction_count|default:"0" }}</span>
-                        </div>
+            <!-- CATEGORY BLOCK 1 -->
+            <div class="flex flex-col w-full min-w-0">
+                <!-- Section Header -->
+                <div class="border-b-2 border-gray-200 mb-6 relative">
+                    <div class="inline-block pb-2 -mb-[2px]" style="border-bottom: 2px solid #1e3a6e; display: inline-block;">
+                        <h2 class="text-xl font-extrabold uppercase tracking-tight text-zinc-900 flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-xs inline-block" style="background-color: #1e3a6e; width: 12px; height: 12px; display: inline-block;"></span>
+                            {% if first_category %}{{ first_category.name }}{% else %}Technology & News{% endif %}
+                        </h2>
                     </div>
                 </div>
-                <div class="px-3 pt-2.5 pb-1">
-                    <span class="text-[10px] font-bold text-[#1e3a6e] uppercase tracking-wide">{{ first_category.name }}</span>
-                    <h3 class="font-bold text-[13px] text-gray-900 line-clamp-2 group-hover:text-[#1e3a6e] leading-snug mt-0.5">{{ post.title }}</h3>
-                    <p class="text-[10px] text-gray-500 mt-1">{{ post.created_at|date:"M d, Y" }}</p>
-                </div>
-            </a>
-            {% endfor %}
 
-            <!-- Post List -->
-            <ul class="divide-y divide-gray-100 flex-1">
-                {% for post in first_blogs|slice:"1:9" %}
-                <li>
-                    <a href="{% url 'blog_details' slug=post.slug %}"
-                        class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors group cursor-pointer">
-                        <div class="w-16 h-12 shrink-0 rounded overflow-hidden bg-gray-100">
+                <!-- Vertical Stack of News Row Cards -->
+                <div class="flex flex-col divide-y divide-gray-100 w-full min-w-0">
+                    {% if first_blogs %}
+                    {% for post in first_blogs|slice:"6" %}
+                    <div class="py-5 first:pt-0 group flex flex-col sm:flex-row gap-4 items-start w-full min-w-0 overflow-hidden">
+                        <!-- Post Thumbnail -->
+                        <a href="{% url 'blog_details' post.slug %}" class="w-full sm:w-48 md:w-52 h-36 shrink-0 rounded-sm overflow-hidden bg-zinc-100 block relative">
                             {% if post.featured_image %}
-                            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.04]" width="64" height="48" loading="lazy" decoding="async">
+                            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                             {% elif post.featured_image_url %}
-                            <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.04]" width="64" height="48" loading="lazy" decoding="async">
+                            <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            {% else %}
+                            <img src="{% static 'image/placeholder-5.png' %}" alt="{{ post.title }}" class="w-full h-full object-cover" />
                             {% endif %}
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <span class="text-[12px] font-medium text-gray-700 group-hover:text-[#1e3a6e] line-clamp-2 leading-snug">{{ post.title }}</span>
-                            <div class="flex items-center gap-2 text-[9px] text-gray-500 mt-0.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                <span>{{ post.view_count|default:"0" }}</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                                <span>{{ post.reaction_count|default:"0" }}</span>
-                                <span>·</span>
-                                <span>{{ post.created_at|date:"M d" }}</span>
+                        </a>
+
+                        <!-- Right Text Info -->
+                        <div class="flex-1 min-w-0 flex flex-col">
+                            <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                                <span class="text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-sm tracking-wider" style="background-color: #1e3a6e; color: #ffffff;">
+                                    {{ first_category.name|default:"Tech" }}
+                                </span>
+                                <span class="text-xs text-gray-500 font-medium truncate">
+                                    By <strong class="text-zinc-700">{{ post.author.first_name|default:post.author.email }}</strong> • {{ post.created_at|date:"F d, Y" }}
+                                </span>
                             </div>
-                        </div>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
+                            
+                            <a href="{% url 'blog_details' post.slug %}" class="font-extrabold text-base sm:text-lg text-zinc-900 hover:text-[#1e3a6e] transition-colors leading-snug line-clamp-2 mb-1.5">
+                                {{ post.title }}
+                            </a>
 
-            <!-- More Link -->
-            <div class="p-3 border-t border-gray-100">
-                <a href="{% url 'category_post' first_category.slug %}"
-                    class="flex items-center justify-center gap-1.5 py-2 text-[12px] font-bold text-[#1e3a6e] border border-[#1e3a6e] rounded hover:bg-[#1e3a6e] hover:text-white transition-all duration-200">
-                    More {{ first_category.name }}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                </a>
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Category 2 -->
-        {% if second_category %}
-        <div class="tl-card rounded-xl overflow-hidden flex flex-col">
-            {% for post in second_blogs|slice:"1" %}
-            <a href="{% url 'blog_details' post.slug %}" class="block group overflow-hidden cursor-pointer">
-                <div class="relative overflow-hidden" style="aspect-ratio: 16/9;">
-                    {% if post.featured_image %}
-                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
-                    {% elif post.featured_image_url %}
-                    <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
-                    {% endif %}
-                    <div class="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent px-3 py-2">
-                        <div class="flex items-center gap-2 text-[10px] text-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <span>{{ post.view_count|default:"0" }}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                            <span>{{ post.reaction_count|default:"0" }}</span>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed line-clamp-3">
+                                {{ post.description|striptags|truncatewords:25 }}
+                            </p>
                         </div>
                     </div>
-                </div>
-                <div class="px-3 pt-2.5 pb-1">
-                    <span class="text-[10px] font-bold text-[#1e3a6e] uppercase tracking-wide">{{ second_category.name }}</span>
-                    <h3 class="font-bold text-[13px] text-gray-900 line-clamp-2 group-hover:text-[#1e3a6e] leading-snug mt-0.5">{{ post.title }}</h3>
-                    <p class="text-[10px] text-gray-500 mt-1">{{ post.created_at|date:"M d, Y" }}</p>
-                </div>
-            </a>
-            {% endfor %}
-
-            <ul class="divide-y divide-gray-100 flex-1">
-                {% for post in second_blogs|slice:"1:9" %}
-                <li>
-                    <a href="{% url 'blog_details' slug=post.slug %}"
-                        class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors group cursor-pointer">
-                        <div class="w-16 h-12 shrink-0 rounded overflow-hidden bg-gray-100">
-                            {% if post.featured_image %}
-                            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.04]" width="64" height="48" loading="lazy" decoding="async">
-                            {% elif post.featured_image_url %}
-                            <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.04]" width="64" height="48" loading="lazy" decoding="async">
+                    {% endfor %}
+                    {% else %}
+                    {% for blog in blogs|slice:"5" %}
+                    <div class="py-5 first:pt-0 group flex flex-col sm:flex-row gap-4 items-start w-full min-w-0 overflow-hidden">
+                        <a href="{% url 'blog_details' blog.slug %}" class="w-full sm:w-48 md:w-52 h-36 shrink-0 rounded-sm overflow-hidden bg-zinc-100 block">
+                            {% if blog.featured_image %}
+                            <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            {% elif blog.featured_image_url %}
+                            <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            {% else %}
+                            <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-full object-cover" />
                             {% endif %}
-                        </div>
-                        <span class="text-[12px] font-medium text-gray-700 group-hover:text-[#1e3a6e] line-clamp-2 leading-snug">{{ post.title }}</span>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-
-            <div class="p-3 border-t border-gray-100">
-                <a href="{% url 'category_post' second_category.slug %}"
-                    class="flex items-center justify-center gap-1.5 py-2 text-[12px] font-bold text-[#1e3a6e] border border-[#1e3a6e] rounded hover:bg-[#1e3a6e] hover:text-white transition-all duration-200">
-                    More {{ second_category.name }}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                </a>
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Category 3 -->
-        {% if third_category %}
-        <div class="tl-card rounded-xl overflow-hidden flex flex-col">
-            {% for post in third_blogs|slice:"1" %}
-            <a href="{% url 'blog_details' post.slug %}" class="block group overflow-hidden cursor-pointer">
-                <div class="relative overflow-hidden" style="aspect-ratio: 16/9;">
-                    {% if post.featured_image %}
-                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
-                    {% elif post.featured_image_url %}
-                    <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
-                    {% endif %}
-                    <div class="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent px-3 py-2">
-                        <div class="flex items-center gap-2 text-[10px] text-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <span>{{ post.view_count|default:"0" }}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                            <span>{{ post.reaction_count|default:"0" }}</span>
+                        </a>
+                        <div class="flex-1 min-w-0 flex flex-col">
+                            <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                                <span class="text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-sm tracking-wider" style="background-color: #1e3a6e; color: #ffffff;">
+                                    {{ blog.category.name|default:"News" }}
+                                </span>
+                                <span class="text-xs text-gray-500 font-medium truncate">
+                                    By <strong class="text-zinc-700">{{ blog.author.first_name|default:blog.author.email }}</strong> • {{ blog.created_at|date:"F d, Y" }}
+                                </span>
+                            </div>
+                            <a href="{% url 'blog_details' blog.slug %}" class="font-extrabold text-base sm:text-lg text-zinc-900 hover:text-[#1e3a6e] transition-colors leading-snug line-clamp-2 mb-1.5">
+                                {{ blog.title }}
+                            </a>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed line-clamp-3">
+                                {{ blog.description|striptags|truncatewords:25 }}
+                            </p>
                         </div>
                     </div>
+                    {% endfor %}
+                    {% endif %}
                 </div>
-                <div class="px-3 pt-2.5 pb-1">
-                    <span class="text-[10px] font-bold text-[#1e3a6e] uppercase tracking-wide">{{ third_category.name }}</span>
-                    <h3 class="font-bold text-[13px] text-gray-900 line-clamp-2 group-hover:text-[#1e3a6e] leading-snug mt-0.5">{{ post.title }}</h3>
-                    <p class="text-[10px] text-gray-500 mt-1">{{ post.created_at|date:"M d, Y" }}</p>
+
+                <!-- Numbered Pagination Controls -->
+                <div class="flex items-center justify-center gap-2 mt-8 pt-4 border-t border-gray-100 font-bold text-xs">
+                    <button class="w-8 h-8 rounded-sm border border-gray-300 text-gray-600 flex items-center justify-center transition-colors hover:border-[#1e3a6e] hover:text-[#1e3a6e]" aria-label="Previous page">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button class="w-8 h-8 rounded-sm border border-gray-300 text-gray-700 flex items-center justify-center transition-colors hover:border-[#1e3a6e] hover:text-[#1e3a6e]">1</button>
+                    <button class="w-8 h-8 rounded-sm text-white flex items-center justify-center shadow-sm" style="background-color: #1e3a6e; color: #ffffff;">2</button>
+                    <button class="w-8 h-8 rounded-sm border border-gray-300 text-gray-700 flex items-center justify-center transition-colors hover:border-[#1e3a6e] hover:text-[#1e3a6e]">3</button>
+                    <button class="w-8 h-8 rounded-sm border border-gray-300 text-gray-700 flex items-center justify-center transition-colors hover:border-[#1e3a6e] hover:text-[#1e3a6e]">4</button>
+                    <button class="w-8 h-8 rounded-sm border border-gray-300 text-gray-700 flex items-center justify-center transition-colors hover:border-[#1e3a6e] hover:text-[#1e3a6e]">5</button>
+                    <button class="w-8 h-8 rounded-sm border border-gray-300 text-gray-600 flex items-center justify-center transition-colors hover:border-[#1e3a6e] hover:text-[#1e3a6e]" aria-label="Next page">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                 </div>
-            </a>
-            {% endfor %}
-
-            <ul class="divide-y divide-gray-100 flex-1">
-                {% for post in third_blogs|slice:"1:9" %}
-                <li>
-                    <a href="{% url 'blog_details' slug=post.slug %}"
-                        class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors group cursor-pointer">
-                        <div class="w-16 h-12 shrink-0 rounded overflow-hidden bg-gray-100">
-                            {% if post.featured_image %}
-                            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.04]" width="64" height="48" loading="lazy" decoding="async">
-                            {% elif post.featured_image_url %}
-                            <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.04]" width="64" height="48" loading="lazy" decoding="async">
-                            {% endif %}
-                        </div>
-                        <span class="text-[12px] font-medium text-gray-700 group-hover:text-[#1e3a6e] line-clamp-2 leading-snug">{{ post.title }}</span>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-
-            <div class="p-3 border-t border-gray-100">
-                <a href="{% url 'category_post' third_category.slug %}"
-                    class="flex items-center justify-center gap-1.5 py-2 text-[12px] font-bold text-[#1e3a6e] border border-[#1e3a6e] rounded hover:bg-[#1e3a6e] hover:text-white transition-all duration-200">
-                    More {{ third_category.name }}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                </a>
             </div>
-        </div>
-        {% endif %}
 
-        <!-- Popular Sidebar -->
-        {% include 'components/home/popular_blogs_sidebar.html' %}
+            <!-- SECOND CATEGORY BLOCK (If 2nd category available) -->
+            {% if second_category %}
+            <div class="flex flex-col mt-4 w-full min-w-0">
+                <div class="border-b-2 border-gray-200 mb-6 relative">
+                    <div class="inline-block pb-2 -mb-[2px]" style="border-bottom: 2px solid #1e3a6e; display: inline-block;">
+                        <h2 class="text-xl font-extrabold uppercase tracking-tight text-zinc-900 flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-xs inline-block" style="background-color: #1e3a6e; width: 12px; height: 12px; display: inline-block;"></span>
+                            {{ second_category.name }}
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                    {% for post in second_blogs|slice:"4" %}
+                    <div class="overflow-hidden flex flex-col group">
+                        <a href="{% url 'blog_details' post.slug %}" class="block relative h-44 overflow-hidden rounded-sm">
+                            {% if post.featured_image %}
+                            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            {% elif post.featured_image_url %}
+                            <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            {% else %}
+                            <img src="{% static 'image/placeholder-5.png' %}" alt="{{ post.title }}" class="w-full h-full object-cover" />
+                            {% endif %}
+                        </a>
+                        <div class="pt-3 flex flex-col flex-1">
+                            <span class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color: #1e3a6e;">
+                                {{ second_category.name }}
+                            </span>
+                            <a href="{% url 'blog_details' post.slug %}" class="font-extrabold text-base text-zinc-900 hover:text-[#1e3a6e] transition-colors leading-snug line-clamp-2 mb-2">
+                                {{ post.title }}
+                            </a>
+                            <span class="text-xs text-gray-400 mt-auto">{{ post.created_at|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+
+        <!-- ================================================================= -->
+        <!-- RIGHT COLUMN: SIDEBAR WIDGETS (1/3 width / lg:col-span-1)          -->
+        <!-- ================================================================= -->
+        <div class="lg:col-span-1 flex flex-col gap-8 w-full min-w-0">
+
+            <!-- WIDGET 1: STAY CONNECTED SOCIAL BUTTONS -->
+            <div class="flex flex-col w-full">
+                <div class="border-b-2 border-gray-200 mb-4 relative">
+                    <div class="inline-block pb-2 -mb-[2px]" style="border-bottom: 2px solid #1e3a6e; display: inline-block;">
+                        <h3 class="text-base font-extrabold uppercase tracking-tight text-zinc-900">
+                            Stay Connected
+                        </h3>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2.5 w-full">
+                    <!-- Facebook -->
+                    <a href="{% if footer.facebook_url %}{{ footer.facebook_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer" class="text-white p-3 rounded-sm flex items-center justify-between transition-colors shadow-sm" style="background-color: #3b5998; color: #ffffff;">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-brands fa-facebook-f text-lg w-6 text-center"></i>
+                            <span class="font-extrabold text-xs tracking-wider">12K Likes</span>
+                        </div>
+                        <span class="bg-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-sm uppercase tracking-wider">Like</span>
+                    </a>
+
+                    <!-- Twitter -->
+                    <a href="{% if footer.twitter_url %}{{ footer.twitter_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer" class="text-white p-3 rounded-sm flex items-center justify-between transition-colors shadow-sm" style="background-color: #00acee; color: #ffffff;">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-brands fa-x-twitter text-lg w-6 text-center"></i>
+                            <span class="font-extrabold text-xs tracking-wider">2,000 Followers</span>
+                        </div>
+                        <span class="bg-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-sm uppercase tracking-wider">Follow</span>
+                    </a>
+
+                    <!-- YouTube -->
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-white p-3 rounded-sm flex items-center justify-between transition-colors shadow-sm" style="background-color: #1e3a6e; color: #ffffff;">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-brands fa-youtube text-lg w-6 text-center"></i>
+                            <span class="font-extrabold text-xs tracking-wider">15,000 Subscribers</span>
+                        </div>
+                        <span class="bg-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-sm uppercase tracking-wider">Subscribe</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- WIDGET 2: NEWSLETTER SUBSCRIPTION -->
+            <div class="flex flex-col w-full">
+                <div class="border-b-2 border-gray-200 mb-4 relative">
+                    <div class="inline-block pb-2 -mb-[2px]" style="border-bottom: 2px solid #1e3a6e; display: inline-block;">
+                        <h3 class="text-base font-extrabold uppercase tracking-tight text-zinc-900">
+                            Newsletter
+                        </h3>
+                    </div>
+                </div>
+                <div class="border border-gray-100 p-5 rounded-sm flex flex-col text-center w-full">
+                    <h4 class="font-extrabold text-sm text-zinc-900 leading-snug mb-2">
+                        The most important world news and events of the day.
+                    </h4>
+                    <p class="text-xs text-gray-500 leading-relaxed mb-4">
+                        Get important daily news directly in your inbox.
+                    </p>
+                    <form action="#" method="POST" class="flex flex-col gap-2.5 w-full">
+                        {% csrf_token %}
+                        <input type="email" placeholder="Your email address" required class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-sm bg-white text-zinc-800 focus:outline-none" />
+                        <button type="submit" class="w-full py-2.5 text-white text-xs font-extrabold uppercase tracking-wider rounded-sm transition-colors shadow-sm" style="background-color: #1e3a6e; color: #ffffff;">
+                            SIGN UP
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- WIDGET 3: TRENDING NEWS -->
+            <div class="flex flex-col w-full">
+                <div class="border-b-2 border-gray-200 mb-4 relative">
+                    <div class="inline-block pb-2 -mb-[2px]" style="border-bottom: 2px solid #1e3a6e; display: inline-block;">
+                        <h3 class="text-base font-extrabold uppercase tracking-tight text-zinc-900">
+                            Trending News
+                        </h3>
+                    </div>
+                </div>
+                <div class="flex flex-col divide-y divide-gray-100 w-full">
+                    {% for item in latest_popular_blogs|slice:"4" %}
+                    <div class="py-3 first:pt-0 group flex flex-col">
+                        <div class="text-[10px] text-gray-500 font-semibold mb-1 flex items-center gap-1.5">
+                            <span class="font-bold uppercase" style="color: #1e3a6e;">{{ item.category.name|default:"News" }}</span>
+                            <span>•</span>
+                            <span>{{ item.created_at|date:"F d, Y" }}</span>
+                        </div>
+                        <a href="{% url 'blog_details' item.slug %}" class="font-extrabold text-xs text-zinc-900 hover:text-[#1e3a6e] transition-colors leading-snug line-clamp-2">
+                            {{ item.title }}
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- WIDGET 4: TAGS CLOUD -->
+            <div class="flex flex-col w-full">
+                <div class="border-b-2 border-gray-200 mb-4 relative">
+                    <div class="inline-block pb-2 -mb-[2px]" style="border-bottom: 2px solid #1e3a6e; display: inline-block;">
+                        <h3 class="text-base font-extrabold uppercase tracking-tight text-zinc-900">
+                            Tags
+                        </h3>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2 w-full">
+                    {% if top_tags %}
+                    {% for tag in top_tags|slice:"12" %}
+                    <a href="{% url 'tag_posts' tag.slug %}" class="border border-gray-200 bg-white text-gray-700 text-[11px] font-bold uppercase px-3 py-1.5 rounded-sm transition-colors hover:text-white" style="transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#1e3a6e'; this.style.color='#fff'; this.style.borderColor='#1e3a6e';" onmouseout="this.style.backgroundColor=''; this.style.color=''; this.style.borderColor='';">
+                        {{ tag.name }}
+                    </a>
+                    {% endfor %}
+                    {% else %}
+                    <a href="#" class="border border-gray-200 bg-white text-gray-700 text-[11px] font-bold uppercase px-3 py-1.5 rounded-sm">LIFESTYLE</a>
+                    <a href="#" class="border border-gray-200 bg-white text-gray-700 text-[11px] font-bold uppercase px-3 py-1.5 rounded-sm">MEGA</a>
+                    <a href="#" class="border border-gray-200 bg-white text-gray-700 text-[11px] font-bold uppercase px-3 py-1.5 rounded-sm">ENTERTAINMENT</a>
+                    <a href="#" class="border border-gray-200 bg-white text-gray-700 text-[11px] font-bold uppercase px-3 py-1.5 rounded-sm">TECH</a>
+                    <a href="#" class="border border-gray-200 bg-white text-gray-700 text-[11px] font-bold uppercase px-3 py-1.5 rounded-sm">GADGETS</a>
+                    <a href="#" class="border border-gray-200 bg-white text-gray-700 text-[11px] font-bold uppercase px-3 py-1.5 rounded-sm">NEWS</a>
+                    <a href="#" class="border border-gray-200 bg-white text-gray-700 text-[11px] font-bold uppercase px-3 py-1.5 rounded-sm">TIPS</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- WIDGET 5: CATEGORIES LIST WITH COUNTS -->
+            <div class="flex flex-col w-full">
+                <div class="border-b-2 border-gray-200 mb-4 relative">
+                    <div class="inline-block pb-2 -mb-[2px]" style="border-bottom: 2px solid #1e3a6e; display: inline-block;">
+                        <h3 class="text-base font-extrabold uppercase tracking-tight text-zinc-900">
+                            Category
+                        </h3>
+                    </div>
+                </div>
+                <div class="flex flex-col divide-y divide-gray-100 w-full">
+                    {% for cat in popular_categories|slice:"6" %}
+                    <a href="{% url 'category_post' cat.slug %}" class="px-0 py-2.5 flex items-center justify-between text-xs font-bold text-gray-700 hover:text-[#1e3a6e] transition-colors uppercase">
+                        <span>{{ cat.name }}</span>
+                        <span class="text-[11px] font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-sm">
+                            {{ cat.published_post_count|default:"10" }}
+                        </span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- WIDGET 6: ADVERTISE BANNER WIDGET -->
+            <div class="flex flex-col w-full">
+                <div class="border-b-2 border-gray-200 mb-4 relative">
+                    <div class="inline-block pb-2 -mb-[2px]" style="border-bottom: 2px solid #1e3a6e; display: inline-block;">
+                        <h3 class="text-base font-extrabold uppercase tracking-tight text-zinc-900">
+                            Advertise
+                        </h3>
+                    </div>
+                </div>
+                {% if ad_2 %}
+                <div class="w-full flex justify-center">
+                    {{ ad_2.ad_code|safe }}
+                </div>
+                {% else %}
+                <a href="#" class="w-full h-72 text-white rounded-sm p-6 flex flex-col justify-between relative overflow-hidden group shadow-md" style="background: linear-gradient(135deg, #1e3a6e 0%, #152d56 100%);">
+                    <div class="z-10">
+                        <span class="text-white text-[10px] font-extrabold uppercase px-2 py-0.5 tracking-wider rounded-sm" style="background-color: #2563eb;">Sponsored</span>
+                        <h4 class="text-xl font-black mt-3 leading-snug group-hover:text-blue-200 transition-colors">
+                            Get 70% Discount on Amazon Devices & Tech
+                        </h4>
+                    </div>
+                    <div class="z-10 mt-auto">
+                        <span class="inline-block bg-white text-zinc-900 text-xs font-extrabold px-4 py-2 uppercase tracking-wider rounded-sm shadow transition-colors">
+                            Claim Offer &rarr;
+                        </span>
+                    </div>
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+
     </div>
 </div>

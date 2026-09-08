@@ -1,0 +1,101 @@
+<!-- TOP CATEGORY STREAM SECTION -->
+<div class="w-full font-inter mt-4">
+    <!-- Section Header with Brand Accent Underline -->
+    <div class="relative border-b border-gray-200 mb-6">
+        <div class="inline-block pb-1.5 -mb-[2px]" style="border-bottom: 3px solid #1e3a6e;">
+            <h2 class="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">
+                {% if first_category %}{{ first_category.name }}{% elif popular_categories %}{{ popular_categories.0.name }}{% else %}Top Category{% endif %}
+            </h2>
+        </div>
+    </div>
+
+    <!-- 5 Posts Horizontal Cards List matching photo design -->
+    <div class="flex flex-col divide-y divide-gray-100">
+        {% for post in first_blogs|slice:"5" %}
+        <div class="py-5 first:pt-0 last:pb-0">
+            <a href="{% url 'blog_details' post.slug %}" class="flex flex-col sm:flex-row gap-4 sm:gap-6 group cursor-pointer">
+                <!-- Post Thumbnail Image (Left Side) -->
+                <div class="w-full sm:w-60 md:w-64 h-44 sm:h-38 shrink-0 rounded-xs overflow-hidden bg-gray-100 relative">
+                    {% if post.featured_image %}
+                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" loading="lazy" decoding="async">
+                    {% elif post.featured_image_url %}
+                    <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" loading="lazy" decoding="async">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
+                        <i class="fa-solid fa-newspaper text-3xl"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Post Info Content (Right Side) -->
+                <div class="flex-1 flex flex-col justify-start">
+                    <!-- Category Badge -->
+                    <div class="mb-2">
+                        <span class="inline-block text-white text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-xs tracking-wider" style="background-color: #1e3a6e;">
+                            {% if post.category %}{{ post.category.name }}{% elif first_category %}{{ first_category.name }}{% else %}NEWS{% endif %}
+                        </span>
+                    </div>
+
+                    <!-- Meta Author & Date Line -->
+                    <div class="flex items-center gap-2 text-[11px] font-extrabold mb-1.5" style="color: #1e3a6e;">
+                        <span>By {% if post.author.get_full_name %}{{ post.author.get_full_name }}{% elif post.author.email %}{{ post.author.email|cut:"@gmail.com"|cut:"@yahoo.com" }}{% else %}Admin{% endif %}</span>
+                        <span class="text-gray-300 font-normal">•</span>
+                        <span class="text-gray-500 font-medium">{{ post.created_at|date:"F d, Y" }}</span>
+                    </div>
+
+                    <!-- Post Title -->
+                    <h3 class="text-base sm:text-lg font-black text-gray-900 leading-snug group-hover:text-[#1e3a6e] transition-colors line-clamp-2">
+                        {{ post.title }}
+                    </h3>
+
+                    <!-- Post Excerpt -->
+                    {% if post.subtitle or post.description %}
+                    <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed mt-2">
+                        {% if post.subtitle %}{{ post.subtitle }}{% else %}{{ post.description|striptags }}{% endif %}
+                    </p>
+                    {% endif %}
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        {% for post in blogs|slice:"5" %}
+        <div class="py-5 first:pt-0 last:pb-0">
+            <a href="{% url 'blog_details' post.slug %}" class="flex flex-col sm:flex-row gap-4 sm:gap-6 group cursor-pointer">
+                <!-- Post Thumbnail Image (Left Side) -->
+                <div class="w-full sm:w-60 md:w-64 h-44 sm:h-38 shrink-0 rounded-xs overflow-hidden bg-gray-100 relative">
+                    {% if post.featured_image %}
+                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" loading="lazy" decoding="async">
+                    {% elif post.featured_image_url %}
+                    <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" loading="lazy" decoding="async">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
+                        <i class="fa-solid fa-newspaper text-3xl"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Post Info Content (Right Side) -->
+                <div class="flex-1 flex flex-col justify-start">
+                    <div class="mb-2">
+                        <span class="inline-block text-white text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-xs tracking-wider" style="background-color: #1e3a6e;">
+                            {{ post.category.name|default:"NEWS" }}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 text-[11px] font-extrabold mb-1.5" style="color: #1e3a6e;">
+                        <span>By {{ post.author.email|cut:"@gmail.com"|cut:"@yahoo.com"|default:"Admin" }}</span>
+                        <span class="text-gray-300 font-normal">•</span>
+                        <span class="text-gray-500 font-medium">{{ post.created_at|date:"F d, Y" }}</span>
+                    </div>
+                    <h3 class="text-base sm:text-lg font-black text-gray-900 leading-snug group-hover:text-[#1e3a6e] transition-colors line-clamp-2">
+                        {{ post.title }}
+                    </h3>
+                    <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed mt-2">
+                        {{ post.description|striptags }}
+                    </p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+        {% endfor %}
+    </div>
+</div>

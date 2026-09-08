@@ -115,7 +115,8 @@ def footer_logo_config(request):
             if 'logo' in request.FILES:
                 try:
                     validate_image_file(request.FILES['logo'])
-                    footer_set.logo = request.FILES['logo']
+                    site_set.logo = request.FILES['logo']  # Save to site_set for navbar display
+                    site_set.save()
                 except ValueError as ve:
                     messages.error(request, str(ve))
                     return redirect("dashboard:settings_footer")

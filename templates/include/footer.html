@@ -1,141 +1,117 @@
 {% load static %}
 
-<footer class="bg-white border-t border-gray-100 mt-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
+<!-- FOOTER -->
+<footer class="bg-[#152d56] text-gray-300 font-inter border-t border-blue-900/40 mt-12">
+    
+    <!-- Top Footer Content -->
+    <div class="max-w-7xl mx-auto px-4 pt-12 pb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
 
-            <!-- Brand -->
-            <div class="sm:col-span-2 lg:col-span-5">
-                {% if footer.logo %}
-                <img src="{{ footer.logo.url }}" alt="Logo" class="h-9 w-auto mb-4 rounded-md" width="160" height="36" loading="lazy" decoding="async">
-                {% else %}
-                <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-9 w-auto mb-4" width="160" height="36" loading="lazy" decoding="async">
-                {% endif %}
+            <!-- Column 1: Brand & Socials (lg:col-span-4) -->
+            <div class="lg:col-span-4 flex flex-col">
+                <a href="{% url 'homepage' %}" class="flex items-center gap-1.5 font-black text-2xl tracking-tighter text-white uppercase mb-4">
+                    {% if footer.logo %}
+                    <img src="{{ footer.logo.url }}" alt="Logo" class="h-9 w-auto" />
+                    {% else %}
+                    <span class="text-white px-2 py-0.5 rounded-xs font-extrabold flex items-center gap-1 text-xl tracking-normal" style="background-color: #1e3a6e;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        TECH
+                    </span>
+                    <span class="text-white font-black">LIFE</span>
+                    {% endif %}
+                </a>
 
-                <p class="text-[13px] leading-relaxed text-gray-500 mb-5 line-clamp-4">
-                    {{ footer.description|default:"TechLife BD is Bangladesh's leading technology news and reviews platform." }}
+                <p class="text-xs leading-relaxed text-blue-200/80 mb-6">
+                    {{ footer.description|default:"TechLife BD is Bangladesh's leading smart technology, ICT news, and digital insights portal, bringing you the latest updates and tutorials daily." }}
                 </p>
 
-                <!-- Social Icons -->
-                <div class="flex items-center gap-3">
-                    {% if footer.facebook_url %}
-                    <a href="{{ footer.facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
-                        class="w-9 h-9 rounded-full bg-gray-100 hover:bg-[#1877F2] border border-gray-200 hover:border-[#1877F2] flex items-center justify-center text-gray-600 hover:text-white transition-all duration-200">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                    </a>
-                    {% endif %}
-                    {% if footer.twitter_url %}
-                    <a href="{{ footer.twitter_url }}" target="_blank" rel="noopener noreferrer" aria-label="Twitter/X"
-                        class="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-900 border border-gray-200 hover:border-gray-900 flex items-center justify-center text-gray-600 hover:text-white transition-all duration-200">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                    </a>
-                    {% endif %}
-                    {% if footer.linkedin_url %}
-                    <a href="{{ footer.linkedin_url }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
-                        class="w-9 h-9 rounded-full bg-gray-100 hover:bg-[#0A66C2] border border-gray-200 hover:border-[#0A66C2] flex items-center justify-center text-gray-600 hover:text-white transition-all duration-200">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                    </a>
-                    {% endif %}
-                    {% if footer.whatsapp_number %}
-                    <a href="https://wa.me/{{ footer.whatsapp_number }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
-                        class="w-9 h-9 rounded-full bg-gray-100 hover:bg-[#25D366] border border-gray-200 hover:border-[#25D366] flex items-center justify-center text-gray-600 hover:text-white transition-all duration-200">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-                    </a>
-                    {% endif %}
+                <!-- Follow Us Social Icons -->
+                <div class="flex flex-col gap-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-white">Follow Us:</span>
+                    <div class="flex items-center gap-2">
+                        {% if footer.facebook_url %}
+                        <a href="{{ footer.facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="w-8 h-8 rounded-xs bg-[#3b5998] hover:opacity-90 flex items-center justify-center text-white transition-opacity text-xs">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        {% endif %}
+                        {% if footer.twitter_url %}
+                        <a href="{{ footer.twitter_url }}" target="_blank" rel="noopener noreferrer" aria-label="Twitter" class="w-8 h-8 rounded-xs bg-[#00acee] hover:opacity-90 flex items-center justify-center text-white transition-opacity text-xs">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+                        {% endif %}
+                        {% if footer.linkedin_url %}
+                        <a href="{{ footer.linkedin_url }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="w-8 h-8 rounded-xs bg-[#0077b5] hover:opacity-90 flex items-center justify-center text-white transition-opacity text-xs">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        {% endif %}
+                        <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="w-8 h-8 rounded-xs bg-[#e1306c] hover:opacity-90 flex items-center justify-center text-white transition-opacity text-xs">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="w-8 h-8 rounded-xs hover:opacity-90 flex items-center justify-center text-white transition-opacity text-xs" style="background-color: #1e3a6e;">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <!-- Quick Links -->
-            <div class="lg:col-span-2">
-                <h3 class="text-[13px] font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-sm bg-[#1e3a6e] inline-block"></span>
-                    Quick Links
+            <!-- Column 2: Category Grid Links (lg:col-span-4) -->
+            <div class="lg:col-span-4 flex flex-col">
+                <h3 class="text-sm font-extrabold uppercase tracking-wider text-white mb-4 border-b border-blue-900/40 pb-2">
+                    Category
                 </h3>
-                <ul class="space-y-2.5">
-                    <li><a href="/" class="text-[12px] text-gray-500 hover:text-[#1e3a6e] flex items-center gap-2 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>Home</a></li>
-                    <li><a href="{% url 'blogs' %}" class="text-[12px] text-gray-500 hover:text-[#1e3a6e] flex items-center gap-2 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>All Blogs</a></li>
-                    <li><a href="{% url 'popular_blogs' %}" class="text-[12px] text-gray-500 hover:text-[#1e3a6e] flex items-center gap-2 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>Popular</a></li>
-                    <li><a href="{% url 'create_blog' %}" class="text-[12px] text-gray-500 hover:text-[#1e3a6e] flex items-center gap-2 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>Write a Blog</a></li>
-                    <li><a href="{% url 'contact_page' %}" class="text-[12px] text-gray-500 hover:text-[#1e3a6e] flex items-center gap-2 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>Contact</a></li>
-                </ul>
-            </div>
-
-            <!-- Categories -->
-            <div class="lg:col-span-2">
-                <h3 class="text-[13px] font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-sm bg-[#1e3a6e] inline-block"></span>
-                    Categories
-                </h3>
-                <ul class="space-y-2.5">
-                    {% for category in popular_categories|slice:"5" %}
-                    <li>
-                        <a href="{% url 'category_post' category.slug %}" class="text-[12px] text-gray-500 hover:text-[#1e3a6e] flex items-center gap-2 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                            {{ category.name }}
-                        </a>
-                    </li>
+                <div class="grid grid-cols-2 gap-x-4 gap-y-2.5 text-xs font-semibold">
+                    {% for cat in popular_categories|slice:"10" %}
+                    <a href="{% url 'category_post' cat.slug %}" class="text-blue-200/80 hover:text-white transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-chevron-right text-[9px] text-blue-400/60"></i>
+                        {{ cat.name }}
+                    </a>
+                    {% empty %}
+                    <a href="#" class="text-blue-200/80 hover:text-white transition-colors">Apps</a>
+                    <a href="#" class="text-blue-200/80 hover:text-white transition-colors">Gadget</a>
+                    <a href="#" class="text-blue-200/80 hover:text-white transition-colors">Business</a>
+                    <a href="#" class="text-blue-200/80 hover:text-white transition-colors">Gaming</a>
+                    <a href="#" class="text-blue-200/80 hover:text-white transition-colors">Entertainment</a>
+                    <a href="#" class="text-blue-200/80 hover:text-white transition-colors">Health</a>
+                    <a href="#" class="text-blue-200/80 hover:text-white transition-colors">Fashion</a>
+                    <a href="#" class="text-blue-200/80 hover:text-white transition-colors">Lifestyle</a>
+                    <a href="#" class="text-blue-200/80 hover:text-white transition-colors">Food</a>
+                    <a href="#" class="text-blue-200/80 hover:text-white transition-colors">Science</a>
                     {% endfor %}
-                </ul>
+                </div>
             </div>
 
-            <!-- Contact -->
-            <div class="lg:col-span-3">
-                <h3 class="text-[13px] font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-sm bg-[#1e3a6e] inline-block"></span>
-                    Contact
+            <!-- Column 3: Newsletter Form (lg:col-span-4) -->
+            <div class="lg:col-span-4 flex flex-col">
+                <h3 class="text-sm font-extrabold uppercase tracking-wider text-white mb-4 border-b border-blue-900/40 pb-2">
+                    Newsletter
                 </h3>
-                <ul class="space-y-3.5">
-                    <li class="flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-lg bg-[#dbeafe]/60 border border-[#1e3a6e]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        </div>
-                        <div>
-                            <p class="text-[11px] text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Email</p>
-                            <a href="mailto:{{ footer.email }}" class="text-[12px] text-gray-600 hover:text-[#1e3a6e] transition-colors break-all">{{ footer.email }}</a>
-                        </div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-lg bg-[#dbeafe]/60 border border-[#1e3a6e]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.29 6.29l1.29-1.29a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.02z"/></svg>
-                        </div>
-                        <div>
-                            <p class="text-[11px] text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Phone</p>
-                            <a href="tel:{{ footer.phone }}" class="text-[12px] text-gray-600 hover:text-[#1e3a6e] transition-colors">{{ footer.phone }}</a>
-                        </div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-lg bg-[#dbeafe]/60 border border-[#1e3a6e]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        </div>
-                        <div>
-                            <p class="text-[11px] text-gray-500 font-semibold uppercase tracking-wide mb-0.5">Address</p>
-                            <p class="text-[12px] text-gray-600 leading-relaxed">{{ footer.address }}</p>
-                        </div>
-                    </li>
-                </ul>
+                <p class="text-xs leading-relaxed text-blue-200/80 mb-4">
+                    Don't miss to subscribe to our news feeds, kindly fill the form below.
+                </p>
+                <form action="#" method="POST" class="flex flex-col gap-2.5">
+                    {% csrf_token %}
+                    <input type="email" placeholder="Your email address" required class="w-full px-4 py-2.5 text-xs bg-blue-950/50 border border-blue-800/60 text-white placeholder-blue-300/50 rounded-xs focus:outline-none focus:border-blue-400" />
+                    <button type="submit" class="w-full py-2.5 text-white font-extrabold text-xs uppercase tracking-wider rounded-xs transition-colors shadow-xs hover:bg-blue-600" style="background-color: #2563eb;">
+                        SUBSCRIBE
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bottom Copyright Bar -->
+    <div class="border-t border-blue-900/40 py-4 px-4 text-xs text-blue-300/60" style="background-color: #0f1e3a;">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>&copy; {% now "Y" %} <span class="text-white font-bold">TechLife BD</span>. All Rights Reserved.</p>
+            <div class="flex items-center gap-4 text-[11px] font-medium">
+                <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                <span>•</span>
+                <a href="#" class="hover:text-white transition-colors">Terms & Conditions</a>
+                <span>•</span>
+                <a href="{% url 'contact_page' %}" class="hover:text-white transition-colors">Contact Us</a>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Bar -->
-    <div class="border-t border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p class="text-[11px] text-gray-500">
-                &copy; {% now "Y" %} <span class="font-semibold text-[#1e3a6e]">TechLife BD</span>. All Rights Reserved.
-            </p>
-            <p class="text-[12px] text-gray-600">
-                Developed by <a href="{{ footer.developer_company_url }}" target="_blank" rel="noopener noreferrer" class="text-[#1e3a6e] font-bold hover:underline">{{ footer.developer_company_name }}</a>
-            </p>
-            <div class="flex items-center gap-4 text-[11px] text-gray-500">
-                <a href="#" class="hover:text-[#1e3a6e] transition-colors">Privacy Policy</a>
-                <span class="text-gray-300">•</span>
-                <a href="#" class="hover:text-[#1e3a6e] transition-colors">Terms of Service</a>
-            </div>
-        </div>
-    </div>
 </footer>

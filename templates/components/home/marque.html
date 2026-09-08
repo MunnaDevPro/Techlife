@@ -1,34 +1,32 @@
 <!-- MARQUE.HTML -->
 {% comment %} marque {% endcomment %}
-<div class="mx-auto max-w-7xl my-4 px-3">
-    <div x-data x-init="
-        $nextTick(() => {
-            const content = $refs.content;
-            const item = $refs.item;
-            const clone = item.cloneNode(true);
-            content.appendChild(clone);
-        });
-    " class="tl-card rounded-xl overflow-hidden">
-        <div class="flex items-center gap-2 px-3 py-2 border-b border-gray-100 bg-[#1e3a6e]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-            <span class="text-[11px] font-bold text-white uppercase tracking-wide">Partners & Featured</span>
-        </div>
-        <div class="relative w-full overflow-hidden py-3 bg-white">
-            <div x-ref="content" class="flex animate-marquee overflow-hidden">
-                <div x-ref="item" class="flex items-center justify-around flex-shrink-0 w-full space-x-10 px-4">
-                    {% for logo in logos %}
-                    {% if logo.company_image %}
-                    <img src="{{ logo.company_image.url }}" alt="{{ logo.name }}" class="h-10 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" width="80" height="40" loading="lazy" decoding="async">
-                    {% elif logo.company_image_url %}
-                    <img src="{{ logo.company_image_url }}" alt="{{ logo.name }}" class="h-10 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" width="80" height="40" loading="lazy" decoding="async">
-                    {% endif %}
-                    {% endfor %}
-                </div>
-                <div class="flex items-center justify-around flex-shrink-0 w-full space-x-10 px-4">
-                    {% for logo in logos %}
-                    <img src="{% if logo.company_image %}{{ logo.company_image.url }}{% else %}{{ logo.company_image_url }}{% endif %}" alt="{{ logo.name }}" class="h-10 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" width="80" height="40" loading="lazy" decoding="async">
-                    {% endfor %}
-                </div>
+<div x-data x-init="
+    $nextTick(() => {
+        const content = $refs.content;
+        const item = $refs.item;
+        const clone = item.cloneNode(true);
+        content.appendChild(clone);
+    });
+" class="overflow-hidden border border-gray-100 rounded-sm">
+    <div class="flex items-center gap-2 px-3 py-2 border-b border-gray-100 bg-[#1e3a6e]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        <span class="text-[11px] font-bold text-white uppercase tracking-wide">Partners & Featured</span>
+    </div>
+    <div class="relative w-full overflow-hidden py-3 bg-white">
+        <div x-ref="content" class="flex animate-marquee overflow-hidden">
+            <div x-ref="item" class="flex items-center justify-around flex-shrink-0 w-full space-x-10 px-4">
+                {% for logo in logos %}
+                {% if logo.company_image %}
+                <img src="{{ logo.company_image.url }}" alt="{{ logo.name }}" class="h-10 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" width="80" height="40" loading="lazy" decoding="async">
+                {% elif logo.company_image_url %}
+                <img src="{{ logo.company_image_url }}" alt="{{ logo.name }}" class="h-10 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" width="80" height="40" loading="lazy" decoding="async">
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="flex items-center justify-around flex-shrink-0 w-full space-x-10 px-4">
+                {% for logo in logos %}
+                <img src="{% if logo.company_image %}{{ logo.company_image.url }}{% else %}{{ logo.company_image_url }}{% endif %}" alt="{{ logo.name }}" class="h-10 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" width="80" height="40" loading="lazy" decoding="async">
+                {% endfor %}
             </div>
         </div>
     </div>

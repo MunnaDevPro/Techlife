@@ -164,10 +164,37 @@ def blog_details_view(request, slug):
             blog_detail.views += 1
             blog_detail.save()
 
+    published_reviews = blog_detail.reviews.filter(status='published').select_related('reviewer').order_by('-created_at')
+    reviews_count = published_reviews.count()
+
+    if reviews_count > 0:
+        avg_quality = round(sum(r.quality_rating for r in published_reviews) / float(reviews_count), 1)
+        avg_communication = round(sum(r.communication_rating for r in published_reviews) / float(reviews_count), 1)
+        avg_timeliness = round(sum(r.timeliness_rating for r in published_reviews) / float(reviews_count), 1)
+        overall_avg_rating = round((avg_quality + avg_communication + avg_timeliness) / 3.0, 1)
+    else:
+        avg_quality = 0.0
+        avg_communication = 0.0
+        avg_timeliness = 0.0
+        overall_avg_rating = 0.0
+
+    avg_quality_pct = int((avg_quality / 5.0) * 100) if reviews_count > 0 else 0
+    avg_comm_pct = int((avg_communication / 5.0) * 100) if reviews_count > 0 else 0
+    avg_time_pct = int((avg_timeliness / 5.0) * 100) if reviews_count > 0 else 0
+
     context = {
         "blog_detail":    blog_detail,
         "post":           blog_detail,
         "company":        blog_detail,
+        "published_reviews": published_reviews,
+        "reviews_count":  reviews_count,
+        "overall_avg_rating": overall_avg_rating,
+        "avg_quality":     avg_quality,
+        "avg_communication": avg_communication,
+        "avg_timeliness":  avg_timeliness,
+        "avg_quality_pct": avg_quality_pct,
+        "avg_comm_pct":    avg_comm_pct,
+        "avg_time_pct":    avg_time_pct,
         "company_services": blog_detail.company_services.all() if blog_detail.is_company else [],
         "company_industries": blog_detail.company_industry_focuses.all() if blog_detail.is_company else [],
         "company_client_focuses": blog_detail.company_client_focuses.all() if blog_detail.is_company else [],
@@ -332,7 +359,18 @@ def home(request):
     ).order_by("-views", "-likes", "-created_at")
 
     logos    = compnay_logo.objects.all()
-    top_tags = Tag.objects.exclude(slug='').annotate(num_posts=Count('blog_posts')).order_by('-num_posts')
+    top_tags = (
+        Tag.objects
+        .exclude(slug='')
+        .annotate(
+            num_posts=Count(
+                'blog_posts',
+                filter=Q(blog_posts__status='published')
+            )
+        )
+        .filter(num_posts__gt=0)
+        .order_by('-num_posts')
+    )
 
     context = {
         "first_category":   first_category,
@@ -364,6 +402,8 @@ def home(request):
         "programming_related_posts":  programming_related_posts,
         "most_viewed_blogs": most_viewed_blogs,
         "all_category":     all_category,
+        "categories":       all_category,
+        "popular_categories": popular_categories,
         "logos":            logos,
         "top_categories":   top_categories,
         "action":           "home_page",

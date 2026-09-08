@@ -38,6 +38,18 @@ class SiteSettings(models.Model):
         null=True,
         help_text="Website এর Favicon আপলোড করুন (Standard size: 32x32 or 16x16)"
     )
+    logo = models.ImageField(
+        upload_to="site/logo/",
+        blank=True,
+        null=True,
+        help_text="Navbar-এ দেখানোর জন্য Website Logo আপলোড করুন (recommended: PNG with transparent background, height ~60px)"
+    )
+    logo_dark = models.ImageField(
+        upload_to="site/logo/",
+        blank=True,
+        null=True,
+        help_text="Dark background-এ দেখানোর জন্য Logo (Optional)"
+    )
 
     class Meta:
         verbose_name = "Site Settings"
