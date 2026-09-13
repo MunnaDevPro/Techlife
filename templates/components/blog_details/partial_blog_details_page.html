@@ -321,14 +321,14 @@
                     </div>
                 </div>
 
-                <!-- Carousel Track (3 cards visible initially on desktop, 2 on tablet, 1 on mobile) -->
+                <!-- Carousel Track (3 cards on desktop, 2 on mobile & tablet) -->
                 <div class="overflow-hidden relative w-full" @mouseenter="pause()" @mouseleave="play()">
-                    <div class="flex transition-transform duration-500 ease-in-out -mx-2"
+                    <div class="flex transition-transform duration-500 ease-in-out -mx-1.5 sm:-mx-2"
                          :style="'transform: translateX(-' + (currentIndex * (100 / visibleCount)) + '%);'">
                         {% for news in you_may_like_blogs %}
-                        <div class="shrink-0 px-2 group cursor-pointer w-full sm:w-1/2 md:w-1/3" style="flex: 0 0 calc(100% / 3); min-width: calc(100% / 3); max-width: calc(100% / 3);">
+                        <div class="shrink-0 px-1.5 sm:px-2 group cursor-pointer w-1/2 md:w-1/3" :style="'flex: 0 0 ' + (100 / visibleCount) + '%; min-width: ' + (100 / visibleCount) + '%; max-width: ' + (100 / visibleCount) + '%;'">
                             <a href="{% url 'blog_details' news.slug %}" hx-get="{% url 'blog_details' news.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="block">
-                                <div class="aspect-video w-full rounded-lg overflow-hidden mb-2 bg-gray-100">
+                                <div class="aspect-video w-full rounded-lg overflow-hidden mb-1.5 bg-gray-100">
                                     {% if news.featured_image %}
                                     <img src="{{ news.featured_image_thumbnail.url }}" alt="{{ news.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
                                     {% elif news.featured_image_url %}
@@ -337,11 +337,11 @@
                                     <img src="{% static 'image/placeholder-5.png' %}" alt="{{ news.title }}" class="w-full h-full object-cover" loading="lazy" decoding="async" />
                                     {% endif %}
                                 </div>
-                                <div class="flex items-center gap-1.5 mb-1.5 text-[11px]">
-                                    <span class="font-bold text-[#ce0000]">By {{ news.author.get_full_name|default:news.author.email|truncatechars:12 }}</span>
-                                    <span class="text-gray-500 font-semibold">{{ news.created_at|date:"F d, Y" }}</span>
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-1 mb-1 text-[10px] sm:text-[11px]">
+                                    <span class="font-bold text-[#ce0000] line-clamp-1">By {{ news.author.get_full_name|default:news.author.email|truncatechars:10 }}</span>
+                                    <span class="text-gray-400 font-medium text-[9px] sm:text-[10px]">{{ news.created_at|date:"M d, Y" }}</span>
                                 </div>
-                                <h4 class="text-[15px] font-extrabold text-gray-900 leading-snug line-clamp-2 group-hover:text-[#265daa] transition-colors font-montserrat">
+                                <h4 class="text-xs sm:text-[14px] font-bold sm:font-extrabold text-gray-900 leading-snug line-clamp-2 group-hover:text-[#265daa] transition-colors font-montserrat">
                                     {{ news.title }}
                                 </h4>
                             </a>
@@ -359,8 +359,7 @@
                     timer: null,
                     get visibleCount() {
                         if (window.innerWidth >= 768) return 3;
-                        if (window.innerWidth >= 640) return 2;
-                        return 1;
+                        return 2; // Show 2 cards per line on mobile screens
                     },
                     get maxIndex() {
                         return Math.max(0, this.totalItems - this.visibleCount);
