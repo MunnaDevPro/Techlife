@@ -4,7 +4,7 @@
     <div class="tl-card rounded-2xl overflow-hidden">
 
         <!-- Header -->
-        <div class="flex items-center gap-3 px-6 py-4 bg-[#1e3a6e]">
+        <div class="flex items-center gap-3 px-6 py-4 bg-[#265daa]">
             <img src="{% static 'image/company_logo.webp' %}" alt="TechLife Logo" class="w-8 h-8 rounded-full object-cover" />
             <div>
                 <h1 class="text-[15px] font-bold text-white">
@@ -52,7 +52,7 @@
                         
                         <!-- Trigger Button -->
                         <button type="button" @click="open = !open" @click.away="open = false" 
-                            class="w-full flex items-center justify-between bg-white border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-700 hover:border-[#1e3a6e] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/20 focus:border-[#1e3a6e] transition-all shadow-sm cursor-pointer">
+                            class="w-full flex items-center justify-between bg-white border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-700 hover:border-[#265daa] focus:outline-none focus:ring-2 focus:ring-[#265daa]/20 focus:border-[#265daa] transition-all shadow-sm cursor-pointer">
                             <span x-text="selectedText" :class="selected ? 'text-gray-900 font-medium' : 'text-gray-400'"></span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" :class="{'rotate-180': open}" class="text-gray-400 transition-transform duration-200"><path d="m6 9 6 6 6-6"/></svg>
                         </button>
@@ -69,16 +69,16 @@
                             <ul id="category-options" class="flex flex-col gap-0.5 text-[13px]">
                                 <li @click="selected = ''; selectedText = 'Select Category'; open = false" data-value=""
                                     class="px-3 py-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors"
-                                    :class="selected === '' ? 'bg-[#1e3a6e]/5 text-[#1e3a6e] font-semibold' : 'text-gray-600 hover:bg-gray-50'">
+                                    :class="selected === '' ? 'bg-[#265daa]/5 text-[#265daa] font-semibold' : 'text-gray-600 hover:bg-gray-50'">
                                     <span>Select Category</span>
-                                    <svg x-show="selected === ''" class="w-4 h-4 text-[#1e3a6e]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <svg x-show="selected === ''" class="w-4 h-4 text-[#265daa]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </li>
                                 {% for category in categories %}
                                 <li @click="selected = '{{ category.pk }}'; selectedText = '{{ category.name|escapejs }}'; open = false" data-value="{{ category.pk }}"
                                     class="px-3 py-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors"
-                                    :class="selected === '{{ category.pk }}' ? 'bg-[#1e3a6e]/5 text-[#1e3a6e] font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
+                                    :class="selected === '{{ category.pk }}' ? 'bg-[#265daa]/5 text-[#265daa] font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
                                     <span>{{ category.name }}</span>
-                                    <svg x-show="selected === '{{ category.pk }}'" class="w-4 h-4 text-[#1e3a6e]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <svg x-show="selected === '{{ category.pk }}'" class="w-4 h-4 text-[#265daa]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </li>
                                 {% endfor %}
                             </ul>
@@ -110,7 +110,7 @@
                         
                         <!-- Trigger Button -->
                         <button type="button" @click="open = !open" @click.away="open = false" 
-                            class="w-full flex items-center justify-between bg-white border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-700 hover:border-[#1e3a6e] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]/20 focus:border-[#1e3a6e] transition-all shadow-sm cursor-pointer">
+                            class="w-full flex items-center justify-between bg-white border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-700 hover:border-[#265daa] focus:outline-none focus:ring-2 focus:ring-[#265daa]/20 focus:border-[#265daa] transition-all shadow-sm cursor-pointer">
                             <span x-text="selectedText" :class="selected ? 'text-gray-900 font-medium' : 'text-gray-400'"></span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" :class="{'rotate-180': open}" class="text-gray-400 transition-transform duration-200"><path d="m6 9 6 6 6-6"/></svg>
                         </button>
@@ -127,16 +127,16 @@
                             <ul id="subcategory-options" class="flex flex-col gap-0.5 text-[13px]">
                                 <li @click="selected = ''; selectedText = 'Select Sub-Category'; open = false" data-value=""
                                     class="px-3 py-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors"
-                                    :class="selected === '' ? 'bg-[#1e3a6e]/5 text-[#1e3a6e] font-semibold' : 'text-gray-600 hover:bg-gray-50'">
+                                    :class="selected === '' ? 'bg-[#265daa]/5 text-[#265daa] font-semibold' : 'text-gray-600 hover:bg-gray-50'">
                                     <span>Select Sub-Category</span>
-                                    <svg x-show="selected === ''" class="w-4 h-4 text-[#1e3a6e]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <svg x-show="selected === ''" class="w-4 h-4 text-[#265daa]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </li>
                                 {% for subcategory in subcategories %}
                                 <li @click="selected = '{{ subcategory.pk }}'; selectedText = '{{ subcategory.name|escapejs }}'; open = false" data-value="{{ subcategory.pk }}"
                                     class="px-3 py-2.5 rounded-lg cursor-pointer flex items-center justify-between transition-colors"
-                                    :class="selected === '{{ subcategory.pk }}' ? 'bg-[#1e3a6e]/5 text-[#1e3a6e] font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
+                                    :class="selected === '{{ subcategory.pk }}' ? 'bg-[#265daa]/5 text-[#265daa] font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
                                     <span>{{ subcategory.name }}</span>
-                                    <svg x-show="selected === '{{ subcategory.pk }}'" class="w-4 h-4 text-[#1e3a6e]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <svg x-show="selected === '{{ subcategory.pk }}'" class="w-4 h-4 text-[#265daa]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </li>
                                 {% endfor %}
                             </ul>
@@ -153,7 +153,7 @@
                 <input type="text" name="title" id="post_title" required autocomplete="off"
                     value="{{ form.title.value|default_if_none:'' }}"
                     placeholder="Enter a clear, descriptive title..."
-                    class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] transition-all" />
+                    class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#265daa] focus:border-[#265daa] transition-all" />
             </div>
 
             <!-- Description — CKEditor -->
@@ -171,9 +171,9 @@
             <!-- Featured Image Upload -->
             <div>
                 <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">Featured Image</label>
-                <div class="border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-[#1e3a6e] transition-colors" id="drop-zone">
+                <div class="border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-[#265daa] transition-colors" id="drop-zone">
                     <input type="file" name="featured_image" id="featured_image" accept="image/*"
-                        class="w-full text-[12px] text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-[#1e3a6e] file:text-white hover:file:bg-[#152d56] file:cursor-pointer" />
+                        class="w-full text-[12px] text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-[#265daa] file:text-white hover:file:bg-[#1d58a2] file:cursor-pointer" />
                     <p class="text-[11px] text-gray-400 mt-1.5">PNG, JPG, WebP · Max 5MB</p>
                     <img id="image-preview"
                         src="{% if form.instance.featured_image %}{{ form.instance.featured_image.url }}{% elif form.instance.featured_image_url %}{{ form.instance.featured_image_url }}{% endif %}"
@@ -190,7 +190,7 @@
                 <input type="url" name="featured_image_url" id="featured_image_url"
                     value="{{ form.featured_image_url.value|default_if_none:'' }}"
                     placeholder="https://example.com/image.jpg"
-                    class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] transition-all" />
+                    class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#265daa] focus:border-[#265daa] transition-all" />
             </div>
 
             <!-- ── TAGS ─────────────────────────────────────────────────── -->
@@ -201,7 +201,7 @@
 
                 <!-- Tag input box -->
                 <div id="tag-box"
-                    class="min-h-[48px] flex flex-wrap gap-2 items-center bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-[#1e3a6e] focus-within:border-[#1e3a6e] transition-all cursor-text"
+                    class="min-h-[48px] flex flex-wrap gap-2 items-center bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-[#265daa] focus-within:border-[#265daa] transition-all cursor-text"
                     onclick="document.getElementById('tag-input').focus()">
 
                     <!-- Selected tag chips render here -->
@@ -223,7 +223,7 @@
                             data-tag-id="{{ tag.id }}"
                             data-tag-label="{{ tag.name }}"
                             onclick="addTagFromSuggestion(this)"
-                            class="tag-suggestion-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 text-[12px] font-medium text-gray-700 hover:bg-[#1e3a6e] hover:text-white hover:border-[#1e3a6e] transition-all">
+                            class="tag-suggestion-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 text-[12px] font-medium text-gray-700 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-all">
                             <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
                             {{ tag.name }}
                         </button>
@@ -249,7 +249,7 @@
                     Cancel
                 </a>
                 <button type="submit" id="create-submit-btn"
-                    class="px-6 py-2.5 bg-[#1e3a6e] text-white text-[13px] font-bold rounded-xl hover:bg-[#152d56] transition-colors shadow-sm flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer">
+                    class="px-6 py-2.5 bg-[#265daa] text-white text-[13px] font-bold rounded-xl hover:bg-[#1d58a2] transition-colors shadow-sm flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     <span id="submit-text">{% if is_edit %}Save Changes{% else %}Publish Article{% endif %}</span>
                 </button>

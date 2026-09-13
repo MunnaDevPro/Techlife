@@ -7,7 +7,7 @@
 
     <!-- Search Header -->
     <div class="tl-card rounded-xl p-4 mb-4 flex items-center gap-3">
-        <div class="w-9 h-9 bg-[#1e3a6e] rounded-full flex items-center justify-center shrink-0">
+        <div class="w-9 h-9 bg-[#265daa] rounded-full flex items-center justify-center shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </div>
         <div>
@@ -32,13 +32,13 @@
             </div>
             <div class="p-3 flex flex-col flex-1">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="inline-block text-[10px] font-bold text-[#1e3a6e] bg-[#dbeafe]/60 px-2.5 py-0.5 rounded-full">{{ blog.category.name|truncatewords:1 }}</span>
+                    <span class="inline-block text-[10px] font-bold text-[#265daa] bg-[#dbeafe]/60 px-2.5 py-0.5 rounded-full">{{ blog.category.name|truncatewords:1 }}</span>
                     <span class="text-[11px] text-gray-500">{{ blog.created_at|date:"d M, Y" }}</span>
                 </div>
-                <h3 class="font-bold text-[13px] text-gray-800 line-clamp-2 group-hover:text-[#1e3a6e] transition-colors leading-snug flex-1 mb-3">{{ blog.title }}</h3>
+                <h3 class="font-bold text-[13px] text-gray-800 line-clamp-2 group-hover:text-[#265daa] transition-colors leading-snug flex-1 mb-3">{{ blog.title }}</h3>
                 <p class="text-[11px] text-gray-500 line-clamp-2 mb-3 leading-relaxed">{{ blog.description|truncatechars:140|striptags }}</p>
                 <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                    <span class="flex items-center gap-1.5 text-[11px] font-medium text-[#1e3a6e]">
+                    <span class="flex items-center gap-1.5 text-[11px] font-medium text-[#265daa]">
                         Read {{ blog.title|truncatechars:30 }}
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                     </span>
@@ -61,7 +61,7 @@
             <h3 class="text-[15px] font-bold text-gray-700 mb-2">No Results Found</h3>
             <p class="text-[13px] text-gray-400 mb-4">Try a different keyword or browse all articles.</p>
             <a href="{% url 'blogs' %}" hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-                class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1e3a6e] text-white text-[12px] font-semibold rounded-lg hover:bg-[#152d56] transition-colors">
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#265daa] text-white text-[12px] font-semibold rounded-lg hover:bg-[#1d58a2] transition-colors">
                 Browse All Articles
             </a>
         </div>

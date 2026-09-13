@@ -100,6 +100,7 @@ TEMPLATES = [
                 "blog_post.context_processors.all_category",
                 "blog_post.context_processors.timezone_info",
                 "blog_post.context_processors.footer_context",
+                "blog_post.context_processors.trending_news",
                 "forum.context_processors.popular_questions",
                 "blog_post.context_processors.follow_stats",
                 "forum.context_processors.global_follow_list",

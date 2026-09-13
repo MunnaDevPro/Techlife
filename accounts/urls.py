@@ -11,6 +11,7 @@ urlpatterns = [
     path("new-password/", views.new_password_view, name="new-password"),
 
     path("user_dashboard/" , views.user_dashboard_view , name= "user_dashboard"),
+    path("profile/", views.user_dashboard_view, name="profile"),
     path("user-dashboard/company/<int:pk>/edit/", views.user_company_edit_view, name="user_company_edit"),
     path("contact_us/" , views.contact_us_view , name= "contact_us"),
     

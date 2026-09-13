@@ -2,90 +2,145 @@
 
 <header class="bg-white w-full font-inter">
 
-    <!-- 1. TOP BAR: Date/Time & Top Links / Socials (Navy Blue Theme) -->
-    <div class="bg-[#152d56] text-gray-200 text-[11px] py-1.5 px-4 hidden lg:block border-b border-blue-900/40" style="background-color: #152d56;">
-        <div class="max-w-7xl mx-auto flex justify-between items-center w-full">
+    <!-- 1. TOP BAR: Date & Top Links / Socials (Hidden on post details, category, blogs, contact & search pages) -->
+    <div id="top-bar-sec" class="text-white text-[11px] py-1.5 {% if action == 'blog_details' or action == 'category_post' or action == 'search_results' or action == 'blogs' or action == 'all_article' or action == 'contact_page' or request.resolver_match.url_name == 'blog_details' or request.resolver_match.url_name == 'company_details' or request.resolver_match.url_name == 'category_post' or request.resolver_match.url_name == 'redirect_search_results' or request.resolver_match.url_name == 'blogs' or request.resolver_match.url_name == 'all_article' or request.resolver_match.url_name == 'contact_page' or request.resolver_match.url_name == 'popular_blogs' or '/details/' in request.path or '/company/' in request.path or '/category/' in request.path or '/search/' in request.path or '/blogs' in request.path or '/contact' in request.path or '/popular' in request.path %}!hidden{% else %}hidden lg:block{% endif %}" style="background-color: #111111;">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center w-full">
             <!-- Left: Current Date -->
-            <div class="flex items-center gap-2 font-medium tracking-wide uppercase text-blue-200">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#2563eb]" style="color: #60a5fa;">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-                <span>{% if current_date %}{{ current_date }}{% else %}{% now "l, F j, Y" %}{% endif %}</span>
+            <div class="font-medium tracking-wide text-white/90">
+                {% if current_date %}{{ current_date }}{% else %}{% now "l, F j, Y" %}{% endif %}
             </div>
 
             <!-- Right: Top Links & Social Icons -->
-            <div class="flex items-center gap-6">
-                <div class="flex items-center gap-4 text-blue-100 font-medium">
-                    <a href="{% url 'homepage' %}" class="hover:text-white transition-colors">Home</a>
-                    <a href="{% url 'contact_page' %}" class="hover:text-white transition-colors">Contact Us</a>
-                    <a href="{% url 'blogs' %}" class="hover:text-white transition-colors">News</a>
+            <div class="flex items-center gap-5">
+                <!-- Nav Links -->
+                <div class="flex items-center gap-5 text-white/80 font-medium">
+                    <a href="#" class="hover:text-white transition-colors">Career</a>
+                    <a href="{% url 'contact_page' %}" hx-get="{% url 'contact_page' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="hover:text-white transition-colors">Contact Us</a>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'user_dashboard' %}" class="hover:text-white transition-colors">My Profile</a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-white transition-colors">Login / Register</a>
+                    {% endif %}
                 </div>
-                <div class="h-3 w-px bg-blue-800"></div>
-                <div class="flex items-center gap-3 text-blue-200">
+                <!-- Divider -->
+                <div class="h-3 w-px bg-white/20"></div>
+                <!-- Social Icons -->
+                <div class="flex items-center gap-3 text-white/70">
                     {% if footer.facebook_url %}
-                    <a href="{{ footer.facebook_url }}" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="Facebook">
-                        <i class="fa-brands fa-facebook-f"></i>
+                    <a href="{{ footer.facebook_url }}" target="_blank" rel="noopener noreferrer"
+                        class="hover:text-white transition-colors" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f text-xs"></i>
+                    </a>
+                    {% else %}
+                    <a href="#" class="hover:text-white transition-colors" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f text-xs"></i>
                     </a>
                     {% endif %}
                     {% if footer.twitter_url %}
-                    <a href="{{ footer.twitter_url }}" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="Twitter">
-                        <i class="fa-brands fa-x-twitter"></i>
+                    <a href="{{ footer.twitter_url }}" target="_blank" rel="noopener noreferrer"
+                        class="hover:text-white transition-colors" aria-label="Twitter">
+                        <i class="fa-brands fa-x-twitter text-xs"></i>
+                    </a>
+                    {% else %}
+                    <a href="#" class="hover:text-white transition-colors" aria-label="Twitter">
+                        <i class="fa-brands fa-x-twitter text-xs"></i>
                     </a>
                     {% endif %}
-                    {% if footer.linkedin_url %}
-                    <a href="{{ footer.linkedin_url }}" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="LinkedIn">
-                        <i class="fa-brands fa-linkedin-in"></i>
+                    {% if footer.instagram_url %}
+                    <a href="{{ footer.instagram_url }}" target="_blank" rel="noopener noreferrer"
+                        class="hover:text-white transition-colors" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram text-xs"></i>
+                    </a>
+                    {% else %}
+                    <a href="#" class="hover:text-white transition-colors" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram text-xs"></i>
                     </a>
                     {% endif %}
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors" aria-label="YouTube">
-                        <i class="fa-brands fa-youtube"></i>
-                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 2. MAIN HEADER: Logo & Leaderboard Banner Ad -->
-    <div class="py-3 lg:py-4">
-        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4">
-            <!-- Mobile Menu Toggle Button (Opens right-sliding sidebar) -->
-            <button onclick="openSidebar()" aria-label="Open navigation menu" class="lg:hidden p-2 text-gray-800 hover:text-[#1e3a6e] hover:bg-gray-100 rounded-md transition-colors cursor-pointer outline-none">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="3" y1="12" x2="21" y2="12" />
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <line x1="3" y1="18" x2="21" y2="18" />
-                </svg>
-            </button>
+<style>
+    @media (min-width: 1024px) {
+        #mobile-header-bar {
+            display: none !important;
+        }
+    }
+    @media (max-width: 1023.98px) {
+        #mobile-header-bar {
+            display: flex !important;
+        }
+    }
+</style>
 
+    <!-- 2. MOBILE HEADER BAR (Visible ONLY on Mobile screens < lg: Logo Left, Menu Icon Right) -->
+    <div id="mobile-header-bar" class="lg:hidden sticky top-0 z-50 bg-white border-b border-gray-200 py-2.5 px-4 shadow-[0_1px_4px_rgba(0,0,0,0.04)] items-center justify-between font-inter">
+        <!-- Left: Brand Logo -->
+        <a href="{% url 'homepage' %}" aria-label="TechLife BD - Home" class="flex items-center gap-2 shrink-0">
+            {% if site_settings and site_settings.logo %}
+            <img src="{{ site_settings.logo.url }}" alt="TechLife BD" class="h-8 sm:h-[36px] w-auto object-contain" loading="eager" fetchpriority="high" />
+            {% elif footer and footer.logo %}
+            <img src="{{ footer.logo.url }}" alt="TechLife BD" class="h-8 sm:h-[36px] w-auto object-contain" loading="eager" fetchpriority="high" />
+            {% else %}
+            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-8 sm:h-[36px] w-auto object-contain" loading="eager" fetchpriority="high" />
+            {% endif %}
+        </a>
+
+        <!-- Right: Menu Icon / Button (Opens right-sliding sidebar drawer) -->
+        <button onclick="openSidebar()" aria-label="Open sidebar menu"
+            class="w-9 h-9 flex items-center justify-center text-white rounded-md transition-all outline-none cursor-pointer shadow-sm hover:opacity-90 shrink-0"
+            style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- 3. DESKTOP MAIN HEADER: Logo & Leaderboard Banner Ad (Desktop Only lg:block) -->
+    <div id="main-header-logo-sec" class="hidden lg:block py-3 lg:py-4 border-b border-gray-100 {% if action == 'blog_details' or action == 'category_post' or action == 'search_results' or action == 'blogs' or action == 'all_article' or action == 'contact_page' or request.resolver_match.url_name == 'blog_details' or request.resolver_match.url_name == 'company_details' or request.resolver_match.url_name == 'category_post' or request.resolver_match.url_name == 'redirect_search_results' or request.resolver_match.url_name == 'blogs' or request.resolver_match.url_name == 'all_article' or request.resolver_match.url_name == 'contact_page' or request.resolver_match.url_name == 'popular_blogs' or '/details/' in request.path or '/company/' in request.path or '/category/' in request.path or '/search/' in request.path or '/blogs' in request.path or '/contact' in request.path or '/popular' in request.path %}!hidden{% endif %}">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4">
             <!-- Brand Logo -->
-            <a href="{% url 'homepage' %}" aria-label="TechLife BD - Home" class="flex items-center gap-2 flex-shrink-0">
+            <a href="{% url 'homepage' %}" aria-label="TechLife BD - Home"
+                class="flex items-center gap-2 flex-shrink-0">
                 {% if site_settings and site_settings.logo %}
-                <img src="{{ site_settings.logo.url }}" alt="TechLife BD" class="h-8 sm:h-[38px] w-auto object-contain" loading="eager" fetchpriority="high" />
+                <img src="{{ site_settings.logo.url }}" alt="TechLife BD" class="h-8 sm:h-[38px] w-auto object-contain"
+                    loading="eager" fetchpriority="high" />
                 {% elif footer and footer.logo %}
-                <img src="{{ footer.logo.url }}" alt="TechLife BD" class="h-8 sm:h-[38px] w-auto object-contain" loading="eager" fetchpriority="high" />
+                <img src="{{ footer.logo.url }}" alt="TechLife BD" class="h-8 sm:h-[38px] w-auto object-contain"
+                    loading="eager" fetchpriority="high" />
                 {% else %}
-                <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" class="h-8 sm:h-[38px] w-auto object-contain" loading="eager" fetchpriority="high" />
+                <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD"
+                    class="h-8 sm:h-[38px] w-auto object-contain" loading="eager" fetchpriority="high" />
                 {% endif %}
             </a>
 
             <!-- Header Leaderboard Ad (728x90 style banner) -->
-            <div class="hidden lg:flex items-center justify-end flex-1">
+            <div id="header-leaderboard-ad" class="flex items-center justify-end flex-1">
                 {% if ad_1 %}
                 <div class="w-full flex justify-end">
                     {{ ad_1.ad_code|safe }}
                 </div>
                 {% else %}
-                <a href="#" class="w-full max-w-[728px] h-[90px] text-white rounded flex items-center justify-between px-6 shadow-sm overflow-hidden relative group" style="background: linear-gradient(135deg, #1e3a6e 0%, #152d56 100%);">
+                <a href="#"
+                    class="w-full max-w-[728px] h-[90px] text-white rounded flex items-center justify-between px-6 shadow-sm overflow-hidden relative group"
+                    style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%);">
                     <div class="z-10">
-                        <span class="text-[10px] uppercase font-bold tracking-widest text-blue-200 block mb-0.5">Special Promotion</span>
-                        <h4 class="text-lg font-extrabold tracking-tight group-hover:text-blue-100 transition-colors">Smart Technology &amp; Electronics Cable</h4>
-                        <p class="text-xs text-blue-100/90">Discover premium deals and digital insights in Bangladesh</p>
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-blue-200 block mb-0.5">Special
+                            Promotion</span>
+                        <h4 class="text-lg font-semibold tracking-tight group-hover:text-blue-100 transition-colors">
+                            Smart Technology &amp; Electronics Cable</h4>
+                        <p class="text-xs text-blue-100/90">Discover premium deals and digital insights in Bangladesh
+                        </p>
                     </div>
-                    <span class="z-10 bg-[#2563eb] hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded uppercase tracking-wider shadow transition-all shrink-0" style="background-color: #2563eb;">Shop Now</span>
-                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+                    <span
+                        class="z-10 bg-[#2563eb] hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded uppercase tracking-wider shadow transition-all shrink-0"
+                        style="background-color: #2563eb;">Shop Now</span>
+                    <div
+                        class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-xl pointer-events-none">
+                    </div>
                 </a>
                 {% endif %}
             </div>
@@ -93,165 +148,318 @@
     </div>
 </header>
 
-    <!-- 3. NAVIGATION BAR (Sticky + Top Border Divider + Enhanced Search Icon) -->
-    <nav class="bg-white text-gray-800 w-full sticky top-0 z-50 border-t border-b border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.03)] py-1.5 font-inter">
-        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-[52px]">
+<!-- 4. DESKTOP NAVIGATION BAR (Sticky Navigation: Desktop Only hidden lg:block) -->
+<nav
+    class="hidden lg:block bg-white text-gray-800 w-full sticky top-0 z-50 border-t border-b border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.03)] py-1.5 font-inter">
+    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-[52px] relative gap-4">
 
-            <!-- Desktop Navigation Links -->
-            <div class="hidden lg:flex items-center space-x-1 overflow-x-auto scrollbar-hide whitespace-nowrap flex-1 h-full font-bold text-[13px] tracking-wide uppercase">
-                <a href="{% url 'homepage' %}" class="flex items-center gap-1.5 px-4 h-full text-[#1e3a6e] border-b-2 border-[#1e3a6e] bg-blue-50/50 hover:bg-blue-50 transition-colors shrink-0">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                        <polyline points="9 22 9 12 15 12 15 22" />
+        <!-- Left Container: Brand Logo -->
+        <div class="flex items-center h-full shrink-0">
+            <!-- Brand Logo in Nav (Smooth animated reveal on scroll / always visible on detail pages) -->
+            <a id="nav-brand-logo" href="{% url 'homepage' %}" aria-label="TechLife BD - Home"
+                class="flex items-center gap-2 flex-shrink-0"
+                style="display: flex; overflow: hidden; white-space: nowrap; transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease-in-out, transform 0.35s ease-in-out; {% if action == 'blog_details' or action == 'category_post' or action == 'search_results' or action == 'blogs' or action == 'all_article' or action == 'contact_page' or request.resolver_match.url_name == 'blog_details' or request.resolver_match.url_name == 'company_details' or request.resolver_match.url_name == 'category_post' or request.resolver_match.url_name == 'redirect_search_results' or request.resolver_match.url_name == 'blogs' or request.resolver_match.url_name == 'all_article' or request.resolver_match.url_name == 'contact_page' or '/details/' in request.path or '/company/' in request.path or '/category/' in request.path or '/search/' in request.path or '/blogs' in request.path or '/contact' in request.path %}opacity: 1; max-width: 180px; transform: translateX(0); pointer-events: auto;{% else %}opacity: 0; max-width: 0px; transform: translateX(-15px); pointer-events: none;{% endif %}">
+                {% if site_settings and site_settings.logo %}
+                <img src="{{ site_settings.logo.url }}" alt="TechLife BD" class="h-7 sm:h-[34px] w-auto object-contain"
+                    loading="eager" fetchpriority="high" />
+                {% elif footer and footer.logo %}
+                <img src="{{ footer.logo.url }}" alt="TechLife BD" class="h-7 sm:h-[34px] w-auto object-contain"
+                    loading="eager" fetchpriority="high" />
+                {% else %}
+                <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD"
+                    class="h-7 sm:h-[34px] w-auto object-contain" loading="eager" fetchpriority="high" />
+                {% endif %}
+            </a>
+        </div>
+
+        <!-- Center Container: Desktop Navigation Links (Left initially, Centered on scroll) -->
+        <div id="desktop-nav-links"
+            class="hidden lg:flex items-center justify-start flex-1 space-x-0.5 whitespace-nowrap h-full font-bold text-[13px] tracking-wide uppercase static transition-all duration-300">
+            <a href="{% url 'homepage' %}"
+                class="flex items-center gap-1.5 px-3.5 h-full shrink-0 transition-colors {% if request.resolver_match.url_name == 'homepage' or request.path == '/' %}text-[#265daa] border-b-2 border-[#265daa]{% else %}text-gray-700 hover:text-[#265daa] border-b-2 border-transparent hover:border-[#265daa]{% endif %}">
+                Home
+            </a>
+
+            <!-- NEWS Dropdown with Recent Posts Hover Mega Menu (Full Width Side-by-Side) -->
+            <div class="group static h-full flex items-center">
+                <a href="{% url 'blogs' %}"
+                    class="flex items-center gap-1 px-3.5 h-full cursor-pointer outline-none uppercase font-bold transition-colors {% if action == 'news' %}text-[#265daa] border-b-2 border-[#265daa]{% else %}text-gray-700 hover:text-[#265daa] border-b-2 border-transparent hover:border-[#265daa]{% endif %}">
+                    News
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        class="transition-transform group-hover:rotate-180">
+                        <polyline points="6 9 12 15 18 9" />
                     </svg>
-                    Home
                 </a>
-
-                <a href="{% url 'blogs' %}" class="flex items-center gap-1.5 px-4 h-full text-gray-700 hover:text-[#1e3a6e] hover:bg-gray-50 transition-colors shrink-0">
-                    All Article
-                </a>
-
-                <div class="group relative shrink-0 h-full flex items-center">
-                    <button class="flex items-center gap-1 px-4 h-full text-gray-700 hover:text-[#1e3a6e] hover:bg-gray-50 transition-colors cursor-pointer outline-none uppercase font-bold">
-                        Category
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:rotate-180">
-                            <polyline points="6 9 12 15 18 9" />
-                        </svg>
-                    </button>
-                    <!-- Category Mega Menu -->
-                    <div class="absolute left-0 top-full w-[650px] bg-white shadow-2xl border-t-2 border-[#1e3a6e] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-gray-800 rounded-b-md p-6 normal-case font-normal">
-                        <div class="grid grid-cols-3 gap-6">
-                            {% for category in categories %}
-                            <div>
-                                <a href="{% url 'category_post' category.slug %}" class="text-xs font-bold text-[#1e3a6e] uppercase tracking-wider mb-2 pb-1 border-b border-gray-100 flex items-center gap-1.5 hover:underline" style="color: #1e3a6e;">
-                                    {{ category.name }}
-                                </a>
-                                <ul class="space-y-2 text-xs">
-                                    {% for sub in category.subcategories.all %}
-                                    <li>
-                                        <a href="{% url 'category_post' sub.slug %}" class="text-gray-600 hover:text-[#1e3a6e] transition-colors flex items-center gap-1.5">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                                            {{ sub.name }}
-                                        </a>
-                                    </li>
-                                    {% empty %}
-                                    <li class="text-gray-400 italic text-[11px]">No subcategories</li>
-                                    {% endfor %}
-                                </ul>
+                <!-- Recent News Dropdown Mega Menu (10 Posts Slider) -->
+                <div
+                    class="absolute left-4 right-4 top-full bg-white shadow-2xl border-t border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-gray-800 rounded-b-xl p-5 normal-case font-normal">
+                    <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-gray-100">
+                        <div class="flex items-center gap-2.5">
+                            <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider">Recent News</h3>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <a href="{% url 'blogs' %}"
+                                class="text-xs font-bold text-[#265daa] hover:underline flex items-center gap-1.5"
+                                style="color: #265daa;">
+                                <span>View All Articles</span>
+                                <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                            </a>
+                            <div class="h-4 w-px bg-gray-200"></div>
+                            <div class="flex items-center gap-1.5">
+                                <button type="button" onclick="newsMenuPrev(event)"
+                                    class="w-7 h-7 rounded-full border border-gray-200 hover:border-[#265daa] text-gray-500 hover:text-[#265daa] flex items-center justify-center transition-colors cursor-pointer"
+                                    aria-label="Previous posts">
+                                    <i class="fa-solid fa-chevron-left text-[9px]"></i>
+                                </button>
+                                <button type="button" onclick="newsMenuNext(event)"
+                                    class="w-7 h-7 rounded-full border border-gray-200 hover:border-[#265daa] text-gray-500 hover:text-[#265daa] flex items-center justify-center transition-colors cursor-pointer"
+                                    aria-label="Next posts">
+                                    <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full overflow-hidden">
+                        <div id="news-menu-track" class="flex transition-transform duration-300 ease-out"
+                            style="gap: 1.25rem; transform: translateX(0px);">
+                            {% for post in recent_news_list|slice:"10" %}
+                            <a href="{% url 'blog_details' post.slug %}"
+                                class="group/card block bg-gray-50/80 hover:bg-blue-50/50 p-3 rounded-lg border border-gray-200/60 hover:border-blue-300 transition-all shrink-0 flex flex-col justify-between"
+                                style="width: calc((100% - 3.75rem) / 4);">
+                                <div>
+                                    <div class="w-full h-[125px] rounded-md overflow-hidden bg-gray-200 mb-2.5 relative shrink-0"
+                                        style="height: 125px; overflow: hidden;">
+                                        {% if post.featured_image %}
+                                        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}"
+                                            class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300"
+                                            style="height: 125px; width: 100%; object-fit: cover;" />
+                                        {% elif post.featured_image_url %}
+                                        <img src="{{ post.featured_image_url }}" alt="{{ post.title }}"
+                                            class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300"
+                                            style="height: 125px; width: 100%; object-fit: cover;" />
+                                        {% else %}
+                                        <div class="w-full h-full bg-slate-700 flex items-center justify-center text-white text-xs font-bold"
+                                            style="height: 125px; width: 100%;">TechLife</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex items-center gap-1.5 text-[11px] text-gray-500 font-medium mb-1.5">
+                                        {% if post.category %}
+                                        <span class="font-bold text-[#265daa] truncate max-w-[100px]"
+                                            style="color: #265daa;">{{ post.category.name }}</span>
+                                        <span class="text-gray-300">•</span>
+                                        {% endif %}
+                                        <span class="text-gray-400 shrink-0">{{ post.created_at|date:"M d, Y" }}</span>
+                                    </div>
+                                    <h4
+                                        class="text-xs font-bold text-gray-900 group-hover/card:text-[#265daa] line-clamp-2 leading-snug transition-colors">
+                                        {{ post.title }}
+                                    </h4>
+                                </div>
+                            </a>
+                            {% empty %}
+                            <div class="w-full text-center py-8 text-sm text-gray-400">No recent news posts available.
                             </div>
                             {% endfor %}
                         </div>
                     </div>
                 </div>
-
-                <a href="{% url 'questions_list' %}" class="flex items-center gap-1.5 px-4 h-full text-gray-700 hover:text-[#1e3a6e] hover:bg-gray-50 transition-colors shrink-0">
-                    Job Question
-                </a>
-
-                <a href="{% url 'popular_blogs' %}" class="flex items-center gap-1.5 px-4 h-full text-gray-700 hover:text-[#1e3a6e] hover:bg-gray-50 transition-colors shrink-0">
-                    Top Review
-                </a>
-
-                <a href="{% url 'questions_list' %}" class="flex items-center gap-1.5 px-4 h-full text-gray-700 hover:text-[#1e3a6e] hover:bg-gray-50 transition-colors shrink-0">
-                    Question
-                </a>
             </div>
 
-            <!-- Right Side Controls: Search + Dashboard / Sign In + MENU ICON BUTTON -->
-            <div class="flex items-center gap-2 shrink-0">
-                <!-- Search Icon Button (Beautiful Pill Circle) -->
-                <button onclick="toggleMobileSearch()" aria-label="Search"
-                    class="w-[38px] h-[38px] flex items-center justify-center bg-gray-100/90 hover:bg-[#1e3a6e] hover:text-white text-gray-700 rounded-full transition-all duration-200 border border-gray-200 cursor-pointer outline-none shadow-2xs group"
-                    title="Search">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform">
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="m21 21-4.3-4.3" />
+            <!-- Category Dropdown with Full-Width Card Grid Mega Menu -->
+            <div class="group static h-full flex items-center">
+                <button
+                    class="flex items-center gap-1 px-3.5 h-full cursor-pointer outline-none uppercase font-bold transition-colors {% if action == 'category_post' or request.resolver_match.url_name == 'category_post' or '/category/' in request.path %}text-[#265daa] border-b-2 border-[#265daa]{% else %}text-gray-700 hover:text-[#265daa] border-b-2 border-transparent hover:border-[#265daa]{% endif %}">
+                    Category
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        class="transition-transform group-hover:rotate-180">
+                        <polyline points="6 9 12 15 18 9" />
                     </svg>
                 </button>
-
-                {% if request.user.is_authenticated %}
-                <a href="{% url 'user_dashboard' %}" class="flex items-center gap-2 px-3.5 h-[38px] bg-gray-100 hover:bg-[#1e3a6e] hover:text-white text-gray-700 rounded-sm text-xs font-semibold transition-colors border border-gray-200">
-                    <i class="fa-solid fa-user"></i>
-                    <span>Dashboard</span>
-                </a>
-                {% else %}
-                <a href="{% url 'login' %}" class="flex items-center gap-1.5 px-3.5 h-[38px] bg-gray-100 hover:bg-[#1e3a6e] hover:text-white text-gray-700 rounded-sm text-xs font-semibold transition-colors border border-gray-200">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    <span>Sign In</span>
-                </a>
-                {% endif %}
-
-                <!-- MENU ICON BUTTON (Click opens right-sliding sidebar drawer) -->
-                <button onclick="openSidebar()" aria-label="Open sidebar menu" class="h-[38px] px-3.5 bg-[#1e3a6e] hover:bg-[#152d56] text-white rounded-sm flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors outline-none cursor-pointer" style="background-color: #1e3a6e;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="3" y1="12" x2="21" y2="12" />
-                        <line x1="3" y1="6" x2="21" y2="6" />
-                        <line x1="3" y1="18" x2="21" y2="18" />
-                    </svg>
-                    <span class="hidden sm:inline">MENU</span>
-                </button>
+                <!-- Category Mega Menu Carousel Slider (No Scrollbar, Clean Slider Controls) -->
+                <div class="absolute left-4 right-4 top-full bg-white opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-gray-700 rounded-b-xl p-5 normal-case font-normal whitespace-normal font-inter"
+                    style="white-space: normal; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);">
+                    <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-md bg-[#dbeafe]/70 text-[#265daa] flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider">Categories &amp; Topics</h3>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-[11px] font-semibold text-gray-400">
+                                {{ categories|length }} Categories Available
+                            </span>
+                            <div class="h-4 w-px bg-gray-200"></div>
+                            <div class="flex items-center gap-1.5">
+                                <button type="button" onclick="catMenuPrev(event)"
+                                    class="w-7 h-7 rounded-full border border-gray-200 hover:border-[#265daa] text-gray-500 hover:text-[#265daa] flex items-center justify-center transition-colors cursor-pointer"
+                                    aria-label="Previous categories">
+                                    <i class="fa-solid fa-chevron-left text-[9px]"></i>
+                                </button>
+                                <button type="button" onclick="catMenuNext(event)"
+                                    class="w-7 h-7 rounded-full border border-gray-200 hover:border-[#265daa] text-gray-500 hover:text-[#265daa] flex items-center justify-center transition-colors cursor-pointer"
+                                    aria-label="Next categories">
+                                    <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel Slider Track (4 Cards visible per slide side-by-side) -->
+                    <div class="w-full overflow-hidden">
+                        <div id="cat-menu-track" class="flex items-start transition-transform duration-300 ease-out"
+                            style="gap: 1rem; transform: translateX(0px);">
+                            {% for category in categories %}
+                            <div class="bg-gray-50/80 hover:bg-blue-50/60 p-3 rounded-lg border border-gray-200/60 hover:border-blue-300 transition-all shrink-0 font-inter shadow-2xs"
+                                style="width: calc((100% - 3rem) / 4);">
+                                <a href="{% url 'category_post' category.slug %}"
+                                    class="text-xs font-bold text-gray-800 uppercase tracking-wider flex items-center justify-between hover:text-[#265daa] transition-colors pb-1 border-b border-gray-200/60 font-montserrat group/cat">
+                                    <span class="truncate pr-1">{{ category.name }}</span>
+                                    <i class="fa-solid fa-arrow-right text-[9px] text-gray-400 group-hover/cat:text-[#265daa] transition-colors shrink-0"></i>
+                                </a>
+                                {% if category.subcategories.all %}
+                                <ul class="space-y-1 text-[11px] text-gray-600 mt-2">
+                                    {% for sub in category.subcategories.all %}
+                                    <li>
+                                        <a href="{% url 'category_post' sub.slug %}"
+                                            class="hover:text-[#265daa] transition-colors flex items-center gap-1.5 truncate py-0.5 font-medium">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#265daa]/40 shrink-0"></span>
+                                            <span class="truncate">{{ sub.name }}</span>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <a href="{% url 'blogs' %}"
+                class="flex items-center gap-1.5 px-3.5 h-full shrink-0 transition-colors {% if action == 'all_blogs' or request.resolver_match.url_name == 'blogs' and action != 'blog_details' and '/details/' not in request.path %}text-[#265daa] border-b-2 border-[#265daa]{% else %}text-gray-700 hover:text-[#265daa] border-b-2 border-transparent hover:border-[#265daa]{% endif %}">
+                All Articles
+            </a>
+
+            <a href="{% url 'questions_list' %}"
+                class="flex items-center gap-1.5 px-3.5 h-full shrink-0 transition-colors {% if request.resolver_match.url_name == 'questions_list' or request.resolver_match.url_name == 'questions' or '/questions' in request.path %}text-[#265daa] border-b-2 border-[#265daa]{% else %}text-gray-700 hover:text-[#265daa] border-b-2 border-transparent hover:border-[#265daa]{% endif %}">
+                Question
+            </a>
         </div>
-    </nav>
 
+        <!-- Right Side Controls: Search + Dashboard / Sign In + MENU ICON BUTTON -->
+        <div class="flex items-center gap-2 shrink-0 ml-auto z-10">
+            <!-- Search Icon Button (Beautiful Pill Circle) -->
+            <button onclick="toggleMobileSearch()" aria-label="Search"
+                class="w-[38px] h-[38px] flex items-center justify-center bg-gray-100/90 hover:bg-[#265daa] hover:text-white text-gray-700 rounded-full transition-all duration-200 border border-gray-200 cursor-pointer outline-none shadow-2xs group"
+                title="Search">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                </svg>
+            </button>
 
-    <!-- 4. TRENDING NEWS TICKER BAR (Blue Accent Badge) -->
-    <div class="bg-white border-b border-gray-100 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        <div class="max-w-7xl mx-auto px-4 flex items-center gap-3 text-sm">
-            <!-- Blue Badge Label -->
-            <span class="text-white font-extrabold uppercase px-3 py-1 text-[10px] tracking-wider shrink-0 rounded-sm flex items-center gap-1.5" style="background-color: #1e3a6e; color: #ffffff;">
-                <i class="fa-solid fa-bolt text-[10px]"></i>
-                TRENDING NEWS
-            </span>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'user_dashboard' %}"
+                class="flex items-center gap-2 px-3.5 h-[38px] bg-gray-100 hover:bg-[#265daa] hover:text-white text-gray-700 rounded-sm text-xs font-semibold transition-colors border border-gray-200">
+                <i class="fa-solid fa-user"></i>
+                <span>Dashboard</span>
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}"
+                class="flex items-center gap-1.5 px-3.5 h-[38px] bg-gray-100 hover:bg-[#265daa] hover:text-white text-gray-700 rounded-sm text-xs font-semibold transition-colors border border-gray-200">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                <span>Sign In</span>
+            </a>
+            {% endif %}
 
-            <!-- News Ticker: hidden list of items, JS cycles through them -->
-            <div id="ticker-items" class="hidden">
-                {% if trending_post %}
-                <span data-href="{% url 'blog_details' trending_post.slug %}">{{ trending_post.title }}</span>
-                {% endif %}
-                {% for post in latest_popular_blogs|slice:"10" %}
-                <span data-href="{% url 'blog_details' post.slug %}">{{ post.title }}</span>
-                {% empty %}
-                {% for post in latest_blogs|slice:"10" %}
-                <span data-href="{% url 'blog_details' post.slug %}">{{ post.title }}</span>
-                {% endfor %}
-                {% endfor %}
-                {% if not trending_post and not latest_popular_blogs and not latest_blogs %}
-                <span data-href="#">Welcome to TechLife BD – Latest Technology &amp; Digital Insights.</span>
-                {% endif %}
-            </div>
-
-            <!-- Visible ticker display — takes all remaining width -->
-            <div class="flex-1 min-w-0 overflow-hidden">
-                <a id="ticker-display"
-                   href="#"
-                   class="block w-full whitespace-nowrap overflow-hidden text-ellipsis text-gray-800 font-medium hover:text-[#1e3a6e] transition-all duration-300"
-                   style="opacity: 1;">
-                </a>
-            </div>
-
-            <!-- Ticker Controls (< > arrows) -->
-            <div class="hidden sm:flex items-center gap-1 shrink-0 ml-2">
-                <button id="ticker-prev" onclick="tickerPrev()"
-                    class="w-7 h-7 flex items-center justify-center border border-gray-200 hover:border-[#1e3a6e] hover:text-[#1e3a6e] text-gray-500 rounded transition-colors cursor-pointer"
-                    aria-label="Previous headline">
-                    <i class="fa-solid fa-chevron-left text-[10px]"></i>
-                </button>
-                <button id="ticker-next" onclick="tickerNext()"
-                    class="w-7 h-7 flex items-center justify-center border border-gray-200 hover:border-[#1e3a6e] hover:text-[#1e3a6e] text-gray-500 rounded transition-colors cursor-pointer"
-                    aria-label="Next headline">
-                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                </button>
-            </div>
+            <!-- MENU ICON BUTTON (Click opens right-sliding sidebar drawer) -->
+            <button onclick="openSidebar()" aria-label="Open sidebar menu"
+                class="h-[38px] px-3.5 text-white rounded-sm flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all hover:opacity-90 outline-none cursor-pointer shadow-2xs"
+                style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+                <span class="hidden sm:inline">MENU</span>
+            </button>
         </div>
     </div>
+</nav>
 
 
-    <script>
-    (function() {
+{% if action != 'blog_details' and action != 'category_post' and action != 'search_results' and action != 'blogs' and action != 'all_article' and action != 'contact_page' and request.resolver_match.url_name != 'blog_details' and request.resolver_match.url_name != 'company_details' and request.resolver_match.url_name != 'category_post' and request.resolver_match.url_name != 'redirect_search_results' and request.resolver_match.url_name != 'blogs' and request.resolver_match.url_name != 'all_article' and request.resolver_match.url_name != 'contact_page' and '/details/' not in request.path and '/company/' not in request.path and '/category/' not in request.path and '/search/' not in request.path and '/blogs' not in request.path and '/contact' not in request.path %}
+<!-- 4. TRENDING NEWS TICKER BAR (Blue Accent Badge) -->
+<div id="trending-ticker-bar" class="bg-white border-b border-gray-100 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+    <div class="max-w-7xl mx-auto px-4 flex items-center gap-3 text-sm">
+        <!-- Blue Gradient Badge Label (Icon only on mobile, Icon + Text on desktop) -->
+        <span
+            class="w-7 h-7 sm:w-auto sm:h-auto text-white font-semibold uppercase sm:px-4 sm:py-1.5 text-[10px] sm:text-[11px] tracking-wider shrink-0 rounded-md sm:rounded-sm flex items-center justify-center gap-2.5 shadow-2xs"
+            style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%) !important; color: #ffffff !important;">
+            <i class="fa-solid fa-bolt text-xs shrink-0 text-white" style="animation: pulse 0.9s cubic-bezier(0.4, 0, 0.6, 1) infinite;"></i>
+            <span class="hidden sm:inline">TRENDING NEWS</span>
+        </span>
+
+        <!-- News Ticker: hidden list of items, JS cycles through them -->
+        <div id="ticker-items" class="hidden">
+            {% for post in trending_news_list|slice:"10" %}
+            <span data-href="{% url 'blog_details' post.slug %}">{{ post.title }}</span>
+            {% empty %}
+            {% if trending_post %}
+            <span data-href="{% url 'blog_details' trending_post.slug %}">{{ trending_post.title }}</span>
+            {% endif %}
+            {% for post in latest_popular_blogs|slice:"10" %}
+            <span data-href="{% url 'blog_details' post.slug %}">{{ post.title }}</span>
+            {% empty %}
+            {% for post in latest_blogs|slice:"10" %}
+            <span data-href="{% url 'blog_details' post.slug %}">{{ post.title }}</span>
+            {% endfor %}
+            {% endfor %}
+            {% if not trending_post and not latest_popular_blogs and not latest_blogs %}
+            <span data-href="#">Welcome to TechLife BD – Latest Technology &amp; Digital Insights.</span>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Visible ticker display — takes all remaining width -->
+        <div class="flex-1 min-w-0 overflow-hidden">
+            <a id="ticker-display" href="#"
+                class="block w-full whitespace-nowrap overflow-hidden text-ellipsis text-gray-800 font-medium hover:text-[#265daa] transition-all duration-300"
+                style="opacity: 1;">
+            </a>
+        </div>
+
+        <!-- Ticker Controls (< > arrows) -->
+        <div class="hidden sm:flex items-center gap-1 shrink-0 ml-2">
+            <button id="ticker-prev" onclick="tickerPrev()"
+                class="w-7 h-7 flex items-center justify-center border border-gray-200 hover:border-[#265daa] hover:text-[#265daa] text-gray-500 rounded transition-colors cursor-pointer"
+                aria-label="Previous headline">
+                <i class="fa-solid fa-chevron-left text-[10px]"></i>
+            </button>
+            <button id="ticker-next" onclick="tickerNext()"
+                class="w-7 h-7 flex items-center justify-center border border-gray-200 hover:border-[#265daa] hover:text-[#265daa] text-gray-500 rounded transition-colors cursor-pointer"
+                aria-label="Next headline">
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+<script>
+    (function () {
         var items = [];
-        document.querySelectorAll('#ticker-items span').forEach(function(el) {
-            items.push({ title: el.textContent.trim(), href: el.getAttribute('data-href') || '#' });
+        document.querySelectorAll('#ticker-items span').forEach(function (el) {
+            var text = el.textContent.trim();
+            if (text) {
+                items.push({ title: text, href: el.getAttribute('data-href') || '#' });
+            }
         });
 
         if (items.length === 0) return;
@@ -268,230 +476,445 @@
             currentIndex = ((index % items.length) + items.length) % items.length;
             var item = items[currentIndex];
 
-            // ── FADE OUT (slow) ──
-            display.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-in-out';
-            display.style.opacity   = '0';
-            display.style.transform = direction === 'next' ? 'translateY(-14px)' : 'translateY(14px)';
+            // ── HORIZONTAL SLIDE OUT (right to left) ──
+            display.style.transition = 'opacity 0.25s ease-in-out, transform 0.25s ease-in-out';
+            display.style.opacity = '0';
+            display.style.transform = direction === 'next' ? 'translateX(-40px)' : 'translateX(40px)';
 
-            // Wait for fade-out to finish, then swap text and fade back in
-            setTimeout(function() {
+            // Wait for slide-out, then swap text and slide back in from right to left
+            setTimeout(function () {
                 display.textContent = item.title;
-                display.href        = item.href;
+                display.href = item.href;
 
-                // Reset position instantly (no transition) before fading in
+                // Reset position instantly before sliding in
                 display.style.transition = 'none';
-                display.style.transform  = direction === 'next' ? 'translateY(14px)' : 'translateY(-14px)';
+                display.style.transform = direction === 'next' ? 'translateX(40px)' : 'translateX(-40px)';
 
                 // Force reflow so the "none" transition takes effect
                 void display.offsetHeight;
 
-                // ── FADE IN (slow) ──
-                display.style.transition = 'opacity 0.7s ease-in-out, transform 0.7s ease-in-out';
-                display.style.opacity    = '1';
-                display.style.transform  = 'translateY(0)';
+                // ── HORIZONTAL SLIDE IN ──
+                display.style.transition = 'opacity 0.25s ease-in-out, transform 0.25s ease-in-out';
+                display.style.opacity = '1';
+                display.style.transform = 'translateX(0)';
 
-                setTimeout(function() { isAnimating = false; }, 750);
-            }, 620);
+                setTimeout(function () { isAnimating = false; }, 260);
+            }, 260);
         }
 
         function startAuto() {
             stopAuto();
-            autoTimer = setInterval(function() {
+            autoTimer = setInterval(function () {
                 showItem(currentIndex + 1, 'next');
-            }, 5000);
+            }, 4500);
         }
 
         function stopAuto() {
             if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
         }
 
-        window.tickerNext = function() {
+        window.tickerNext = function () {
             stopAuto();
             showItem(currentIndex + 1, 'next');
             startAuto();
         };
 
-        window.tickerPrev = function() {
+        window.tickerPrev = function () {
             stopAuto();
             showItem(currentIndex - 1, 'prev');
             startAuto();
         };
 
-        // Init — show first item instantly
+        // Init — show first item instantly with clean opacity
         display.style.transition = 'none';
-        display.style.opacity    = '0';
-        setTimeout(function() {
+        display.style.opacity = '0';
+        display.style.transform = 'translateX(0)';
+        setTimeout(function () {
             display.textContent = items[0].title;
-            display.href        = items[0].href;
-            display.style.transition = 'opacity 0.8s ease-in-out';
-            display.style.opacity    = '1';
+            display.href = items[0].href;
+            display.style.transition = 'opacity 0.4s ease-in-out';
+            display.style.opacity = '1';
             startAuto();
         }, 100);
     })();
-    </script>
+
+    // Mega Menu Carousel Controls (Category & News)
+    (function () {
+        var catIndex = 0;
+        window.catMenuNext = function (e) {
+            if (e) e.preventDefault();
+            var track = document.getElementById('cat-menu-track');
+            if (!track) return;
+            var totalItems = track.children.length;
+            var maxIndex = Math.ceil(totalItems / 4) - 1;
+            if (maxIndex < 0) maxIndex = 0;
+            catIndex = (catIndex < maxIndex) ? catIndex + 1 : 0;
+            track.style.transform = 'translateX(-' + (catIndex * 100) + '%)';
+        };
+
+        window.catMenuPrev = function (e) {
+            if (e) e.preventDefault();
+            var track = document.getElementById('cat-menu-track');
+            if (!track) return;
+            var totalItems = track.children.length;
+            var maxIndex = Math.ceil(totalItems / 4) - 1;
+            if (maxIndex < 0) maxIndex = 0;
+            catIndex = (catIndex > 0) ? catIndex - 1 : maxIndex;
+            track.style.transform = 'translateX(-' + (catIndex * 100) + '%)';
+        };
+
+        var newsIndex = 0;
+        window.newsMenuNext = function (e) {
+            if (e) e.preventDefault();
+            var track = document.getElementById('news-menu-track');
+            if (!track) return;
+            var totalItems = track.children.length;
+            var maxIndex = Math.ceil(totalItems / 4) - 1;
+            if (maxIndex < 0) maxIndex = 0;
+            newsIndex = (newsIndex < maxIndex) ? newsIndex + 1 : 0;
+            track.style.transform = 'translateX(-' + (newsIndex * 100) + '%)';
+        };
+
+        window.newsMenuPrev = function (e) {
+            if (e) e.preventDefault();
+            var track = document.getElementById('news-menu-track');
+            if (!track) return;
+            var totalItems = track.children.length;
+            var maxIndex = Math.ceil(totalItems / 4) - 1;
+            if (maxIndex < 0) maxIndex = 0;
+            newsIndex = (newsIndex > 0) ? newsIndex - 1 : maxIndex;
+            track.style.transform = 'translateX(-' + (newsIndex * 100) + '%)';
+        };
+    })();
+</script>
 
 
-    <!-- MOBILE / DESKTOP SEARCH OVERLAY -->
-    <div id="mobile-search-container" class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md p-4 shadow-xl hidden z-[60] border-b border-gray-200">
-        <div class="flex items-center gap-3 max-w-2xl mx-auto">
-            <button onclick="toggleMobileSearch()" aria-label="Close search" class="flex-shrink-0 w-9 h-9 flex items-center justify-center text-gray-500 hover:text-[#1e3a6e] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<!-- MOBILE / DESKTOP SEARCH OVERLAY -->
+<div id="mobile-search-container"
+    class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md p-4 shadow-xl hidden z-[60] border-b border-gray-200">
+    <div class="relative max-w-2xl mx-auto">
+        <div class="flex items-center gap-3">
+            <button onclick="toggleMobileSearch()" aria-label="Close search"
+                class="flex-shrink-0 w-9 h-9 flex items-center justify-center text-gray-500 hover:text-[#265daa] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <path d="M19 12H5M12 5l-7 7 7 7" />
                 </svg>
             </button>
-            <form action="{% url 'redirect_search_results' %}" method="GET" class="flex flex-1 gap-0">
-                <input type="search" name="q" id="desktop-search-input" placeholder="Search news, tech, articles..." autofocus class="flex-1 px-4 py-2.5 text-sm border border-gray-300 border-r-0 rounded-l-md focus:outline-none focus:border-[#1e3a6e] bg-gray-50" />
-                <button type="submit" aria-label="Search" class="px-5 py-2.5 text-white font-bold text-xs uppercase tracking-wider rounded-r-md transition-colors cursor-pointer" style="background-color: #1e3a6e; color: #ffffff;">
+            <form action="{% url 'redirect_search_results' %}" method="GET"
+                  hx-get="{% url 'redirect_search_results' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+                  onsubmit="closeMobileSearch()"
+                  class="flex flex-1 gap-0">
+                <input type="search" name="q" id="desktop-search-input" placeholder="Search news, tech, articles..."
+                    autofocus
+                    hx-get="{% url 'live_search_suggest' %}"
+                    hx-trigger="keyup changed delay:250ms, search"
+                    hx-target="#search-suggestions-container"
+                    hx-swap="innerHTML"
+                    class="flex-1 px-4 py-2.5 text-sm border border-gray-300 border-r-0 rounded-l-md focus:outline-none focus:border-[#265daa] bg-gray-50" />
+                <button type="submit" aria-label="Search"
+                    class="px-5 py-2.5 text-white font-bold text-xs uppercase tracking-wider rounded-r-md transition-all hover:opacity-90 cursor-pointer shadow-2xs"
+                    style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
                     Search
                 </button>
             </form>
         </div>
+        <!-- Live Search Suggestions Container -->
+        <div id="search-suggestions-container" class="absolute left-12 right-0 top-full mt-2 z-50"></div>
     </div>
+</div>
 
-    <!-- 5. RIGHT SLIDING MOBILE & MENU SIDEBAR (Opens when MENU icon is clicked) -->
-    <div id="mobile-sidebar" class="fixed top-0 right-0 h-full w-[320px] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-[70] flex flex-col font-inter">
+<!-- 5. RIGHT SLIDING MOBILE & MENU SIDEBAR (Opens when MENU button is clicked) -->
+<div id="mobile-sidebar"
+    class="fixed top-0 right-0 h-full w-[320px] max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-500 ease-in-out z-[70] flex flex-col font-inter will-change-transform">
 
-        <div class="bg-[#152d56] px-5 py-4 flex-shrink-0 relative border-b border-blue-900/40" style="background-color: #152d56;">
-            <button onclick="closeSidebar()" class="absolute top-4 right-4 text-white/70 hover:text-white p-1 cursor-pointer outline-none">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-            </button>
+    <!-- Drawer Header (Clean Professional White Theme) -->
+    <div class="px-5 py-4 flex-shrink-0 relative bg-white border-b border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.03)] border-t-4 border-[#265daa]">
+        
+        <!-- Close Button (Clean Pill Button) -->
+        <button onclick="closeSidebar()" aria-label="Close menu"
+            class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100/80 hover:bg-[#265daa] text-gray-500 hover:text-white flex items-center justify-center transition-all duration-200 cursor-pointer outline-none border border-gray-200/60 shadow-2xs group z-10">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" class="group-hover:rotate-90 transition-transform duration-300">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+        </button>
 
-            {% if request.user.is_authenticated %}
-            <div class="flex items-center gap-3">
+        {% if request.user.is_authenticated %}
+        <div class="flex items-center gap-3.5 pr-8 relative">
+            <!-- Avatar Container with Online Indicator -->
+            <div class="relative shrink-0">
                 {% if request.user.profile_picture %}
-                <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.first_name }}" class="w-12 h-12 rounded-full border-2 border-[#2563eb] object-cover" />
+                <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.first_name }}"
+                    class="w-12 h-12 rounded-full border-2 border-[#265daa] shadow-xs object-cover ring-2 ring-blue-50" />
                 {% else %}
-                <div class="w-12 h-12 rounded-full bg-[#1e3a6e] text-white flex items-center justify-center text-lg font-bold border-2 border-white" style="background-color: #1e3a6e;">
+                <div class="w-12 h-12 rounded-full text-white flex items-center justify-center text-lg font-bold border-2 border-[#265daa] shadow-xs ring-2 ring-blue-50"
+                    style="background-color: #265daa;">
                     {{ request.user.first_name|default:request.user.email|slice:":1"|upper }}
                 </div>
                 {% endif %}
-                <div class="text-white">
-                    <p class="text-[12px] text-blue-200">Welcome,</p>
-                    <p class="text-[15px] font-bold leading-tight truncate max-w-[170px]">{{ request.user.first_name|default:request.user.email }}</p>
-                </div>
+                <span class="w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full absolute bottom-0 right-0 shadow-xs" title="Online"></span>
             </div>
-            {% else %}
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-blue-950 flex items-center justify-center text-white">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
+
+            <!-- User Info -->
+            <div class="min-w-0 flex-1">
+                <h4 class="text-base font-bold leading-tight truncate text-gray-900 tracking-tight">
+                    {{ request.user.first_name|default:request.user.email }}{% if request.user.last_name %} {{ request.user.last_name }}{% endif %}
+                </h4>
+                <p class="text-xs text-gray-500 truncate font-medium mt-0.5">
+                    {{ request.user.email }}
+                </p>
+            </div>
+        </div>
+        {% else %}
+        <div class="flex items-center gap-3.5 pr-8 relative">
+            <div class="w-11 h-11 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
+                style="background-color: #265daa;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+            </div>
+            <div class="min-w-0 flex-1">
+                <h4 class="text-base font-bold text-gray-900 leading-tight tracking-tight">TechLife BD</h4>
+                <p class="text-xs text-gray-500 font-medium mb-1">Smart ICT &amp; Tech Insights</p>
+                <a href="{% url 'login' %}"
+                    class="inline-flex items-center gap-1 text-[11px] font-bold text-[#265daa] hover:underline">
+                    <span>Login or Sign up</span>
+                    <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Drawer Navigation Body -->
+    <div class="flex-1 overflow-y-auto py-4 px-3 divide-y divide-gray-100">
+        <!-- Quick Search Bar inside Mobile Drawer -->
+        <div class="pb-3 px-1">
+            <form action="{% url 'redirect_search_results' %}" method="GET"
+                  hx-get="{% url 'redirect_search_results' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+                  onsubmit="closeSidebar()"
+                  class="flex items-center bg-gray-50 rounded-lg p-1 border border-gray-200 focus-within:border-[#265daa] transition-colors">
+                <input type="search" name="q" placeholder="Search news, articles..."
+                    hx-get="{% url 'live_search_suggest' %}"
+                    hx-trigger="keyup changed delay:250ms, search"
+                    hx-target="#drawer-search-suggestions"
+                    hx-swap="innerHTML"
+                    class="w-full bg-transparent px-3 py-1.5 text-xs text-gray-800 focus:outline-none font-medium placeholder-gray-400" />
+                <button type="submit" aria-label="Search" class="w-8 h-8 rounded-md text-white flex items-center justify-center shrink-0 hover:bg-[#1d58a2] transition-colors" style="background-color: #265daa;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
                     </svg>
-                </div>
-                <div class="text-white">
-                    <p class="text-[15px] font-bold leading-tight">TechLife BD</p>
-                    <a href="{% url 'login' %}" class="text-[12px] text-blue-200 hover:text-white underline mt-0.5 inline-block">Login or Sign up</a>
-                </div>
+                </button>
+            </form>
+            <div id="drawer-search-suggestions" class="mt-1"></div>
+        </div>
+
+        <nav class="flex flex-col space-y-1 text-sm font-medium pt-3 pb-4">
+            <a href="{% url 'homepage' %}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
+                <i class="fa-solid fa-house text-[#265daa] w-5 text-center"></i>
+                Home
+            </a>
+
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'user_dashboard' %}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
+                <i class="fa-solid fa-gauge-high text-gray-500 w-5 text-center"></i>
+                Dashboard
+            </a>
+            {% endif %}
+
+            <a href="{% url 'blogs' %}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
+                <i class="fa-solid fa-newspaper text-gray-500 w-5 text-center"></i>
+                News
+            </a>
+
+            <a href="{% url 'popular_blogs' %}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
+                <i class="fa-solid fa-fire text-amber-500 w-5 text-center"></i>
+                Popular
+            </a>
+
+            <a href="{% url 'blogs' %}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
+                <i class="fa-solid fa-layer-group text-blue-500 w-5 text-center"></i>
+                All Articles
+            </a>
+
+            <a href="{% url 'questions_list' %}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
+                <i class="fa-solid fa-circle-question text-cyan-600 w-5 text-center"></i>
+                Questions
+            </a>
+
+            <!-- Creation & Submissions Links -->
+            <div class="pt-2 mt-2 border-t border-gray-100 space-y-1">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-3.5 py-1">Submissions</p>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'add_company_step1' %}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
+                    <i class="fa-solid fa-building-circle-check text-[#265daa] w-5 text-center"></i>
+                    Add Company
+                </a>
+                <a href="{% url 'write_review_landing' %}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
+                    <i class="fa-solid fa-star text-amber-500 w-5 text-center"></i>
+                    Add Review
+                </a>
+                <a href="{% url 'create_blog' %}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
+                    <i class="fa-solid fa-pen-to-square text-emerald-600 w-5 text-center"></i>
+                    Write Blog
+                </a>
+                {% else %}
+                <button type="button" data-login-alert-trigger
+                    class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold cursor-pointer">
+                    <i class="fa-solid fa-building-circle-check text-[#265daa] w-5 text-center"></i>
+                    Add Company
+                </button>
+                <button type="button" data-login-alert-trigger
+                    class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold cursor-pointer">
+                    <i class="fa-solid fa-star text-amber-500 w-5 text-center"></i>
+                    Add Review
+                </button>
+                <button type="button" data-login-alert-trigger
+                    class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold cursor-pointer">
+                    <i class="fa-solid fa-pen-to-square text-emerald-600 w-5 text-center"></i>
+                    Write Blog
+                </button>
+                {% endif %}
             </div>
+
+            <div class="pt-2 mt-2 border-t border-gray-100">
+                <a href="{% url 'contact_page' %}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
+                    <i class="fa-solid fa-envelope text-gray-500 w-5 text-center"></i>
+                    Contact Us
+                </a>
+            </div>
+        </nav>
+
+        <!-- Categories Section in Mobile Drawer -->
+        <div class="py-4">
+            <div class="flex items-center justify-between px-3.5 mb-2">
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Categories</p>
+                <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{{ categories|length }}</span>
+            </div>
+            <div class="space-y-1">
+                {% for category in categories|slice:":8" %}
+                <a href="{% url 'category_post' category.slug %}"
+                    class="flex items-center justify-between px-3.5 py-2 rounded-lg text-gray-700 text-xs hover:bg-gray-50 hover:text-[#265daa] transition-colors">
+                    <span class="truncate font-medium">{{ category.name }}</span>
+                    <i class="fa-solid fa-chevron-right text-[9px] text-gray-400"></i>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Actions / Account Controls Buttons -->
+        <div class="pt-4 px-2">
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'logout' %}"
+                class="w-full flex justify-center items-center gap-2 px-4 py-2.5 bg-red-50 text-red-600 border border-red-200/60 rounded-lg text-xs font-bold hover:bg-red-100 transition-colors uppercase tracking-wider">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}"
+                class="w-full flex justify-center items-center gap-2 px-4 py-2.5 bg-[#265daa] text-white rounded-lg text-xs font-bold hover:bg-[#1d58a2] transition-colors uppercase tracking-wider">
+                <i class="fa-solid fa-right-to-bracket"></i> Login / Sign Up
+            </a>
             {% endif %}
         </div>
+    </div>
+</div>
 
-        <div class="flex-1 overflow-y-auto py-3">
-            <nav class="flex flex-col px-3 space-y-1 text-sm font-medium">
-                {% if request.user.is_authenticated %}
-                <a href="{% url 'user_dashboard' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-800 hover:bg-gray-100 transition-colors">
-                    <i class="fa-solid fa-gauge-high text-gray-500 w-5"></i>
-                    Dashboard
+<!-- SIDEBAR OVERLAY & MODALS -->
+<div id="sidebar-overlay" onclick="closeSidebar()"
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs opacity-0 invisible transition-all duration-500 ease-in-out z-[69]"></div>
+
+<div id="login-alert-modal" class="fixed inset-0 z-[90] hidden">
+    <div id="login-alert-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"></div>
+    <div class="relative min-h-full flex items-center justify-center p-4">
+        <div class="w-full rounded-2xl bg-white p-6 shadow-2xl border border-gray-100 transform transition-all text-center mx-auto"
+            style="max-width: 360px;">
+            <div class="mx-auto w-14 h-14 rounded-full bg-blue-50 text-[#265daa] flex items-center justify-center mb-4">
+                <i class="fa-solid fa-lock text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-1.5">Sign in Required</h3>
+            <p class="text-xs text-gray-500 leading-relaxed mb-5">
+                Please sign in to publish articles, submit companies, and write reviews.
+            </p>
+            <div class="flex flex-col gap-2">
+                <a href="{% url 'login' %}"
+                    class="w-full inline-flex justify-center items-center rounded-lg text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 hover:bg-blue-900 transition-all"
+                    style="background-color: #265daa; color: #ffffff;">
+                    Sign In Now
                 </a>
-                {% endif %}
-
-                <a href="{% url 'homepage' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-800 hover:bg-gray-100 transition-colors font-bold text-[#1e3a6e]">
-                    <i class="fa-solid fa-house w-5"></i>
-                    Home
-                </a>
-
-                <a href="{% url 'blogs' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-800 hover:bg-gray-100 transition-colors">
-                    <i class="fa-solid fa-newspaper text-gray-500 w-5"></i>
-                    News
-                </a>
-
-                <a href="{% url 'popular_blogs' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-800 hover:bg-gray-100 transition-colors">
-                    <i class="fa-solid fa-fire text-gray-500 w-5"></i>
-                    Popular
-                </a>
-
-                <a href="{% url 'questions_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-gray-800 hover:bg-gray-100 transition-colors">
-                    <i class="fa-solid fa-circle-question text-gray-500 w-5"></i>
-                    Questions
-                </a>
-
-                <div class="border-t border-gray-100 my-2 pt-2">
-                    <p class="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Categories</p>
-                    {% for category in categories|slice:":6" %}
-                    <a href="{% url 'category_post' category.slug %}" class="flex items-center justify-between px-3 py-2 rounded-md text-gray-700 text-xs hover:bg-gray-50 transition-colors">
-                        <span>{{ category.name }}</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                    </a>
-                    {% endfor %}
-                </div>
-            </nav>
-
-            <div class="px-5 mt-4 mb-4 border-t border-gray-100 pt-4">
-                {% if request.user.is_authenticated %}
-                <div class="flex flex-col gap-2">
-                    <a href="{% url 'create_blog' %}" class="w-full flex justify-center items-center gap-2 px-4 py-2.5 text-white rounded-md text-xs font-bold hover:bg-blue-900 transition-colors uppercase tracking-wider" style="background-color: #1e3a6e; color: #ffffff;">
-                        <i class="fa-solid fa-pen-to-square"></i> Write Blog
-                    </a>
-                    <a href="{% url 'logout' %}" class="w-full flex justify-center items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md text-xs font-bold hover:bg-gray-200 transition-colors">
-                        Logout
-                    </a>
-                </div>
-                {% else %}
-                <a href="{% url 'login' %}" class="w-full flex justify-center items-center gap-2 px-4 py-2.5 text-white rounded-md text-xs font-bold hover:bg-blue-900 transition-colors uppercase tracking-wider" style="background-color: #1e3a6e; color: #ffffff;">
-                    Login / Sign Up
-                </a>
-                {% endif %}
+                <button type="button" data-login-alert-close
+                    class="w-full inline-flex justify-center items-center rounded-lg border border-gray-200 text-gray-600 text-xs font-semibold px-4 py-2 hover:bg-gray-50 transition-colors cursor-pointer">
+                    Cancel
+                </button>
             </div>
         </div>
     </div>
-
-    <!-- SIDEBAR OVERLAY & MODALS -->
-    <div id="sidebar-overlay" onclick="closeSidebar()" class="fixed inset-0 bg-black/60 opacity-0 invisible transition-opacity duration-300 z-[69]"></div>
-
-    <div id="login-alert-modal" class="fixed inset-0 z-[90] hidden">
-        <div id="login-alert-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"></div>
-        <div class="relative min-h-full flex items-center justify-center p-4">
-            <div class="w-full rounded-2xl bg-white p-6 shadow-2xl border border-gray-100 transform transition-all text-center mx-auto" style="max-width: 360px;">
-                <div class="mx-auto w-14 h-14 rounded-full bg-blue-50 text-[#1e3a6e] flex items-center justify-center mb-4">
-                    <i class="fa-solid fa-lock text-xl"></i>
-                </div>
-                <h3 class="text-lg font-bold text-gray-900 mb-1.5">Sign in Required</h3>
-                <p class="text-xs text-gray-500 leading-relaxed mb-5">
-                    Please sign in to publish articles and participate in the community.
-                </p>
-                <div class="flex flex-col gap-2">
-                    <a href="{% url 'login' %}?next={% url 'create_blog' %}" class="w-full inline-flex justify-center items-center rounded-lg text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 hover:bg-blue-900 transition-all" style="background-color: #1e3a6e; color: #ffffff;">
-                        Sign In Now
-                    </a>
-                    <button type="button" data-login-alert-close class="w-full inline-flex justify-center items-center rounded-lg border border-gray-200 text-gray-600 text-xs font-semibold px-4 py-2 hover:bg-gray-50 transition-colors">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 
 </header>
 
 <script>
+    function getScrollbarWidth() {
+        return window.innerWidth - document.documentElement.clientWidth;
+    }
+
     function openSidebar() {
         var sidebar = document.getElementById('mobile-sidebar');
         var overlay = document.getElementById('sidebar-overlay');
-        if (sidebar) sidebar.classList.remove('translate-x-full');
-        if (overlay) { overlay.classList.remove('opacity-0', 'invisible'); overlay.classList.add('opacity-100'); }
+        var sbWidth = getScrollbarWidth();
+
+        if (sbWidth > 0) {
+            document.body.style.paddingRight = sbWidth + 'px';
+            var nav = document.querySelector('nav');
+            if (nav) nav.style.paddingRight = sbWidth + 'px';
+        }
         document.body.classList.add('overflow-hidden');
+
+        if (sidebar) sidebar.classList.remove('translate-x-full');
+        if (overlay) {
+            overlay.classList.remove('invisible');
+            requestAnimationFrame(function () {
+                overlay.classList.remove('opacity-0');
+                overlay.classList.add('opacity-100');
+            });
+        }
     }
     window.openSidebar = openSidebar;
 
     function closeSidebar() {
         var sidebar = document.getElementById('mobile-sidebar');
         var overlay = document.getElementById('sidebar-overlay');
+
         if (sidebar) sidebar.classList.add('translate-x-full');
-        if (overlay) { overlay.classList.add('opacity-0', 'invisible'); overlay.classList.remove('opacity-100'); }
-        document.body.classList.remove('overflow-hidden');
+        if (overlay) {
+            overlay.classList.remove('opacity-100');
+            overlay.classList.add('opacity-0');
+            setTimeout(function () {
+                overlay.classList.add('invisible');
+                document.body.classList.remove('overflow-hidden');
+                document.body.style.paddingRight = '';
+                var nav = document.querySelector('nav');
+                if (nav) nav.style.paddingRight = '';
+            }, 500);
+        } else {
+            document.body.classList.remove('overflow-hidden');
+            document.body.style.paddingRight = '';
+            var nav = document.querySelector('nav');
+            if (nav) nav.style.paddingRight = '';
+        }
     }
     window.closeSidebar = closeSidebar;
 
@@ -506,5 +929,149 @@
             }
         }
         window.toggleMobileSearch = toggleMobileSearch;
+    })();
+
+    (function () {
+        var newsIndex = 0;
+        var autoNewsTimer = null;
+
+        function updateNewsTrack() {
+            var track = document.getElementById('news-menu-track');
+            if (!track) return;
+            var cards = track.children;
+            var totalCards = cards.length;
+            if (totalCards <= 4) return;
+
+            var maxIndex = totalCards - 4;
+            if (newsIndex > maxIndex) newsIndex = 0;
+            if (newsIndex < 0) newsIndex = maxIndex;
+
+            var firstCard = cards[0];
+            var cardWidth = firstCard.getBoundingClientRect().width;
+            var gap = 20; // 1.25rem = 20px
+            var shift = (cardWidth + gap) * newsIndex;
+            track.style.transform = 'translateX(-' + shift + 'px)';
+        }
+
+        function startAutoNews() {
+            stopAutoNews();
+            autoNewsTimer = setInterval(function () {
+                newsIndex++;
+                updateNewsTrack();
+            }, 3200);
+        }
+
+        function stopAutoNews() {
+            if (autoNewsTimer) {
+                clearInterval(autoNewsTimer);
+                autoNewsTimer = null;
+            }
+        }
+
+        window.newsMenuNext = function (e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            stopAutoNews();
+            newsIndex++;
+            updateNewsTrack();
+            startAutoNews();
+        };
+
+        window.newsMenuPrev = function (e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            stopAutoNews();
+            newsIndex--;
+            updateNewsTrack();
+            startAutoNews();
+        };
+
+        // Start automatic movement
+        startAutoNews();
+
+        // Pause automatic movement when hovering over cards, resume when leaving
+        setTimeout(function () {
+            var track = document.getElementById('news-menu-track');
+            if (track) {
+                track.addEventListener('mouseenter', stopAutoNews);
+                track.addEventListener('mouseleave', startAutoNews);
+            }
+        }, 500);
+    })();
+
+    (function () {
+        function handleStickyLogoScroll() {
+            var navLogo = document.getElementById('nav-brand-logo');
+            var navLinks = document.getElementById('desktop-nav-links');
+            if (!navLogo) return;
+            
+            var path = window.location.pathname || '';
+            var isCompactNavbar = path.indexOf('/details/') !== -1 || path.indexOf('/company/') !== -1 || path.indexOf('/category/') !== -1 || path.indexOf('/search/') !== -1 || path.indexOf('/blogs') !== -1;
+            
+            if (isCompactNavbar) {
+                navLogo.style.opacity = '1';
+                navLogo.style.maxWidth = '180px';
+                navLogo.style.transform = 'translateX(0)';
+                navLogo.style.pointerEvents = 'auto';
+                if (navLinks) {
+                    navLinks.classList.remove('justify-start');
+                    navLinks.classList.add('justify-center');
+                }
+            } else {
+                if (window.scrollY > 90) {
+                    navLogo.style.opacity = '1';
+                    navLogo.style.maxWidth = '180px';
+                    navLogo.style.transform = 'translateX(0)';
+                    navLogo.style.pointerEvents = 'auto';
+                    if (navLinks) {
+                        navLinks.classList.remove('justify-start');
+                        navLinks.classList.add('justify-center');
+                    }
+                } else {
+                    navLogo.style.opacity = '0';
+                    navLogo.style.maxWidth = '0px';
+                    navLogo.style.transform = 'translateX(-15px)';
+                    navLogo.style.pointerEvents = 'none';
+                    if (navLinks) {
+                        navLinks.classList.remove('justify-center');
+                        navLinks.classList.add('justify-start');
+                    }
+                }
+            }
+        }
+
+        function updateNavbarForCurrentPage() {
+            var path = window.location.pathname || '';
+            var isCompactNavbar = path.indexOf('/details/') !== -1 || path.indexOf('/company/') !== -1 || path.indexOf('/category/') !== -1 || path.indexOf('/search/') !== -1 || path.indexOf('/blogs') !== -1;
+            var topBar = document.getElementById('top-bar-sec');
+            var sec2 = document.getElementById('main-header-logo-sec');
+            var navLinks = document.getElementById('desktop-nav-links');
+            var tickerBar = document.getElementById('trending-ticker-bar');
+
+            if (topBar) {
+                topBar.style.display = isCompactNavbar ? 'none' : '';
+            }
+            if (sec2) {
+                sec2.style.display = isCompactNavbar ? 'none' : '';
+            }
+            if (tickerBar) {
+                tickerBar.style.display = isCompactNavbar ? 'none' : '';
+            }
+            handleStickyLogoScroll();
+        }
+
+        function triggerNavbarSync() {
+            updateNavbarForCurrentPage();
+            setTimeout(updateNavbarForCurrentPage, 10);
+            setTimeout(updateNavbarForCurrentPage, 100);
+            setTimeout(updateNavbarForCurrentPage, 300);
+        }
+
+        window.addEventListener('scroll', handleStickyLogoScroll, { passive: true });
+        triggerNavbarSync();
+        document.addEventListener('DOMContentLoaded', triggerNavbarSync);
+        document.addEventListener('htmx:afterSwap', triggerNavbarSync);
+        document.addEventListener('htmx:pushedIntoHistory', triggerNavbarSync);
+        document.addEventListener('htmx:historyRestore', triggerNavbarSync);
+        document.addEventListener('htmx:afterSettle', triggerNavbarSync);
+        window.addEventListener('popstate', triggerNavbarSync);
     })();
 </script>

@@ -19,7 +19,7 @@
     <div class="bg-white rounded-2xl w-11/12 max-w-sm mx-4 p-5 shadow-2xl">
         <div class="flex justify-between items-center pb-4 border-b border-gray-100 mb-4">
             <div class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#265daa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
                 <h2 class="text-[15px] font-bold text-gray-900">Share this post</h2>
             </div>
             <button id="closeModal" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
@@ -47,15 +47,15 @@
         <div class="pt-4 border-t border-gray-100">
             <label class="block text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2">Copy link</label>
             <div class="flex gap-2">
-                <input type="text" id="shareLink" readonly class="flex-1 px-3 py-2 text-[12px] bg-gray-50 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e]">
-                <button id="copyLinkBtn" class="px-4 py-2 bg-[#1e3a6e] hover:bg-[#152d56] text-white text-[12px] font-semibold rounded-lg transition-colors">Copy</button>
+                <input type="text" id="shareLink" readonly class="flex-1 px-3 py-2 text-[12px] bg-gray-50 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#265daa]">
+                <button id="copyLinkBtn" class="px-4 py-2 bg-[#265daa] hover:bg-[#1d58a2] text-white text-[12px] font-semibold rounded-lg transition-colors">Copy</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Success Toast -->
-<div id="successToast" class="hidden fixed top-5 right-5 bg-[#1e3a6e] text-white px-4 py-3 rounded-lg shadow-lg z-50">
+<div id="successToast" class="hidden fixed top-5 right-5 bg-[#265daa] text-white px-4 py-3 rounded-lg shadow-lg z-50">
     <div class="flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         <span class="text-[13px] font-semibold">Link copied!</span>
@@ -63,63 +63,76 @@
 </div>
 
 <!-- Page Layout -->
-<div class="max-w-7xl mx-auto px-1 sm:px-3 lg:px-5 pb-8">
+<div class="max-w-7xl mx-auto px-4 pb-8">
 
-    <!-- Breadcrumb --> 
-    <nav class="flex items-center gap-1.5 text-[12px] text-gray-500 py-3 sm:-mt-[30px]" aria-label="Breadcrumb">
-        <a href="/" class="hover:text-[#1e3a6e] transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <!-- Breadcrumb Banner --> 
+    <nav class="w-full bg-gray-50 px-4 py-2.5 my-3 rounded-md flex items-center gap-1.5 text-xs sm:text-[13px]" aria-label="Breadcrumb">
+        <a href="/" class="font-semibold text-gray-600 hover:text-[#265daa] transition-colors inline-flex items-center gap-1.5 shrink-0">
+            <i class="fa-solid fa-house text-[11px] text-gray-500"></i>
+            <span>Home</span>
         </a>
-        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        <a href="{% url 'category_post' blog_detail.category.slug %}" class="hover:text-[#1e3a6e] transition-colors truncate">{{ blog_detail.category.name }}</a>
-        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        <span class="text-gray-400 truncate max-w-[200px]">{{ blog_detail.title|truncatechars:40 }}</span>
+        <span class="text-gray-400 font-medium mx-0.5">&rsaquo;</span>
+        <a href="{% url 'category_post' blog_detail.category.slug %}" class="font-semibold text-gray-600 hover:text-[#265daa] transition-colors truncate shrink-0">
+            {{ blog_detail.category.name }}
+        </a>
+        <span class="text-gray-600 font-bold mx-0.5">&rsaquo;</span>
+        <span class="font-bold text-[#265daa] truncate max-w-[280px] sm:max-w-md">
+            {{ blog_detail.title|truncatechars:45 }}
+        </span>
     </nav>
 
-    <div class="flex flex-col lg:flex-row gap-5" style="min-height: 0;">
+    <!-- Two-column layout -->
+    <div id="blog-details-layout" class="flex flex-col lg:flex-row gap-6">
 
-        <!-- ═══ MAIN CONTENT ═══ -->
-        <main class="w-full lg:w-[68%] min-w-0">
-            <article class="tl-card rounded-xl overflow-hidden" id="blog-content-to-print">
-                <div class="p-2 sm:p-4 md:p-6">
-
-                    <!-- Category Badge -->
-                    <div class="mb-3">
-                        <a href="{% url 'category_post' blog_detail.category.slug %}"
-                            class="inline-block text-[11px] font-bold text-[#1e3a6e] bg-[#dbeafe]/60 px-3 py-1 rounded-full uppercase tracking-wide hover:bg-[#1e3a6e] hover:text-white transition-colors">
-                            {{ blog_detail.category.name }}
-                        </a>
-                    </div>
+        <!-- LEFT: MAIN CONTENT -->
+        <main id="blog-main-col" class="w-full lg:w-[68%] min-w-0">
+            <article class="tl-card !border-none rounded-xl overflow-hidden" id="blog-content-to-print">
+                <div class="px-1 pt-1 pb-4 sm:px-2 md:px-4">
 
                     <!-- Title -->
-                    <h1 id="blog-title" class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-4">
+                    <h1 id="blog-title" class="text-[26px] md:text-[32px] font-bold text-gray-900 leading-[1.25] mb-3 tracking-tight font-montserrat">
                         {{ blog_detail.title }}
                     </h1>
+                    <style>
+                        #blog-title { font-size: 26px; }
+                        @media (min-width: 768px) { #blog-title { font-size: 32px; } }
+                    </style>
+
+                    {% if blog_detail.short_description %}
+                    <!-- Subtitle / Description (Matching RET NEWS spec: Montserrat 18px desktop, 16px mobile, 500 weight, gray, leading 1.2) -->
+                    <h3 class="text-[16px] sm:text-[18px] font-medium text-gray-600 leading-[1.2] mb-4 font-montserrat">
+                        {{ blog_detail.short_description }}
+                    </h3>
+                    {% elif blog_detail.meta_description %}
+                    <h3 class="text-[16px] sm:text-[18px] font-medium text-gray-600 leading-[1.2] mb-4 font-montserrat">
+                        {{ blog_detail.meta_description }}
+                    </h3>
+                    {% endif %}
 
                     <!-- Meta Bar -->
                     <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-gray-100">
                         <div class="flex flex-wrap items-center gap-4 text-[12px] text-gray-500">
                             <span class="flex items-center gap-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#265daa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                                 <a href="{% url 'blogs' %}?author={{ blog_detail.author.email }}"
                                    hx-get="{% url 'blogs' %}?author={{ blog_detail.author.email }}"
                                    hx-target="#container"
                                    hx-push-url="true"
                                    hx-swap="innerHTML"
-                                   class="font-medium text-[#1e3a6e] hover:underline cursor-pointer">
+                                   class="font-medium text-[#265daa] hover:underline cursor-pointer">
                                    {{ blog_detail.author.get_full_name|default:blog_detail.author.email }}
                                 </a>
                             </span>
                             <span class="flex items-center gap-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#265daa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                                 <span>{{ display_views|humanize_number }}</span>
                             </span>
                             <span class="flex items-center gap-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#265daa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg>
                                 <span id="like-count">{{ display_like_count|humanize_number }}</span>
                             </span>
                             <span class="flex items-center gap-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#265daa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
                                 <span>{{ blog_detail.created_at|date:"d M, Y" }}</span>
                             </span>
                         </div>
@@ -138,10 +151,8 @@
                             <div class="share-option flex w-7 h-7 border border-[#25D366] rounded-full justify-center items-center hover:bg-[#25D366] hover:text-white transition-colors cursor-pointer text-[#25D366]" data-platform="whatsapp">
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                             </div>
-                            <button type="button" id="quickCopyLinkBtn" class="flex items-center gap-1.5 h-7 px-2.5 border border-[#1e3a6e]/20 rounded-full text-[#1e3a6e] hover:bg-[#1e3a6e] hover:text-white transition-colors cursor-pointer">
+                            <button type="button" id="quickCopyLinkBtn" class="flex w-7 h-7 border border-[#265daa] rounded-full justify-center items-center hover:bg-[#265daa] hover:text-white transition-colors cursor-pointer text-[#265daa]" title="Copy Link" aria-label="Copy Link">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 13 5-5"/><path d="m15 13-5 5"/><path d="M14 4h6v6"/><path d="M10 20H4v-6"/></svg>
-                                <span data-copy-label class="text-[10px] font-semibold">Copy</span>
-                                <span id="link-count-display" class="text-[10px] font-bold">{{ display_link_count|humanize_number }}</span>
                             </button>
                             <div class="flex w-7 h-7 border border-gray-300 rounded-full justify-center items-center hover:bg-gray-500 hover:text-white hover:border-gray-500 transition-colors text-gray-400 cursor-pointer">
                                 <a href="#" onclick="printBlogContent()" class="flex items-center justify-center w-full h-full">
@@ -165,7 +176,7 @@
                     <!-- Publisher + Dates + Actions -->
                     <div class="flex flex-wrap items-center justify-between gap-3 mt-4 pb-4 border-b border-gray-100">
                         <div class="flex items-center gap-2">
-                            <span class="text-[#1e3a6e] font-black text-[13px]">TL</span>
+                            <span class="text-[#265daa] font-black text-[13px]">TL</span>
                             <span class="text-gray-700 font-semibold text-[12px]">TechLife Blog</span>
                             <span class="text-gray-300">·</span>
                             <span class="text-[11px] text-gray-400">{{ blog_detail.created_at|date:"d M, Y" }}</span>
@@ -174,13 +185,13 @@
                         <div class="flex items-center gap-3 text-[12px] font-semibold">
                             {% include "components/blog_details/like_toggle_partial.html" %}
                             <!-- Share button -->
-                            <span id="shareBtn" class="flex items-center gap-1.5 text-gray-500 hover:text-[#1e3a6e] transition-colors cursor-pointer">
+                            <span id="shareBtn" class="flex items-center gap-1.5 text-gray-500 hover:text-[#265daa] transition-colors cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
                                 <span>Share</span>
                             </span>
                             <!-- Save modal (Alpine) -->
                             <span x-data="{ modalOpen: false, toastOpen: false, toastMessage: '', userAuthenticated: {{ request.user.is_verified|yesno:'true,false' }} }" class="relative">
-                                <button @click="modalOpen=true" class="flex items-center gap-1.5 text-gray-500 hover:text-[#1e3a6e] transition-colors cursor-pointer">
+                                <button @click="modalOpen=true" class="flex items-center gap-1.5 text-gray-500 hover:text-[#265daa] transition-colors cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
                                     <span>Save</span>
                                 </button>
@@ -193,12 +204,12 @@
                                                 <template x-if="userAuthenticated">
                                                     <div class="flex gap-3">
                                                         <button type="button" @click="modalOpen=false" class="px-4 py-2 text-[12px] rounded-lg bg-gray-100 hover:bg-gray-200 font-medium">Cancel</button>
-                                                        <button type="submit" class="px-4 py-2 text-[12px] rounded-lg bg-[#1e3a6e] text-white hover:bg-[#152d56] font-medium">Save</button>
+                                                        <button type="submit" class="px-4 py-2 text-[12px] rounded-lg bg-[#265daa] text-white hover:bg-[#1d58a2] font-medium">Save</button>
                                                     </div>
                                                 </template>
                                                 <template x-if="!userAuthenticated">
                                                     <div class="flex gap-3">
-                                                        <a href="{% url 'login' %}" class="px-4 py-2 text-[12px] rounded-lg bg-[#1e3a6e] text-white font-medium hover:bg-[#152d56]">Sign In</a>
+                                                        <a href="{% url 'login' %}" class="px-4 py-2 text-[12px] rounded-lg bg-[#265daa] text-white font-medium hover:bg-[#1d58a2]">Sign In</a>
                                                         <a href="{% url 'signup' %}" class="px-4 py-2 text-[12px] rounded-lg bg-green-600 text-white font-medium hover:bg-green-700">Register</a>
                                                     </div>
                                                 </template>
@@ -206,7 +217,7 @@
                                             <button @click="modalOpen=false" class="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">&times;</button>
                                         </div>
                                     </div>
-                                    <div x-show="toastOpen" x-transition class="fixed bottom-5 right-5 bg-[#1e3a6e] text-white px-4 py-3 rounded-lg shadow-lg z-50 text-[13px]">
+                                    <div x-show="toastOpen" x-transition class="fixed bottom-5 right-5 bg-[#265daa] text-white px-4 py-3 rounded-lg shadow-lg z-50 text-[13px]">
                                         <span x-text="toastMessage"></span>
                                     </div>
                                 </template>
@@ -231,13 +242,14 @@
 
                     <!-- Tags -->
                     {% if blog_detail.tags.all %}
-                    <div class="mt-6 pt-4 border-t border-gray-100">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
-                            {% for tag in blog_detail.tags.all %}
-                            <a href="{% url 'tag_posts' tag.slug %}" class="inline-block text-[11px] font-medium px-2.5 py-1 rounded-full border border-[#1e3a6e]/30 text-[#1e3a6e] bg-[#dbeafe]/40 hover:bg-[#1e3a6e] hover:text-white transition-all duration-200">{{ tag.name }}</a>
-                            {% endfor %}
-                        </div>
+                    <div class="mt-6 pt-4 border-t border-gray-100 flex flex-wrap items-center gap-2">
+                        <span class="text-[12.5px] font-bold text-gray-700 mr-1 flex items-center gap-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#265daa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+                            Tags:
+                        </span>
+                        {% for tag in blog_detail.tags.all %}
+                        <a href="{% url 'tag_posts' tag.slug %}" class="inline-block text-[12px] font-semibold px-3 py-1 rounded-full border border-[#265daa]/30 text-[#265daa] bg-[#dbeafe]/40 hover:bg-[#265daa] hover:text-white transition-all duration-200">#{{ tag.name }}</a>
+                        {% endfor %}
                     </div>
                     {% endif %}
                 </div>
@@ -248,13 +260,13 @@
                 <div class="p-4 sm:p-6">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5 pb-4 border-b border-gray-100">
                         <div class="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                            <h2 class="text-[14px] font-bold text-gray-800">Comments <span id="comment-count" class="text-[#1e3a6e]">({{ total_comments|humanize_number }})</span></h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#265daa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            <h2 class="text-[14px] font-bold text-gray-800">Comments <span id="comment-count" class="text-[#265daa]">({{ total_comments|humanize_number }})</span></h2>
                         </div>
                         {% if user.is_verified %}
                         <div class="relative w-full sm:w-44">
                             <form method="GET" action=".">
-                                <select name="sort_by" id="sort-comments" onchange="this.form.submit()" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-[12px] focus:ring-2 focus:ring-[#1e3a6e] focus:outline-none cursor-pointer appearance-none bg-white text-gray-700">
+                                <select name="sort_by" id="sort-comments" onchange="this.form.submit()" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-[12px] focus:ring-2 focus:ring-[#265daa] focus:outline-none cursor-pointer appearance-none bg-white text-gray-700">
                                     <option value="newest" {% if sort_by == "newest" %}selected{% endif %}>Newest First</option>
                                     <option value="oldest" {% if sort_by == "oldest" %}selected{% endif %}>Oldest</option>
                                     <option value="recent" {% if sort_by == "recent" %}selected{% endif %}>Recently Updated</option>
@@ -271,98 +283,304 @@
                     <form method="POST" action="{% url 'add_comment' post_slug=blog_detail.slug %}" class="flex gap-3 mb-5">
                         {% csrf_token %}
                         {% if request.user.profile_picture %}
-                        <img src="{{ request.user.profile_picture.url }}" alt="User" class="w-8 h-8 rounded-full border-2 border-[#1e3a6e]/20 flex-shrink-0 object-cover" width="32" height="32" loading="lazy" decoding="async" />
+                        <img src="{{ request.user.profile_picture.url }}" alt="User" class="w-8 h-8 rounded-full border-2 border-[#265daa]/20 flex-shrink-0 object-cover" width="32" height="32" loading="lazy" decoding="async" />
                         {% else %}
-                        <div class="w-9 h-9 rounded-full bg-[#1e3a6e] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">{{ request.user.first_name|slice:":1" }}</div>
+                        <div class="w-9 h-9 rounded-full bg-[#265daa] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">{{ request.user.first_name|slice:":1" }}</div>
                         {% endif %}
-                        <div class="flex-1 flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 focus-within:border-[#1e3a6e] focus-within:ring-2 focus-within:ring-[#1e3a6e]/10 transition-all">
+                        <div class="flex-1 flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 focus-within:border-[#265daa] focus-within:ring-2 focus-within:ring-[#265daa]/10 transition-all">
                             <textarea name="content" rows="1" placeholder="Write a comment..." class="flex-1 py-1 text-[13px] focus:outline-none resize-none placeholder-gray-400 bg-transparent"></textarea>
-                            <button type="submit" class="flex items-center justify-center w-8 h-8 bg-[#1e3a6e] text-white rounded-full hover:bg-[#152d56] transition-colors shrink-0">
+                            <button type="submit" class="flex items-center justify-center w-8 h-8 bg-[#265daa] text-white rounded-full hover:bg-[#1d58a2] transition-colors shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
                             </button>
                         </div>
                     </form>
                     {% else %}
-                    <div class="bg-[#dbeafe]/30 border border-[#1e3a6e]/20 rounded-xl p-4 mb-5 text-center">
-                        <p class="text-[13px] text-gray-600">Please <a href="{% url 'login' %}" class="text-[#1e3a6e] font-semibold hover:underline">sign in</a> to comment.</p>
+                    <div class="bg-[#dbeafe]/30 border border-[#265daa]/20 rounded-xl p-4 mb-5 text-center">
+                        <p class="text-[13px] text-gray-600">Please <a href="{% url 'login' %}" class="text-[#265daa] font-semibold hover:underline">sign in</a> to comment.</p>
                     </div>
                     {% endif %}
 
                     {% include "components/blog_details/comment_list_partial.html" %}
                 </div>
             </section>
+
+            <!-- ═══ YOU MAY ALSO LIKE ═══ -->
+            {% if you_may_like_blogs %}
+            <section class="mt-8 pt-6 border-t border-gray-200/80" x-data="youMayLikeCarousel()">
+                <div class="flex items-center justify-between mb-5">
+                    <h3 class="text-[20px] sm:text-[22px] font-bold text-gray-900 tracking-tight font-montserrat">
+                        You May Also Like
+                    </h3>
+                    <div class="flex items-center border border-gray-200 rounded-sm divide-x divide-gray-200">
+                        <button @click="prev()" aria-label="Previous" class="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                        </button>
+                        <button @click="next()" aria-label="Next" class="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Carousel Track (3 cards visible initially on desktop, 2 on tablet, 1 on mobile) -->
+                <div class="overflow-hidden relative w-full" @mouseenter="pause()" @mouseleave="play()">
+                    <div class="flex transition-transform duration-500 ease-in-out -mx-2"
+                         :style="'transform: translateX(-' + (currentIndex * (100 / visibleCount)) + '%);'">
+                        {% for news in you_may_like_blogs %}
+                        <div class="shrink-0 px-2 group cursor-pointer w-full sm:w-1/2 md:w-1/3" style="flex: 0 0 calc(100% / 3); min-width: calc(100% / 3); max-width: calc(100% / 3);">
+                            <a href="{% url 'blog_details' news.slug %}" hx-get="{% url 'blog_details' news.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="block">
+                                <div class="aspect-video w-full rounded-lg overflow-hidden mb-2 bg-gray-100">
+                                    {% if news.featured_image %}
+                                    <img src="{{ news.featured_image_thumbnail.url }}" alt="{{ news.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
+                                    {% elif news.featured_image_url %}
+                                    <img src="{{ news.featured_image_url }}" alt="{{ news.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
+                                    {% else %}
+                                    <img src="{% static 'image/placeholder-5.png' %}" alt="{{ news.title }}" class="w-full h-full object-cover" loading="lazy" decoding="async" />
+                                    {% endif %}
+                                </div>
+                                <div class="flex items-center gap-1.5 mb-1.5 text-[11px]">
+                                    <span class="font-bold text-[#ce0000]">By {{ news.author.get_full_name|default:news.author.email|truncatechars:12 }}</span>
+                                    <span class="text-gray-500 font-semibold">{{ news.created_at|date:"F d, Y" }}</span>
+                                </div>
+                                <h4 class="text-[15px] font-extrabold text-gray-900 leading-snug line-clamp-2 group-hover:text-[#265daa] transition-colors font-montserrat">
+                                    {{ news.title }}
+                                </h4>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+            <script>
+            function youMayLikeCarousel() {
+                return {
+                    currentIndex: 0,
+                    totalItems: parseInt("{{ you_may_like_blogs|length|default:'0' }}", 10),
+                    timer: null,
+                    get visibleCount() {
+                        if (window.innerWidth >= 768) return 3;
+                        if (window.innerWidth >= 640) return 2;
+                        return 1;
+                    },
+                    get maxIndex() {
+                        return Math.max(0, this.totalItems - this.visibleCount);
+                    },
+                    init() {
+                        this.play();
+                    },
+                    next() {
+                        if (this.currentIndex >= this.maxIndex) {
+                            this.currentIndex = 0;
+                        } else {
+                            this.currentIndex++;
+                        }
+                    },
+                    prev() {
+                        if (this.currentIndex <= 0) {
+                            this.currentIndex = this.maxIndex;
+                        } else {
+                            this.currentIndex--;
+                        }
+                    },
+                    play() {
+                        this.stop();
+                        if (this.totalItems > this.visibleCount) {
+                            this.timer = setInterval(() => this.next(), 3500);
+                        }
+                    },
+                    pause() {
+                        this.stop();
+                    },
+                    stop() {
+                        if (this.timer) clearInterval(this.timer);
+                    }
+                }
+            }
+            </script>
+            {% endif %}
         </main>
 
-        <!-- ═══ SIDEBAR ═══ -->
-        <aside class="w-full lg:w-[32%] min-w-0 flex flex-col gap-4">
+        <!-- RIGHT: SIDEBAR - stays fixed in viewport on desktop -->
+        <aside id="blog-sidebar-col" class="w-full lg:w-[32%] min-w-0 flex flex-col gap-6 pt-1 lg:sticky lg:top-24 lg:self-start">
 
-            {% if ad_8 %}
-            <div class="flex justify-center items-center">{{ ad_8.ad_code|safe }}</div>
-            {% endif %}
-
-            <!-- Related Posts — 2-col grid -->
-            <div class="tl-card rounded-xl overflow-hidden">
-                <div class="flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-[#1e3a6e]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                    <h2 class="text-[12px] font-bold text-white">Related Posts</h2>
-                </div>
-                <!-- 2-col grid -->
-                <div class="grid grid-cols-2 gap-2.5 p-3">
-                    {% for news in related_news|slice:":8" %}
-                    <a href="{% url 'blog_details' news.slug %}"
-                       hx-get="{% url 'blog_details' news.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true"
-                       class="group cursor-pointer">
-                        <div class="overflow-hidden rounded-lg mb-1.5" style="aspect-ratio: 16/9;">
-                            {% if news.featured_image %}
-                            <img class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.06]" src="{{ news.featured_image_thumbnail.url }}" alt="{{ news.title }}" width="300" height="169" loading="lazy" decoding="async" />
-                            {% elif news.featured_image_url %}
-                            <img class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.06]" src="{{ news.featured_image_url }}" alt="{{ news.title }}" width="300" height="169" loading="lazy" decoding="async" />
-                            {% else %}
-                            <img class="w-full h-full object-cover" src="{% static 'image/placeholder-5.png' %}" alt="{{ news.title }}" width="300" height="169" loading="lazy" decoding="async" />
-                            {% endif %}
-                        </div>
-                        <h3 class="text-[11px] font-semibold text-gray-800 line-clamp-2 group-hover:text-[#1e3a6e] transition-colors leading-snug">{{ news.title }}</h3>
-                        <span class="text-[9px] text-gray-400 mt-0.5 block">{{ news.created_at|date:"d M Y" }}</span>
-                    </a>
-                    {% empty %}
-                    <div class="col-span-2 text-center py-6 text-[12px] text-gray-400">No related posts found.</div>
-                    {% endfor %}
-                </div>
+            <!-- 1. Search Box -->
+            <div>
+                <form action="{% url 'blogs' %}" method="GET" class="relative w-full">
+                    <input type="text" name="search" placeholder="Search..." style="padding-left: 20px !important; padding-right: 40px !important;" class="w-full bg-white border border-gray-200 rounded-md py-2.5 text-xs text-gray-800 focus:outline-none focus:border-[#265daa] focus:ring-1 focus:ring-[#265daa] transition-all shadow-xs" />
+                    <button type="submit" aria-label="Search" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#265daa] transition-colors cursor-pointer flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </button>
+                </form>
             </div>
 
-            <!-- Most Viewed — 2-col grid -->
-            <div class="tl-card rounded-xl overflow-hidden">
-                <div class="flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-[#1e3a6e]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    <h2 class="text-[12px] font-bold text-white">Most Viewed</h2>
-                </div>
-                <!-- 2-col grid -->
-                <div class="grid grid-cols-2 gap-2.5 p-3">
-                    {% for news in most_viewed_blogs|slice:":8" %}
-                    <div hx-get="{% url 'blog_details' news.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true"
-                         class="group cursor-pointer">
-                        <a href="{% url 'blog_details' news.slug %}" class="block">
-                            <div class="overflow-hidden rounded-lg mb-1.5" style="aspect-ratio: 16/9;">
-                                {% if news.featured_image %}
-                                <img class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.06]" src="{{ news.featured_image_thumbnail.url }}" alt="{{ news.title }}" width="300" height="169" loading="lazy" decoding="async" />
-                                {% elif news.featured_image_url %}
-                                <img class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.06]" src="{{ news.featured_image_url }}" alt="{{ news.title }}" width="300" height="169" loading="lazy" decoding="async" />
-                                {% else %}
-                                <img class="w-full h-full object-cover" src="{% static 'image/placeholder-5.png' %}" alt="{{ news.title }}" width="300" height="169" loading="lazy" decoding="async" />
-                                {% endif %}
-                            </div>
-                            <h3 class="text-[11px] font-semibold text-gray-800 line-clamp-2 group-hover:text-[#1e3a6e] transition-colors leading-snug">{{ news.title }}</h3>
-                            <div class="flex items-center gap-1.5 mt-0.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                                <span class="text-[9px] text-gray-400">{{ news.views }}</span>
-                            </div>
-                        </a>
+            <!-- 2. Recent Posts List -->
+            <div class="flex flex-col gap-3.5">
+                {% for news in related_news|slice:":3" %}
+                <a href="{% url 'blog_details' news.slug %}"
+                   hx-get="{% url 'blog_details' news.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true"
+                   class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-16 h-16 shrink-0 rounded-md overflow-hidden bg-gray-100">
+                        {% if news.featured_image %}
+                        <img src="{{ news.featured_image_thumbnail.url }}" alt="{{ news.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" width="64" height="64" loading="lazy" decoding="async" />
+                        {% elif news.featured_image_url %}
+                        <img src="{{ news.featured_image_url }}" alt="{{ news.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" width="64" height="64" loading="lazy" decoding="async" />
+                        {% else %}
+                        <img src="{% static 'image/placeholder-5.png' %}" alt="{{ news.title }}" class="w-full h-full object-cover" width="64" height="64" loading="lazy" decoding="async" />
+                        {% endif %}
                     </div>
-                    {% empty %}
-                    <div class="col-span-2 text-center py-6 text-[12px] text-gray-400">No posts found.</div>
-                    {% endfor %}
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-1.5 mb-1 text-[10px]">
+                            <span class="font-bold text-[#265daa] uppercase tracking-wider">{{ news.category.name|default:"Tech" }}</span>
+                            <span class="text-gray-300">•</span>
+                            <span class="text-gray-400">{{ news.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        <h3 class="text-[12px] font-bold text-gray-800 line-clamp-2 leading-snug group-hover:text-[#265daa] transition-colors">{{ news.title }}</h3>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+
+            <!-- 3. Featured Article Widget -->
+            {% with feat=related_news|slice:"3:4"|first %}
+            {% if feat %}
+            <div class="rounded-lg overflow-hidden bg-white py-1">
+                <a href="{% url 'blog_details' feat.slug %}" hx-get="{% url 'blog_details' feat.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="block aspect-video w-full rounded-md overflow-hidden mb-3 bg-gray-100 group">
+                    {% if feat.featured_image %}
+                    <img src="{{ feat.featured_image.url }}" alt="{{ feat.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" loading="lazy" decoding="async" />
+                    {% elif feat.featured_image_url %}
+                    <img src="{{ feat.featured_image_url }}" alt="{{ feat.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" loading="lazy" decoding="async" />
+                    {% else %}
+                    <img src="{% static 'image/placeholder-5.png' %}" alt="{{ feat.title }}" class="w-full h-full object-cover" loading="lazy" decoding="async" />
+                    {% endif %}
+                </a>
+                <div class="mb-1">
+                    <span class="inline-block text-[10px] font-bold text-[#265daa] uppercase tracking-wider">{{ feat.category.name|default:"Featured" }}</span>
+                    <span class="text-gray-300 text-[10px] mx-1">•</span>
+                    <span class="text-[10px] text-gray-400">{{ feat.created_at|date:"M d, Y" }}</span>
+                </div>
+                <h4 class="text-[13px] font-bold text-gray-900 leading-snug mb-2 line-clamp-2">
+                    <a href="{% url 'blog_details' feat.slug %}" hx-get="{% url 'blog_details' feat.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="hover:text-[#265daa] transition-colors">
+                        {{ feat.title }}
+                    </a>
+                </h4>
+                <p class="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">{{ feat.short_description|default:feat.meta_description|striptags }}</p>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <!-- 4. Stay Connected -->
+            <div>
+                <div class="relative border-b border-gray-200 mb-4">
+                    <div class="inline-block pb-1.5 -mb-[2px]" style="border-bottom: 3px solid #265daa;">
+                        <h3 class="text-lg font-semibold tracking-tight text-gray-900">
+                            Stay Connected
+                        </h3>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <!-- Facebook -->
+                    <a href="{% if footer.facebook_url %}{{ footer.facebook_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
+                       class="flex items-center justify-between p-3 rounded-xs text-white transition-colors cursor-pointer"
+                       style="background-color: #3b5998;">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-brands fa-facebook-f text-base w-5 text-center"></i>
+                            <span class="font-semibold text-xs tracking-wide">19,243 Fans</span>
+                        </div>
+                        <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-xs uppercase">Like</span>
+                    </a>
+                    <!-- Twitter -->
+                    <a href="{% if footer.twitter_url %}{{ footer.twitter_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
+                       class="flex items-center justify-between p-3 rounded-xs text-white transition-colors cursor-pointer"
+                       style="background-color: #00acee;">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-brands fa-x-twitter text-base w-5 text-center"></i>
+                            <span class="font-semibold text-xs tracking-wide">2,076 Followers</span>
+                        </div>
+                        <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-xs uppercase">Follow</span>
+                    </a>
+                    <!-- YouTube / Subscribe -->
+                    <a href="#" target="_blank" rel="noopener noreferrer"
+                       class="flex items-center justify-between p-3 rounded-xs text-white transition-colors cursor-pointer"
+                       style="background-color: #265daa;">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-brands fa-youtube text-base w-5 text-center"></i>
+                            <span class="font-semibold text-xs tracking-wide">15,200 Followers</span>
+                        </div>
+                        <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-xs uppercase">Subscribe</span>
+                    </a>
                 </div>
             </div>
+
+            <!-- 5. Tags -->
+            <div>
+                <div class="relative border-b border-gray-200 mb-4">
+                    <div class="inline-block pb-1.5 -mb-[2px]" style="border-bottom: 3px solid #265daa;">
+                        <h3 class="text-lg font-semibold tracking-tight text-gray-900">
+                            Tags
+                        </h3>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                    {% if blog_detail.tags.all %}
+                        {% for tag in blog_detail.tags.all %}
+                        <a href="{% url 'tag_posts' tag.slug %}" class="inline-block text-[11px] font-bold uppercase px-3 py-1.5 bg-white text-gray-700 border border-gray-200 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors rounded-xs">#{{ tag.name }}</a>
+                        {% endfor %}
+                    {% else %}
+                        <a href="{% url 'blogs' %}" class="inline-block text-[11px] font-bold uppercase px-3 py-1.5 bg-white text-gray-700 border border-gray-200 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors rounded-xs">#TECHNOLOGY</a>
+                        <a href="{% url 'blogs' %}" class="inline-block text-[11px] font-bold uppercase px-3 py-1.5 bg-white text-gray-700 border border-gray-200 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors rounded-xs">#TECH</a>
+                        <a href="{% url 'blogs' %}" class="inline-block text-[11px] font-bold uppercase px-3 py-1.5 bg-white text-gray-700 border border-gray-200 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors rounded-xs">#AI</a>
+                        <a href="{% url 'blogs' %}" class="inline-block text-[11px] font-bold uppercase px-3 py-1.5 bg-white text-gray-700 border border-gray-200 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors rounded-xs">#HARDWARE</a>
+                        <a href="{% url 'blogs' %}" class="inline-block text-[11px] font-bold uppercase px-3 py-1.5 bg-white text-gray-700 border border-gray-200 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors rounded-xs">#MOBILE</a>
+                        <a href="{% url 'blogs' %}" class="inline-block text-[11px] font-bold uppercase px-3 py-1.5 bg-white text-gray-700 border border-gray-200 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors rounded-xs">#LAPTOP</a>
+                        <a href="{% url 'blogs' %}" class="inline-block text-[11px] font-bold uppercase px-3 py-1.5 bg-white text-gray-700 border border-gray-200 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors rounded-xs">#SOFTWARE</a>
+                        <a href="{% url 'blogs' %}" class="inline-block text-[11px] font-bold uppercase px-3 py-1.5 bg-white text-gray-700 border border-gray-200 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors rounded-xs">#INNOVATION</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 6. Newsletter -->
+            <div>
+                <div class="relative border-b border-gray-200 mb-4">
+                    <div class="inline-block pb-1.5 -mb-[2px]" style="border-bottom: 3px solid #265daa;">
+                        <h3 class="text-lg font-semibold tracking-tight text-gray-900">
+                            Newsletter
+                        </h3>
+                    </div>
+                </div>
+                <div class="bg-white rounded-md p-5 border border-gray-100 shadow-sm">
+                    <h4 class="text-[14px] font-extrabold text-gray-900 leading-snug mb-1.5">
+                        The most important tech news and events of the day.
+                    </h4>
+                    <p class="text-[12px] text-gray-500 mb-4 leading-normal">
+                        Get TechLife daily newsletter on your inbox.
+                    </p>
+                    <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Thank you for subscribing!');" class="flex items-center">
+                        <input type="email" placeholder="Your email address" required class="flex-1 bg-white border border-gray-200 border-r-0 rounded-l-md px-3.5 py-2.5 text-xs text-gray-800 focus:outline-none focus:border-[#265daa] min-w-0" />
+                        <button type="submit" class="bg-[#265daa] text-white font-bold text-xs uppercase px-4 py-2.5 rounded-r-md hover:bg-[#1d58a2] transition-colors cursor-pointer shrink-0">
+                            SIGN UP
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 7. Advertise -->
+            <div>
+                <div class="relative border-b border-gray-200 mb-4">
+                    <div class="inline-block pb-1.5 -mb-[2px]" style="border-bottom: 3px solid #265daa;">
+                        <h3 class="text-lg font-semibold tracking-tight text-gray-900">
+                            Advertise
+                        </h3>
+                    </div>
+                </div>
+                {% if ad_8 %}
+                <div class="flex justify-center items-center overflow-hidden rounded">{{ ad_8.ad_code|safe }}</div>
+                {% else %}
+                <a href="{% url 'blogs' %}" class="block w-full h-[180px] sm:h-[200px] overflow-hidden rounded-md group shadow-xs">
+                    <img src="{% static 'image/blue_tech_advertise.jpg' %}" alt="Cyber Tech Sale Banner" class="w-full h-full object-cover rounded-md group-hover:scale-[1.05] transition-transform duration-200" loading="lazy" decoding="async" />
+                </a>
+                {% endif %}
+            </div>
+
         </aside>
     </div>
 </div>
@@ -376,4 +594,8 @@
             if (form) form.classList.toggle('hidden');
         };
     });
+
+    // Ensure body/html scroll is never locked by old code
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
 </script>

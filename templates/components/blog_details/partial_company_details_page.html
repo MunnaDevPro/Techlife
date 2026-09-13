@@ -13,7 +13,7 @@
 
 <style>
     .gf-gold-btn {
-        background-color: #1e3a6e !important;
+        background-color: #265daa !important;
         color: #ffffff !important;
         font-weight: 700 !important;
         font-size: 14px !important;
@@ -28,7 +28,7 @@
     }
 
     .gf-gold-btn:hover {
-        background-color: #152d56 !important;
+        background-color: #1d58a2 !important;
         color: #ffffff !important;
     }
 
@@ -82,7 +82,7 @@
                     <div
                         class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-white p-2 flex-shrink-0 shadow-sm flex items-center justify-center">
                         <div
-                            class="w-full h-full rounded bg-gray-100 text-[#1e3a6e] font-bold text-3xl flex items-center justify-center">
+                            class="w-full h-full rounded bg-gray-100 text-[#265daa] font-bold text-3xl flex items-center justify-center">
                             {{ company.title|slice:":1" }}
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                 <div class="flex flex-wrap items-center gap-3 pt-2">
                     <div
                         class="bg-[#f3f4f6] text-gray-900 rounded-full px-4 py-1.5 text-[13px] font-semibold flex items-center gap-2">
-                        <i class="fas fa-map-marker-alt text-[#1e3a6e]"></i>
+                        <i class="fas fa-map-marker-alt text-[#265daa]"></i>
                         {% if company.company_location %}{{ company.company_location }} HQ{% else %}Bangladesh HQ{%
                         endif %}
                     </div>
@@ -212,12 +212,12 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div
                 class="flex items-center gap-8 overflow-x-auto scrollbar-hide py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
-                <a href="#about" class="text-[#1e3a6e] border-b-2 border-[#1e3a6e] pb-1 whitespace-nowrap">Overview</a>
-                <a href="#reviews" class="hover:text-[#1e3a6e] pb-1 whitespace-nowrap transition-colors">Reviews</a>
-                <a href="#services" class="hover:text-[#1e3a6e] pb-1 whitespace-nowrap transition-colors">Services
+                <a href="#about" class="text-[#265daa] border-b-2 border-[#265daa] pb-1 whitespace-nowrap">Overview</a>
+                <a href="#reviews" class="hover:text-[#265daa] pb-1 whitespace-nowrap transition-colors">Reviews</a>
+                <a href="#services" class="hover:text-[#265daa] pb-1 whitespace-nowrap transition-colors">Services
                     Focus</a>
-                <a href="#portfolio" class="hover:text-[#1e3a6e] pb-1 whitespace-nowrap transition-colors">Portfolio</a>
-                <a href="#locations" class="hover:text-[#1e3a6e] pb-1 whitespace-nowrap transition-colors">Locations</a>
+                <a href="#portfolio" class="hover:text-[#265daa] pb-1 whitespace-nowrap transition-colors">Portfolio</a>
+                <a href="#locations" class="hover:text-[#265daa] pb-1 whitespace-nowrap transition-colors">Locations</a>
             </div>
         </div>
     </nav>
@@ -232,7 +232,7 @@
 
             <!-- 1. ABOUT SECTION -->
             <section id="about" class="flex flex-col gap-3">
-                <span class="text-xs font-bold text-[#1e3a6e] uppercase tracking-wider">Overview</span>
+                <span class="text-xs font-bold text-[#265daa] uppercase tracking-wider">Overview</span>
                 <h2 class="text-2xl font-bold text-gray-900">About {{ company.title }}</h2>
 
                 <div class="text-gray-700 text-sm sm:text-base leading-relaxed space-y-3">
@@ -283,7 +283,7 @@
             <!-- 3. REVIEWS ANALYTICS BOX -->
             <section id="reviews" class="bg-gray-50 rounded-2xl p-6 border border-gray-200 flex flex-col gap-6">
                 <div>
-                    <span class="text-xs font-bold text-[#1e3a6e] uppercase tracking-wider">Ratings & Reviews</span>
+                    <span class="text-xs font-bold text-[#265daa] uppercase tracking-wider">Ratings & Reviews</span>
                     <h3 class="text-xl font-bold text-gray-900 mt-1">Review Analytics of {{ company.title }}</h3>
                     <p class="text-xs text-gray-500">{{ reviews_count }} review{{ reviews_count|pluralize }} completed. Based on verified client feedback.</p>
                 </div>
@@ -303,17 +303,17 @@
                             <div class="flex justify-between font-medium text-gray-600"><span>Quality of Work</span><span
                                     class="font-bold text-gray-900">{{ avg_quality }}</span></div>
                             <div class="w-full bg-gray-200 h-1.5 rounded-full">
-                                <div class="bg-[#1e3a6e] h-1.5 rounded-full" style="width: {{ avg_quality_pct }}%;"></div>
+                                <div class="bg-[#265daa] h-1.5 rounded-full" style="width: {{ avg_quality_pct }}%;"></div>
                             </div>
                             <div class="flex justify-between font-medium text-gray-600"><span>Communication</span><span
                                     class="font-bold text-gray-900">{{ avg_communication }}</span></div>
                             <div class="w-full bg-gray-200 h-1.5 rounded-full">
-                                <div class="bg-[#1e3a6e] h-1.5 rounded-full" style="width: {{ avg_comm_pct }}%;"></div>
+                                <div class="bg-[#265daa] h-1.5 rounded-full" style="width: {{ avg_comm_pct }}%;"></div>
                             </div>
                             <div class="flex justify-between font-medium text-gray-600"><span>On-Time Delivery</span><span
                                     class="font-bold text-gray-900">{{ avg_timeliness }}</span></div>
                             <div class="w-full bg-gray-200 h-1.5 rounded-full">
-                                <div class="bg-[#1e3a6e] h-1.5 rounded-full" style="width: {{ avg_time_pct }}%;"></div>
+                                <div class="bg-[#265daa] h-1.5 rounded-full" style="width: {{ avg_time_pct }}%;"></div>
                             </div>
                         </div>
                     </div>
@@ -327,11 +327,11 @@
                             <div class="flex items-center justify-between pb-3 border-b border-gray-100">
                                 <div class="flex items-center gap-2.5">
                                     <div
-                                        class="w-9 h-9 rounded-full bg-blue-100 text-[#1e3a6e] font-bold flex items-center justify-center text-xs">
-                                        {% if latest_review.is_anonymous %}A{% else %}{{ latest_review.reviewer.first_name|default:latest_review.reviewer.username|slice:":1"|upper }}{% endif %}</div>
+                                        class="w-9 h-9 rounded-full bg-blue-100 text-[#265daa] font-bold flex items-center justify-center text-xs">
+                                        {% if latest_review.is_anonymous or not latest_review.reviewer %}A{% else %}{{ latest_review.reviewer.first_name|default:latest_review.reviewer.username|slice:":1"|upper }}{% endif %}</div>
                                     <div>
                                         <h4 class="text-xs font-bold text-gray-900">
-                                            {% if latest_review.is_anonymous %}Anonymous Client{% else %}{{ latest_review.reviewer.get_full_name|default:latest_review.reviewer.username }}{% endif %}
+                                            {% if latest_review.is_anonymous or not latest_review.reviewer %}Anonymous Client{% else %}{{ latest_review.reviewer.get_full_name|default:latest_review.reviewer.username }}{% endif %}
                                         </h4>
                                         <span class="text-[10px] text-gray-500">Verified Client • {{ latest_review.created_at|date:"F d, Y" }}</span>
                                     </div>
@@ -348,7 +348,7 @@
                         </div>
                         <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
                             <span class="font-bold text-gray-500 text-[11px]">Rating: {{ latest_review.overall_rating }} / 5.0</span>
-                            <a href="#reviews-list" class="text-[#1e3a6e] font-bold hover:underline">Show All Reviews
+                            <a href="#reviews-list" class="text-[#265daa] font-bold hover:underline">Show All Reviews
                                 &rarr;</a>
                         </div>
                     </div>
@@ -356,13 +356,13 @@
                     {% else %}
                     <div
                         class="md:col-span-2 bg-white p-6 rounded-xl border border-gray-200 flex flex-col justify-center items-center text-center shadow-2xs">
-                        <div class="w-12 h-12 rounded-full bg-blue-50 text-[#1e3a6e] flex items-center justify-center mb-3">
+                        <div class="w-12 h-12 rounded-full bg-blue-50 text-[#265daa] flex items-center justify-center mb-3">
                             <i class="fas fa-star text-xl"></i>
                         </div>
                         <h4 class="text-sm font-bold text-gray-900">No Client Reviews Yet</h4>
                         <p class="text-xs text-gray-500 mt-1 max-w-sm">Be the first to review {{ company.title }} and share your feedback with verified clients.</p>
                         <a href="{% url 'write_review_step1' company.id %}"
-                            class="mt-4 inline-flex items-center gap-2 bg-[#1e3a6e] hover:bg-[#152d56] text-white text-xs font-bold py-2 px-4 rounded transition-colors">
+                            class="mt-4 inline-flex items-center gap-2 bg-[#265daa] hover:bg-[#1d58a2] text-white text-xs font-bold py-2 px-4 rounded transition-colors">
                             Write a Review
                         </a>
                     </div>
@@ -376,10 +376,10 @@
                     <!-- Search Bar -->
                     <div class="relative w-full">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-[#1e3a6e] text-lg"></i>
+                            <i class="fas fa-search text-[#265daa] text-lg"></i>
                         </div>
                         <input type="text" placeholder="Search by keyword..."
-                            class="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-200 rounded-full text-[15px] text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-transparent transition-shadow placeholder-gray-400 font-medium">
+                            class="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-200 rounded-full text-[15px] text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#265daa] focus:border-transparent transition-shadow placeholder-gray-400 font-medium">
                     </div>
 
                     <!-- Filters Row -->
@@ -390,8 +390,8 @@
                             <div class="relative" x-data="{ open: false, selected: 'All Services' }"
                                 @click.away="open = false">
                                 <button @click="open = !open" type="button"
-                                    class="w-full bg-white border border-gray-200 text-gray-900 text-[13px] font-bold rounded min-w-[140px] pl-3 pr-8 py-2.5 text-left focus:outline-none focus:border-[#1e3a6e] focus:ring-1 focus:ring-[#1e3a6e] cursor-pointer flex items-center justify-between"
-                                    :class="{ 'border-[#1e3a6e] ring-1 ring-[#1e3a6e]': open }">
+                                    class="w-full bg-white border border-gray-200 text-gray-900 text-[13px] font-bold rounded min-w-[140px] pl-3 pr-8 py-2.5 text-left focus:outline-none focus:border-[#265daa] focus:ring-1 focus:ring-[#265daa] cursor-pointer flex items-center justify-between"
+                                    :class="{ 'border-[#265daa] ring-1 ring-[#265daa]': open }">
                                     <span x-text="selected"></span>
                                     <i class="fas fa-chevron-down text-[11px] text-gray-500 transition-transform duration-200"
                                         :class="{ 'rotate-180': open }"></i>
@@ -406,16 +406,16 @@
                                     class="absolute z-50 w-full mt-1 bg-white border border-gray-100 rounded-md shadow-lg py-1 text-[13px] text-gray-700 font-medium overflow-hidden"
                                     style="display: none;">
                                     <li @click="selected = 'All Services'; open = false"
-                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#1e3a6e] transition-colors"
-                                        :class="{ 'bg-blue-50 text-[#1e3a6e] font-bold': selected === 'All Services' }">
+                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#265daa] transition-colors"
+                                        :class="{ 'bg-blue-50 text-[#265daa] font-bold': selected === 'All Services' }">
                                         All Services</li>
                                     <li @click="selected = 'Web Development'; open = false"
-                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#1e3a6e] transition-colors"
-                                        :class="{ 'bg-blue-50 text-[#1e3a6e] font-bold': selected === 'Web Development' }">
+                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#265daa] transition-colors"
+                                        :class="{ 'bg-blue-50 text-[#265daa] font-bold': selected === 'Web Development' }">
                                         Web Development</li>
                                     <li @click="selected = 'Mobile App Development'; open = false"
-                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#1e3a6e] transition-colors"
-                                        :class="{ 'bg-blue-50 text-[#1e3a6e] font-bold': selected === 'Mobile App Development' }">
+                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#265daa] transition-colors"
+                                        :class="{ 'bg-blue-50 text-[#265daa] font-bold': selected === 'Mobile App Development' }">
                                         Mobile App Development</li>
                                 </ul>
                             </div>
@@ -427,8 +427,8 @@
                             <div class="relative flex-1 sm:flex-none" x-data="{ open: false, selected: 'Most Recent' }"
                                 @click.away="open = false">
                                 <button @click="open = !open" type="button"
-                                    class="w-full bg-white border border-gray-200 text-gray-900 text-[13px] font-bold rounded min-w-[140px] pl-3 pr-8 py-2.5 text-left focus:outline-none focus:border-[#1e3a6e] focus:ring-1 focus:ring-[#1e3a6e] cursor-pointer flex items-center justify-between"
-                                    :class="{ 'border-[#1e3a6e] ring-1 ring-[#1e3a6e]': open }">
+                                    class="w-full bg-white border border-gray-200 text-gray-900 text-[13px] font-bold rounded min-w-[140px] pl-3 pr-8 py-2.5 text-left focus:outline-none focus:border-[#265daa] focus:ring-1 focus:ring-[#265daa] cursor-pointer flex items-center justify-between"
+                                    :class="{ 'border-[#265daa] ring-1 ring-[#265daa]': open }">
                                     <span x-text="selected"></span>
                                     <i class="fas fa-chevron-down text-[11px] text-gray-500 transition-transform duration-200"
                                         :class="{ 'rotate-180': open }"></i>
@@ -443,22 +443,22 @@
                                     class="absolute z-50 w-full mt-1 bg-white border border-gray-100 rounded-md shadow-lg py-1 text-[13px] text-gray-700 font-medium overflow-hidden"
                                     style="display: none;">
                                     <li @click="selected = 'Most Recent'; open = false"
-                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#1e3a6e] transition-colors"
-                                        :class="{ 'bg-blue-50 text-[#1e3a6e] font-bold': selected === 'Most Recent' }">
+                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#265daa] transition-colors"
+                                        :class="{ 'bg-blue-50 text-[#265daa] font-bold': selected === 'Most Recent' }">
                                         Most Recent</li>
                                     <li @click="selected = 'Highest Rated'; open = false"
-                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#1e3a6e] transition-colors"
-                                        :class="{ 'bg-blue-50 text-[#1e3a6e] font-bold': selected === 'Highest Rated' }">
+                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#265daa] transition-colors"
+                                        :class="{ 'bg-blue-50 text-[#265daa] font-bold': selected === 'Highest Rated' }">
                                         Highest Rated</li>
                                     <li @click="selected = 'Lowest Rated'; open = false"
-                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#1e3a6e] transition-colors"
-                                        :class="{ 'bg-blue-50 text-[#1e3a6e] font-bold': selected === 'Lowest Rated' }">
+                                        class="px-3 py-2 cursor-pointer hover:bg-blue-50 hover:text-[#265daa] transition-colors"
+                                        :class="{ 'bg-blue-50 text-[#265daa] font-bold': selected === 'Lowest Rated' }">
                                         Lowest Rated</li>
                                 </ul>
                             </div>
 
                             <a href="{% url 'write_review_step1' company.id %}"
-                                class="inline-flex items-center justify-center bg-[#1e3a6e] hover:bg-[#152d56] text-white text-[13px] font-bold py-2.5 px-5 rounded transition-colors sm:ml-2">
+                                class="inline-flex items-center justify-center bg-[#265daa] hover:bg-[#1d58a2] text-white text-[13px] font-bold py-2.5 px-5 rounded transition-colors sm:ml-2">
                                 Write a Review
                             </a>
                         </div>
@@ -469,7 +469,7 @@
 
                     <!-- What Reviewers Mention Most -->
                     <div>
-                        <h4 class="text-xs font-bold text-[#1e3a6e] uppercase tracking-wider mb-3">What Reviewers
+                        <h4 class="text-xs font-bold text-[#265daa] uppercase tracking-wider mb-3">What Reviewers
                             Mention Most</h4>
                         <div class="flex flex-wrap gap-2.5">
                             <button
@@ -522,12 +522,12 @@
                             <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-2xs">
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-gray-100 gap-3">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-[#1e3a6e] text-white font-bold flex items-center justify-center text-sm shadow-2xs">
-                                            {% if review.is_anonymous %}A{% else %}{{ review.reviewer.first_name|default:review.reviewer.username|slice:":1"|upper }}{% endif %}
+                                        <div class="w-10 h-10 rounded-full bg-[#265daa] text-white font-bold flex items-center justify-center text-sm shadow-2xs">
+                                            {% if review.is_anonymous or not review.reviewer %}A{% else %}{{ review.reviewer.first_name|default:review.reviewer.username|slice:":1"|upper }}{% endif %}
                                         </div>
                                         <div>
                                             <h4 class="text-sm font-bold text-gray-900">
-                                                {% if review.is_anonymous %}Anonymous Client{% else %}{{ review.reviewer.get_full_name|default:review.reviewer.username }}{% endif %}
+                                                {% if review.is_anonymous or not review.reviewer %}Anonymous Client{% else %}{{ review.reviewer.get_full_name|default:review.reviewer.username }}{% endif %}
                                             </h4>
                                             <span class="text-xs text-gray-500">Verified Client • {{ review.created_at|date:"F d, Y" }}</span>
                                         </div>
@@ -567,13 +567,13 @@
                             {% endfor %}
                         {% else %}
                             <div class="bg-white p-8 rounded-xl border border-gray-200 text-center flex flex-col items-center justify-center">
-                                <div class="w-12 h-12 rounded-full bg-blue-50 text-[#1e3a6e] flex items-center justify-center mb-3">
+                                <div class="w-12 h-12 rounded-full bg-blue-50 text-[#265daa] flex items-center justify-center mb-3">
                                     <i class="fas fa-comment-alt text-xl"></i>
                                 </div>
                                 <h4 class="text-base font-bold text-gray-900">No Detailed Reviews Yet</h4>
                                 <p class="text-xs text-gray-500 mt-1 max-w-md">There are no client reviews recorded for {{ company.title }} yet. Be the first client to submit a review.</p>
                                 <a href="{% url 'write_review_step1' company.id %}"
-                                    class="mt-4 inline-flex items-center gap-2 bg-[#1e3a6e] hover:bg-[#152d56] text-white text-xs font-bold py-2.5 px-5 rounded transition-colors shadow-2xs">
+                                    class="mt-4 inline-flex items-center gap-2 bg-[#265daa] hover:bg-[#1d58a2] text-white text-xs font-bold py-2.5 px-5 rounded transition-colors shadow-2xs">
                                     Write First Review
                                 </a>
                             </div>
@@ -593,7 +593,7 @@
                 }
 
                 .custom-thin-scrollbar::-webkit-scrollbar-thumb {
-                    background-color: #1e3a6e;
+                    background-color: #265daa;
                     border-radius: 10px;
                 }
 
@@ -603,14 +603,14 @@
 
                 .custom-thin-scrollbar {
                     scrollbar-width: thin;
-                    scrollbar-color: #1e3a6e transparent;
+                    scrollbar-color: #265daa transparent;
                 }
             </style>
 
             <!-- 4. SERVICE FOCUS & DONUT CHARTS (GOODFIRMS EXACT DONUT STYLE) -->
             <section id="services" class="flex flex-col gap-6 pt-4 mt-6 border-t border-gray-200">
                 <div>
-                    <span class="text-xs font-bold text-[#1e3a6e] uppercase tracking-widest">Focus</span>
+                    <span class="text-xs font-bold text-[#265daa] uppercase tracking-widest">Focus</span>
                     <h2 class="text-2xl font-bold text-gray-900 mt-2">Service Focus of {{ company.title }}</h2>
                     <p class="text-sm text-gray-600 mt-1">How the team's effort is distributed across services.</p>
                 </div>
@@ -624,7 +624,7 @@
                             {% if company_services %}
                             {% for item in company_services %}
                             <div class="flex items-center justify-between px-5 py-4 rounded-xl font-bold text-[14px] shrink-0 transition-all duration-300 cursor-pointer"
-                                :class="hoveredItem === {{ forloop.counter0 }} ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
+                                :class="hoveredItem === {{ forloop.counter0 }} ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
                                 @mouseenter="hoveredItem = {{ forloop.counter0 }}" @mouseleave="hoveredItem = null">
                                 <span class="text-gray-800">{{ item.name }}</span>
                                 <span class="text-gray-500">{{ item.percentage }}%</span>
@@ -632,49 +632,49 @@
                             {% endfor %}
                             {% else %}
                             <div class="flex items-center justify-between px-5 py-3.5 rounded-xl font-bold text-[14px] shrink-0 transition-all duration-300 cursor-pointer"
-                                :class="hoveredItem === 0 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
+                                :class="hoveredItem === 0 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
                                 @mouseenter="hoveredItem = 0" @mouseleave="hoveredItem = null">
                                 <span class="text-gray-800">Web Development</span>
                                 <span class="text-gray-500">20%</span>
                             </div>
                             <div class="flex items-center justify-between px-5 py-3.5 rounded-xl font-bold text-[14px] shrink-0 transition-all duration-300 cursor-pointer"
-                                :class="hoveredItem === 1 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
+                                :class="hoveredItem === 1 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
                                 @mouseenter="hoveredItem = 1" @mouseleave="hoveredItem = null">
                                 <span class="text-gray-800">Software Development</span>
                                 <span class="text-gray-500">20%</span>
                             </div>
                             <div class="flex items-center justify-between px-5 py-3.5 rounded-xl font-bold text-[14px] shrink-0 transition-all duration-300 cursor-pointer"
-                                :class="hoveredItem === 2 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
+                                :class="hoveredItem === 2 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
                                 @mouseenter="hoveredItem = 2" @mouseleave="hoveredItem = null">
                                 <span class="text-gray-800">Mobile App Development</span>
                                 <span class="text-gray-500">10%</span>
                             </div>
                             <div class="flex items-center justify-between px-5 py-3.5 rounded-xl font-bold text-[14px] shrink-0 transition-all duration-300 cursor-pointer"
-                                :class="hoveredItem === 3 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
+                                :class="hoveredItem === 3 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
                                 @mouseenter="hoveredItem = 3" @mouseleave="hoveredItem = null">
                                 <span class="text-gray-800">Web Design</span>
                                 <span class="text-gray-500">10%</span>
                             </div>
                             <div class="flex items-center justify-between px-5 py-3.5 rounded-xl font-bold text-[14px] shrink-0 transition-all duration-300 cursor-pointer"
-                                :class="hoveredItem === 4 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
+                                :class="hoveredItem === 4 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
                                 @mouseenter="hoveredItem = 4" @mouseleave="hoveredItem = null">
                                 <span class="text-gray-800">E-commerce Development</span>
                                 <span class="text-gray-500">10%</span>
                             </div>
                             <div class="flex items-center justify-between px-5 py-3.5 rounded-xl font-bold text-[14px] shrink-0 transition-all duration-300 cursor-pointer"
-                                :class="hoveredItem === 5 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
+                                :class="hoveredItem === 5 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
                                 @mouseenter="hoveredItem = 5" @mouseleave="hoveredItem = null">
                                 <span class="text-gray-800">Testing Services</span>
                                 <span class="text-gray-500">10%</span>
                             </div>
                             <div class="flex items-center justify-between px-5 py-3.5 rounded-xl font-bold text-[14px] shrink-0 transition-all duration-300 cursor-pointer"
-                                :class="hoveredItem === 6 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
+                                :class="hoveredItem === 6 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
                                 @mouseenter="hoveredItem = 6" @mouseleave="hoveredItem = null">
                                 <span class="text-gray-800">Cloud Services</span>
                                 <span class="text-gray-500">10%</span>
                             </div>
                             <div class="flex items-center justify-between px-5 py-3.5 rounded-xl font-bold text-[14px] shrink-0 transition-all duration-300 cursor-pointer"
-                                :class="hoveredItem === 7 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
+                                :class="hoveredItem === 7 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-md' : 'bg-[#f3f4f6]'"
                                 @mouseenter="hoveredItem = 7" @mouseleave="hoveredItem = null">
                                 <span class="text-gray-800">UI/UX Design</span>
                                 <span class="text-gray-500">10%</span>
@@ -696,7 +696,7 @@
                                 <circle class="transition-opacity duration-300 cursor-pointer"
                                     :class="hoveredItem !== null && hoveredItem !== 0 ? 'opacity-20' : 'opacity-100'"
                                     @mouseenter="hoveredItem = 0" @mouseleave="hoveredItem = null" r="15.91549431"
-                                    cx="18" cy="18" fill="transparent" stroke="#1e3a6e" stroke-width="12"
+                                    cx="18" cy="18" fill="transparent" stroke="#265daa" stroke-width="12"
                                     stroke-dasharray="19.5 80.5" stroke-dashoffset="0"></circle>
                                 <!-- 20% Segment 2 -->
                                 <circle class="transition-opacity duration-300 cursor-pointer"
@@ -794,7 +794,7 @@
 
                 <!-- Industries Focus Table & Donut Ring -->
                 <div class="mt-8">
-                    <h4 class="text-xs font-bold text-[#1e3a6e] uppercase tracking-widest mb-6">Industries Focus</h4>
+                    <h4 class="text-xs font-bold text-[#265daa] uppercase tracking-widest mb-6">Industries Focus</h4>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center" x-data="{ hoveredItem: null }">
                         <!-- Left Table -->
@@ -805,7 +805,7 @@
                                 {% if company_industries %}
                                 {% for item in company_industries %}
                                 <div class="flex items-center justify-between px-5 py-3.5 rounded-lg font-bold text-[13px] shrink-0 transition-all duration-300 cursor-pointer"
-                                    :class="hoveredItem === {{ forloop.counter0 }} ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-sm' : 'bg-[#f0f0f0]'"
+                                    :class="hoveredItem === {{ forloop.counter0 }} ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-sm' : 'bg-[#f0f0f0]'"
                                     @mouseenter="hoveredItem = {{ forloop.counter0 }}" @mouseleave="hoveredItem = null">
                                     <span class="text-gray-800">{{ item.name }}</span>
                                     <span class="text-gray-600">{{ item.percentage }}%</span>
@@ -813,49 +813,49 @@
                                 {% endfor %}
                                 {% else %}
                                 <div class="flex items-center justify-between px-5 py-3.5 rounded-lg font-bold text-[13px] shrink-0 transition-all duration-300 cursor-pointer"
-                                    :class="hoveredItem === 0 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-sm' : 'bg-[#ebebeb]'"
+                                    :class="hoveredItem === 0 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-sm' : 'bg-[#ebebeb]'"
                                     @mouseenter="hoveredItem = 0" @mouseleave="hoveredItem = null">
                                     <span class="text-gray-800">Education</span>
                                     <span class="text-gray-600">15%</span>
                                 </div>
                                 <div class="flex items-center justify-between px-5 py-3.5 rounded-lg font-bold text-[13px] shrink-0 transition-all duration-300 cursor-pointer"
-                                    :class="hoveredItem === 1 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-sm' : 'bg-[#f3f4f6]'"
+                                    :class="hoveredItem === 1 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-sm' : 'bg-[#f3f4f6]'"
                                     @mouseenter="hoveredItem = 1" @mouseleave="hoveredItem = null">
                                     <span class="text-gray-800">Government</span>
                                     <span class="text-gray-600">15%</span>
                                 </div>
                                 <div class="flex items-center justify-between px-5 py-3.5 rounded-lg font-bold text-[13px] shrink-0 transition-all duration-300 cursor-pointer"
-                                    :class="hoveredItem === 2 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-sm' : 'bg-[#f3f4f6]'"
+                                    :class="hoveredItem === 2 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-sm' : 'bg-[#f3f4f6]'"
                                     @mouseenter="hoveredItem = 2" @mouseleave="hoveredItem = null">
                                     <span class="text-gray-800">eCommerce</span>
                                     <span class="text-gray-600">15%</span>
                                 </div>
                                 <div class="flex items-center justify-between px-5 py-3.5 rounded-lg font-bold text-[13px] shrink-0 transition-all duration-300 cursor-pointer"
-                                    :class="hoveredItem === 3 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-sm' : 'bg-[#f3f4f6]'"
+                                    :class="hoveredItem === 3 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-sm' : 'bg-[#f3f4f6]'"
                                     @mouseenter="hoveredItem = 3" @mouseleave="hoveredItem = null">
                                     <span class="text-gray-800">Agriculture</span>
                                     <span class="text-gray-600">15%</span>
                                 </div>
                                 <div class="flex items-center justify-between px-5 py-3.5 rounded-lg font-bold text-[13px] shrink-0 transition-all duration-300 cursor-pointer"
-                                    :class="hoveredItem === 4 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-sm' : 'bg-[#ebebeb]'"
+                                    :class="hoveredItem === 4 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-sm' : 'bg-[#ebebeb]'"
                                     @mouseenter="hoveredItem = 4" @mouseleave="hoveredItem = null">
                                     <span class="text-gray-800">Advertising & Marketing</span>
                                     <span class="text-gray-600">10%</span>
                                 </div>
                                 <div class="flex items-center justify-between px-5 py-3.5 rounded-lg font-bold text-[13px] shrink-0 transition-all duration-300 cursor-pointer"
-                                    :class="hoveredItem === 5 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-sm' : 'bg-[#ebebeb]'"
+                                    :class="hoveredItem === 5 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-sm' : 'bg-[#ebebeb]'"
                                     @mouseenter="hoveredItem = 5" @mouseleave="hoveredItem = null">
                                     <span class="text-gray-800">Business Services</span>
                                     <span class="text-gray-600">10%</span>
                                 </div>
                                 <div class="flex items-center justify-between px-5 py-3.5 rounded-lg font-bold text-[13px] shrink-0 transition-all duration-300 cursor-pointer"
-                                    :class="hoveredItem === 6 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-sm' : 'bg-[#f3f4f6]'"
+                                    :class="hoveredItem === 6 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-sm' : 'bg-[#f3f4f6]'"
                                     @mouseenter="hoveredItem = 6" @mouseleave="hoveredItem = null">
                                     <span class="text-gray-800">Retail</span>
                                     <span class="text-gray-600">10%</span>
                                 </div>
                                 <div class="flex items-center justify-between px-5 py-3.5 rounded-lg font-bold text-[13px] shrink-0 transition-all duration-300 cursor-pointer"
-                                    :class="hoveredItem === 7 ? 'ring-1 ring-[#1e3a6e] bg-blue-50/70 shadow-sm' : 'bg-[#ebebeb]'"
+                                    :class="hoveredItem === 7 ? 'ring-1 ring-[#265daa] bg-blue-50/70 shadow-sm' : 'bg-[#ebebeb]'"
                                     @mouseenter="hoveredItem = 7" @mouseleave="hoveredItem = null">
                                     <span class="text-gray-800">Healthcare</span>
                                     <span class="text-gray-600">10%</span>
@@ -877,7 +877,7 @@
                                     <circle class="transition-opacity duration-300 cursor-pointer"
                                         :class="hoveredItem !== null && hoveredItem !== 0 ? 'opacity-20' : 'opacity-100'"
                                         @mouseenter="hoveredItem = 0" @mouseleave="hoveredItem = null" r="15.91549431"
-                                        cx="18" cy="18" fill="transparent" stroke="#1e3a6e" stroke-width="12"
+                                        cx="18" cy="18" fill="transparent" stroke="#265daa" stroke-width="12"
                                         stroke-dasharray="14.5 85.5" stroke-dashoffset="0"></circle>
                                     <!-- 15% Segment 2 -->
                                     <circle class="transition-opacity duration-300 cursor-pointer"
@@ -979,7 +979,7 @@
 
                 <!-- Client Focus Progress Bars -->
                 <div>
-                    <h4 class="text-xs font-bold text-[#1e3a6e] uppercase tracking-widest mb-6">Client Focus</h4>
+                    <h4 class="text-xs font-bold text-[#265daa] uppercase tracking-widest mb-6">Client Focus</h4>
 
                     <div class="flex flex-col gap-4">
                         {% if company_client_focuses %}
@@ -987,32 +987,32 @@
                         <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
                             <span class="w-40 text-sm font-semibold text-gray-800">{{ item.name }}</span>
                             <div class="flex-1 bg-gray-100 rounded-full h-2">
-                                <div class="bg-[#1e3a6e] h-2 rounded-full" style="width: {{ item.percentage }}%;"></div>
+                                <div class="bg-[#265daa] h-2 rounded-full" style="width: {{ item.percentage }}%;"></div>
                             </div>
-                            <span class="w-12 text-right text-sm font-bold text-[#1e3a6e]">{{ item.percentage }}%</span>
+                            <span class="w-12 text-right text-sm font-bold text-[#265daa]">{{ item.percentage }}%</span>
                         </div>
                         {% endfor %}
                         {% else %}
                         <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
                             <span class="w-36 text-sm font-semibold text-gray-800">Small Business</span>
                             <div class="flex-1 bg-gray-100 rounded-full h-2">
-                                <div class="bg-[#1e3a6e] h-2 rounded-full" style="width: 60%;"></div>
+                                <div class="bg-[#265daa] h-2 rounded-full" style="width: 60%;"></div>
                             </div>
-                            <span class="w-10 text-right text-[15px] font-bold text-[#1e3a6e]">60%</span>
+                            <span class="w-10 text-right text-[15px] font-bold text-[#265daa]">60%</span>
                         </div>
                         <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
                             <span class="w-36 text-sm font-semibold text-gray-800">Medium Business</span>
                             <div class="flex-1 bg-gray-100 rounded-full h-2">
-                                <div class="bg-[#1e3a6e] h-2 rounded-full" style="width: 20%;"></div>
+                                <div class="bg-[#265daa] h-2 rounded-full" style="width: 20%;"></div>
                             </div>
-                            <span class="w-10 text-right text-[15px] font-bold text-[#1e3a6e]">20%</span>
+                            <span class="w-10 text-right text-[15px] font-bold text-[#265daa]">20%</span>
                         </div>
                         <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
                             <span class="w-36 text-sm font-semibold text-gray-800">Large Business</span>
                             <div class="flex-1 bg-gray-100 rounded-full h-2">
-                                <div class="bg-[#1e3a6e] h-2 rounded-full" style="width: 20%;"></div>
+                                <div class="bg-[#265daa] h-2 rounded-full" style="width: 20%;"></div>
                             </div>
-                            <span class="w-10 text-right text-[15px] font-bold text-[#1e3a6e]">20%</span>
+                            <span class="w-10 text-right text-[15px] font-bold text-[#265daa]">20%</span>
                         </div>
                         {% endif %}
                     </div>
@@ -1022,7 +1022,7 @@
             <!-- 5. CLIENT PORTFOLIO SECTION -->
             <section id="portfolio" class="flex flex-col gap-4 pt-4 border-t border-gray-200">
                 <div>
-                    <span class="text-xs font-bold text-[#1e3a6e] uppercase tracking-wider">Portfolio & Clients</span>
+                    <span class="text-xs font-bold text-[#265daa] uppercase tracking-wider">Portfolio & Clients</span>
                     <h2 class="text-2xl font-bold text-gray-900 mt-1">Client Portfolio of {{ company.title }}</h2>
                     <p class="text-xs text-gray-500">Which companies have relied on {{ company.title }} for key
                         projects.
@@ -1034,24 +1034,24 @@
                     {% for client in company_clients %}
                     <div
                         class="px-4 py-2.5 rounded-xl bg-gray-100 border border-gray-200 text-xs font-bold text-gray-800 flex items-center gap-2 shadow-2xs">
-                        <i class="fas fa-check-circle text-[#1e3a6e]"></i>
+                        <i class="fas fa-check-circle text-[#265daa]"></i>
                         <span>{{ client.name }}</span>
                     </div>
                     {% endfor %}
                     {% else %}
                     <div
                         class="px-4 py-2.5 rounded-xl bg-gray-100 border border-gray-200 text-xs font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fas fa-check-circle text-[#1e3a6e]"></i>
+                        <i class="fas fa-check-circle text-[#265daa]"></i>
                         <span>E-Commerce Enterprise</span>
                     </div>
                     <div
                         class="px-4 py-2.5 rounded-xl bg-gray-100 border border-gray-200 text-xs font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fas fa-check-circle text-[#1e3a6e]"></i>
+                        <i class="fas fa-check-circle text-[#265daa]"></i>
                         <span>FinTech Platform</span>
                     </div>
                     <div
                         class="px-4 py-2.5 rounded-xl bg-gray-100 border border-gray-200 text-xs font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fas fa-check-circle text-[#1e3a6e]"></i>
+                        <i class="fas fa-check-circle text-[#265daa]"></i>
                         <span>Government Agencies</span>
                     </div>
                     {% endif %}
@@ -1061,7 +1061,7 @@
             <!-- 6. LOCATIONS SECTION -->
             <section id="locations" class="flex flex-col pt-8 pb-4">
                 <div class="mb-6">
-                    <span class="text-[11px] font-bold text-[#1e3a6e] uppercase tracking-widest">WHERE WE ARE</span>
+                    <span class="text-[11px] font-bold text-[#265daa] uppercase tracking-widest">WHERE WE ARE</span>
                     <h2 class="text-[32px] font-bold text-[#1a2b40] mt-1 mb-3">Locations <span
                             class="text-[#4b5563] font-normal">({% if company_locations %}{{ company_locations|length
                             }}{% else %}1{% endif %})</span></h2>
@@ -1075,7 +1075,7 @@
                         {% if forloop.first %}
                         <div
                             class="absolute -top-3.5 left-[50%] transform -translate-x-[50%] bg-white border border-gray-200 rounded-md px-2.5 py-1 flex items-center gap-1.5 z-10">
-                            <i class="fas fa-star text-[#1e3a6e] text-[10px]"></i>
+                            <i class="fas fa-star text-[#265daa] text-[10px]"></i>
                             <span class="text-[10px] font-bold text-gray-900 tracking-wider">HEADQUARTER</span>
                         </div>
                         {% endif %}
@@ -1110,7 +1110,7 @@
                     <div class="relative p-6 rounded-2xl bg-white border border-gray-200 w-full sm:w-[320px]">
                         <div
                             class="absolute -top-3.5 left-[50%] transform -translate-x-[50%] bg-white border border-gray-200 rounded-md px-2.5 py-1 flex items-center gap-1.5 z-10">
-                            <i class="fas fa-star text-[#1e3a6e] text-[10px]"></i>
+                            <i class="fas fa-star text-[#265daa] text-[10px]"></i>
                             <span class="text-[10px] font-bold text-gray-900 tracking-wider">HEADQUARTER</span>
                         </div>
 
@@ -1183,7 +1183,7 @@
                     </div>
 
                     <a href="{{ company.company_website|default:'#' }}" target="_blank" rel="noopener noreferrer"
-                        class="bg-[#1e3a6e] hover:bg-[#152d56] text-white rounded-lg w-full flex items-center justify-center font-bold text-[15px] py-2.5 transition-colors gap-2 shadow-sm">
+                        class="bg-[#265daa] hover:bg-[#1d58a2] text-white rounded-lg w-full flex items-center justify-center font-bold text-[15px] py-2.5 transition-colors gap-2 shadow-sm">
                         Visit Website
                         <svg class="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"

@@ -10,7 +10,7 @@
         <div class="flex items-center gap-4">
             {% if not user.is_authenticated %}
             <a href="{% url 'login' %}?next={{ request.path }}"
-                class="flex items-center gap-2 px-6 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
+                class="flex items-center gap-2 px-6 py-2 border border-[#265daa] text-[#265daa] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
                 Sign In
             </a>
             {% else %}
@@ -35,15 +35,15 @@
                 <!-- Connecting Line (Background) -->
                 <div class="absolute left-16 right-16 top-[22px] h-[3px] bg-gray-300 z-0 rounded-full"></div>
                 <!-- Connecting Line (Active) -->
-                <div class="absolute left-16 top-[22px] w-0 h-[3px] bg-[#1e3a6e] z-0 transition-all duration-700 ease-in-out rounded-full"></div>
+                <div class="absolute left-16 top-[22px] w-0 h-[3px] bg-[#265daa] z-0 transition-all duration-700 ease-in-out rounded-full"></div>
                 
                 <ul class="flex justify-between relative z-10 w-full">
                     <!-- Step 1: Active -->
                     <li class="flex flex-col items-center w-32 cursor-pointer">
-                        <div class="w-11 h-11 rounded-full flex items-center justify-center bg-[#1e3a6e] text-white font-bold text-lg shadow-[0_0_0_6px_#f9fafb] ring-1 ring-gray-100 transition-all">
+                        <div class="w-11 h-11 rounded-full flex items-center justify-center bg-[#265daa] text-white font-bold text-lg shadow-[0_0_0_6px_#f9fafb] ring-1 ring-gray-100 transition-all">
                             1
                         </div>
-                        <span class="mt-4 text-sm font-bold text-[#1e3a6e] tracking-wide">Basic Info</span>
+                        <span class="mt-4 text-sm font-bold text-[#265daa] tracking-wide">Basic Info</span>
                     </li>
                     <!-- Step 2: Inactive -->
                     <li class="flex flex-col items-center w-32">
@@ -137,7 +137,7 @@
 
                     <div class="pt-6 mt-6 border-t border-gray-100 flex justify-end">
                         <button type="submit"
-                            class="bg-[#1e3a6e] hover:bg-[#152d56] text-white text-sm font-semibold py-2.5 px-6 rounded-md shadow-sm hover:shadow transition-all duration-300 flex items-center group cursor-pointer">
+                            class="bg-[#265daa] hover:bg-[#1d58a2] text-white text-sm font-semibold py-2.5 px-6 rounded-md shadow-sm hover:shadow transition-all duration-300 flex items-center group cursor-pointer">
                             Next Step 
                             <i class="fas fa-arrow-right ml-2 text-xs group-hover:translate-x-1 transition-transform"></i>
                         </button>

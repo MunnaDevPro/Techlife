@@ -4,7 +4,7 @@
     {% if comment.user.profile_picture %}
     <img src="{{ comment.user.profile_picture.url }}" alt="{{ comment.user.first_name }}" class="w-9 h-9 rounded-full border-2 border-gray-100 flex-shrink-0 object-cover" />
     {% else %}
-    <div class="w-9 h-9 rounded-full bg-[#1e3a6e] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">{{ comment.user.first_name|slice:":1" }}</div>
+    <div class="w-9 h-9 rounded-full bg-[#265daa] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">{{ comment.user.first_name|slice:":1" }}</div>
     {% endif %}
     <div class="flex-1 min-w-0">
         <div class="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3">

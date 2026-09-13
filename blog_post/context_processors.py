@@ -5,7 +5,10 @@ from contact.models import FooterSettings
 from site_settings.models import SiteSettings
 
 def all_category(request):
-    popular_categories = Category.objects.all().order_by('created_at')
+    from django.db.models import Count
+    popular_categories = Category.objects.prefetch_related('subcategories').annotate(
+        sub_count=Count('subcategories')
+    ).order_by('-sub_count', 'name')
     context = {
         "popular_categories": popular_categories,
     }
@@ -14,15 +17,16 @@ def all_category(request):
 from datetime import datetime
 
 def timezone_info(request):
-    
     now = datetime.now()
-    
-
     formatted_date = now.strftime("%A, %B %d, %Y")
+    from django.db.models import Count
+    categories = Category.objects.prefetch_related('subcategories').annotate(
+        sub_count=Count('subcategories')
+    ).order_by('-sub_count', 'name')
     
     return{
         'current_date': formatted_date,
-        "categories": Category.objects.all()
+        "categories": categories
     }
 
 def footer_context(request):
@@ -42,5 +46,23 @@ def follow_stats(request):
     return {
         'user_follow_stats': None
     }
+
+
+def trending_news(request):
+    from blog_post.models import BlogPost
+    try:
+        posts = list(
+            BlogPost.objects.filter(status="published")
+            .select_related("category", "author")
+            .order_by("-created_at")[:10]
+        )
+    except Exception:
+        posts = []
+    return {
+        'trending_news_list': posts,
+        'recent_news_list': posts[:10],
+    }
+
+
 
     

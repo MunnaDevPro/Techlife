@@ -5,9 +5,9 @@
 
     <!-- Section Header -->
     <div class="border-b-2 border-gray-200 mb-5 relative">
-        <div class="inline-block border-b-2 pb-2 -mb-[2px]" style="border-color: #1e3a6e;">
-            <h2 class="text-lg font-extrabold uppercase tracking-tight text-zinc-900 flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-xs inline-block" style="background-color: #1e3a6e;"></span>
+        <div class="inline-block border-b-2 pb-2 -mb-[2px]" style="border-color: #265daa;">
+            <h2 class="text-lg font-bold uppercase tracking-tight text-zinc-900 flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-xs inline-block" style="background-color: #265daa;"></span>
                 Featured
             </h2>
         </div>
@@ -27,25 +27,20 @@
                 {% endif %}
                 
                 {% if blog.category %}
-                <span class="absolute top-3 left-3 text-white text-[10px] font-extrabold uppercase px-2.5 py-1 tracking-wider rounded-xs" style="background-color: #1e3a6e;">
+                <span class="absolute top-3 left-3 text-white text-[10px] font-bold uppercase px-2.5 py-1 tracking-wider rounded-xs" style="background-color: #265daa;">
                     {{ blog.category.name }}
                 </span>
                 {% endif %}
             </a>
             <div class="pt-3 pb-4 flex flex-col flex-1">
-                <div class="text-xs text-gray-500 font-medium mb-1.5 flex items-center gap-1.5">
-                    <span class="font-bold" style="color: #1e3a6e;">By {{ blog.author.first_name|default:blog.author.email }}</span>
-                    <span>•</span>
-                    <span>{{ blog.created_at|date:"F d, Y" }}</span>
-                </div>
-                <a href="{% url 'blog_details' blog.slug %}" class="font-extrabold text-lg text-zinc-900 group-hover:text-[#1e3a6e] transition-colors leading-snug line-clamp-2 mb-2">
+                <a href="{% url 'blog_details' blog.slug %}" class="font-bold text-lg text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-2">
                     {{ blog.title }}
                 </a>
                 <p class="text-xs text-gray-600 leading-relaxed line-clamp-3 mb-4">
                     {{ blog.description|striptags|truncatewords:25 }}
                 </p>
                 <div class="mt-auto">
-                    <a href="{% url 'blog_details' blog.slug %}" class="inline-block text-white text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-xs transition-colors" style="background-color: #1e3a6e;">
+                    <a href="{% url 'blog_details' blog.slug %}" class="inline-block text-white text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-xs transition-colors" style="background-color: #265daa;">
                         Read More
                     </a>
                 </div>
@@ -69,11 +64,11 @@
             </div>
             <div class="flex-1 min-w-0 flex flex-col justify-center">
                 <div class="text-[10px] text-gray-500 font-semibold mb-0.5 flex items-center gap-1">
-                    <span class="font-bold uppercase" style="color: #1e3a6e;">{{ blog.category.name|default:"News" }}</span>
+                    <span class="font-bold uppercase" style="color: #265daa;">{{ blog.category.name|default:"News" }}</span>
                     <span>•</span>
                     <span>{{ blog.created_at|date:"M d, Y" }}</span>
                 </div>
-                <a href="{% url 'blog_details' blog.slug %}" class="text-xs font-bold text-zinc-900 group-hover:text-[#1e3a6e] transition-colors leading-snug line-clamp-2">
+                <a href="{% url 'blog_details' blog.slug %}" class="text-xs font-bold text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
                     {{ blog.title }}
                 </a>
             </div>

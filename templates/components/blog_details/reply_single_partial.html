@@ -4,7 +4,7 @@
     {% if reply.user.profile_picture %}
     <img src="{{ reply.user.profile_picture.url }}" alt="{{ reply.user.first_name }}" class="w-7 h-7 rounded-full border flex-shrink-0 object-cover" />
     {% else %}
-    <div class="w-7 h-7 rounded-full bg-[#1e3a6e]/80 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">{{ reply.user.first_name|slice:":1" }}</div>
+    <div class="w-7 h-7 rounded-full bg-[#265daa]/80 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">{{ reply.user.first_name|slice:":1" }}</div>
     {% endif %}
     <div class="flex-1 bg-gray-50 border border-gray-100 rounded-xl px-3 py-2">
         <div class="flex items-center justify-between mb-0.5">

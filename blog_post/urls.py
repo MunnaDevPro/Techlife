@@ -61,6 +61,7 @@ urlpatterns = [
     path('like/<slug:like_slug>/', user_like_toggle, name='user_like_toggle'),
     
     path('search/', redirect_search_results, name='redirect_search_results'),
+    path('search/suggest/', __import__('blog_post.views').views.live_search_suggest, name='live_search_suggest'),
 
     path('tag/<slug:tag_slug>/', tag_posts, name='tag_posts'),
     path('popular-tags/modal/', popular_tags_modal, name='popular_tags_modal'),

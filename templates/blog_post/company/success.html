@@ -9,7 +9,7 @@
         </a>
         <div class="flex items-center gap-4">
             {% if not user.is_authenticated %}
-                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-6 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
+                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-6 py-2 border border-[#265daa] text-[#265daa] rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
                     Sign In
                 </a>
             {% else %}
@@ -39,7 +39,7 @@
             </p>
             
             <div class="flex justify-center space-x-4">
-                <a href="{% url 'homepage' %}" class="bg-[#1e3a6e] hover:bg-[#152d56] text-white font-bold py-3 px-8 rounded shadow transition-colors">
+                <a href="{% url 'homepage' %}" class="bg-[#265daa] hover:bg-[#1d58a2] text-white font-bold py-3 px-8 rounded shadow transition-colors">
                     Return to Homepage
                 </a>
                 <a href="{% url 'add_company_step1' %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded shadow transition-colors">

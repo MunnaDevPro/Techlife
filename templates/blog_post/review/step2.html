@@ -11,13 +11,13 @@
         </a>
         <div class="flex items-center gap-4">
             {% if not user.is_authenticated %}
-                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-5 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors">
+                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-5 py-2 border border-[#265daa] text-[#265daa] rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                     Sign In
                 </a>
             {% else %}
                 <div class="flex items-center gap-3">
-                    <span class="text-sm font-medium text-gray-700 hidden sm:inline">Welcome, <strong style="color: #1e3a6e;">{% if request.user.first_name %}{{ request.user.first_name }}{% elif request.user.get_full_name %}{{ request.user.get_full_name }}{% elif request.user.username and request.user.username != 'None' %}{{ request.user.username }}{% else %}{{ request.user.email }}{% endif %}</strong></span>
+                    <span class="text-sm font-medium text-gray-700 hidden sm:inline">Welcome, <strong style="color: #265daa;">{% if request.user.first_name %}{{ request.user.first_name }}{% elif request.user.get_full_name %}{{ request.user.get_full_name }}{% elif request.user.username and request.user.username != 'None' %}{{ request.user.username }}{% else %}{{ request.user.email }}{% endif %}</strong></span>
                     <a href="{% url 'user_dashboard' %}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-lg transition">Dashboard</a>
                 </div>
             {% endif %}
@@ -52,7 +52,7 @@
             </div>
             <div class="h-0.5 w-12 bg-emerald-600"></div>
             <div class="flex items-center gap-2">
-                <span class="w-7 h-7 rounded-none text-white font-bold text-xs flex items-center justify-center shadow-sm" style="background-color: #1e3a6e;">2</span>
+                <span class="w-7 h-7 rounded-none text-white font-bold text-xs flex items-center justify-center shadow-sm" style="background-color: #265daa;">2</span>
                 <span class="text-xs font-bold text-slate-900 uppercase tracking-wider">Details</span>
             </div>
             <div class="h-0.5 w-12 bg-slate-200"></div>
@@ -88,7 +88,7 @@
                                    id="{{ form.title.id_for_label }}" 
                                    x-model="headline"
                                    placeholder="e.g. Working with {{ post.title }} was excellent" 
-                                   class="w-full rounded-none border border-slate-300 bg-white text-slate-800 text-sm p-3.5 focus:border-[#1e3a6e] focus:ring-2 focus:ring-[#1e3a6e]/20 transition-all duration-200 shadow-sm font-medium placeholder-slate-400" 
+                                   class="w-full rounded-none border border-slate-300 bg-white text-slate-800 text-sm p-3.5 focus:border-[#265daa] focus:ring-2 focus:ring-[#265daa]/20 transition-all duration-200 shadow-sm font-medium placeholder-slate-400" 
                                    required />
                             {% if form.title.errors %}
                                 <p class="text-xs text-red-600 font-medium mt-1">{{ form.title.errors.0 }}</p>
@@ -110,7 +110,7 @@
                                       x-model="bodyText"
                                       rows="5" 
                                       placeholder="Share details about what they delivered, communication timeliness, and overall project outcomes..." 
-                                      class="w-full rounded-none border border-slate-300 bg-white text-slate-800 text-sm p-3.5 focus:border-[#1e3a6e] focus:ring-2 focus:ring-[#1e3a6e]/20 transition-all duration-200 shadow-sm font-medium placeholder-slate-400 leading-relaxed" 
+                                      class="w-full rounded-none border border-slate-300 bg-white text-slate-800 text-sm p-3.5 focus:border-[#265daa] focus:ring-2 focus:ring-[#265daa]/20 transition-all duration-200 shadow-sm font-medium placeholder-slate-400 leading-relaxed" 
                                       required></textarea>
                             {% if form.body.errors %}
                                 <p class="text-xs text-red-600 font-medium mt-1">{{ form.body.errors.0 }}</p>
@@ -123,7 +123,7 @@
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                             <span>Back</span>
                         </a>
-                        <button type="submit" class="text-white font-semibold py-2.5 px-6 rounded-none transition-colors duration-200 text-sm inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer hover:bg-[#152d56] flex-shrink-0" style="background-color: #1e3a6e;">
+                        <button type="submit" class="text-white font-semibold py-2.5 px-6 rounded-none transition-colors duration-200 text-sm inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer hover:bg-[#1d58a2] flex-shrink-0" style="background-color: #265daa;">
                             <span>Next Step</span>
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                         </button>

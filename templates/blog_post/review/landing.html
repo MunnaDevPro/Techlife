@@ -11,13 +11,13 @@
         </a>
         <div class="flex items-center gap-4">
             {% if not user.is_authenticated %}
-                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-5 py-2 border border-[#1e3a6e] text-[#1e3a6e] rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors">
+                <a href="{% url 'login' %}?next={{ request.path }}" class="flex items-center gap-2 px-5 py-2 border border-[#265daa] text-[#265daa] rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                     Sign In
                 </a>
             {% else %}
                 <div class="flex items-center gap-3">
-                    <span class="text-sm font-medium text-gray-700 hidden sm:inline">Welcome, <strong style="color: #1e3a6e;">{% if request.user.first_name %}{{ request.user.first_name }}{% elif request.user.get_full_name %}{{ request.user.get_full_name }}{% elif request.user.username and request.user.username != 'None' %}{{ request.user.username }}{% else %}{{ request.user.email }}{% endif %}</strong></span>
+                    <span class="text-sm font-medium text-gray-700 hidden sm:inline">Welcome, <strong style="color: #265daa;">{% if request.user.first_name %}{{ request.user.first_name }}{% elif request.user.get_full_name %}{{ request.user.get_full_name }}{% elif request.user.username and request.user.username != 'None' %}{{ request.user.username }}{% else %}{{ request.user.email }}{% endif %}</strong></span>
                     <a href="{% url 'user_dashboard' %}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-lg transition">Dashboard</a>
                 </div>
             {% endif %}
@@ -42,8 +42,8 @@
         color: #0f172a;
     }
     .hero-blue-text {
-        color: #1e3a6e;
-        background: linear-gradient(135deg, #1e3a6e 0%, #2563eb 100%);
+        color: #265daa;
+        background: linear-gradient(135deg, #265daa 0%, #2563eb 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -130,7 +130,7 @@
              @click.outside="open = false" 
              class="max-w-xl mx-auto relative my-8" style="margin-top: 2rem !important; margin-bottom: 2.5rem !important;">
             
-            <div class="relative flex items-center bg-white rounded-full px-4 sm:px-5 py-3 border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-[#1e3a6e] focus-within:ring-4 focus-within:ring-[#1e3a6e]/10 transition-all duration-200">
+            <div class="relative flex items-center bg-white rounded-full px-4 sm:px-5 py-3 border border-slate-200 shadow-sm hover:shadow-md focus-within:shadow-md focus-within:border-[#265daa] focus-within:ring-4 focus-within:ring-[#265daa]/10 transition-all duration-200">
                 <!-- Search Icon (Fixed Position) -->
                 <div class="text-slate-400 flex items-center justify-center flex-shrink-0 pointer-events-none pl-1 pr-3">
                     <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -187,7 +187,7 @@
                                             <img :src="comp.image" :alt="comp.title" class="w-full h-full object-cover" />
                                         </template>
                                         <template x-if="!comp.image">
-                                            <span class="font-black text-[#1e3a6e] text-lg" x-text="comp.title.charAt(0).toUpperCase()"></span>
+                                            <span class="font-black text-[#265daa] text-lg" x-text="comp.title.charAt(0).toUpperCase()"></span>
                                         </template>
                                     </div>
                                     <div class="truncate">
@@ -199,7 +199,7 @@
                                     </div>
                                 </div>
                                 <div class="flex-shrink-0 ml-3 flex items-center gap-1.5" @click.stop>
-                                    <a :href="comp.review_url" class="inline-flex items-center bg-[#1e3a6e] text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm hover:opacity-90">
+                                    <a :href="comp.review_url" class="inline-flex items-center bg-[#265daa] text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm hover:opacity-90">
                                         <span>Write Review</span>
                                     </a>
                                     <a :href="comp.detail_url" class="inline-flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-gray-300">
@@ -218,7 +218,7 @@
                         <div class="w-12 h-12 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center mx-auto mb-3">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                         </div>
-                        <h4 class="text-gray-900 font-bold text-base mb-1">No company found for "<span x-text="query" class="text-[#1e3a6e]"></span>"</h4>
+                        <h4 class="text-gray-900 font-bold text-base mb-1">No company found for "<span x-text="query" class="text-[#265daa]"></span>"</h4>
                         <p class="text-xs text-gray-500 mb-4">Don't see your company? Register it on TechLife BD so users can write reviews!</p>
                         <a href="{% url 'add_company_step1' %}" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-lg transition shadow">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -232,7 +232,7 @@
         <!-- Step Indicator Flow -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto text-left" style="margin-top: 2.5rem !important;">
             <div class="step-box p-3.5 rounded-xl flex items-center gap-3">
-                <div class="w-7 h-7 rounded-full text-white font-black flex items-center justify-center text-xs flex-shrink-0 shadow-sm" style="background-color: #1e3a6e;">1</div>
+                <div class="w-7 h-7 rounded-full text-white font-black flex items-center justify-center text-xs flex-shrink-0 shadow-sm" style="background-color: #265daa;">1</div>
                 <div>
                     <h5 class="text-xs font-bold text-slate-900">Find your company</h5>
                     <p class="text-[11px] text-slate-500">Search by name or industry</p>
@@ -277,7 +277,7 @@
                                 {% elif company.featured_image_url %}
                                     <img src="{{ company.featured_image_url }}" alt="{{ company.title }}" class="max-h-full max-w-full object-contain" />
                                 {% else %}
-                                    <span class="font-black text-xl" style="color: #1e3a6e;">{{ company.title|slice:":1"|upper }}</span>
+                                    <span class="font-black text-xl" style="color: #265daa;">{{ company.title|slice:":1"|upper }}</span>
                                 {% endif %}
                             </div>
                             {% if company.category %}
@@ -288,7 +288,7 @@
                         </div>
 
                         <!-- Company Title & Tagline -->
-                        <h3 class="font-bold text-gray-900 text-lg group-hover:text-[#1e3a6e] transition-colors line-clamp-1 mb-1">
+                        <h3 class="font-bold text-gray-900 text-lg group-hover:text-[#265daa] transition-colors line-clamp-1 mb-1">
                             {{ company.title }}
                         </h3>
                         <p class="text-gray-500 text-xs line-clamp-2 mb-6 min-h-[32px]">
@@ -298,7 +298,7 @@
 
                     <!-- Action Buttons (Left: Write Review, Right: Details) -->
                     <div class="flex items-center gap-2 pt-2 border-t border-gray-100">
-                        <a href="{% url 'write_review_step1' company.id %}" class="flex-1 py-2 px-2.5 text-white text-xs font-bold rounded-xl text-center transition-all flex items-center justify-center shadow-sm hover:opacity-90" style="background-color: #1e3a6e;">
+                        <a href="{% url 'write_review_step1' company.id %}" class="flex-1 py-2 px-2.5 text-white text-xs font-bold rounded-xl text-center transition-all flex items-center justify-center shadow-sm hover:opacity-90" style="background-color: #265daa;">
                             <span>Write Review</span>
                         </a>
                         <a href="{% url 'blog_details' company.slug %}" class="flex-1 py-2 px-2.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-800 text-xs font-bold rounded-xl text-center transition-all flex items-center justify-center gap-1">

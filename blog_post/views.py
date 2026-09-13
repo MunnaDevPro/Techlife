@@ -81,13 +81,15 @@ def get_display_views(post):
 def get_display_link_count(post):
     # Stable pseudo-random baseline in [1000, 4000] + real likes.
     baseline = 1000 + (crc32(f"{post.slug}-link".encode("utf-8")) % 3001)
-    return baseline + post.likes.count()
+    likes_count = len(post.likes.all()) if hasattr(post, '_prefetched_objects_cache') and 'likes' in post._prefetched_objects_cache else post.likes.count()
+    return baseline + likes_count
 
 
 def get_display_like_count(post):
     # Stable pseudo-random baseline in [1000, 4000] + real likes.
     baseline = 1000 + (crc32(f"{post.slug}-like".encode("utf-8")) % 3001)
-    return baseline + post.likes.count()
+    likes_count = len(post.likes.all()) if hasattr(post, '_prefetched_objects_cache') and 'likes' in post._prefetched_objects_cache else post.likes.count()
+    return baseline + likes_count
 
 
 def blog_details_view(request, slug):
@@ -101,35 +103,54 @@ def blog_details_view(request, slug):
         slug=slug
     )
 
-    related_news = BlogPost.objects.filter(
-        status="published", category=blog_detail.category
-    ).exclude(slug=slug)[:10]
+    # Related news for sidebar
+    related_news = (
+        BlogPost.objects.filter(status="published", category=blog_detail.category)
+        .select_related("category", "author")
+        .exclude(slug=slug)[:10]
+    )
+
+    # You May Also Like: get top 3 categories (or top overall) and pick posts randomly
+    top_categories = list(
+        Category.objects.filter(blogpost__status="published")
+        .annotate(post_count=Count('blogpost'))
+        .order_by('-post_count')[:3]
+    )
+
+    you_may_like_ids = set()
+    for cat in top_categories:
+        cat_post_ids = list(
+            BlogPost.objects.filter(status="published", category=cat)
+            .exclude(slug=slug)
+            .values_list('id', flat=True)[:5]
+        )
+        you_may_like_ids.update(cat_post_ids)
+
+    # Fill up with other published posts to have a minimum pool for smooth sliding
+    extra_ids = list(
+        BlogPost.objects.filter(status="published")
+        .exclude(slug=slug)
+        .exclude(id__in=you_may_like_ids)
+        .values_list('id', flat=True)[:15]
+    )
+    you_may_like_ids.update(extra_ids)
+
+    you_may_like_blogs = list(
+        BlogPost.objects.filter(id__in=you_may_like_ids)
+        .select_related("category", "author")
+        .order_by("?")[:9]
+    )
 
     if blog_detail.description:
         word_count = len(blog_detail.description.split())
     else:
         word_count = 0
 
-    most_viewed_blogs = BlogPost.objects.filter(status="published").order_by("-views")[:15]
-
-    all_comments = (
-        Comment.objects
-        .filter(post=blog_detail)
-        .select_related("user", "post")
-        .prefetch_related("replies__user")
-        .order_by("-created_at")
+    most_viewed_blogs = (
+        BlogPost.objects.filter(status="published")
+        .select_related("category", "author")
+        .order_by("-views")[:15]
     )
-
-    comment_count = all_comments.count()
-    reply_count = sum(comment.replies.count() for comment in all_comments)
-    total_comments = comment_count + reply_count
-
-    paginator = Paginator(all_comments, 3)
-    page_number = request.GET.get('page', 1)
-    try:
-        page_obj = paginator.page(page_number)
-    except Exception:
-        page_obj = paginator.page(paginator.num_pages)
 
     sort_by = request.GET.get('sort_by', 'newest')
     comment_order = '-created_at'
@@ -138,34 +159,46 @@ def blog_details_view(request, slug):
     elif sort_by == 'recent':
         comment_order = '-updated_at'
 
-    all_comments = Comment.objects.filter(post=blog_detail).order_by(comment_order)
+    comments_qs = (
+        Comment.objects.filter(post=blog_detail)
+        .select_related("user")
+        .prefetch_related("replies__user")
+        .order_by(comment_order)
+    )
+
+    total_comments = comments_qs.count()
+    paginator = Paginator(comments_qs, 3)
+    page_number = request.GET.get('page', 1)
+    try:
+        page_obj = paginator.page(page_number)
+    except Exception:
+        page_obj = paginator.page(paginator.num_pages)
 
     # Like check
     user_has_liked = False
     if request.user.is_authenticated:
-        try:
-            Like.objects.get(post=blog_detail, user=request.user)
-            user_has_liked = True
-        except Like.DoesNotExist:
-            user_has_liked = False
+        if hasattr(blog_detail, '_prefetched_objects_cache') and 'likes' in blog_detail._prefetched_objects_cache:
+            user_has_liked = any(like.user_id == request.user.id for like in blog_detail.likes.all())
+        else:
+            user_has_liked = Like.objects.filter(post=blog_detail, user=request.user).exists()
 
-    # View count via IP
+    # View count via IP with fast F() update
     ip = get_client_ip(request)
     if request.user.is_authenticated:
         viewed = Post_view_ip.objects.filter(post=blog_detail, user=request.user).exists()
         if not viewed:
             Post_view_ip.objects.create(post=blog_detail, user=request.user)
-            blog_detail.views += 1
-            blog_detail.save()
+            BlogPost.objects.filter(pk=blog_detail.pk).update(views=F("views") + 1)
     else:
         viewed = Post_view_ip.objects.filter(post=blog_detail, ip_address=ip).exists()
         if not viewed:
             Post_view_ip.objects.create(post=blog_detail, ip_address=ip)
-            blog_detail.views += 1
-            blog_detail.save()
+            BlogPost.objects.filter(pk=blog_detail.pk).update(views=F("views") + 1)
 
-    published_reviews = blog_detail.reviews.filter(status='published').select_related('reviewer').order_by('-created_at')
-    reviews_count = published_reviews.count()
+    published_reviews = list(
+        blog_detail.reviews.filter(status='published').select_related('reviewer').order_by('-created_at')
+    )
+    reviews_count = len(published_reviews)
 
     if reviews_count > 0:
         avg_quality = round(sum(r.quality_rating for r in published_reviews) / float(reviews_count), 1)
@@ -204,6 +237,7 @@ def blog_details_view(request, slug):
         "display_link_count": get_display_link_count(blog_detail),
         "display_like_count": get_display_like_count(blog_detail),
         "related_news":   related_news,
+        "you_may_like_blogs": you_may_like_blogs,
         "word_count":     word_count,
         "most_viewed_blogs": most_viewed_blogs,
         "all_comments":   page_obj,
@@ -238,6 +272,7 @@ def home(request):
     latest_blog = latest_blogs[0] if latest_blogs else None
     Only_latest_blogs = latest_blogs[:1]
     latest_popular_blogs = latest_blogs
+    recent_news_blogs = list(published_posts.order_by("-created_at")[:6])
 
     most_viewed_blogs = get_section_posts(
         "most_viewed",
@@ -247,7 +282,7 @@ def home(request):
 
     fallback_top_categories = list(
         Category.objects.annotate(
-            post_count=Count("blogpost")
+            post_count=Count("blogpost", filter=Q(blogpost__status="published"))
         ).filter(post_count__gt=0).order_by("-post_count")[:6]
     )
 
@@ -401,6 +436,7 @@ def home(request):
         "Teacnology_related_posts":   Teacnology_related_posts,
         "programming_related_posts":  programming_related_posts,
         "most_viewed_blogs": most_viewed_blogs,
+        "recent_news_blogs": recent_news_blogs,
         "all_category":     all_category,
         "categories":       all_category,
         "popular_categories": popular_categories,
@@ -476,26 +512,66 @@ def redirect_search_results(request):
     return render(request, "components/search/search_results.html", context)
 
 
+def live_search_suggest(request):
+    query = request.GET.get('q', '').strip()
+    if not query or len(query) < 2:
+        return HttpResponse("")
+
+    search_filter = (
+        Q(title__icontains=query) |
+        Q(category__name__icontains=query) |
+        Q(tags__name__icontains=query) |
+        Q(author__first_name__icontains=query) |
+        Q(author__last_name__icontains=query)
+    )
+
+    results = (
+        BlogPost.objects.filter(status="published")
+        .select_related("category", "author")
+        .filter(search_filter)
+        .distinct()
+        .order_by("-created_at")[:6]
+    )
+
+    context = {
+        "query": query,
+        "results": results,
+    }
+    return render(request, "components/search/partial_search_suggestions.html", context)
+
+
 @vary_on_headers("HX-Request")
 def all_blog_post_view(request):
     published_posts = published_posts_queryset()
 
-    blogs      = published_posts.order_by("-created_at")
-    categories = Category.objects.all()
+    blogs = published_posts.order_by("-created_at")
+    
+    # Filter by category if selected
+    selected_category_slug = request.GET.get("category")
+    selected_category = None
+    if selected_category_slug:
+        blogs = blogs.filter(category__slug=selected_category_slug)
+        selected_category = Category.objects.filter(slug=selected_category_slug).first()
 
     author_email = request.GET.get("author")
     if author_email:
         blogs = blogs.filter(author__email=author_email)
+
+    categories = Category.objects.annotate(
+        pub_count=Count('blogpost', filter=Q(blogpost__status='published'))
+    ).filter(pub_count__gt=0).order_by('-pub_count')
 
     paginator    = Paginator(blogs, 12)
     page_number  = request.GET.get('page')
     blogs        = paginator.get_page(page_number)
 
     context = {
-        "blogs":      blogs,
-        "categories": categories,
-        "filtered_author": author_email,
-        "action":     "all_blogs",
+        "blogs":                  blogs,
+        "categories":             categories,
+        "selected_category_slug": selected_category_slug,
+        "selected_category":      selected_category,
+        "filtered_author":        author_email,
+        "action":                 "all_blogs",
     }
 
     if request.headers.get("HX-Request"):
@@ -711,7 +787,6 @@ def edit_blog(request, slug):
     return render(request, "base.html", context)
 
 
-@cache_page(60 * 2)
 @vary_on_headers("HX-Request")
 def category_post(request, slug):
     category = get_object_or_404(

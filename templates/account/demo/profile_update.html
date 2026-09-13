@@ -9,7 +9,7 @@
 
     <div class="tl-card rounded-2xl overflow-hidden mt-6">
         <!-- Header -->
-        <div class="bg-[#1e3a6e] px-6 py-5">
+        <div class="bg-[#265daa] px-6 py-5">
             <h2 class="text-[16px] font-bold text-white flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 Update Your Profile
@@ -23,10 +23,10 @@
             <!-- Profile picture -->
             <div class="flex flex-col items-center pb-5 border-b border-gray-100">
                 <label for="profile_picture" class="relative cursor-pointer group">
-                    <img class="h-24 w-24 rounded-full object-cover border-4 border-[#1e3a6e]/20 transition-opacity group-hover:opacity-75"
+                    <img class="h-24 w-24 rounded-full object-cover border-4 border-[#265daa]/20 transition-opacity group-hover:opacity-75"
                          src="{{ user_data.profile_picture.url }}"
                          alt="Profile picture" />
-                    <div class="absolute inset-0 flex items-center justify-center bg-[#1e3a6e]/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="absolute inset-0 flex items-center justify-center bg-[#265daa]/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                     </div>
                     <input type="file" name="profile_picture" id="profile_picture" class="hidden" accept="image/*">
@@ -36,7 +36,7 @@
 
             <!-- Personal Info -->
             <div>
-                <h3 class="text-[12px] font-bold text-[#1e3a6e] uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                <h3 class="text-[12px] font-bold text-[#265daa] uppercase tracking-wide mb-3 flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     Personal Info
                 </h3>
@@ -44,24 +44,24 @@
                     <div>
                         <label for="first_name" class="block text-[11px] font-semibold text-gray-500 mb-1.5">First Name</label>
                         <input type="text" name="first_name" id="first_name" value="{{ user_data.first_name|default:'' }}"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#265daa] focus:border-[#265daa] focus:bg-white transition-all" />
                     </div>
                     <div>
                         <label for="last_name" class="block text-[11px] font-semibold text-gray-500 mb-1.5">Last Name</label>
                         <input type="text" name="last_name" id="last_name" value="{{ user_data.last_name|default:'' }}"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#265daa] focus:border-[#265daa] focus:bg-white transition-all" />
                     </div>
                     <div>
                         <label for="mobile" class="block text-[11px] font-semibold text-gray-500 mb-1.5">Mobile Number</label>
                         <input type="text" name="mobile" id="mobile" value="{{ user_data.mobile|default:'' }}"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#265daa] focus:border-[#265daa] focus:bg-white transition-all" />
                     </div>
                 </div>
             </div>
 
             <!-- Address -->
             <div>
-                <h3 class="text-[12px] font-bold text-[#1e3a6e] uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                <h3 class="text-[12px] font-bold text-[#265daa] uppercase tracking-wide mb-3 flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     Address Details
                 </h3>
@@ -69,27 +69,27 @@
                     <div>
                         <label for="address_line_1" class="block text-[11px] font-semibold text-gray-500 mb-1.5">Address Line 1</label>
                         <input type="text" name="address_line_1" id="address_line_1" value="{{ user_data.address_line_1|default:'' }}"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#265daa] focus:border-[#265daa] focus:bg-white transition-all" />
                     </div>
                     <div>
                         <label for="address_line_2" class="block text-[11px] font-semibold text-gray-500 mb-1.5">Address Line 2 <span class="text-gray-400 font-normal">(optional)</span></label>
                         <input type="text" name="address_line_2" id="address_line_2" value="{{ user_data.address_line_2|default:'' }}"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#265daa] focus:border-[#265daa] focus:bg-white transition-all" />
                     </div>
                     <div>
                         <label for="city" class="block text-[11px] font-semibold text-gray-500 mb-1.5">City</label>
                         <input type="text" name="city" id="city" value="{{ user_data.city|default:'' }}"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#265daa] focus:border-[#265daa] focus:bg-white transition-all" />
                     </div>
                     <div>
                         <label for="postcode" class="block text-[11px] font-semibold text-gray-500 mb-1.5">Postcode</label>
                         <input type="text" name="postcode" id="postcode" value="{{ user_data.postcode|default:'' }}"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#265daa] focus:border-[#265daa] focus:bg-white transition-all" />
                     </div>
                     <div>
                         <label for="country" class="block text-[11px] font-semibold text-gray-500 mb-1.5">Country</label>
                         <input type="text" name="country" id="country" value="{{ user_data.country|default:'' }}"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#1e3a6e] focus:border-[#1e3a6e] focus:bg-white transition-all" />
+                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#265daa] focus:border-[#265daa] focus:bg-white transition-all" />
                     </div>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                     Cancel
                 </a>
                 <button type="submit"
-                    class="px-6 py-2.5 bg-[#1e3a6e] text-white text-[13px] font-bold rounded-xl hover:bg-[#152d56] transition-colors">
+                    class="px-6 py-2.5 bg-[#265daa] text-white text-[13px] font-bold rounded-xl hover:bg-[#1d58a2] transition-colors">
                     Save Changes
                 </button>
             </div>

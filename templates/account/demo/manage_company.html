@@ -6,7 +6,7 @@
         
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <a href="{% url 'user_dashboard' %}?section=companies" class="text-sm font-medium text-gray-500 hover:text-[#1e3a6e] mb-2 flex items-center gap-1.5"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+                <a href="{% url 'user_dashboard' %}?section=companies" class="text-sm font-medium text-gray-500 hover:text-[#265daa] mb-2 flex items-center gap-1.5"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
                 <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
                     {% if company.featured_image %}
                     <img src="{{ company.featured_image.url }}" class="w-10 h-10 rounded-lg object-cover">
@@ -14,7 +14,7 @@
                     Manage Company: {{ company.title }}
                 </h1>
             <div class="flex items-center gap-2">
-                <a href="{% url 'user_company_edit' company.id %}" class="bg-[#1e3a6e] border border-[#1e3a6e] text-white hover:bg-[#152d56] px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm flex items-center gap-1.5">
+                <a href="{% url 'user_company_edit' company.id %}" class="bg-[#265daa] border border-[#265daa] text-white hover:bg-[#1d58a2] px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm flex items-center gap-1.5">
                     <i class="fas fa-edit"></i> Edit Profile
                 </a>
                 <a href="{% url 'blog_details' company.slug %}" target="_blank" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm flex items-center gap-1.5">
@@ -53,7 +53,7 @@
                             <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">%</label>
                             {{ service_form.percentage }}
                         </div>
-                        <button type="submit" class="bg-[#1e3a6e] hover:bg-[#152d56] text-white px-4 py-2 rounded-md font-semibold transition-colors h-10 shadow-sm"><i class="fas fa-plus"></i></button>
+                        <button type="submit" class="bg-[#265daa] hover:bg-[#1d58a2] text-white px-4 py-2 rounded-md font-semibold transition-colors h-10 shadow-sm"><i class="fas fa-plus"></i></button>
                     </form>
 
                     <div class="space-y-3">
@@ -95,7 +95,7 @@
                             <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">%</label>
                             {{ focus_form.percentage }}
                         </div>
-                        <button type="submit" class="bg-[#1e3a6e] hover:bg-[#152d56] text-white px-4 py-2 rounded-md font-semibold transition-colors h-10 shadow-sm"><i class="fas fa-plus"></i></button>
+                        <button type="submit" class="bg-[#265daa] hover:bg-[#1d58a2] text-white px-4 py-2 rounded-md font-semibold transition-colors h-10 shadow-sm"><i class="fas fa-plus"></i></button>
                     </form>
 
                     <div class="space-y-3">
@@ -133,7 +133,7 @@
                             <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Client Name</label>
                             {{ client_form.name }}
                         </div>
-                        <button type="submit" class="bg-[#1e3a6e] hover:bg-[#152d56] text-white px-4 py-2 rounded-md font-semibold transition-colors h-10 shadow-sm"><i class="fas fa-plus"></i></button>
+                        <button type="submit" class="bg-[#265daa] hover:bg-[#1d58a2] text-white px-4 py-2 rounded-md font-semibold transition-colors h-10 shadow-sm"><i class="fas fa-plus"></i></button>
                     </form>
 
                     <div class="flex flex-wrap gap-2">
@@ -165,7 +165,7 @@
                             <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Location Name</label>
                             {{ location_form.name }}
                         </div>
-                        <button type="submit" class="bg-[#1e3a6e] hover:bg-[#152d56] text-white px-4 py-2 rounded-md font-semibold transition-colors h-10 shadow-sm"><i class="fas fa-plus"></i></button>
+                        <button type="submit" class="bg-[#265daa] hover:bg-[#1d58a2] text-white px-4 py-2 rounded-md font-semibold transition-colors h-10 shadow-sm"><i class="fas fa-plus"></i></button>
                     </form>
 
                     <div class="flex flex-wrap gap-2">

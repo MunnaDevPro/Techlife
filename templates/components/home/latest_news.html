@@ -1,51 +1,59 @@
 {% load static %}
 
 <!-- LATEST POST SECTION -->
-<div class="max-w-7xl mx-auto px-4 my-6 font-inter">
+<div x-data="latestPostCarousel({{ latest_blogs|length|default:0 }})" class="max-w-7xl mx-auto px-4 my-6 font-inter overflow-hidden">
 
     <!-- Section Header with Nav Controls -->
     <div class="border-b-2 border-gray-200 mb-5 relative flex items-center justify-between">
-        <div class="inline-block pb-2 -mb-[2px]" style="border-bottom: 2px solid #1e3a6e;">
-            <h2 class="text-lg font-extrabold uppercase tracking-tight text-zinc-900 flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-xs inline-block" style="background-color: #1e3a6e;"></span>
+        <div class="inline-block pb-2 -mb-[2px]" style="border-bottom: 2px solid #265daa;">
+            <h2 class="text-lg font-bold uppercase tracking-tight text-zinc-900 flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-xs inline-block" style="background-color: #265daa;"></span>
                 Latest Post
             </h2>
         </div>
-        <div class="flex items-center gap-1.5 pb-2">
-            <button class="w-7 h-7 border border-gray-200 hover:text-white rounded-xs flex items-center justify-center text-gray-500 transition-colors text-xs" style="hover:background-color: #1e3a6e;" aria-label="Previous posts">
+        <div class="flex items-center gap-1.5 pb-2 z-10">
+            <button @click="prev()" class="w-7 h-7 border border-gray-200 hover:text-white rounded-xs flex items-center justify-center text-gray-500 transition-colors text-xs hover:bg-[#265daa] hover:border-[#265daa] cursor-pointer" aria-label="Previous posts">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
-            <button class="w-7 h-7 border border-gray-200 hover:text-white rounded-xs flex items-center justify-center text-gray-500 transition-colors text-xs" aria-label="Next posts">
+            <button @click="next()" class="w-7 h-7 border border-gray-200 hover:text-white rounded-xs flex items-center justify-center text-gray-500 transition-colors text-xs hover:bg-[#265daa] hover:border-[#265daa] cursor-pointer" aria-label="Next posts">
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
         </div>
     </div>
 
-    <!-- 3 Horizontal Column Cards Side-by-Side -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {% for blog in latest_blogs|slice:"3" %}
-        <div class="overflow-hidden flex flex-col group">
-            <a href="{% url 'blog_details' blog.slug %}" class="block relative h-48 sm:h-52 overflow-hidden rounded-sm">
-                {% if blog.featured_image %}
-                <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
-                {% elif blog.featured_image_url %}
-                <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
-                {% else %}
-                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-full object-cover" />
-                {% endif %}
-            </a>
-            <div class="pt-3 flex flex-col flex-1">
-                <div class="text-[11px] text-gray-500 font-medium mb-1.5 flex items-center gap-1.5">
-                    <span class="font-bold" style="color: #1e3a6e;">By {{ blog.author.first_name|default:blog.author.email }}</span>
-                    <span>•</span>
-                    <span>{{ blog.created_at|date:"F d, Y" }}</span>
+    <!-- Carousel Track (Dynamic Responsive Layout: 1 card on Mobile, 2 on Tablet, 3 on Desktop) -->
+    <div class="w-full overflow-hidden">
+        <div class="flex transition-transform duration-500 ease-in-out -mx-2"
+             :style="`transform: translateX(-${currentIndex * (window.innerWidth >= 1024 ? 33.333333 : (window.innerWidth >= 640 ? 50 : 100))}%);`">
+            {% for blog in latest_blogs %}
+            <div class="shrink-0 px-2 w-full sm:w-1/2 lg:w-1/3">
+                <div class="overflow-hidden flex flex-col group h-full">
+                    <a href="{% url 'blog_details' blog.slug %}" class="block relative h-48 sm:h-52 overflow-hidden rounded-sm">
+                        {% if blog.featured_image %}
+                        <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
+                        {% elif blog.featured_image_url %}
+                        <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
+                        {% else %}
+                        <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-full object-cover" />
+                        {% endif %}
+                    </a>
+                    <div class="pt-3 flex flex-col flex-1">
+                        <div class="text-[11px] text-gray-400 font-medium mb-1.5 flex items-center justify-between gap-1 w-full flex-wrap">
+                            {% if blog.category %}
+                            <span class="inline-block text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded-xs shrink-0" style="background-color: #265daa;">
+                                {{ blog.category.name }}
+                            </span>
+                            {% endif %}
+                            <span class="ml-auto text-[10px] sm:text-[11px] shrink-0">{{ blog.created_at|date:"F d, Y" }}</span>
+                        </div>
+                        <a href="{% url 'blog_details' blog.slug %}" class="font-bold text-sm sm:text-base text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            {{ blog.title }}
+                        </a>
+                    </div>
                 </div>
-                <a href="{% url 'blog_details' blog.slug %}" class="font-extrabold text-base text-zinc-900 group-hover:text-[#1e3a6e] transition-colors leading-snug line-clamp-3">
-                    {{ blog.title }}
-                </a>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
 
 </div>

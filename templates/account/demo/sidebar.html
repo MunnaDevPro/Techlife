@@ -5,7 +5,7 @@
     <div class="h-16 flex items-center justify-between px-4 border-b border-gray-100 flex-shrink-0 bg-white">
         <div class="flex items-center gap-2.5 sidebar-text overflow-hidden transition-all duration-300">
             <div
-                class="w-8 h-8 rounded-lg bg-[#1e3a6e] flex items-center justify-center text-white shadow-sm flex-shrink-0">
+                class="w-8 h-8 rounded-lg bg-[#265daa] flex items-center justify-center text-white shadow-sm flex-shrink-0">
                 <i class="fas fa-chart-pie text-[13px]"></i>
             </div>
             <span class="text-[15px] font-extrabold text-gray-800 tracking-tight whitespace-nowrap">Dashboard</span>
@@ -13,7 +13,7 @@
 
         <!-- Mobile: ✕ close button, Desktop: ☰ toggle button -->
         <button id="mobile-menu-btn"
-            class="text-gray-400 transition-colors focus:outline-none p-2 rounded-lg flex items-center justify-center flex-shrink-0 ml-auto cursor-pointer w-9 h-9 hover:bg-blue-50 hover:text-[#1e3a6e]">
+            class="text-gray-400 transition-colors focus:outline-none p-2 rounded-lg flex items-center justify-center flex-shrink-0 ml-auto cursor-pointer w-9 h-9 hover:bg-blue-50 hover:text-[#265daa]">
             <i class="fas fa-times sidebar-close-icon" style="font-size: 20px;"></i>
             <i class="fas fa-bars sidebar-menu-icon" style="font-size: 15px;"></i>
         </button>
@@ -25,22 +25,22 @@
         
         <!-- Overview -->
         <a href="{% url 'user_dashboard' %}?section=overview" hx-boost="false"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'overview' or not section %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'overview' or not section %}bg-[#265daa] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#265daa]{% endif %} transition-all group"
             title="Overview">
-            <i class="fas fa-home w-4 text-center text-[15px] flex-shrink-0 {% if section == 'overview' or not section %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
+            <i class="fas fa-home w-4 text-center text-[15px] flex-shrink-0 {% if section == 'overview' or not section %}text-white{% else %}group-hover:text-[#265daa]{% endif %}"></i>
             <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Overview</span>
         </a>
         
         <!-- Company & Reviews Dropdown -->
         <div x-data="{ open: {% if section == 'companies' or section == 'reviews' or section == 'edit-company' or section == 'add-company' %}true{% else %}false{% endif %} }" class="w-full">
             <button @click="open = !open" type="button"
-                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer text-gray-700 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e] transition-all duration-300 group"
+                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer text-gray-700 font-medium hover:bg-blue-50/60 hover:text-[#265daa] transition-all duration-300 group"
                 title="Company">
                 <div class="flex items-center gap-3">
-                    <i class="fas fa-building w-4 text-center text-[15px] flex-shrink-0 text-gray-500 group-hover:text-[#1e3a6e]"></i>
+                    <i class="fas fa-building w-4 text-center text-[15px] flex-shrink-0 text-gray-500 group-hover:text-[#265daa]"></i>
                     <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Company</span>
                 </div>
-                <i class="fas fa-chevron-down text-[11px] transition-transform duration-500 ease-in-out sidebar-text text-gray-400 group-hover:text-[#1e3a6e] flex-shrink-0" :class="{ 'rotate-180': open }"></i>
+                <i class="fas fa-chevron-down text-[11px] transition-transform duration-500 ease-in-out sidebar-text text-gray-400 group-hover:text-[#265daa] flex-shrink-0" :class="{ 'rotate-180': open }"></i>
             </button>
             
             <div x-show="open"
@@ -53,14 +53,14 @@
                  class="pl-6 pr-1 py-1 space-y-1 overflow-hidden">
                 <!-- 1st Item: My Company -->
                 <a href="{% url 'user_dashboard' %}?section=companies"
-                    class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-semibold transition-all duration-200 {% if section == 'companies' or section == 'edit-company' or section == 'add-company' %}bg-[#1e3a6e] text-white shadow-sm{% else %}text-gray-600 font-medium hover:text-[#1e3a6e] hover:bg-slate-100/70{% endif %}">
+                    class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-semibold transition-all duration-200 {% if section == 'companies' or section == 'edit-company' or section == 'add-company' %}bg-[#265daa] text-white shadow-sm{% else %}text-gray-600 font-medium hover:text-[#265daa] hover:bg-slate-100/70{% endif %}">
                     <i class="fas fa-city text-[12px] w-4 text-center {% if section == 'companies' or section == 'edit-company' or section == 'add-company' %}text-white{% else %}text-gray-400{% endif %}"></i>
                     <span class="sidebar-text whitespace-nowrap">My Company</span>
                 </a>
                 
                 <!-- 2nd Item: Total Review -->
                 <a href="{% url 'user_dashboard' %}?section=reviews"
-                    class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-semibold transition-all duration-200 {% if section == 'reviews' %}bg-[#1e3a6e] text-white shadow-sm{% else %}text-gray-600 font-medium hover:text-[#1e3a6e] hover:bg-slate-100/70{% endif %}">
+                    class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-semibold transition-all duration-200 {% if section == 'reviews' %}bg-[#265daa] text-white shadow-sm{% else %}text-gray-600 font-medium hover:text-[#265daa] hover:bg-slate-100/70{% endif %}">
                     <i class="fas fa-star text-[12px] w-4 text-center {% if section == 'reviews' %}text-white{% else %}text-gray-400{% endif %}"></i>
                     <span class="sidebar-text whitespace-nowrap">Total Review</span>
                 </a>
@@ -69,34 +69,34 @@
         
         <!-- Blog Posts -->
         <a href="{% url 'user_dashboard' %}?section=blog-posts"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'blog-posts' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'blog-posts' %}bg-[#265daa] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#265daa]{% endif %} transition-all group"
             title="Blog Posts">
-            <i class="fas fa-newspaper w-4 text-center text-[15px] flex-shrink-0 {% if section == 'blog-posts' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
+            <i class="fas fa-newspaper w-4 text-center text-[15px] flex-shrink-0 {% if section == 'blog-posts' %}text-white{% else %}group-hover:text-[#265daa]{% endif %}"></i>
             <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Blog Posts</span>
         </a>
 
         <!-- Recent Activities -->
         <a href="{% url 'user_dashboard' %}?section=activities"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'activities' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'activities' %}bg-[#265daa] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#265daa]{% endif %} transition-all group"
             title="Recent Activities">
-            <i class="fas fa-chart-line w-4 text-center text-[15px] flex-shrink-0 {% if section == 'activities' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
+            <i class="fas fa-chart-line w-4 text-center text-[15px] flex-shrink-0 {% if section == 'activities' %}text-white{% else %}group-hover:text-[#265daa]{% endif %}"></i>
             <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Recent Activities</span>
         </a>
 
         <!-- Questions -->
         <a href="{% url 'user_dashboard' %}?section=questions"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'questions' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'questions' %}bg-[#265daa] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#265daa]{% endif %} transition-all group"
             title="Questions">
-            <i class="fas fa-question-circle w-4 text-center text-[15px] flex-shrink-0 {% if section == 'questions' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
+            <i class="fas fa-question-circle w-4 text-center text-[15px] flex-shrink-0 {% if section == 'questions' %}text-white{% else %}group-hover:text-[#265daa]{% endif %}"></i>
             <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Questions</span>
         </a>
 
         <!-- Notifications -->
         <a href="{% url 'user_dashboard' %}?section=notifications"
-            class="flex items-center justify-between px-3 py-2.5 rounded-lg {% if section == 'notifications' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
+            class="flex items-center justify-between px-3 py-2.5 rounded-lg {% if section == 'notifications' %}bg-[#265daa] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#265daa]{% endif %} transition-all group"
             title="Notifications">
             <div class="flex items-center gap-3">
-                <i class="fas fa-bell w-4 text-center text-[15px] flex-shrink-0 {% if section == 'notifications' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
+                <i class="fas fa-bell w-4 text-center text-[15px] flex-shrink-0 {% if section == 'notifications' %}text-white{% else %}group-hover:text-[#265daa]{% endif %}"></i>
                 <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Notifications</span>
             </div>
             {% if unread_notifications_count > 0 and section != 'notifications' %}
@@ -108,25 +108,25 @@
 
         <!-- API Tokens -->
         <a href="{% url 'user_api_tokens' %}" hx-boost="false"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if action == 'api_tokens' or section == 'api-tokens' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if action == 'api_tokens' or section == 'api-tokens' %}bg-[#265daa] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#265daa]{% endif %} transition-all group"
             title="API Tokens">
-            <i class="fas fa-key w-4 text-center text-[15px] flex-shrink-0 {% if action == 'api_tokens' or section == 'api-tokens' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
+            <i class="fas fa-key w-4 text-center text-[15px] flex-shrink-0 {% if action == 'api_tokens' or section == 'api-tokens' %}text-white{% else %}group-hover:text-[#265daa]{% endif %}"></i>
             <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">API Tokens</span>
         </a>
 
         <!-- Create Post (Token) -->
         <a href="{% url 'user_dashboard' %}?section=submit-token-post"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'submit-token-post' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'submit-token-post' %}bg-[#265daa] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#265daa]{% endif %} transition-all group"
             title="Create Post (Token)">
-            <i class="fas fa-edit w-4 text-center text-[15px] flex-shrink-0 {% if section == 'submit-token-post' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
+            <i class="fas fa-edit w-4 text-center text-[15px] flex-shrink-0 {% if section == 'submit-token-post' %}text-white{% else %}group-hover:text-[#265daa]{% endif %}"></i>
             <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Create Post (Token)</span>
         </a>
 
         <!-- Edit Profile -->
         <a href="{% url 'user_dashboard' %}?section=edit-profile"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'edit-profile' %}bg-[#1e3a6e] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#1e3a6e]{% endif %} transition-all group"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if section == 'edit-profile' %}bg-[#265daa] text-white font-semibold shadow-sm{% else %}text-gray-600 font-medium hover:bg-blue-50/60 hover:text-[#265daa]{% endif %} transition-all group"
             title="Edit Profile">
-            <i class="fas fa-user-edit w-4 text-center text-[15px] flex-shrink-0 {% if section == 'edit-profile' %}text-white{% else %}group-hover:text-[#1e3a6e]{% endif %}"></i>
+            <i class="fas fa-user-edit w-4 text-center text-[15px] flex-shrink-0 {% if section == 'edit-profile' %}text-white{% else %}group-hover:text-[#265daa]{% endif %}"></i>
             <span class="text-[13px] sidebar-text whitespace-nowrap overflow-hidden transition-all duration-300">Edit Profile</span>
         </a>
 

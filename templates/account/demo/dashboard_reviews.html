@@ -1,7 +1,7 @@
 {% load static %}
 <c-ui.card title="Total Reviews" subtitle="Manage and track all company and software reviews." extra_class="max-w-5xl">
     <c-slot name="actions">
-        <c-ui.button href="{% url 'write_review_landing' %}" icon="plus" size="sm" extra_class="rounded font-semibold transition-opacity hover:opacity-90 shadow-sm" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; font-size: 12px; background-color: #1e3a6e !important; color: white !important; border: none;">
+        <c-ui.button href="{% url 'write_review_landing' %}" icon="plus" size="sm" extra_class="rounded font-semibold transition-opacity hover:opacity-90 shadow-sm" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; font-size: 12px; background-color: #265daa !important; color: white !important; border: none;">
             Write New Review
         </c-ui.button>
     </c-slot>
@@ -43,7 +43,7 @@
         <!-- Reviews List -->
         <div class="space-y-3">
             {% for review in user_reviews %}
-            <div class="p-5 rounded-lg border border-gray-200 hover:border-[#1e3a6e]/30 hover:bg-gray-50/50 transition-all">
+            <div class="p-5 rounded-lg border border-gray-200 hover:border-[#265daa]/30 hover:bg-gray-50/50 transition-all">
                 <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div class="space-y-2 flex-1">
                         <div class="flex items-center gap-2 flex-wrap">
@@ -88,7 +88,7 @@
                     title="No Reviews Found"
                     description="There are no reviews submitted yet for your account or company."
                 >
-                    <c-ui.button href="{% url 'write_review_landing' %}" icon="plus" size="sm" extra_class="mt-3 rounded font-semibold transition-opacity hover:opacity-90 shadow-sm" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; font-size: 12px; background-color: #1e3a6e !important; color: white !important; border: none;">
+                    <c-ui.button href="{% url 'write_review_landing' %}" icon="plus" size="sm" extra_class="mt-3 rounded font-semibold transition-opacity hover:opacity-90 shadow-sm" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; font-size: 12px; background-color: #265daa !important; color: white !important; border: none;">
                         Write First Review
                     </c-ui.button>
                 </c-ui.empty-state>

@@ -8,32 +8,30 @@
         <div class="lg:col-span-7 flex flex-col">
             {% if carousel_blogs %}
             {% with hero_post=carousel_blogs|first %}
-            <div class="relative w-full rounded-sm overflow-hidden shadow-sm group bg-zinc-900 h-[380px] sm:h-[450px] lg:h-[500px]" style="background-color: #152d56;">
+            <div class="relative w-full rounded-sm overflow-hidden shadow-sm group bg-zinc-900 h-[380px] sm:h-[450px] lg:h-[500px]" style="background-color: #1d58a2;">
                 <a href="{% url 'blog_details' hero_post.slug %}" class="block w-full h-full relative">
                     {% if hero_post.featured_image %}
-                    <img src="{{ hero_post.featured_image.url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="eager" fetchpriority="high" />
+                    <img src="{{ hero_post.featured_image.url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover" loading="eager" fetchpriority="high" />
                     {% elif hero_post.featured_image_url %}
-                    <img src="{{ hero_post.featured_image_url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="eager" fetchpriority="high" />
+                    <img src="{{ hero_post.featured_image_url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover" loading="eager" fetchpriority="high" />
                     {% else %}
-                    <img src="{% static 'image/placeholder-5.png' %}" alt="{{ hero_post.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="eager" />
+                    <img src="{% static 'image/placeholder-5.png' %}" alt="{{ hero_post.title }}" class="w-full h-full object-cover" loading="eager" />
                     {% endif %}
                     
                     <!-- Overlay gradient -->
-                    <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.35) 60%, transparent 100%);"></div>
+                    <div class="absolute inset-0 pointer-events-none" style="background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 30%, transparent 50%);"></div>
 
                     <!-- Content at bottom -->
                     <div class="absolute bottom-0 left-0 right-0 p-5 sm:p-7 text-white">
                         {% if hero_post.category %}
-                        <span class="inline-block text-white text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 mb-2.5 rounded-sm" style="background-color: #1e3a6e; color: #ffffff;">
+                        <span class="inline-block text-white text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 mb-2.5 rounded-sm" style="background-color: #265daa; color: #ffffff;">
                             {{ hero_post.category.name }}
                         </span>
                         {% endif %}
-                        <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold leading-tight text-white group-hover:text-blue-200 transition-colors line-clamp-3 mb-2.5">
+                        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight text-white group-hover:text-blue-200 transition-colors line-clamp-3 mb-2.5" style="text-shadow: 0 2px 4px rgba(0,0,0,0.7);">
                             {{ hero_post.title }}
                         </h1>
                         <div class="flex items-center gap-2 text-xs text-blue-100 font-medium">
-                            <span>By {{ hero_post.author.first_name|default:hero_post.author.email }}</span>
-                            <span>•</span>
                             <span>{{ hero_post.created_at|date:"F d, Y" }}</span>
                         </div>
                     </div>
@@ -41,7 +39,7 @@
             </div>
             {% endwith %}
             {% else %}
-            <div class="relative w-full rounded-sm overflow-hidden shadow-sm bg-zinc-900 h-[450px] flex items-center justify-center text-white" style="background-color: #152d56;">
+            <div class="relative w-full rounded-sm overflow-hidden shadow-sm bg-zinc-900 h-[450px] flex items-center justify-center text-white" style="background-color: #1d58a2;">
                 <p class="text-gray-300 font-bold">No featured post available</p>
             </div>
             {% endif %}
@@ -63,24 +61,27 @@
                     <img src="{% static 'image/placeholder-5.png' %}" alt="{{ sub_hero.title }}" class="w-full h-full object-cover" />
                     {% endif %}
                     {% if sub_hero.category %}
-                    <span class="absolute top-3 left-3 text-white text-[10px] font-extrabold uppercase px-2 py-0.5 tracking-wider rounded-sm" style="background-color: #1e3a6e; color: #ffffff;">
+                    <span class="absolute top-3 left-3 text-white text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-sm" style="background-color: #265daa; color: #ffffff;">
                         {{ sub_hero.category.name }}
                     </span>
                     {% endif %}
                 </a>
                 <div class="pt-3 flex flex-col flex-1">
-                    <div class="text-[11px] text-gray-500 font-medium mb-1 flex items-center gap-1.5">
-                        <span class="font-bold" style="color: #1e3a6e;">By {{ sub_hero.author.first_name|default:sub_hero.author.email }}</span>
-                        <span>•</span>
+                    <div class="text-[11px] text-gray-400 font-medium mb-1 flex items-center gap-2">
+                        {% if sub_hero.category %}
+                        <span class="inline-block text-white text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-sm" style="background-color: #265daa; color: #ffffff;">
+                            {{ sub_hero.category.name }}
+                        </span>
+                        {% endif %}
                         <span>{{ sub_hero.created_at|date:"F d, Y" }}</span>
                     </div>
-                    <a href="{% url 'blog_details' sub_hero.slug %}" class="font-extrabold text-base text-zinc-900 hover:text-[#1e3a6e] transition-colors leading-snug line-clamp-2 mb-2">
+                    <a href="{% url 'blog_details' sub_hero.slug %}" class="font-bold text-base text-zinc-900 hover:text-[#265daa] transition-colors leading-snug line-clamp-2 mb-2">
                         {{ sub_hero.title }}
                     </a>
                     <p class="text-xs text-gray-600 line-clamp-2 leading-relaxed mb-3">
                         {{ sub_hero.description|striptags|truncatewords:18 }}
                     </p>
-                    <a href="{% url 'blog_details' sub_hero.slug %}" class="inline-block text-[11px] font-bold uppercase tracking-wider hover:underline" style="color: #1e3a6e;">
+                    <a href="{% url 'blog_details' sub_hero.slug %}" class="inline-block text-[11px] font-bold uppercase tracking-wider hover:underline" style="color: #265daa;">
                         Read More &rarr;
                     </a>
                 </div>
@@ -88,10 +89,10 @@
             {% endwith %}
             {% endif %}
 
-            <!-- 3 Small Sub Hero List Items -->
+            <!-- 5 Small Sub Hero List Items -->
             <div class="flex flex-col divide-y divide-gray-100">
-                {% for sub_item in carousel_blogs|slice:"2:5" %}
-                <a href="{% url 'blog_details' sub_item.slug %}" class="flex items-center gap-3.5 py-2.5 hover:bg-gray-50 transition-colors group rounded-sm">
+                {% for sub_item in carousel_blogs|slice:"2:7" %}
+                <a href="{% url 'blog_details' sub_item.slug %}" class="flex items-center gap-3.5 py-2.5 transition-colors group rounded-sm">
                     <div class="w-20 h-14 shrink-0 rounded-sm overflow-hidden bg-gray-100">
                         {% if sub_item.featured_image %}
                         <img src="{{ sub_item.featured_image.url }}" alt="{{ sub_item.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -103,11 +104,11 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="text-[10px] text-gray-500 font-semibold mb-0.5 flex items-center gap-1.5">
-                            <span class="font-bold uppercase" style="color: #1e3a6e;">{{ sub_item.category.name|default:"Tech" }}</span>
+                            <span class="font-bold uppercase" style="color: #265daa;">{{ sub_item.category.name|default:"Tech" }}</span>
                             <span>•</span>
                             <span>{{ sub_item.created_at|date:"M d, Y" }}</span>
                         </div>
-                        <h4 class="text-xs font-bold text-zinc-900 group-hover:text-[#1e3a6e] transition-colors leading-snug line-clamp-2">
+                        <h4 class="text-xs font-bold text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
                             {{ sub_item.title }}
                         </h4>
                     </div>

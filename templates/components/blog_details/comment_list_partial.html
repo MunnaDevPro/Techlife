@@ -6,7 +6,7 @@
         {% if comment.user.profile_picture %}
         <img src="{{ comment.user.profile_picture.url }}" alt="{{ comment.user.first_name }}" class="w-9 h-9 rounded-full border-2 border-gray-100 flex-shrink-0 object-cover" />
         {% else %}
-        <div class="w-9 h-9 rounded-full bg-[#1e3a6e] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">{{ comment.user.first_name|slice:":1" }}</div>
+        <div class="w-9 h-9 rounded-full bg-[#265daa] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">{{ comment.user.first_name|slice:":1" }}</div>
         {% endif %}
         <div class="flex-1 min-w-0">
             <div class="bg-gray-50 rounded-xl px-4 py-3">
@@ -22,13 +22,13 @@
             <div class="flex items-center gap-4 text-[11px] text-gray-400 mt-1.5 pl-2">
                 {% if not request.user.is_verified %}
                 <div class="relative group">
-                    <button class="hover:text-[#1e3a6e] font-medium transition-colors">Like</button>
-                    <button type="button" class="ml-3 hover:text-[#1e3a6e] font-medium transition-colors reply-btn" data-comment-id="{{ comment.id }}">Reply</button>
+                    <button class="hover:text-[#265daa] font-medium transition-colors">Like</button>
+                    <button type="button" class="ml-3 hover:text-[#265daa] font-medium transition-colors reply-btn" data-comment-id="{{ comment.id }}">Reply</button>
                     <div class="absolute bottom-6 left-0 bg-gray-900 text-white text-[10px] rounded-lg px-3 py-1.5 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">Please sign in first</div>
                 </div>
                 {% else %}
-                <button class="hover:text-[#1e3a6e] font-medium transition-colors">Like</button>
-                <button type="button" class="hover:text-[#1e3a6e] font-medium transition-colors reply-btn" data-comment-id="{{ comment.id }}">Reply</button>
+                <button class="hover:text-[#265daa] font-medium transition-colors">Like</button>
+                <button type="button" class="hover:text-[#265daa] font-medium transition-colors reply-btn" data-comment-id="{{ comment.id }}">Reply</button>
                 {% endif %}
             </div>
             <form method="POST"
@@ -38,11 +38,11 @@
                 {% if request.user.profile_picture %}
                 <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.first_name }} profile photo" class="w-7 h-7 rounded-full border flex-shrink-0 object-cover" />
                 {% else %}
-                <div class="w-7 h-7 rounded-full bg-[#1e3a6e] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">{{ request.user.first_name|slice:":1" }}</div>
+                <div class="w-7 h-7 rounded-full bg-[#265daa] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">{{ request.user.first_name|slice:":1" }}</div>
                 {% endif %}
-                <div class="flex-1 flex items-center gap-2 bg-white border border-gray-200 rounded-full px-3 py-1.5 focus-within:border-[#1e3a6e]">
+                <div class="flex-1 flex items-center gap-2 bg-white border border-gray-200 rounded-full px-3 py-1.5 focus-within:border-[#265daa]">
                     <textarea name="content" rows="1" placeholder="Write a reply..." class="flex-1 text-[12px] focus:outline-none resize-none placeholder-gray-400 bg-transparent"></textarea>
-                    <button type="submit" class="flex items-center justify-center w-7 h-7 bg-[#1e3a6e] text-white rounded-full flex-shrink-0">
+                    <button type="submit" class="flex items-center justify-center w-7 h-7 bg-[#265daa] text-white rounded-full flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
                     </button>
                 </div>
@@ -54,7 +54,7 @@
                     {% if reply.user.profile_picture %}
                     <img src="{{ reply.user.profile_picture.url }}" alt="{{ reply.user.first_name }} profile photo" class="w-7 h-7 rounded-full border flex-shrink-0 object-cover" />
                     {% else %}
-                    <div class="w-7 h-7 rounded-full bg-[#1e3a6e]/80 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">{{ reply.user.first_name|slice:":1" }}</div>
+                    <div class="w-7 h-7 rounded-full bg-[#265daa]/80 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">{{ reply.user.first_name|slice:":1" }}</div>
                     {% endif %}
                     <div class="flex-1 bg-gray-50 rounded-xl px-3 py-2">
                         <div class="flex items-center justify-between mb-0.5">
@@ -79,7 +79,7 @@
     {% if all_comments.has_next %}
     <div class="text-center mt-5">
         <button hx-get="?page={{ all_comments.next_page_number }}&sort_by={{ sort_by }}" hx-target="#container"
-            class="inline-flex items-center gap-2 px-5 py-2 border border-[#1e3a6e] text-[#1e3a6e] text-[12px] font-semibold rounded-full hover:bg-[#1e3a6e] hover:text-white transition-all duration-200">
+            class="inline-flex items-center gap-2 px-5 py-2 border border-[#265daa] text-[#265daa] text-[12px] font-semibold rounded-full hover:bg-[#265daa] hover:text-white transition-all duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             Load More Comments
         </button>

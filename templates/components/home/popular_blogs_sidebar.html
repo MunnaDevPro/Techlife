@@ -2,7 +2,7 @@
 
 <div class="tl-card rounded-xl overflow-hidden flex flex-col">
     <!-- Header -->
-    <div class="flex items-center gap-2 px-3 py-2.5 bg-[#1e3a6e]">
+    <div class="flex items-center gap-2 px-3 py-2.5 bg-[#265daa]">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         <span class="text-[12px] font-bold text-white">Popular Posts</span>
     </div>
@@ -12,10 +12,10 @@
         {% for post in latest_popular_blogs|slice:'3' %}
         <li>
             <a href="{% url 'blog_details' post.slug %}"
-                class="flex items-start gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors group cursor-pointer">
-                <span class="text-[13px] font-black text-[#1e3a6e] shrink-0 w-5 leading-snug">{{ forloop.counter }}</span>
+                class="flex items-start gap-2.5 px-3 py-2.5 transition-colors group cursor-pointer">
+                <span class="text-[13px] font-bold text-[#265daa] shrink-0 w-5 leading-snug">{{ forloop.counter }}</span>
                 <div class="flex-1 min-w-0">
-                    <h3 class="text-[12px] font-semibold text-gray-800 line-clamp-2 group-hover:text-[#1e3a6e] leading-snug">{{ post.title }}</h3>
+                    <h3 class="text-[12px] font-semibold text-gray-800 line-clamp-2 group-hover:text-[#265daa] leading-snug">{{ post.title }}</h3>
                     <span class="inline-block mt-1 text-[10px] text-gray-500">{{ post.category.name }}</span>
                 </div>
             </a>

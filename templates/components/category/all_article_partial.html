@@ -7,7 +7,7 @@
 </div>
 
 <style>
-    .art-list-thumb { width: 96px; height: 64px; }
+    .art-list-thumb { width: 110px; aspect-ratio: 16/9; }
 </style>
 
 <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-5 pb-10">
@@ -15,11 +15,11 @@
     <!-- Page Header -->
     <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div class="flex items-center gap-2">
-            <span class="w-1 h-6 rounded bg-[#1e3a6e] inline-block"></span>
+            <span class="w-1 h-6 rounded inline-block" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%);"></span>
             <h1 class="font-bold text-[16px] text-gray-800 tracking-tight">All Articles</h1>
         </div>
         {% if blogs %}
-        <span class="text-[11px] font-semibold text-[#1e3a6e] bg-[#dbeafe]/60 px-2.5 py-1 rounded-full">{{ blogs|length }} posts</span>
+        <span class="text-[11px] font-semibold text-white px-2.5 py-1 rounded-[4px] shadow-2xs" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%);">{{ blogs|length }} posts</span>
         {% endif %}
     </div>
 
@@ -30,7 +30,7 @@
             <li class="shrink-0">
                 <a href="{% url 'category_post' cat.slug %}"
                    hx-get="{% url 'category_post' cat.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-                   class="inline-flex items-center px-3 py-1.5 rounded-full text-[12px] font-semibold border border-gray-200 bg-white text-gray-600 hover:bg-[#1e3a6e] hover:text-white hover:border-[#1e3a6e] transition-all duration-200 whitespace-nowrap">
+                   class="inline-flex items-center px-3 py-1.5 rounded-[4px] text-[12px] font-semibold border border-gray-200 bg-white text-gray-600 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-all duration-200 whitespace-nowrap">
                     {{ cat.name }}
                 </a>
             </li>
@@ -39,19 +39,13 @@
     </div>
 
     <!-- Articles List -->
-    <div class="tl-card rounded-xl overflow-hidden">
-        <div class="flex items-center gap-2 px-4 py-3 bg-[#1e3a6e]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
-            <span class="text-[13px] font-bold text-white">All Articles</span>
-        </div>
-
-        <div class="divide-y divide-gray-100">
-            {% for blog in blogs %}
+    <div class="flex flex-col divide-y divide-gray-100">
+        {% for blog in blogs %}
             <a href="{% url 'blog_details' blog.slug %}"
                hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-               class="flex items-start gap-3 p-3 sm:p-4 hover:bg-gray-50 transition-colors group cursor-pointer">
+               class="flex items-start gap-3 py-3 sm:py-4 bg-transparent hover:bg-gray-50/50 transition-all group cursor-pointer">
 
-                <div class="art-list-thumb shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                <div class="art-list-thumb shrink-0 overflow-hidden rounded-[4px] bg-gray-100">
                     {% if blog.featured_image %}
                     <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.05]" width="96" height="64" loading="lazy" decoding="async" />
                     {% elif blog.featured_image_url %}
@@ -63,9 +57,9 @@
 
                 <div class="flex-1 min-w-0">
                     {% if blog.category %}
-                    <span class="inline-block text-[9px] font-bold text-[#1e3a6e] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full mb-1.5">{{ blog.category.name }}</span>
+                    <span class="inline-block text-[9px] font-bold text-[#265daa] bg-[#dbeafe]/60 px-2 py-0.5 rounded-[4px] mb-1.5">{{ blog.category.name }}</span>
                     {% endif %}
-                    <h3 class="font-bold text-[13px] text-gray-800 line-clamp-2 group-hover:text-[#1e3a6e] transition-colors leading-snug mb-1">{{ blog.title }}</h3>
+                    <h3 class="font-bold text-[13px] text-gray-800 line-clamp-2 group-hover:text-[#265daa] transition-colors leading-snug mb-1">{{ blog.title }}</h3>
                     <p class="hidden sm:block text-[11px] text-gray-500 line-clamp-1 mb-1.5">{{ blog.description|striptags|truncatechars:120 }}</p>
                     <div class="flex items-center gap-3 text-[10px] text-gray-400">
                         <span>{{ blog.created_at|date:"d M, Y" }}</span>
@@ -76,16 +70,15 @@
                     </div>
                 </div>
             </a>
-            {% empty %}
+        {% empty %}
             <div class="text-center py-16 px-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
                 <h3 class="text-[15px] font-bold text-gray-700 mb-2">No Articles Found</h3>
                 <p class="text-[13px] text-gray-400 mb-4">No published articles yet.</p>
                 <a href="{% url 'blogs' %}"
                    hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-                   class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1e3a6e] text-white text-[12px] font-semibold rounded-lg hover:bg-[#152d56] transition-colors">Browse All</a>
+                   class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#265daa] text-white text-[12px] font-semibold rounded-[4px] hover:bg-[#1d58a2] transition-colors">Browse All</a>
             </div>
-            {% endfor %}
-        </div>
+        {% endfor %}
     </div>
 </div>

@@ -45,7 +45,7 @@
 
             <!-- Top left: Latest badge -->
             <div class="absolute top-3 left-3">
-                <span class="inline-flex items-center gap-1 bg-[#1e3a6e] text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">
+                <span class="inline-flex items-center gap-1 bg-[#265daa] text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">
                     <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
                     Latest
                 </span>
@@ -106,9 +106,9 @@
 
                 <div class="p-2.5 flex flex-col flex-1">
                     {% if blog.category %}
-                    <span class="inline-block text-[9px] font-bold text-[#1e3a6e] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full mb-1.5 w-fit">{{ blog.category.name }}</span>
+                    <span class="inline-block text-[9px] font-bold text-[#265daa] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full mb-1.5 w-fit">{{ blog.category.name }}</span>
                     {% endif %}
-                    <h3 class="font-bold text-[12px] text-gray-800 line-clamp-2 group-hover:text-[#1e3a6e] transition-colors leading-snug">
+                    <h3 class="font-bold text-[12px] text-gray-800 line-clamp-2 group-hover:text-[#265daa] transition-colors leading-snug">
                         {{ blog.title }}
                     </h3>
                     <span class="text-[11px] text-gray-500 mt-1.5">{{ blog.created_at|date:"d M, Y" }}</span>
@@ -154,9 +154,9 @@
 
             <div class="p-2.5 flex flex-col flex-1">
                 {% if blog.category %}
-                <span class="inline-block text-[9px] font-bold text-[#1e3a6e] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full mb-1.5 w-fit">{{ blog.category.name }}</span>
+                <span class="inline-block text-[9px] font-bold text-[#265daa] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full mb-1.5 w-fit">{{ blog.category.name }}</span>
                 {% endif %}
-                <h3 class="font-bold text-[12px] text-gray-800 line-clamp-2 group-hover:text-[#1e3a6e] transition-colors leading-snug">
+                <h3 class="font-bold text-[12px] text-gray-800 line-clamp-2 group-hover:text-[#265daa] transition-colors leading-snug">
                     {{ blog.title }}
                 </h3>
                 <span class="text-[11px] text-gray-500 mt-1.5">{{ blog.created_at|date:"d M, Y" }}</span>
@@ -207,11 +207,11 @@
         <div class="p-2.5 flex flex-col flex-1">
             <div class="flex items-center justify-between mb-1.5">
                 {% if blog.category %}
-                <span class="inline-block text-[9px] font-bold text-[#1e3a6e] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full">{{ blog.category.name }}</span>
+                <span class="inline-block text-[9px] font-bold text-[#265daa] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full">{{ blog.category.name }}</span>
                 {% endif %}
                 <span class="text-[9px] text-gray-400">{{ blog.created_at|date:"d M" }}</span>
             </div>
-            <h3 class="font-bold text-[12px] text-gray-800 line-clamp-2 group-hover:text-[#1e3a6e] transition-colors leading-snug">
+            <h3 class="font-bold text-[12px] text-gray-800 line-clamp-2 group-hover:text-[#265daa] transition-colors leading-snug">
                 {{ blog.title }}
             </h3>
             <div class="flex items-center gap-2 mt-1.5 text-[9px] text-gray-400">
@@ -269,11 +269,11 @@
         <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 mb-1">
                 {% if blog.category %}
-                <span class="inline-block text-[9px] font-bold text-[#1e3a6e] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full">{{ blog.category.name }}</span>
+                <span class="inline-block text-[9px] font-bold text-[#265daa] bg-[#dbeafe]/60 px-2 py-0.5 rounded-full">{{ blog.category.name }}</span>
                 {% endif %}
                 <span class="text-[11px] text-gray-500">{{ blog.created_at|date:"d M, Y" }}</span>
             </div>
-            <h3 class="font-bold text-[13px] text-gray-800 line-clamp-1 group-hover:text-[#1e3a6e] transition-colors leading-snug">
+            <h3 class="font-bold text-[13px] text-gray-800 line-clamp-1 group-hover:text-[#265daa] transition-colors leading-snug">
                 {{ blog.title }}
             </h3>
             <p class="hidden sm:block text-[11px] text-gray-500 line-clamp-1 mt-0.5">
@@ -281,7 +281,7 @@
             </p>
         </div>
 
-        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e3a6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"><path d="m9 18 6-6-6-6"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#265daa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"><path d="m9 18 6-6-6-6"/></svg>
     </a>
     {% endfor %}
 </div>
@@ -316,7 +316,7 @@
 
         {% if blogs.has_previous %}
         <a href="{% url 'blogs' %}?page={{ blogs.previous_page_number }}"
-           class="flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 text-gray-500 hover:bg-[#1e3a6e] hover:text-white hover:border-[#1e3a6e] transition-colors"
+           class="flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 text-gray-500 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors"
            aria-label="Previous">
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         </a>
@@ -328,10 +328,10 @@
 
         {% for i in blogs.paginator.page_range %}
             {% if blogs.number == i %}
-            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-[#1e3a6e] text-white text-[12px] font-semibold" aria-current="page">{{ i }}</span>
+            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-[#265daa] text-white text-[12px] font-semibold" aria-current="page">{{ i }}</span>
             {% elif i == 1 or i == blogs.paginator.num_pages or i >= blogs.number|add:"-2" and i <= blogs.number|add:"2" %}
             <a href="{% url 'blogs' %}?page={{ i }}"
-               class="flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 text-gray-600 text-[12px] hover:bg-[#1e3a6e] hover:text-white hover:border-[#1e3a6e] transition-colors">{{ i }}</a>
+               class="flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 text-gray-600 text-[12px] hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors">{{ i }}</a>
             {% elif i == blogs.number|add:"-3" or i == blogs.number|add:"3" %}
             <span class="flex items-center justify-center w-6 text-gray-400 text-[11px]">…</span>
             {% endif %}
@@ -339,7 +339,7 @@
 
         {% if blogs.has_next %}
         <a href="{% url 'blogs' %}?page={{ blogs.next_page_number }}"
-           class="flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 text-gray-500 hover:bg-[#1e3a6e] hover:text-white hover:border-[#1e3a6e] transition-colors"
+           class="flex items-center justify-center w-8 h-8 rounded-lg border border-gray-200 text-gray-500 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors"
            aria-label="Next">
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </a>
