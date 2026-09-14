@@ -229,14 +229,18 @@
                                 <div>
                                     <div class="w-full h-[125px] rounded-md overflow-hidden bg-gray-200 mb-2.5 relative shrink-0"
                                         style="height: 125px; overflow: hidden;">
-                                        {% if post.featured_image %}
+                                        {% if post.featured_image_thumbnail %}
+                                        <img src="{{ post.featured_image_thumbnail.url }}" alt="{{ post.title }}"
+                                            class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300"
+                                            style="height: 125px; width: 100%; object-fit: cover;" loading="lazy" decoding="async" />
+                                        {% elif post.featured_image %}
                                         <img src="{{ post.featured_image.url }}" alt="{{ post.title }}"
                                             class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300"
-                                            style="height: 125px; width: 100%; object-fit: cover;" />
+                                            style="height: 125px; width: 100%; object-fit: cover;" loading="lazy" decoding="async" />
                                         {% elif post.featured_image_url %}
                                         <img src="{{ post.featured_image_url }}" alt="{{ post.title }}"
                                             class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300"
-                                            style="height: 125px; width: 100%; object-fit: cover;" />
+                                            style="height: 125px; width: 100%; object-fit: cover;" loading="lazy" decoding="async" />
                                         {% else %}
                                         <div class="w-full h-full bg-slate-700 flex items-center justify-center text-white text-xs font-bold"
                                             style="height: 125px; width: 100%;">TechLife</div>
@@ -676,8 +680,7 @@
                 </svg>
             </div>
             <div class="min-w-0 flex-1">
-                <h4 class="text-base font-bold text-gray-900 leading-tight tracking-tight">TechLife BD</h4>
-                <p class="text-xs text-gray-500 font-medium mb-1">Smart ICT &amp; Tech Insights</p>
+                <h4 class="text-base font-bold text-gray-900 leading-tight tracking-tight mb-1">TechLife BD</h4>
                 <a href="{% url 'login' %}"
                     class="inline-flex items-center gap-1 text-[11px] font-bold text-[#265daa] hover:underline">
                     <span>Login or Sign up</span>

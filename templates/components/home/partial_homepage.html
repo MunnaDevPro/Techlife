@@ -28,12 +28,22 @@
                     {% for hero_post in carousel_blogs %}
                     <div class="w-full h-full shrink-0 relative">
                         <a href="{% url 'blog_details' hero_post.slug %}" class="block w-full h-full">
-                            {% if hero_post.featured_image %}
-                            <img src="{{ hero_post.featured_image.url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]" style="image-rendering: -webkit-optimize-contrast; filter: contrast(1.03) brightness(1.02);" loading="eager" fetchpriority="high" />
-                            {% elif hero_post.featured_image_url %}
-                            <img src="{{ hero_post.featured_image_url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]" style="image-rendering: -webkit-optimize-contrast; filter: contrast(1.03) brightness(1.02);" loading="eager" fetchpriority="high" />
+                            {% if forloop.first %}
+                                {% if hero_post.featured_image %}
+                                <img src="{{ hero_post.featured_image.url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]" style="image-rendering: -webkit-optimize-contrast; filter: contrast(1.03) brightness(1.02);" loading="eager" fetchpriority="high" decoding="async" />
+                                {% elif hero_post.featured_image_url %}
+                                <img src="{{ hero_post.featured_image_url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]" style="image-rendering: -webkit-optimize-contrast; filter: contrast(1.03) brightness(1.02);" loading="eager" fetchpriority="high" decoding="async" />
+                                {% else %}
+                                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ hero_post.title }}" class="w-full h-full object-cover object-center" style="image-rendering: -webkit-optimize-contrast; filter: contrast(1.03) brightness(1.02);" loading="eager" decoding="async" />
+                                {% endif %}
                             {% else %}
-                            <img src="{% static 'image/placeholder-5.png' %}" alt="{{ hero_post.title }}" class="w-full h-full object-cover object-center" style="image-rendering: -webkit-optimize-contrast; filter: contrast(1.03) brightness(1.02);" loading="eager" />
+                                {% if hero_post.featured_image %}
+                                <img src="{{ hero_post.featured_image.url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]" style="image-rendering: -webkit-optimize-contrast; filter: contrast(1.03) brightness(1.02);" loading="lazy" decoding="async" />
+                                {% elif hero_post.featured_image_url %}
+                                <img src="{{ hero_post.featured_image_url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]" style="image-rendering: -webkit-optimize-contrast; filter: contrast(1.03) brightness(1.02);" loading="lazy" decoding="async" />
+                                {% else %}
+                                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ hero_post.title }}" class="w-full h-full object-cover object-center" style="image-rendering: -webkit-optimize-contrast; filter: contrast(1.03) brightness(1.02);" loading="lazy" decoding="async" />
+                                {% endif %}
                             {% endif %}
                             <!-- Overlay (Light bottom-only gradient so upper 70% of image stays 100% crystal clear & sharp) -->
                             <div class="absolute inset-0 pointer-events-none" style="background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 25%, transparent 45%);"></div>
