@@ -86,7 +86,14 @@
 
         <!-- LEFT: MAIN CONTENT -->
         <main id="blog-main-col" class="w-full lg:w-[68%] min-w-0">
-            <article class="tl-card !border-none rounded-xl overflow-hidden" id="blog-content-to-print">
+            <style>
+                @media (max-width: 1023.98px) {
+                    #blog-content-to-print {
+                        border: none !important;
+                    }
+                }
+            </style>
+            <article class="tl-card rounded-xl overflow-hidden" id="blog-content-to-print">
                 <div class="px-1 pt-1 pb-4 sm:px-2 md:px-4">
 
                     <!-- Title -->
