@@ -1,0 +1,91 @@
+{% load static %}
+<div class="max-w-7xl mx-auto px-4 py-8 font-inter" x-data="{ visibleCount: 8, step: 8, total: {{ total_blogs|default:0 }} }">
+    <!-- Tag Header -->
+    <div class="mb-10 pb-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="text-[#265daa]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+            </div>
+            <h1 class="font-semibold text-2xl md:text-3xl text-gray-900 tracking-tight capitalize">{{ tag.name }}</h1>
+        </div>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-gray-700 rounded-md border border-gray-100 text-sm font-semibold w-fit">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#265daa]"></span>
+            <span>{{ total_blogs }} Articles</span>
+        </div>
+    </div>
+
+    <!-- Blog Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 mb-10">
+        {% for blog in blogs %}
+        <a href="{% url 'blog_details' blog.slug %}" hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+            x-show="visibleCount >= {{ forloop.counter }}"
+            class="group flex flex-col cursor-pointer bg-white">
+            <div class="overflow-hidden rounded mb-4 w-full aspect-video relative bg-gray-50">
+                {% if blog.featured_image %}
+                <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="absolute inset-0 w-full h-full object-contain transform transition-transform duration-300 group-hover:scale-[1.03]" loading="lazy" decoding="async" />
+                {% elif blog.featured_image_url %}
+                <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="absolute inset-0 w-full h-full object-contain transform transition-transform duration-300 group-hover:scale-[1.03]" loading="lazy" decoding="async" />
+                {% else %}
+                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="absolute inset-0 w-full h-full object-contain transform transition-transform duration-300 group-hover:scale-[1.03]" loading="lazy" decoding="async" />
+                {% endif %}
+            </div>
+            
+            <div class="flex flex-col flex-1">
+                <div class="flex items-center gap-3 mb-2.5">
+                    <span class="inline-block text-[11px] font-bold text-[#265daa] uppercase tracking-wider">{{ blog.category.name|truncatewords:2 }}</span>
+                    <span class="text-[11px] text-gray-400 font-medium">{{ blog.created_at|date:"M d, Y" }}</span>
+                </div>
+                
+                <h3 class="font-bold text-[16px] text-gray-900 leading-snug group-hover:text-[#265daa] transition-colors mb-2.5 line-clamp-3">
+                    {{ blog.title }}
+                </h3>
+                
+                <p class="text-[13px] text-gray-500 leading-relaxed mb-4 line-clamp-2">
+                    {{ blog.description|truncatechars:100|striptags }}
+                </p>
+                
+            </div>
+        </a>
+        {% empty %}
+        <div class="col-span-full py-20 text-center">
+            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">No Articles Found</h3>
+            <p class="text-sm text-gray-500 mb-6">We couldn't find any published articles for this tag.</p>
+            <a href="{% url 'blogs' %}" hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+                class="inline-flex items-center gap-2 px-6 py-2.5 bg-[#265daa] text-white text-sm font-semibold rounded-md hover:bg-[#1d58a2] transition-colors shadow-sm">
+                Browse All Articles
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    {% if total_blogs > 8 %}
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200">
+        <p class="text-[13px] text-gray-500 font-medium">
+            Showing <span class="text-gray-900 font-bold" x-text="Math.min(visibleCount, total)"></span> of <span class="text-gray-900 font-bold">{{ total_blogs }}</span> articles
+        </p>
+        <div class="flex items-center gap-3">
+            <button
+                type="button"
+                x-show="visibleCount < total"
+                @click="visibleCount = Math.min(visibleCount + step, total)"
+                class="h-[38px] px-5 text-white rounded-sm flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all hover:opacity-90 outline-none cursor-pointer shadow-2xs"
+                style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%);"
+            >
+                Load More
+            </button>
+            <button
+                type="button"
+                x-show="visibleCount >= total"
+                @click="visibleCount = step"
+                class="inline-flex items-center gap-2 px-5 py-2.5 border border-gray-200 text-gray-700 text-[13px] font-semibold rounded hover:bg-gray-50 transition-colors"
+            >
+                Show Less
+            </button>
+        </div>
+    </div>
+    {% endif %}
+</div>

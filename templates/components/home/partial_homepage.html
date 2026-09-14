@@ -145,7 +145,7 @@
 
                         <!-- Category Badge + Date on same line (Date on far right) -->
                         <div class="mb-2 flex items-center justify-between w-full">
-                            <span class="inline-block text-white font-semibold text-[9px] sm:text-[11px] uppercase tracking-wider px-2 py-0.5 sm:px-3 sm:py-1 rounded-md shadow-2xs" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
+                            <span class="inline-block text-[#265daa] font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">
                                 {{ blog.category.name|default:"TECHNOLOGY" }}
                             </span>
                             <span class="text-xs text-gray-400 font-medium ml-auto">{{ blog.created_at|date:"F d, Y" }}</span>
@@ -160,12 +160,7 @@
                         {% if blog.description %}<p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">{{ blog.description|striptags|truncatewords:50 }}
                         </p>{% endif %}
 
-                        <!-- Read More Button (Outlined in Navy Blue - Desktop Only) -->
-                        <div class="hidden sm:block mb-6">
-                            <a href="{% url 'blog_details' blog.slug %}" class="inline-block border font-bold text-[10px] uppercase tracking-wider px-3.5 py-1.5 rounded-md transition-all cursor-pointer" style="border-color: #265daa; color: #265daa;" onmouseover="this.style.background='linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%)'; this.style.color='#ffffff'; this.style.borderColor='transparent';" onmouseout="this.style.background='transparent'; this.style.color='#265daa'; this.style.borderColor='#265daa';">
-                                Read More
-                            </a>
-                        </div>
+
 
                         <!-- 2 Mini Horizontal Cards (Stacked under Left Column) -->
                         <div class="space-y-4 pt-2 border-t border-gray-100">
@@ -213,7 +208,7 @@
 
                         <!-- Category Badge + Date on same line (Date on far right) -->
                         <div class="mb-2 flex items-center justify-between w-full">
-                            <span class="inline-block text-white font-semibold text-[9px] sm:text-[11px] uppercase tracking-wider px-2 py-0.5 sm:px-3 sm:py-1 rounded-md shadow-2xs" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
+                            <span class="inline-block text-[#265daa] font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">
                                 {{ blog.category.name|default:"TECHNOLOGY" }}
                             </span>
                             <span class="text-xs text-gray-400 font-medium ml-auto">{{ blog.created_at|date:"F d, Y" }}</span>
@@ -228,12 +223,7 @@
                         {% if blog.description %}<p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">{{ blog.description|striptags|truncatewords:50 }}
                         </p>{% endif %}
 
-                        <!-- Read More Button (Outlined in Navy Blue - Desktop Only) -->
-                        <div class="hidden sm:block mb-6">
-                            <a href="{% url 'blog_details' blog.slug %}" class="inline-block border font-bold text-[10px] uppercase tracking-wider px-3.5 py-1.5 rounded-md transition-all cursor-pointer" style="border-color: #265daa; color: #265daa;" onmouseover="this.style.background='linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%)'; this.style.color='#ffffff'; this.style.borderColor='transparent';" onmouseout="this.style.background='transparent'; this.style.color='#265daa'; this.style.borderColor='#265daa';">
-                                Read More
-                            </a>
-                        </div>
+
 
                         <!-- 2 Mini Horizontal Cards (Stacked under Right Column) -->
                         <div class="space-y-4 pt-2 border-t border-gray-100">
@@ -308,7 +298,7 @@
                                 <div class="pt-3 flex flex-col flex-1">
                                     <div class="text-[11px] text-gray-400 font-medium mb-1.5 flex items-center justify-between w-full">
                                         {% if blog.category %}
-                                        <span class="inline-block text-white text-[9px] sm:text-[10px] font-semibold uppercase px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-md shadow-2xs" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
+                                        <span class="inline-block text-[#265daa] font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">
                                             {{ blog.category.name }}
                                         </span>
                                         {% endif %}
@@ -357,7 +347,7 @@
                         <!-- Category Badge + Date on same horizontal line (Date far right) -->
                         <div class="flex items-center justify-between w-full mb-2">
                             {% if post.category %}
-                            <span class="inline-block text-white font-semibold text-[9px] sm:text-[11px] uppercase tracking-wider px-2 py-0.5 sm:px-3 sm:py-1 rounded-md shadow-2xs" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
+                            <span class="inline-block text-[#265daa] font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">
                                 {{ post.category.name }}
                             </span>
                             {% endif %}
@@ -369,20 +359,10 @@
                         </a>
                         <!-- Description -->
                         {% if post.description %}
-                        <p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">
+                        <p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-2 mb-4">
                             {{ post.description|striptags|truncatewords:50 }}
                         </p>
                         {% endif %}
-                        <!-- Outlined Read More Button (Desktop Only) -->
-                        <div class="hidden sm:block mb-6">
-                            <a href="{% url 'blog_details' post.slug %}"
-                               class="inline-block text-[10px] font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-md border transition-all cursor-pointer"
-                               style="border-color: #265daa; color: #265daa;"
-                               onmouseover="this.style.background='linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%)'; this.style.color='#ffffff'; this.style.borderColor='transparent';"
-                               onmouseout="this.style.background='transparent'; this.style.color='#265daa'; this.style.borderColor='#265daa';">
-                                Read More
-                            </a>
-                        </div>
                     </div>
                     {% endfor %}
                     {% else %}
@@ -400,7 +380,7 @@
                         <!-- Category Badge + Date on same horizontal line (Date far right) -->
                         <div class="flex items-center justify-between w-full mb-2">
                             {% if blog.category %}
-                            <span class="inline-block text-white font-semibold text-[9px] sm:text-[11px] uppercase tracking-wider px-2 py-0.5 sm:px-3 sm:py-1 rounded-md shadow-2xs" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
+                            <span class="inline-block text-[#265daa] font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">
                                 {{ blog.category.name }}
                             </span>
                             {% endif %}
@@ -409,27 +389,17 @@
                         <a href="{% url 'blog_details' blog.slug %}" class="font-semibold text-lg sm:text-xl text-gray-900 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-2">
                             {{ blog.title }}
                         </a>
-                        {% if blog.description %}<p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">{{ blog.description|striptags|truncatewords:50 }}
+                        {% if blog.description %}<p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-2 mb-4">{{ blog.description|striptags|truncatewords:50 }}
                         </p>{% endif %}
-                        <!-- Outlined Read More Button (Desktop Only) -->
-                        <div class="hidden sm:block mb-6">
-                            <a href="{% url 'blog_details' blog.slug %}"
-                               class="inline-block text-[10px] font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-md border transition-all cursor-pointer"
-                               style="border-color: #265daa; color: #265daa;"
-                               onmouseover="this.style.background='linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%)'; this.style.color='#ffffff'; this.style.borderColor='transparent';"
-                               onmouseout="this.style.background='transparent'; this.style.color='#265daa'; this.style.borderColor='#265daa';">
-                                Read More
-                            </a>
-                        </div>
                     </div>
                     {% endfor %}
                     {% endif %}
                 </div>
 
-                <!-- 4 Small Horizontal Cards (Bottom Row - 2x2 grid) -->
+                <!-- 6 Small Horizontal Cards (Bottom Row - 2x3 grid) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-0">
                     {% if first_blogs %}
-                    {% for post in first_blogs|slice:"2:6" %}
+                    {% for post in first_blogs|slice:"2:8" %}
                     <div class="group flex items-start gap-3 py-3 border-b border-gray-100">
                         <!-- Thumbnail -->
                         <a href="{% url 'blog_details' post.slug %}" class="w-20 sm:w-24 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden bg-gray-100 block">
@@ -453,7 +423,7 @@
                     </div>
                     {% endfor %}
                     {% else %}
-                    {% for blog in blogs|slice:"8:12" %}
+                    {% for blog in blogs|slice:"8:14" %}
                     <div class="group flex items-start gap-3 py-3 border-b border-gray-100">
                         <a href="{% url 'blog_details' blog.slug %}" class="w-20 sm:w-24 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden bg-gray-100 block">
                             {% if blog.featured_image %}
@@ -516,7 +486,7 @@
                     <!-- Category Badge + Date on same line (Date on far right) -->
                     <div class="mb-2 flex items-center justify-between w-full">
                         {% if sub_hero.category %}
-                        <span class="inline-block text-white font-semibold text-[9px] sm:text-[11px] uppercase tracking-wider px-2 py-0.5 sm:px-3 sm:py-1 rounded-md shadow-2xs" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
+                        <span class="inline-block text-[#265daa] font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">
                             {{ sub_hero.category.name }}
                         </span>
                         {% endif %}
@@ -535,12 +505,7 @@
                     </p>
                     {% endif %}
 
-                    <!-- Read More Button (Outlined in Navy Blue - Desktop Only) -->
-                    <div class="hidden sm:block mb-6">
-                        <a href="{% url 'blog_details' sub_hero.slug %}" class="inline-block border font-bold text-[10px] uppercase tracking-wider px-3.5 py-1.5 rounded-md transition-all cursor-pointer" style="border-color: #265daa; color: #265daa;" onmouseover="this.style.background='linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%)'; this.style.color='#ffffff'; this.style.borderColor='transparent';" onmouseout="this.style.background='transparent'; this.style.color='#265daa'; this.style.borderColor='#265daa';">
-                            Read More
-                        </a>
-                    </div>
+
                 </div>
                 {% endwith %}
                 {% endif %}
@@ -585,32 +550,32 @@
                 </div>
                 <div class="flex flex-col gap-2">
                     <!-- Facebook -->
-                    <a href="{% if footer.facebook_url %}{{ footer.facebook_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
+                    <a href="{% if footer and footer.facebook_url %}{{ footer.facebook_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
                        class="flex items-center justify-between p-3 rounded-xs text-white transition-colors cursor-pointer"
                        style="background-color: #3b5998;">
                         <div class="flex items-center gap-3">
                             <i class="fa-brands fa-facebook-f text-base w-5 text-center"></i>
-                            <span class="font-semibold text-xs tracking-wide">19,243 Fans</span>
+                            <span class="font-semibold text-xs tracking-wide">{{ footer.facebook_fans|default:"19,243 Fans" }}</span>
                         </div>
                         <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-xs uppercase">Like</span>
                     </a>
                     <!-- Twitter -->
-                    <a href="{% if footer.twitter_url %}{{ footer.twitter_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
+                    <a href="{% if footer and footer.twitter_url %}{{ footer.twitter_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
                        class="flex items-center justify-between p-3 rounded-xs text-white transition-colors cursor-pointer"
                        style="background-color: #00acee;">
                         <div class="flex items-center gap-3">
                             <i class="fa-brands fa-x-twitter text-base w-5 text-center"></i>
-                            <span class="font-semibold text-xs tracking-wide">2,076 Followers</span>
+                            <span class="font-semibold text-xs tracking-wide">{{ footer.twitter_followers|default:"2,076 Followers" }}</span>
                         </div>
                         <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-xs uppercase">Follow</span>
                     </a>
                     <!-- YouTube / Subscribe -->
-                    <a href="#" target="_blank" rel="noopener noreferrer"
+                    <a href="{% if footer and footer.youtube_url %}{{ footer.youtube_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
                        class="flex items-center justify-between p-3 rounded-xs text-white transition-colors cursor-pointer"
                        style="background-color: #265daa;">
                         <div class="flex items-center gap-3">
                             <i class="fa-brands fa-youtube text-base w-5 text-center"></i>
-                            <span class="font-semibold text-xs tracking-wide">15,200 Followers</span>
+                            <span class="font-semibold text-xs tracking-wide">{{ footer.youtube_subscribers|default:"15,200 Followers" }}</span>
                         </div>
                         <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-xs uppercase">Subscribe</span>
                     </a>
@@ -633,36 +598,41 @@
                 <!-- Bordered Box with Stacked Items Matching Photo -->
                 <div class="border border-gray-200 bg-white rounded-xs divide-y divide-gray-100">
                     {% for item in latest_popular_blogs|slice:"4" %}
-                    <div class="p-4 group">
-                        <!-- Category Badge (Brand Navy Blue) -->
-                        <!-- Category Badge + Date on same line (Date far right) -->
-                        <div class="mb-2 flex items-center justify-between w-full">
-                            <span class="inline-block text-white font-semibold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-2xs" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
-                                {{ item.category.name|default:"TRAVEL" }}
-                            </span>
-                            <span class="text-xs text-gray-400 font-normal ml-auto">{{ item.created_at|date:"F d, Y" }}</span>
-                        </div>
+                    <div class="p-4 group flex items-start gap-4">
+                        <span class="text-4xl font-black text-gray-200 leading-none shrink-0">{{ forloop.counter }}</span>
+                        <div class="flex-1 min-w-0">
+                            <!-- Category Badge + Date on same line (Date far right) -->
+                            <div class="mb-2 flex items-center justify-between w-full">
+                                <span class="inline-block text-[#265daa] font-bold text-[10px] uppercase tracking-wider">
+                                    {{ item.category.name|default:"TRAVEL" }}
+                                </span>
+                                <span class="text-xs text-gray-400 font-normal ml-auto">{{ item.created_at|date:"F d, Y" }}</span>
+                            </div>
 
-                        <!-- Title -->
-                        <a href="{% url 'blog_details' item.slug %}" class="font-semibold text-sm text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2 block">
-                            {{ item.title }}
-                        </a>
+                            <!-- Title -->
+                            <a href="{% url 'blog_details' item.slug %}" class="font-semibold text-sm text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2 block">
+                                {{ item.title }}
+                            </a>
+                        </div>
                     </div>
                     {% empty %}
                     {% for item in blogs|slice:"4" %}
-                    <div class="p-4 group">
-                        <!-- Category Badge + Date on same line (Date far right) -->
-                        <div class="mb-2 flex items-center justify-between w-full">
-                            <span class="inline-block text-white font-semibold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-2xs" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
-                                {{ item.category.name|default:"TRAVEL" }}
-                            </span>
-                            <span class="text-xs text-gray-400 font-normal ml-auto">{{ item.created_at|date:"F d, Y" }}</span>
-                        </div>
+                    <div class="p-4 group flex items-start gap-4">
+                        <span class="text-4xl font-black text-gray-200 leading-none shrink-0">{{ forloop.counter }}</span>
+                        <div class="flex-1 min-w-0">
+                            <!-- Category Badge + Date on same line (Date far right) -->
+                            <div class="mb-2 flex items-center justify-between w-full">
+                                <span class="inline-block text-[#265daa] font-bold text-[10px] uppercase tracking-wider">
+                                    {{ item.category.name|default:"TRAVEL" }}
+                                </span>
+                                <span class="text-xs text-gray-400 font-normal ml-auto">{{ item.created_at|date:"F d, Y" }}</span>
+                            </div>
 
-                        <!-- Title -->
-                        <a href="{% url 'blog_details' item.slug %}" class="font-semibold text-sm text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2 block">
-                            {{ item.title }}
-                        </a>
+                            <!-- Title -->
+                            <a href="{% url 'blog_details' item.slug %}" class="font-semibold text-sm text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2 block">
+                                {{ item.title }}
+                            </a>
+                        </div>
                     </div>
                     {% endfor %}
                     {% endfor %}
@@ -757,9 +727,6 @@
                                 <img src="{{ most_blogs.featured_image_url }}" alt="{{ most_blogs.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" loading="lazy" decoding="async">
                                 {% endif %}
                             </div>
-                            <span class="inline-block text-[10px] font-semibold text-white uppercase px-2 py-0.5 rounded-md tracking-wider mb-1.5 shadow-2xs" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
-                                Most Viewed
-                            </span>
                             <h4 class="font-semibold text-sm text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
                                 {{ most_blogs.title }}
                             </h4>
@@ -866,6 +833,14 @@
         </div>
         <!-- END RIGHT SIDEBAR -->
 
+    </div>
+
+    <!-- VIEW ALL ARTICLES BUTTON (PAGINATION) -->
+    <div class="w-full flex justify-center mt-8 mb-6">
+        <a href="{% url 'blogs' %}" hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="group inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#265daa] text-white text-[13px] font-semibold rounded-md hover:bg-[#1d58a2] transition-colors shadow-sm w-auto min-w-[200px]">
+            View All Articles
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
     </div>
 </div>
 <!-- END 2-COLUMN OUTER LAYOUT -->

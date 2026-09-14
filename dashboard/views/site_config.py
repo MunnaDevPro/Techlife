@@ -99,7 +99,11 @@ def footer_logo_config(request):
             footer_set.facebook_url = request.POST.get('facebook_url')
             footer_set.twitter_url = request.POST.get('twitter_url')
             footer_set.linkedin_url = request.POST.get('linkedin_url')
+            footer_set.youtube_url = request.POST.get('youtube_url')
             footer_set.whatsapp_number = request.POST.get('whatsapp_number')
+            footer_set.facebook_fans = request.POST.get('facebook_fans')
+            footer_set.twitter_followers = request.POST.get('twitter_followers')
+            footer_set.youtube_subscribers = request.POST.get('youtube_subscribers')
             footer_set.developer_company_name = request.POST.get('developer_company_name')
             footer_set.developer_company_url = request.POST.get('developer_company_url')
             

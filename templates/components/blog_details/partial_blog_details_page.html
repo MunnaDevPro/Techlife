@@ -93,7 +93,7 @@
                     }
                 }
             </style>
-            <article class="tl-card rounded-xl overflow-hidden" id="blog-content-to-print">
+            <article class="bg-white rounded-xl overflow-hidden" id="blog-content-to-print">
                 <div class="px-1 pt-1 pb-4 sm:px-2 md:px-4">
 
                     <!-- Title -->
@@ -263,7 +263,7 @@
             </article>
 
             <!-- ═══ COMMENTS ═══ -->
-            <section id="comments" class="mt-4 tl-card rounded-xl overflow-hidden">
+            <section id="comments" class="mt-4 bg-white rounded-xl overflow-hidden">
                 <div class="p-4 sm:p-6">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5 pb-4 border-b border-gray-100">
                         <div class="flex items-center gap-2">
@@ -452,11 +452,11 @@
             <div class="rounded-lg overflow-hidden bg-white py-1">
                 <a href="{% url 'blog_details' feat.slug %}" hx-get="{% url 'blog_details' feat.slug %}" hx-target="#container" hx-swap="innerHTML" hx-push-url="true" class="block aspect-video w-full rounded-md overflow-hidden mb-3 bg-gray-100 group">
                     {% if feat.featured_image %}
-                    <img src="{{ feat.featured_image.url }}" alt="{{ feat.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" loading="lazy" decoding="async" />
+                    <img src="{{ feat.featured_image.url }}" alt="{{ feat.title }}" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" loading="lazy" decoding="async" />
                     {% elif feat.featured_image_url %}
-                    <img src="{{ feat.featured_image_url }}" alt="{{ feat.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" loading="lazy" decoding="async" />
+                    <img src="{{ feat.featured_image_url }}" alt="{{ feat.title }}" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" loading="lazy" decoding="async" />
                     {% else %}
-                    <img src="{% static 'image/placeholder-5.png' %}" alt="{{ feat.title }}" class="w-full h-full object-cover" loading="lazy" decoding="async" />
+                    <img src="{% static 'image/placeholder-5.png' %}" alt="{{ feat.title }}" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" loading="lazy" decoding="async" />
                     {% endif %}
                 </a>
                 <div class="mb-1">
@@ -485,32 +485,32 @@
                 </div>
                 <div class="flex flex-col gap-2">
                     <!-- Facebook -->
-                    <a href="{% if footer.facebook_url %}{{ footer.facebook_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
+                    <a href="{% if footer and footer.facebook_url %}{{ footer.facebook_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
                        class="flex items-center justify-between p-3 rounded-xs text-white transition-colors cursor-pointer"
                        style="background-color: #3b5998;">
                         <div class="flex items-center gap-3">
                             <i class="fa-brands fa-facebook-f text-base w-5 text-center"></i>
-                            <span class="font-semibold text-xs tracking-wide">19,243 Fans</span>
+                            <span class="font-semibold text-xs tracking-wide">{{ footer.facebook_fans|default:"19,243 Fans" }}</span>
                         </div>
                         <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-xs uppercase">Like</span>
                     </a>
                     <!-- Twitter -->
-                    <a href="{% if footer.twitter_url %}{{ footer.twitter_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
+                    <a href="{% if footer and footer.twitter_url %}{{ footer.twitter_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
                        class="flex items-center justify-between p-3 rounded-xs text-white transition-colors cursor-pointer"
                        style="background-color: #00acee;">
                         <div class="flex items-center gap-3">
                             <i class="fa-brands fa-x-twitter text-base w-5 text-center"></i>
-                            <span class="font-semibold text-xs tracking-wide">2,076 Followers</span>
+                            <span class="font-semibold text-xs tracking-wide">{{ footer.twitter_followers|default:"2,076 Followers" }}</span>
                         </div>
                         <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-xs uppercase">Follow</span>
                     </a>
                     <!-- YouTube / Subscribe -->
-                    <a href="#" target="_blank" rel="noopener noreferrer"
+                    <a href="{% if footer and footer.youtube_url %}{{ footer.youtube_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
                        class="flex items-center justify-between p-3 rounded-xs text-white transition-colors cursor-pointer"
                        style="background-color: #265daa;">
                         <div class="flex items-center gap-3">
                             <i class="fa-brands fa-youtube text-base w-5 text-center"></i>
-                            <span class="font-semibold text-xs tracking-wide">15,200 Followers</span>
+                            <span class="font-semibold text-xs tracking-wide">{{ footer.youtube_subscribers|default:"15,200 Followers" }}</span>
                         </div>
                         <span class="bg-white/20 text-white text-[10px] font-bold px-2.5 py-1 rounded-xs uppercase">Subscribe</span>
                     </a>

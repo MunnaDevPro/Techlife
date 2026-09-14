@@ -543,60 +543,7 @@
 
     <!-- Mobile Bottom Navigation -->
     {% block mobile_nav %}
-    <nav
-        class="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-[999] bg-white border-t border-gray-200 flex items-center justify-around px-2 py-2 safe-area-bottom">
-        <a href="/" class="flex flex-col items-center gap-0.5 text-[#265daa] min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-            </svg>
-            <span class="text-[10px] font-medium">Home</span>
-        </a>
-        <a href="{% url 'redirect_search_results' %}"
-            class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-            </svg>
-            <span class="text-[10px] font-medium">Search</span>
-        </a>
-        <a href="{% url 'popular_blogs' %}" class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-            </svg>
-            <span class="text-[10px] font-medium">Popular</span>
-        </a>
-        <a href="{% url 'blogs' %}" class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
-            </svg>
-            <span class="text-[10px] font-medium">Articles</span>
-        </a>
-        {% if request.user.is_authenticated %}
-        <a href="{% url 'create_blog' %}" class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-            </svg>
-            <span class="text-[10px] font-medium">Write</span>
-        </a>
-        {% else %}
-        <button type="button" data-login-alert-trigger
-            class="flex flex-col items-center gap-0.5 text-gray-500 min-w-[44px] py-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-            </svg>
-            <span class="text-[10px] font-medium">Write</span>
-        </button>
-        {% endif %}
-    </nav>
+    <!-- Mobile bottom nav removed as per user request -->
     {% endblock %}
 
     <!-- Scroll To Top -->

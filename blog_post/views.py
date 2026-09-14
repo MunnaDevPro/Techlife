@@ -263,7 +263,7 @@ def home(request):
 
     carousel_blogs = get_carousel_posts()
 
-    blogs = get_section_posts("blog_grid", default_count=8)
+    blogs = get_section_posts("blog_grid", default_count=14)
 
     latest_blogs = get_section_posts("latest_news", default_count=8)
     if not latest_blogs:
@@ -319,9 +319,9 @@ def home(request):
             published_posts.filter(category=category).order_by("-created_at")[:count]
         )
 
-    cat1_blogs = _category_posts("cat_section_1", cat1_config, first_category, default_count=6)
-    cat2_blogs = _category_posts("cat_section_2", cat2_config, second_category, default_count=6)
-    cat3_blogs = _category_posts("cat_section_3", cat3_config, third_category, default_count=6)
+    cat1_blogs = _category_posts("cat_section_1", cat1_config, first_category, default_count=8)
+    cat2_blogs = _category_posts("cat_section_2", cat2_config, second_category, default_count=8)
+    cat3_blogs = _category_posts("cat_section_3", cat3_config, third_category, default_count=8)
 
     first_blogs = cat1_blogs
     second_blogs = cat2_blogs
@@ -932,7 +932,10 @@ def tag_posts(request, tag_slug):
         'tag': tag,
         'blogs': blogs,
         'total_blogs': total_blogs,
+        'action': 'tag_posts',
     }
+    if request.htmx:
+        return render(request, 'components/blogs/partial_tag_related_post.html', context)
     return render(request, 'components/blogs/tag_realted_post.html', context)
 
 

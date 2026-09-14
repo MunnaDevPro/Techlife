@@ -36,7 +36,13 @@ class FooterSettings(models.Model):
     facebook_url = models.URLField(blank=True, null=True, help_text="Facebook profile link")
     twitter_url = models.URLField(blank=True, null=True, help_text="Twitter/X profile link")
     linkedin_url = models.URLField(blank=True, null=True, help_text="LinkedIn profile link")
+    youtube_url = models.URLField(blank=True, null=True, help_text="YouTube channel link")
     whatsapp_number = models.CharField(max_length=20, blank=True, null=True, help_text="WhatsApp number with country code")
+
+    # Stay Connected Section Counts
+    facebook_fans = models.CharField(max_length=50, default="19,243 Fans", blank=True, null=True, help_text="Facebook fan count display text")
+    twitter_followers = models.CharField(max_length=50, default="2,076 Followers", blank=True, null=True, help_text="Twitter/X follower count display text")
+    youtube_subscribers = models.CharField(max_length=50, default="15,200 Followers", blank=True, null=True, help_text="YouTube subscriber count display text")
 
     # Developer Info
     developer_company_name = models.CharField(max_length=100, default="Intelligent Systems & Solution Limited")

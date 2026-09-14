@@ -3,7 +3,7 @@
 <header class="bg-white w-full font-inter">
 
     <!-- 1. TOP BAR: Date & Top Links / Socials (Hidden on post details, category, blogs, contact & search pages) -->
-    <div id="top-bar-sec" class="text-white text-[11px] py-1.5 {% if action == 'blog_details' or action == 'category_post' or action == 'search_results' or action == 'blogs' or action == 'all_article' or action == 'contact_page' or request.resolver_match.url_name == 'blog_details' or request.resolver_match.url_name == 'company_details' or request.resolver_match.url_name == 'category_post' or request.resolver_match.url_name == 'redirect_search_results' or request.resolver_match.url_name == 'blogs' or request.resolver_match.url_name == 'all_article' or request.resolver_match.url_name == 'contact_page' or request.resolver_match.url_name == 'popular_blogs' or '/details/' in request.path or '/company/' in request.path or '/category/' in request.path or '/search/' in request.path or '/blogs' in request.path or '/contact' in request.path or '/popular' in request.path %}!hidden{% else %}hidden lg:block{% endif %}" style="background-color: #111111;">
+    <div id="top-bar-sec" class="text-white text-[11px] py-1.5 {% if action == 'blog_details' or action == 'category_post' or action == 'search_results' or action == 'blogs' or action == 'all_article' or action == 'contact_page' or action == 'tag_posts' or request.resolver_match.url_name == 'blog_details' or request.resolver_match.url_name == 'company_details' or request.resolver_match.url_name == 'category_post' or request.resolver_match.url_name == 'redirect_search_results' or request.resolver_match.url_name == 'blogs' or request.resolver_match.url_name == 'all_article' or request.resolver_match.url_name == 'contact_page' or request.resolver_match.url_name == 'popular_blogs' or request.resolver_match.url_name == 'tag_posts' or '/details/' in request.path or '/company/' in request.path or '/category/' in request.path or '/search/' in request.path or '/blogs' in request.path or '/contact' in request.path or '/popular' in request.path or '/tag/' in request.path %}!hidden{% else %}hidden lg:block{% endif %}" style="background-color: #111111;">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center w-full">
             <!-- Left: Current Date -->
             <div class="font-medium tracking-wide text-white/90">
@@ -99,7 +99,7 @@
     </div>
 
     <!-- 3. DESKTOP MAIN HEADER: Logo & Leaderboard Banner Ad (Desktop Only lg:block) -->
-    <div id="main-header-logo-sec" class="hidden lg:block py-3 lg:py-4 border-b border-gray-100 {% if action == 'blog_details' or action == 'category_post' or action == 'search_results' or action == 'blogs' or action == 'all_article' or action == 'contact_page' or request.resolver_match.url_name == 'blog_details' or request.resolver_match.url_name == 'company_details' or request.resolver_match.url_name == 'category_post' or request.resolver_match.url_name == 'redirect_search_results' or request.resolver_match.url_name == 'blogs' or request.resolver_match.url_name == 'all_article' or request.resolver_match.url_name == 'contact_page' or request.resolver_match.url_name == 'popular_blogs' or '/details/' in request.path or '/company/' in request.path or '/category/' in request.path or '/search/' in request.path or '/blogs' in request.path or '/contact' in request.path or '/popular' in request.path %}!hidden{% endif %}">
+    <div id="main-header-logo-sec" class="hidden lg:block py-3 lg:py-4 border-b border-gray-100 {% if action == 'blog_details' or action == 'category_post' or action == 'search_results' or action == 'blogs' or action == 'all_article' or action == 'contact_page' or action == 'tag_posts' or request.resolver_match.url_name == 'blog_details' or request.resolver_match.url_name == 'company_details' or request.resolver_match.url_name == 'category_post' or request.resolver_match.url_name == 'redirect_search_results' or request.resolver_match.url_name == 'blogs' or request.resolver_match.url_name == 'all_article' or request.resolver_match.url_name == 'contact_page' or request.resolver_match.url_name == 'popular_blogs' or request.resolver_match.url_name == 'tag_posts' or '/details/' in request.path or '/company/' in request.path or '/category/' in request.path or '/search/' in request.path or '/blogs' in request.path or '/contact' in request.path or '/popular' in request.path or '/tag/' in request.path %}!hidden{% endif %}">
         <div class="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4">
             <!-- Brand Logo -->
             <a href="{% url 'homepage' %}" aria-label="TechLife BD - Home"
@@ -157,7 +157,7 @@
             <!-- Brand Logo in Nav (Smooth animated reveal on scroll / always visible on detail pages) -->
             <a id="nav-brand-logo" href="{% url 'homepage' %}" aria-label="TechLife BD - Home"
                 class="flex items-center gap-2 flex-shrink-0"
-                style="display: flex; overflow: hidden; white-space: nowrap; transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease-in-out, transform 0.35s ease-in-out; {% if action == 'blog_details' or action == 'category_post' or action == 'search_results' or action == 'blogs' or action == 'all_article' or action == 'contact_page' or request.resolver_match.url_name == 'blog_details' or request.resolver_match.url_name == 'company_details' or request.resolver_match.url_name == 'category_post' or request.resolver_match.url_name == 'redirect_search_results' or request.resolver_match.url_name == 'blogs' or request.resolver_match.url_name == 'all_article' or request.resolver_match.url_name == 'contact_page' or '/details/' in request.path or '/company/' in request.path or '/category/' in request.path or '/search/' in request.path or '/blogs' in request.path or '/contact' in request.path %}opacity: 1; max-width: 180px; transform: translateX(0); pointer-events: auto;{% else %}opacity: 0; max-width: 0px; transform: translateX(-15px); pointer-events: none;{% endif %}">
+                style="display: flex; overflow: hidden; white-space: nowrap; transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease-in-out, transform 0.35s ease-in-out; {% if action == 'blog_details' or action == 'category_post' or action == 'search_results' or action == 'blogs' or action == 'all_article' or action == 'contact_page' or request.resolver_match.url_name == 'blog_details' or request.resolver_match.url_name == 'company_details' or request.resolver_match.url_name == 'category_post' or request.resolver_match.url_name == 'redirect_search_results' or request.resolver_match.url_name == 'blogs' or request.resolver_match.url_name == 'all_article' or request.resolver_match.url_name == 'contact_page' or request.resolver_match.url_name == 'popular_blogs' or request.resolver_match.url_name == 'tag_posts' or '/details/' in request.path or '/company/' in request.path or '/category/' in request.path or '/search/' in request.path or '/blogs' in request.path or '/contact' in request.path or '/popular' in request.path or '/tag/' in request.path %}opacity: 1; max-width: 180px; transform: translateX(0); pointer-events: auto;{% else %}opacity: 0; max-width: 0px; transform: translateX(-15px); pointer-events: none;{% endif %}">
                 {% if site_settings and site_settings.logo %}
                 <img src="{{ site_settings.logo.url }}" alt="TechLife BD" class="h-7 sm:h-[34px] w-auto object-contain"
                     loading="eager" fetchpriority="high" />
@@ -173,7 +173,7 @@
 
         <!-- Center Container: Desktop Navigation Links (Left initially, Centered on scroll) -->
         <div id="desktop-nav-links"
-            class="hidden lg:flex items-center justify-start flex-1 space-x-0.5 whitespace-nowrap h-full font-bold text-[13px] tracking-wide uppercase static transition-all duration-300">
+            class="hidden lg:flex items-center justify-center flex-1 space-x-0.5 whitespace-nowrap h-full font-bold text-[13px] tracking-wide uppercase static transition-all duration-300">
             <a href="{% url 'homepage' %}"
                 class="flex items-center gap-1.5 px-3.5 h-full shrink-0 transition-colors {% if request.resolver_match.url_name == 'homepage' or request.path == '/' %}text-[#265daa] border-b-2 border-[#265daa]{% else %}text-gray-700 hover:text-[#265daa] border-b-2 border-transparent hover:border-[#265daa]{% endif %}">
                 Home
@@ -392,9 +392,9 @@
 </nav>
 
 
-{% if action != 'blog_details' and action != 'category_post' and action != 'search_results' and action != 'blogs' and action != 'all_article' and action != 'contact_page' and request.resolver_match.url_name != 'blog_details' and request.resolver_match.url_name != 'company_details' and request.resolver_match.url_name != 'category_post' and request.resolver_match.url_name != 'redirect_search_results' and request.resolver_match.url_name != 'blogs' and request.resolver_match.url_name != 'all_article' and request.resolver_match.url_name != 'contact_page' and '/details/' not in request.path and '/company/' not in request.path and '/category/' not in request.path and '/search/' not in request.path and '/blogs' not in request.path and '/contact' not in request.path %}
+{% if action != 'blog_details' and action != 'category_post' and action != 'search_results' and action != 'blogs' and action != 'all_article' and action != 'contact_page' and action != 'tag_posts' and request.resolver_match.url_name != 'blog_details' and request.resolver_match.url_name != 'company_details' and request.resolver_match.url_name != 'category_post' and request.resolver_match.url_name != 'redirect_search_results' and request.resolver_match.url_name != 'blogs' and request.resolver_match.url_name != 'all_article' and request.resolver_match.url_name != 'contact_page' and request.resolver_match.url_name != 'popular_blogs' and request.resolver_match.url_name != 'tag_posts' and '/details/' not in request.path and '/company/' not in request.path and '/category/' not in request.path and '/search/' not in request.path and '/blogs' not in request.path and '/contact' not in request.path and '/popular' not in request.path and '/tag/' not in request.path %}
 <!-- 4. TRENDING NEWS TICKER BAR (Blue Accent Badge) -->
-<div id="trending-ticker-bar" class="bg-white border-b border-gray-100 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+<div id="trending-ticker-bar" class="bg-white border-b border-gray-100 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] {% if action == 'tag_posts' or request.resolver_match.url_name == 'tag_posts' or '/tag/' in request.path %}!hidden{% endif %}">
     <div class="max-w-7xl mx-auto px-4 flex items-center gap-3 text-sm">
         <!-- Blue Gradient Badge Label (Icon only on mobile, Icon + Text on desktop) -->
         <span
@@ -1003,7 +1003,7 @@
             if (!navLogo) return;
             
             var path = window.location.pathname || '';
-            var isCompactNavbar = path.indexOf('/details/') !== -1 || path.indexOf('/company/') !== -1 || path.indexOf('/category/') !== -1 || path.indexOf('/search/') !== -1 || path.indexOf('/blogs') !== -1;
+            var isCompactNavbar = path.indexOf('/details/') !== -1 || path.indexOf('/company/') !== -1 || path.indexOf('/category/') !== -1 || path.indexOf('/search/') !== -1 || path.indexOf('/blogs') !== -1 || path.indexOf('/tag/') !== -1;
             
             if (isCompactNavbar) {
                 navLogo.style.opacity = '1';
@@ -1039,7 +1039,7 @@
 
         function updateNavbarForCurrentPage() {
             var path = window.location.pathname || '';
-            var isCompactNavbar = path.indexOf('/details/') !== -1 || path.indexOf('/company/') !== -1 || path.indexOf('/category/') !== -1 || path.indexOf('/search/') !== -1 || path.indexOf('/blogs') !== -1;
+            var isCompactNavbar = path.indexOf('/details/') !== -1 || path.indexOf('/company/') !== -1 || path.indexOf('/category/') !== -1 || path.indexOf('/search/') !== -1 || path.indexOf('/blogs') !== -1 || path.indexOf('/tag/') !== -1;
             var topBar = document.getElementById('top-bar-sec');
             var sec2 = document.getElementById('main-header-logo-sec');
             var navLinks = document.getElementById('desktop-nav-links');

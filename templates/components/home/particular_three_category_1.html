@@ -216,38 +216,38 @@
                 </div>
                 <div class="flex flex-col gap-2.5 w-full">
                     <!-- Facebook -->
-                    <a href="{% if footer.facebook_url %}{{ footer.facebook_url }}{% else %}#{% endif %}"
+                    <a href="{% if footer and footer.facebook_url %}{{ footer.facebook_url }}{% else %}#{% endif %}"
                         target="_blank" rel="noopener noreferrer"
                         class="text-white p-3 rounded-sm flex items-center justify-between transition-colors shadow-sm"
                         style="background-color: #3b5998; color: #ffffff;">
                         <div class="flex items-center gap-3">
                             <i class="fa-brands fa-facebook-f text-lg w-6 text-center"></i>
-                            <span class="font-semibold text-xs tracking-wider">12K Likes</span>
+                            <span class="font-semibold text-xs tracking-wider">{{ footer.facebook_fans|default:"19,243 Fans" }}</span>
                         </div>
                         <span
                             class="bg-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-sm uppercase tracking-wider">Like</span>
                     </a>
 
                     <!-- Twitter -->
-                    <a href="{% if footer.twitter_url %}{{ footer.twitter_url }}{% else %}#{% endif %}" target="_blank"
+                    <a href="{% if footer and footer.twitter_url %}{{ footer.twitter_url }}{% else %}#{% endif %}" target="_blank"
                         rel="noopener noreferrer"
                         class="text-white p-3 rounded-sm flex items-center justify-between transition-colors shadow-sm"
                         style="background-color: #00acee; color: #ffffff;">
                         <div class="flex items-center gap-3">
                             <i class="fa-brands fa-x-twitter text-lg w-6 text-center"></i>
-                            <span class="font-semibold text-xs tracking-wider">2,000 Followers</span>
+                            <span class="font-semibold text-xs tracking-wider">{{ footer.twitter_followers|default:"2,076 Followers" }}</span>
                         </div>
                         <span
                             class="bg-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-sm uppercase tracking-wider">Follow</span>
                     </a>
 
                     <!-- YouTube -->
-                    <a href="#" target="_blank" rel="noopener noreferrer"
+                    <a href="{% if footer and footer.youtube_url %}{{ footer.youtube_url }}{% else %}#{% endif %}" target="_blank" rel="noopener noreferrer"
                         class="text-white p-3 rounded-sm flex items-center justify-between transition-colors shadow-sm"
                         style="background-color: #265daa; color: #ffffff;">
                         <div class="flex items-center gap-3">
                             <i class="fa-brands fa-youtube text-lg w-6 text-center"></i>
-                            <span class="font-semibold text-xs tracking-wider">15,000 Subscribers</span>
+                            <span class="font-semibold text-xs tracking-wider">{{ footer.youtube_subscribers|default:"15,200 Followers" }}</span>
                         </div>
                         <span
                             class="bg-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-sm uppercase tracking-wider">Subscribe</span>

@@ -85,13 +85,19 @@
                 <!-- Social Links Section -->
                 <div class="!flex !flex-col !gap-4 !pt-4 !border-t !border-gray-100">
                     <h4 class="!text-[12px] !font-bold !text-gray-400 !uppercase !tracking-wider !flex !items-center !gap-2 !mb-0.5">
-                        <i data-lucide="share-2" class="!w-3.5 !h-3.5"></i> Social Media Links
+                        <i data-lucide="share-2" class="!w-3.5 !h-3.5"></i> Social Media Links & Stay Connected Widget
                     </h4>
-                    <div class="!grid !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-4 !gap-4">
+                    <div class="!grid !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-3 !gap-4">
                         <c-ui.input name="facebook_url" type="url" label="Facebook URL" value="{{ footer.facebook_url|default:'' }}" icon="facebook" placeholder="https://..." />
                         <c-ui.input name="twitter_url" type="url" label="Twitter/X URL" value="{{ footer.twitter_url|default:'' }}" icon="twitter" placeholder="https://..." />
+                        <c-ui.input name="youtube_url" type="url" label="YouTube Channel URL" value="{{ footer.youtube_url|default:'' }}" icon="youtube" placeholder="https://..." />
                         <c-ui.input name="linkedin_url" type="url" label="LinkedIn URL" value="{{ footer.linkedin_url|default:'' }}" icon="linkedin" placeholder="https://..." />
                         <c-ui.input name="whatsapp_number" type="text" label="WhatsApp Number" value="{{ footer.whatsapp_number|default:'' }}" icon="message-circle" placeholder="+1234567890" />
+                    </div>
+                    <div class="!grid !grid-cols-1 sm:!grid-cols-3 !gap-4 !mt-2">
+                        <c-ui.input name="facebook_fans" type="text" label="Facebook Fans Text" value="{{ footer.facebook_fans|default:'19,243 Fans' }}" placeholder="19,243 Fans" />
+                        <c-ui.input name="twitter_followers" type="text" label="Twitter Followers Text" value="{{ footer.twitter_followers|default:'2,076 Followers' }}" placeholder="2,076 Followers" />
+                        <c-ui.input name="youtube_subscribers" type="text" label="YouTube Subscribers Text" value="{{ footer.youtube_subscribers|default:'15,200 Followers' }}" placeholder="15,200 Followers" />
                     </div>
                 </div>
 
