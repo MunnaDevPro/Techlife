@@ -627,210 +627,385 @@
     </div>
 </div>
 
-<!-- 5. RIGHT SLIDING MOBILE & MENU SIDEBAR (Opens when MENU button is clicked) -->
-<div id="mobile-sidebar"
-    class="fixed top-0 right-0 h-full w-[320px] max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-500 ease-in-out z-[70] flex flex-col font-inter will-change-transform">
+<!-- PROTHOM ALO STYLE MENU (slides from right) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    .sidebar-body-container {
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 60px);
+    }
+    @media (min-width: 768px) {
+        .sidebar-body-container { flex-direction: row; }
+    }
+    .sidebar-left-col {
+        flex: 1;
+        min-width: 0;
+        padding: 0 16px 28px;
+        border-right: none;
+        overflow: hidden;
+    }
+    @media (min-width: 768px) {
+        .sidebar-left-col {
+            padding: 0 24px 36px;
+            border-right: 1px solid #e5e7eb;
+        }
+    }
+    @media (min-width: 1024px) {
+        .sidebar-left-col { padding: 0 28px 36px; }
+    }
+    .sidebar-right-col {
+        width: 100%;
+        flex-shrink: 0;
+        padding: 20px 16px 36px;
+        background: #f9fafb;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        border-top: 1px solid #e5e7eb;
+    }
+    @media (min-width: 768px) {
+        .sidebar-right-col {
+            width: 290px;
+            padding: 16px 18px 30px;
+            border-top: none;
+            border-left: 1px solid #f3f4f6;
+        }
+    }
+    @media (min-width: 1024px) {
+        .sidebar-right-col {
+            width: 320px;
+            padding: 20px 22px 36px;
+        }
+    }
+    .sidebar-cat-row {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    @media (min-width: 768px) {
+        .sidebar-cat-row {
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 0;
+        }
+    }
+    @media (min-width: 1024px) {
+        .sidebar-cat-row { gap: 18px; }
+    }
+    .sidebar-cat-header-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    @media (min-width: 768px) {
+        .sidebar-cat-header-mobile {
+            width: 210px;
+            min-width: 210px;
+            flex-shrink: 0;
+        }
+    }
+    @media (min-width: 1024px) {
+        .sidebar-cat-header-mobile {
+            width: 230px;
+            min-width: 230px;
+        }
+    }
+    .sidebar-cat-link {
+        font-size: 15px;
+        font-weight: 700;
+        color: #111827;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        line-height: 1.2;
+        white-space: nowrap;
+        flex: 1;
+    }
+    @media (min-width: 768px) {
+        .sidebar-cat-link {
+            font-size: 13.5px;
+            padding-right: 12px;
+            width: 100%;
+        }
+    }
+    @media (min-width: 1024px) {
+        .sidebar-cat-link { padding-right: 14px; }
+    }
 
-    <!-- Drawer Header (Clean Professional White Theme) -->
-    <div class="px-5 py-4 flex-shrink-0 relative bg-white border-b border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.03)] border-t-4 border-[#265daa]">
-        
-        <!-- Close Button (Clean Pill Button) -->
-        <button onclick="closeSidebar()" aria-label="Close menu"
-            class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100/80 hover:bg-[#265daa] text-gray-500 hover:text-white flex items-center justify-center transition-all duration-200 cursor-pointer outline-none border border-gray-200/60 shadow-2xs group z-10">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round" class="group-hover:rotate-90 transition-transform duration-300">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
+    /* Desktop arrow vs Mobile chevron */
+    .desktop-arrow-icon { display: none; }
+    @media (min-width: 768px) {
+        .desktop-arrow-icon { display: inline-block; }
+    }
+
+    .mobile-chevron-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        padding: 4px 0 4px 10px;
+    }
+    @media (min-width: 768px) {
+        .mobile-chevron-btn { display: none !important; }
+    }
+
+    .sidebar-subcat-wrapper {
+        display: none;
+        flex-wrap: wrap;
+        gap: 6px 12px;
+        align-items: center;
+        padding: 8px 12px;
+        background: #f8fafc;
+        border-radius: 8px;
+        margin-top: 4px;
+    }
+    @media (min-width: 768px) {
+        .sidebar-subcat-wrapper {
+            display: flex !important;
+            padding: 0;
+            background: transparent;
+            border-radius: 0;
+            margin-top: 0;
+            gap: 2px 14px;
+        }
+    }
+    .sidebar-subcat-link {
+        font-size: 13px;
+        color: #4b5563;
+        font-weight: 500;
+        text-decoration: none;
+        line-height: 1.5;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    /* Sidebar Quick Nav Styling */
+    .sidebar-quick-nav {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 8px;
+        padding: 10px 0 12px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 4px;
+    }
+    .quick-nav-item {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 11px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #334155;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+    .quick-nav-item:hover {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+        color: #265daa;
+    }
+    .quick-nav-item.active {
+        background: #265daa;
+        border-color: #265daa;
+        color: #ffffff;
+        font-weight: 700;
+    }
+
+    @media (min-width: 768px) {
+        .sidebar-quick-nav {
+            gap: 8px 12px;
+            padding: 12px 0 14px;
+            margin-bottom: 6px;
+        }
+        .quick-nav-item {
+            padding: 5px 12px;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .sidebar-subcat-link {
+            font-size: 12.5px;
+            color: #6b7280;
+        }
+    }
+</style>
+
+<div id="mobile-sidebar"
+    class="fixed inset-y-0 right-0 w-full bg-white z-[9999] overflow-y-auto"
+    style="transform:translateX(100%); transition:transform 0.32s cubic-bezier(0.4,0,0.2,1); box-shadow:-4px 0 40px rgba(0,0,0,0.15); font-family:'Inter', system-ui, sans-serif;">
+
+    <!-- Sticky Header: Logo left, X right -->
+    <div style="position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #e5e7eb;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;">
+        <a href="{% url 'homepage' %}" onclick="closeSidebar()" style="display:flex;align-items:center;text-decoration:none;">
+            {% if site_settings and site_settings.logo %}
+            <img src="{{ site_settings.logo.url }}" alt="TechLife BD" style="height:34px;width:auto;object-fit:contain;" />
+            {% elif footer and footer.logo %}
+            <img src="{{ footer.logo.url }}" alt="TechLife BD" style="height:34px;width:auto;object-fit:contain;" />
+            {% else %}
+            <img src="{% static 'image/logo-front.png' %}" alt="TechLife BD" style="height:34px;width:auto;object-fit:contain;" />
+            {% endif %}
+        </a>
+        <button onclick="closeSidebar()" aria-label="Close"
+            style="width:36px;height:36px;border-radius:50%;background:#f3f4f6;border:1px solid #e5e7eb;cursor:pointer;display:flex;align-items:center;justify-content:center;"
+            onmouseover="this.style.background='#265daa';this.style.borderColor='#265daa';"
+            onmouseout="this.style.background='#f3f4f6';this.style.borderColor='#e5e7eb';">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
         </button>
-
-        {% if request.user.is_authenticated %}
-        <div class="flex items-center gap-3.5 pr-8 relative">
-            <!-- Avatar Container with Online Indicator -->
-            <div class="relative shrink-0">
-                {% if request.user.profile_picture %}
-                <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.first_name }}"
-                    class="w-12 h-12 rounded-full border-2 border-[#265daa] shadow-xs object-cover ring-2 ring-blue-50" />
-                {% else %}
-                <div class="w-12 h-12 rounded-full text-white flex items-center justify-center text-lg font-bold border-2 border-[#265daa] shadow-xs ring-2 ring-blue-50"
-                    style="background-color: #265daa;">
-                    {{ request.user.first_name|default:request.user.email|slice:":1"|upper }}
-                </div>
-                {% endif %}
-                <span class="w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full absolute bottom-0 right-0 shadow-xs" title="Online"></span>
-            </div>
-
-            <!-- User Info -->
-            <div class="min-w-0 flex-1">
-                <h4 class="text-base font-bold leading-tight truncate text-gray-900 tracking-tight">
-                    {{ request.user.first_name|default:request.user.email }}{% if request.user.last_name %} {{ request.user.last_name }}{% endif %}
-                </h4>
-                <p class="text-xs text-gray-500 truncate font-medium mt-0.5">
-                    {{ request.user.email }}
-                </p>
-            </div>
-        </div>
-        {% else %}
-        <div class="flex items-center gap-3.5 pr-8 relative">
-            <div class="w-11 h-11 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
-                style="background-color: #265daa;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                </svg>
-            </div>
-            <div class="min-w-0 flex-1">
-                <h4 class="text-base font-bold text-gray-900 leading-tight tracking-tight mb-1">TechLife BD</h4>
-                <a href="{% url 'login' %}"
-                    class="inline-flex items-center gap-1 text-[11px] font-bold text-[#265daa] hover:underline">
-                    <span>Login or Sign up</span>
-                    <i class="fa-solid fa-arrow-right text-[9px]"></i>
-                </a>
-            </div>
-        </div>
-        {% endif %}
     </div>
 
-    <!-- Drawer Navigation Body -->
-    <div class="flex-1 overflow-y-auto py-4 px-3 divide-y divide-gray-100">
-        <!-- Quick Search Bar inside Mobile Drawer -->
-        <div class="pb-3 px-1">
-            <form action="{% url 'redirect_search_results' %}" method="GET"
-                  hx-get="{% url 'redirect_search_results' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-                  onsubmit="closeSidebar()"
-                  class="flex items-center bg-gray-50 rounded-lg p-1 border border-gray-200 focus-within:border-[#265daa] transition-colors">
-                <input type="search" name="q" placeholder="Search news, articles..."
-                    hx-get="{% url 'live_search_suggest' %}"
-                    hx-trigger="keyup changed delay:250ms, search"
-                    hx-target="#drawer-search-suggestions"
-                    hx-swap="innerHTML"
-                    class="w-full bg-transparent px-3 py-1.5 text-xs text-gray-800 focus:outline-none font-medium placeholder-gray-400" />
-                <button type="submit" aria-label="Search" class="w-8 h-8 rounded-md text-white flex items-center justify-center shrink-0 hover:bg-[#1d58a2] transition-colors" style="background-color: #265daa;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="m21 21-4.3-4.3" />
-                    </svg>
-                </button>
-            </form>
-            <div id="drawer-search-suggestions" class="mt-1"></div>
+    <!-- Two-column body -->
+    <div class="sidebar-body-container">
+
+        <!-- LEFT: nav links + categories -->
+        <div class="sidebar-left-col">
+
+            <!-- Quick nav -->
+            <div class="sidebar-quick-nav">
+                <a href="{% url 'homepage' %}" onclick="closeSidebar()" class="quick-nav-item {% if request.resolver_match.url_name == 'homepage' %}active{% endif %}">Home</a>
+                <a href="{% url 'blogs' %}" onclick="closeSidebar()" class="quick-nav-item {% if request.resolver_match.url_name == 'blogs' %}active{% endif %}">Latest News</a>
+                <a href="{% url 'popular_blogs' %}" onclick="closeSidebar()" class="quick-nav-item {% if request.resolver_match.url_name == 'popular_blogs' %}active{% endif %}">Popular</a>
+                <a href="{% url 'questions_list' %}" onclick="closeSidebar()" class="quick-nav-item {% if request.resolver_match.url_name == 'questions_list' %}active{% endif %}">Questions</a>
+                <a href="{% url 'contact_page' %}" onclick="closeSidebar()" class="quick-nav-item {% if request.resolver_match.url_name == 'contact_page' %}active{% endif %}">Contact</a>
+            </div>
+
+            <!-- 1. Categories WITH subcategories — full rows, shown first -->
+            {% for category in categories %}{% if category.subcategories.all %}
+            <div class="sidebar-cat-row">
+                <div class="sidebar-cat-header-mobile">
+                    <a href="{% url 'category_post' category.slug %}" onclick="closeSidebar()"
+                       class="sidebar-cat-link"
+                       onmouseover="this.style.color='#265daa'" onmouseout="this.style.color='#111827'">
+                        <span>{{ category.name }}</span>
+                        <i class="fa-solid fa-angle-right desktop-arrow-icon" style="font-size:10px;color:#265daa;flex-shrink:0;"></i>
+                    </a>
+                    <div class="mobile-chevron-btn" onclick="toggleCatAccordion(this)">
+                        <div style="height:16px;width:1px;background:#e5e7eb;"></div>
+                        <i class="fa-solid fa-chevron-down mobile-chevron-icon" style="font-size:13px;color:#374151;transition:transform 0.2s;"></i>
+                    </div>
+                </div>
+                <div class="sidebar-subcat-wrapper">
+                    {% for sub in category.subcategories.all %}
+                    <a href="{% url 'category_post' sub.slug %}" onclick="closeSidebar()"
+                       class="sidebar-subcat-link"
+                       onmouseover="this.style.color='#265daa';"
+                       onmouseout="this.style.color='#6b7280';">
+                        <span style="width:4px;height:4px;border-radius:50%;background:#9ca3af;display:inline-block;flex-shrink:0;margin-right:2px;"></span>
+                        {{ sub.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}{% endfor %}
+
+            <!-- 2. Categories WITHOUT subcategories — side by side at bottom -->
+            <div style="padding:10px 0 6px;border-top:1px dashed #e5e7eb;display:flex;flex-wrap:wrap;gap:3px 0;align-items:center;">
+                {% for category in categories %}{% if not category.subcategories.all %}
+                <a href="{% url 'category_post' category.slug %}" onclick="closeSidebar()"
+                   style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px 4px 0;font-size:13px;font-weight:600;color:#374151;text-decoration:none;white-space:nowrap;"
+                   onmouseover="this.style.color='#265daa'" onmouseout="this.style.color='#374151'">
+                    {{ category.name }} <i class="fa-solid fa-angle-right" style="font-size:9px;color:#265daa;"></i>
+                </a>
+                {% endif %}{% endfor %}
+            </div>
         </div>
 
-        <nav class="flex flex-col space-y-1 text-sm font-medium pt-3 pb-4">
-            <a href="{% url 'homepage' %}"
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
-                <i class="fa-solid fa-house text-[#265daa] w-5 text-center"></i>
-                Home
-            </a>
+        <!-- RIGHT: account/search/social/news/services -->
+        <div class="sidebar-right-col">
 
+            <!-- Account / Login -->
             {% if request.user.is_authenticated %}
-            <a href="{% url 'user_dashboard' %}"
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
-                <i class="fa-solid fa-gauge-high text-gray-500 w-5 text-center"></i>
-                Dashboard
-            </a>
-            {% endif %}
-
-            <a href="{% url 'blogs' %}"
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
-                <i class="fa-solid fa-newspaper text-gray-500 w-5 text-center"></i>
-                News
-            </a>
-
-            <a href="{% url 'popular_blogs' %}"
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
-                <i class="fa-solid fa-fire text-amber-500 w-5 text-center"></i>
-                Popular
-            </a>
-
-            <a href="{% url 'blogs' %}"
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
-                <i class="fa-solid fa-layer-group text-blue-500 w-5 text-center"></i>
-                All Articles
-            </a>
-
-            <a href="{% url 'questions_list' %}"
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
-                <i class="fa-solid fa-circle-question text-cyan-600 w-5 text-center"></i>
-                Questions
-            </a>
-
-            <!-- Creation & Submissions Links -->
-            <div class="pt-2 mt-2 border-t border-gray-100 space-y-1">
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-3.5 py-1">Submissions</p>
-                {% if request.user.is_authenticated %}
-                <a href="{% url 'add_company_step1' %}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
-                    <i class="fa-solid fa-building-circle-check text-[#265daa] w-5 text-center"></i>
-                    Add Company
-                </a>
-                <a href="{% url 'write_review_landing' %}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
-                    <i class="fa-solid fa-star text-amber-500 w-5 text-center"></i>
-                    Add Review
-                </a>
-                <a href="{% url 'create_blog' %}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
-                    <i class="fa-solid fa-pen-to-square text-emerald-600 w-5 text-center"></i>
-                    Write Blog
-                </a>
+            <div style="padding:12px 14px;background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;display:flex;align-items:center;gap:10px;">
+                {% if request.user.profile_picture %}
+                <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.first_name }}" style="width:38px;height:38px;border-radius:50%;border:2px solid #265daa;object-fit:cover;flex-shrink:0;" />
                 {% else %}
-                <button type="button" data-login-alert-trigger
-                    class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold cursor-pointer">
-                    <i class="fa-solid fa-building-circle-check text-[#265daa] w-5 text-center"></i>
-                    Add Company
-                </button>
-                <button type="button" data-login-alert-trigger
-                    class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold cursor-pointer">
-                    <i class="fa-solid fa-star text-amber-500 w-5 text-center"></i>
-                    Add Review
-                </button>
-                <button type="button" data-login-alert-trigger
-                    class="w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold cursor-pointer">
-                    <i class="fa-solid fa-pen-to-square text-emerald-600 w-5 text-center"></i>
-                    Write Blog
-                </button>
+                <div style="width:38px;height:38px;border-radius:50%;background:#265daa;color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">{{ request.user.first_name|default:request.user.email|slice:":1"|upper }}</div>
                 {% endif %}
+                <div style="min-width:0;flex:1;">
+                    <p style="font-size:13px;font-weight:700;color:#111827;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ request.user.first_name|default:request.user.email }}</p>
+                    <p style="font-size:11px;color:#6b7280;margin:1px 0 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ request.user.email }}</p>
+                </div>
             </div>
-
-            <div class="pt-2 mt-2 border-t border-gray-100">
-                <a href="{% url 'contact_page' %}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-800 hover:bg-blue-50 hover:text-[#265daa] transition-colors font-semibold">
-                    <i class="fa-solid fa-envelope text-gray-500 w-5 text-center"></i>
-                    Contact Us
-                </a>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:-4px;">
+                <a href="{% url 'user_dashboard' %}" onclick="closeSidebar()" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 10px;background:#265daa;color:#fff;border-radius:8px;font-size:11.5px;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='#1d4ed8';" onmouseout="this.style.background='#265daa';"><i class="fa-solid fa-gauge-high" style="font-size:11px;"></i> Dashboard</a>
+                <a href="{% url 'logout' %}" onclick="closeSidebar()" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 10px;background:#fff;color:#ef4444;border:1px solid #fee2e2;border-radius:8px;font-size:11.5px;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='#fef2f2';this.style.borderColor='#fca5a5';" onmouseout="this.style.background='#fff';this.style.borderColor='#fee2e2';"><i class="fa-solid fa-right-from-bracket" style="font-size:11px;"></i> Logout</a>
             </div>
-        </nav>
-
-        <!-- Categories Section in Mobile Drawer -->
-        <div class="py-4">
-            <div class="flex items-center justify-between px-3.5 mb-2">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Categories</p>
-                <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{{ categories|length }}</span>
-            </div>
-            <div class="space-y-1">
-                {% for category in categories|slice:":8" %}
-                <a href="{% url 'category_post' category.slug %}"
-                    class="flex items-center justify-between px-3.5 py-2 rounded-lg text-gray-700 text-xs hover:bg-gray-50 hover:text-[#265daa] transition-colors">
-                    <span class="truncate font-medium">{{ category.name }}</span>
-                    <i class="fa-solid fa-chevron-right text-[9px] text-gray-400"></i>
-                </a>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Actions / Account Controls Buttons -->
-        <div class="pt-4 px-2">
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'logout' %}"
-                class="w-full flex justify-center items-center gap-2 px-4 py-2.5 bg-red-50 text-red-600 border border-red-200/60 rounded-lg text-xs font-bold hover:bg-red-100 transition-colors uppercase tracking-wider">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </a>
             {% else %}
-            <a href="{% url 'login' %}"
-                class="w-full flex justify-center items-center gap-2 px-4 py-2.5 bg-[#265daa] text-white rounded-lg text-xs font-bold hover:bg-[#1d58a2] transition-colors uppercase tracking-wider">
-                <i class="fa-solid fa-right-to-bracket"></i> Login / Sign Up
-            </a>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <a href="{% url 'login' %}" onclick="closeSidebar()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;background:#265daa;color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='#1d4ed8';" onmouseout="this.style.background='#265daa';"><i class="fa-solid fa-right-to-bracket" style="font-size:12px;"></i> Login</a>
+                <button onclick="toggleMobileSearch();closeSidebar();" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;background:#fff;color:#374151;border:1px solid #e5e7eb;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='#f3f4f6';" onmouseout="this.style.background='#fff';"><i class="fa-solid fa-magnifying-glass" style="font-size:11px;color:#6b7280;"></i> Search</button>
+            </div>
             {% endif %}
+
+            <!-- Recent News -->
+            {% if recent_news_list %}
+            <div style="background:#ffffff;padding:12px 14px;border-radius:10px;border:1px solid #e5e7eb;">
+                <p style="font-size:10.5px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 10px;display:flex;align-items:center;gap:5px;"><i class="fa-regular fa-newspaper" style="color:#265daa;font-size:11px;"></i> Recent News</p>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    {% for post in recent_news_list|slice:"3" %}
+                    <a href="{% url 'blog_details' post.slug %}" onclick="closeSidebar()" style="display:flex;gap:9px;align-items:center;text-decoration:none;" onmouseover="this.querySelector('.post-title').style.color='#265daa'" onmouseout="this.querySelector('.post-title').style.color='#111827'">
+                        <div style="width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#e5e7eb;">
+                            {% if post.featured_image_thumbnail %}<img src="{{ post.featured_image_thumbnail.url }}" alt="{{ post.title }}" style="width:100%;height:100%;object-fit:cover;" />
+                            {% elif post.featured_image %}<img src="{{ post.featured_image.url }}" alt="{{ post.title }}" style="width:100%;height:100%;object-fit:cover;" />
+                            {% else %}<div style="width:100%;height:100%;background:#265daa;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;">TL</div>{% endif %}
+                        </div>
+                        <div style="min-width:0;flex:1;">
+                            <p class="post-title" style="font-size:11.5px;font-weight:600;color:#111827;margin:0 0 2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3;transition:color 0.2s;">{{ post.title }}</p>
+                            <span style="font-size:10px;color:#9ca3af;display:inline-flex;align-items:center;gap:3px;"><i class="fa-regular fa-clock" style="font-size:9px;"></i> {{ post.created_at|date:"M d, Y" }}</span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Quick Services -->
+            <div style="background:#ffffff;padding:12px 14px;border-radius:10px;border:1px solid #e5e7eb;">
+                <p style="font-size:10.5px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 10px;display:flex;align-items:center;gap:5px;"><i class="fa-solid fa-bolt" style="color:#f59e0b;font-size:10px;"></i> Quick Services</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                    <a href="{% url 'add_company_step1' %}" onclick="closeSidebar()" style="display:flex;align-items:center;gap:5px;padding:7px 8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;font-size:11px;font-weight:600;color:#374151;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='#eff6ff';this.style.borderColor='#bfdbfe';this.style.color='#265daa';" onmouseout="this.style.background='#f8fafc';this.style.borderColor='#e2e8f0';this.style.color='#374151';"><i class="fa-solid fa-building-circle-check" style="color:#265daa;font-size:11px;"></i> Add Company</a>
+                    <a href="{% url 'write_review_landing' %}" onclick="closeSidebar()" style="display:flex;align-items:center;gap:5px;padding:7px 8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;font-size:11px;font-weight:600;color:#374151;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='#fffbeb';this.style.borderColor='#fde68a';this.style.color='#d97706';" onmouseout="this.style.background='#f8fafc';this.style.borderColor='#e2e8f0';this.style.color='#374151';"><i class="fa-solid fa-star" style="color:#f59e0b;font-size:11px;"></i> Add Review</a>
+                    <a href="{% url 'create_blog' %}" onclick="closeSidebar()" style="display:flex;align-items:center;gap:5px;padding:7px 8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;font-size:11px;font-weight:600;color:#374151;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='#eff6ff';this.style.borderColor='#bbf7d0';this.style.color='#16a34a';" onmouseout="this.style.background='#f8fafc';this.style.borderColor='#e2e8f0';this.style.color='#374151';"><i class="fa-solid fa-pen-to-square" style="color:#16a34a;font-size:11px;"></i> Write Article</a>
+                    <a href="{% url 'questions_list' %}" onclick="closeSidebar()" style="display:flex;align-items:center;gap:5px;padding:7px 8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;font-size:11px;font-weight:600;color:#374151;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='#ecfeff';this.style.borderColor='#a5f3fc';this.style.color='#0891b2';" onmouseout="this.style.background='#f8fafc';this.style.borderColor='#e2e8f0';this.style.color='#374151';"><i class="fa-solid fa-circle-question" style="color:#0891b2;font-size:11px;"></i> Forum Q&amp;A</a>
+                </div>
+            </div>
+
+            <!-- Follow Us (Bottom) -->
+            {% if footer %}
+            <div style="background:#ffffff;padding:12px 14px;border-radius:10px;border:1px solid #e5e7eb;">
+                <p style="font-size:10.5px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 8px;">Follow Us</p>
+                <div style="display:flex;flex-wrap:wrap;gap:7px;">
+                    {% if footer.facebook_url %}<a href="{{ footer.facebook_url }}" target="_blank" style="width:34px;height:34px;border-radius:8px;background:#eff6ff;color:#1877f2;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13.5px;transition:all 0.2s;" onmouseover="this.style.background='#1877f2';this.style.color='#fff';" onmouseout="this.style.background='#eff6ff';this.style.color='#1877f2';"><i class="fa-brands fa-facebook-f"></i></a>{% endif %}
+                    {% if footer.twitter_url %}<a href="{{ footer.twitter_url }}" target="_blank" style="width:34px;height:34px;border-radius:8px;background:#f3f4f6;color:#111827;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13.5px;transition:all 0.2s;" onmouseover="this.style.background='#000';this.style.color='#fff';" onmouseout="this.style.background='#f3f4f6';this.style.color='#111827';"><i class="fa-brands fa-x-twitter"></i></a>{% endif %}
+                    {% if footer.instagram_url %}<a href="{{ footer.instagram_url }}" target="_blank" style="width:34px;height:34px;border-radius:8px;background:#fdf2f8;color:#e4405f;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13.5px;transition:all 0.2s;" onmouseover="this.style.background='#e4405f';this.style.color='#fff';" onmouseout="this.style.background='#fdf2f8';this.style.color='#e4405f';"><i class="fa-brands fa-instagram"></i></a>{% endif %}
+                    {% if footer.youtube_url %}<a href="{{ footer.youtube_url }}" target="_blank" style="width:34px;height:34px;border-radius:8px;background:#fff5f5;color:#ff0000;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13.5px;transition:all 0.2s;" onmouseover="this.style.background='#ff0000';this.style.color='#fff';" onmouseout="this.style.background='#fff5f5';this.style.color='#ff0000';"><i class="fa-brands fa-youtube"></i></a>{% endif %}
+                    {% if footer.linkedin_url %}<a href="{{ footer.linkedin_url }}" target="_blank" style="width:34px;height:34px;border-radius:8px;background:#eff6ff;color:#0a66c2;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13.5px;transition:all 0.2s;" onmouseover="this.style.background='#0a66c2';this.style.color='#fff';" onmouseout="this.style.background='#eff6ff';this.style.color='#0a66c2';"><i class="fa-brands fa-linkedin-in"></i></a>{% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Footer -->
+            <div style="border-top:1px solid #e5e7eb;padding-top:12px;margin-top:auto;">
+                <div style="display:flex;flex-wrap:wrap;gap:4px 8px;font-size:11px;color:#9ca3af;margin-bottom:3px;">
+                    <a href="{% url 'contact_page' %}" onclick="closeSidebar()" style="color:#6b7280;text-decoration:none;font-weight:500;" onmouseover="this.style.color='#265daa'" onmouseout="this.style.color='#6b7280'">Contact</a>
+                    <span>•</span><a href="#" style="color:#6b7280;text-decoration:none;font-weight:500;">Privacy</a>
+                    <span>•</span><a href="#" style="color:#6b7280;text-decoration:none;font-weight:500;">Terms</a>
+                </div>
+                <p style="font-size:10.5px;color:#9ca3af;margin:0;">© {% now "Y" %} TechLife BD. All rights reserved.</p>
+            </div>
         </div>
     </div>
 </div>
@@ -869,56 +1044,32 @@
 </header>
 
 <script>
-    function getScrollbarWidth() {
-        return window.innerWidth - document.documentElement.clientWidth;
-    }
-
     function openSidebar() {
         var sidebar = document.getElementById('mobile-sidebar');
-        var overlay = document.getElementById('sidebar-overlay');
-        var sbWidth = getScrollbarWidth();
-
-        if (sbWidth > 0) {
-            document.body.style.paddingRight = sbWidth + 'px';
-            var nav = document.querySelector('nav');
-            if (nav) nav.style.paddingRight = sbWidth + 'px';
-        }
-        document.body.classList.add('overflow-hidden');
-
-        if (sidebar) sidebar.classList.remove('translate-x-full');
-        if (overlay) {
-            overlay.classList.remove('invisible');
-            requestAnimationFrame(function () {
-                overlay.classList.remove('opacity-0');
-                overlay.classList.add('opacity-100');
-            });
-        }
+        if (sidebar) sidebar.style.transform = 'translateX(0)';
     }
     window.openSidebar = openSidebar;
 
     function closeSidebar() {
         var sidebar = document.getElementById('mobile-sidebar');
-        var overlay = document.getElementById('sidebar-overlay');
-
-        if (sidebar) sidebar.classList.add('translate-x-full');
-        if (overlay) {
-            overlay.classList.remove('opacity-100');
-            overlay.classList.add('opacity-0');
-            setTimeout(function () {
-                overlay.classList.add('invisible');
-                document.body.classList.remove('overflow-hidden');
-                document.body.style.paddingRight = '';
-                var nav = document.querySelector('nav');
-                if (nav) nav.style.paddingRight = '';
-            }, 500);
-        } else {
-            document.body.classList.remove('overflow-hidden');
-            document.body.style.paddingRight = '';
-            var nav = document.querySelector('nav');
-            if (nav) nav.style.paddingRight = '';
-        }
+        if (sidebar) sidebar.style.transform = 'translateX(100%)';
     }
     window.closeSidebar = closeSidebar;
+
+    function toggleCatAccordion(btn) {
+        var row = btn.closest('.sidebar-cat-row');
+        if (!row) return;
+        var wrapper = row.querySelector('.sidebar-subcat-wrapper');
+        var chevron = row.querySelector('.mobile-chevron-icon');
+        if (wrapper) {
+            var isHidden = window.getComputedStyle(wrapper).display === 'none';
+            wrapper.style.display = isHidden ? 'flex' : 'none';
+            if (chevron) {
+                chevron.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+    }
+    window.toggleCatAccordion = toggleCatAccordion;
 
     (function () {
         function toggleMobileSearch() {

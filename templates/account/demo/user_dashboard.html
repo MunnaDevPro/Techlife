@@ -60,7 +60,7 @@
             <button id="mobile-menu-open-btn" class="md:hidden text-gray-500 hover:text-[#265daa] focus:outline-none p-2 rounded-lg hover:bg-blue-50 transition-all duration-200 w-9 h-9 flex items-center justify-center">
                 <i class="fas fa-bars text-[18px]"></i>
             </button>
-            <a href="{% url 'homepage' %}" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-gray-600 hover:text-[#265daa] hover:border-[#265daa] transition-all group ml-auto" title="Back to Home">
+            <a href="{% url 'homepage' %}" hx-boost="false" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-gray-600 hover:text-[#265daa] hover:border-[#265daa] transition-all group ml-auto" title="Back to Home">
                 <i class="fas fa-arrow-left text-[11px] group-hover:-translate-x-0.5 transition-transform"></i>
                 <span class="text-[12px] font-bold">Back to Home</span>
             </a>
