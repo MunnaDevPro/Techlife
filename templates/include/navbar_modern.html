@@ -752,28 +752,44 @@
         cursor: pointer;
         padding: 4px 0 4px 10px;
     }
+    .mobile-chevron-icon {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
     @media (min-width: 768px) {
         .mobile-chevron-btn { display: none !important; }
     }
 
     .sidebar-subcat-wrapper {
-        display: none;
+        display: flex;
         flex-wrap: wrap;
         gap: 6px 12px;
         align-items: center;
-        padding: 8px 12px;
+        padding: 0 12px;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
         background: #f8fafc;
         border-radius: 8px;
-        margin-top: 4px;
+        margin-top: 0;
+        transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, padding 0.3s ease, margin-top 0.3s ease;
+    }
+    .sidebar-subcat-wrapper.is-open {
+        max-height: 500px;
+        opacity: 1;
+        padding: 8px 12px;
+        margin-top: 6px;
     }
     @media (min-width: 768px) {
         .sidebar-subcat-wrapper {
             display: flex !important;
-            padding: 0;
-            background: transparent;
-            border-radius: 0;
-            margin-top: 0;
+            max-height: none !important;
+            opacity: 1 !important;
+            padding: 0 !important;
+            background: transparent !important;
+            border-radius: 0 !important;
+            margin-top: 0 !important;
             gap: 2px 14px;
+            overflow: visible !important;
         }
     }
     .sidebar-subcat-link {
@@ -886,7 +902,8 @@
             {% for category in categories %}{% if category.subcategories.all %}
             <div class="sidebar-cat-row">
                 <div class="sidebar-cat-header-mobile">
-                    <a href="{% url 'category_post' category.slug %}" onclick="closeSidebar()"
+                    <a href="{% url 'category_post' category.slug %}"
+                       onclick="if(window.innerWidth < 768){ event.preventDefault(); toggleCatAccordion(this); } else { closeSidebar(); }"
                        class="sidebar-cat-link"
                        onmouseover="this.style.color='#265daa'" onmouseout="this.style.color='#111827'">
                         <span>{{ category.name }}</span>
@@ -894,7 +911,7 @@
                     </a>
                     <div class="mobile-chevron-btn" onclick="toggleCatAccordion(this)">
                         <div style="height:16px;width:1px;background:#e5e7eb;"></div>
-                        <i class="fa-solid fa-chevron-down mobile-chevron-icon" style="font-size:13px;color:#374151;transition:transform 0.2s;"></i>
+                        <i class="fa-solid fa-chevron-down mobile-chevron-icon" style="font-size:13px;color:#374151;"></i>
                     </div>
                 </div>
                 <div class="sidebar-subcat-wrapper">
@@ -1062,10 +1079,13 @@
         var wrapper = row.querySelector('.sidebar-subcat-wrapper');
         var chevron = row.querySelector('.mobile-chevron-icon');
         if (wrapper) {
-            var isHidden = window.getComputedStyle(wrapper).display === 'none';
-            wrapper.style.display = isHidden ? 'flex' : 'none';
-            if (chevron) {
-                chevron.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+            var isOpen = wrapper.classList.contains('is-open');
+            if (isOpen) {
+                wrapper.classList.remove('is-open');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            } else {
+                wrapper.classList.add('is-open');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
             }
         }
     }
