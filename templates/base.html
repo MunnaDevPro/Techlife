@@ -495,14 +495,21 @@
     {% include "maintenance/maintenance_modal.html" %}
 
     <!-- Toast Container -->
-    <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col items-end gap-2">
+    <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col items-end gap-2.5 pointer-events-none">
         {% if messages %}
         {% for message in messages %}
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
-            x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-x-0"
-            x-transition:leave-end="opacity-0 translate-x-4"
-            class="toast-message bg-[#265daa] text-white px-5 py-3 rounded-md shadow-lg text-sm">
-            {{ message }}
+        <div x-data="{ show: false }"
+             x-init="setTimeout(() => show = true, 50); setTimeout(() => show = false, 3000)"
+             x-show="show"
+             x-transition:enter="transition ease-out duration-400 transform"
+             x-transition:enter-start="opacity-0 translate-x-full"
+             x-transition:enter-end="opacity-100 translate-x-0"
+             x-transition:leave="transition ease-in duration-300 transform"
+             x-transition:leave-start="opacity-100 translate-x-0"
+             x-transition:leave-end="opacity-0 translate-x-full"
+             class="pointer-events-auto flex items-center gap-3 px-5 py-3.5 rounded-lg shadow-xl text-sm font-semibold text-white transition-all {% if message.tags == 'error' %}bg-red-600{% else %}bg-emerald-600{% endif %}">
+            <i class="{% if message.tags == 'error' %}fa-solid fa-circle-exclamation{% else %}fa-solid fa-circle-check{% endif %} text-base text-white"></i>
+            <span>{{ message }}</span>
         </div>
         {% endfor %}
         {% endif %}
@@ -517,7 +524,7 @@
     {% endblock %}
 
     <!-- Main Content -->
-    <main id="container" hx-boost="true" hx-target="#container" hx-swap="innerHTML" class="mx-auto flex-grow min-h-[calc(100vh-128px)] py-4">
+    <main id="container" hx-boost="true" hx-target="#container" hx-select="#container" hx-swap="innerHTML" class="w-full mx-auto flex-grow min-h-[calc(100vh-128px)] py-4">
         {% block content %}
         {% if action == 'post_create' or action == 'post_edit' %} {% include
         'components/blogs/partial_create_blog_content.html' %}

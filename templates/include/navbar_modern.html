@@ -1191,7 +1191,7 @@
             if (!navLogo) return;
             
             var path = window.location.pathname || '';
-            var isCompactNavbar = path.indexOf('/details/') !== -1 || path.indexOf('/company/') !== -1 || path.indexOf('/category/') !== -1 || path.indexOf('/search/') !== -1 || path.indexOf('/blogs') !== -1 || path.indexOf('/tag/') !== -1;
+            var isCompactNavbar = path.indexOf('/details/') !== -1 || path.indexOf('/company/') !== -1 || path.indexOf('/category/') !== -1 || path.indexOf('/search/') !== -1 || path.indexOf('/blogs') !== -1 || path.indexOf('/tag/') !== -1 || path.indexOf('/contact') !== -1;
             
             if (isCompactNavbar) {
                 navLogo.style.opacity = '1';
@@ -1227,7 +1227,7 @@
 
         function updateNavbarForCurrentPage() {
             var path = window.location.pathname || '';
-            var isCompactNavbar = path.indexOf('/details/') !== -1 || path.indexOf('/company/') !== -1 || path.indexOf('/category/') !== -1 || path.indexOf('/search/') !== -1 || path.indexOf('/blogs') !== -1 || path.indexOf('/tag/') !== -1;
+            var isCompactNavbar = path.indexOf('/details/') !== -1 || path.indexOf('/company/') !== -1 || path.indexOf('/category/') !== -1 || path.indexOf('/search/') !== -1 || path.indexOf('/blogs') !== -1 || path.indexOf('/tag/') !== -1 || path.indexOf('/contact') !== -1;
             var topBar = document.getElementById('top-bar-sec');
             var sec2 = document.getElementById('main-header-logo-sec');
             var navLinks = document.getElementById('desktop-nav-links');

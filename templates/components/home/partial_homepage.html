@@ -154,7 +154,7 @@
                         </a>
 
                         <!-- Category Badge + Date on same line (Date on far right) -->
-                        <div class="mb-2 flex items-center justify-between w-full">
+                        <div class="mb-1 flex items-center justify-between w-full">
                             <span class="inline-block text-[#265daa] font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">
                                 {{ blog.category.name|default:"TECHNOLOGY" }}
                             </span>
@@ -162,13 +162,16 @@
                         </div>
 
                         <!-- Title -->
-                        <a href="{% url 'blog_details' blog.slug %}" class="font-semibold text-lg sm:text-xl text-gray-900 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-2">
+                        <a href="{% url 'blog_details' blog.slug %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
                             {{ blog.title }}
                         </a>
 
                         <!-- Excerpt -->
-                        {% if blog.description %}<p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">{{ blog.description|striptags|truncatewords:50 }}
-                        </p>{% endif %}
+                        {% if blog.description %}
+                        <p class="text-xs sm:text-[13px] text-gray-600 leading-relaxed line-clamp-2 mb-3">
+                            {{ blog.description|striptags|truncatewords:25 }}
+                        </p>
+                        {% endif %}
 
 
 
@@ -189,7 +192,7 @@
                                     <div class="text-[11px] font-medium mb-1">
                                         <span class="text-gray-400">{{ mini_blog.created_at|date:"F d, Y" }}</span>
                                     </div>
-                                    <a href="{% url 'blog_details' mini_blog.slug %}" class="text-xs sm:text-sm font-semibold text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2">
+                                    <a href="{% url 'blog_details' mini_blog.slug %}" class="text-xs sm:text-sm font-semibold text-gray-800 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2">
                                         {{ mini_blog.title }}
                                     </a>
                                 </div>
@@ -217,7 +220,7 @@
                         </a>
 
                         <!-- Category Badge + Date on same line (Date on far right) -->
-                        <div class="mb-2 flex items-center justify-between w-full">
+                        <div class="mb-1 flex items-center justify-between w-full">
                             <span class="inline-block text-[#265daa] font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">
                                 {{ blog.category.name|default:"TECHNOLOGY" }}
                             </span>
@@ -225,13 +228,16 @@
                         </div>
 
                         <!-- Title -->
-                        <a href="{% url 'blog_details' blog.slug %}" class="font-semibold text-lg sm:text-xl text-gray-900 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-2">
+                        <a href="{% url 'blog_details' blog.slug %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
                             {{ blog.title }}
                         </a>
 
                         <!-- Excerpt -->
-                        {% if blog.description %}<p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">{{ blog.description|striptags|truncatewords:50 }}
-                        </p>{% endif %}
+                        {% if blog.description %}
+                        <p class="text-xs sm:text-[13px] text-gray-600 leading-relaxed line-clamp-2 mb-3">
+                            {{ blog.description|striptags|truncatewords:25 }}
+                        </p>
+                        {% endif %}
 
 
 
@@ -252,7 +258,7 @@
                                     <div class="text-[11px] font-medium mb-1">
                                         <span class="text-gray-400">{{ mini_blog.created_at|date:"F d, Y" }}</span>
                                     </div>
-                                    <a href="{% url 'blog_details' mini_blog.slug %}" class="text-xs sm:text-sm font-semibold text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2">
+                                    <a href="{% url 'blog_details' mini_blog.slug %}" class="text-xs sm:text-sm font-semibold text-gray-800 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2">
                                         {{ mini_blog.title }}
                                     </a>
                                 </div>
@@ -396,11 +402,14 @@
                             {% endif %}
                             <span class="text-xs text-gray-400 font-medium ml-auto">{{ blog.created_at|date:"F d, Y" }}</span>
                         </div>
-                        <a href="{% url 'blog_details' blog.slug %}" class="font-semibold text-lg sm:text-xl text-gray-900 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-2">
+                        <a href="{% url 'blog_details' blog.slug %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
                             {{ blog.title }}
                         </a>
-                        {% if blog.description %}<p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-2 mb-4">{{ blog.description|striptags|truncatewords:50 }}
-                        </p>{% endif %}
+                        {% if blog.description %}
+                        <p class="text-xs sm:text-[13px] text-gray-600 leading-relaxed line-clamp-2 mb-3">
+                            {{ blog.description|striptags|truncatewords:25 }}
+                        </p>
+                        {% endif %}
                     </div>
                     {% endfor %}
                     {% endif %}
@@ -494,7 +503,7 @@
                     </a>
 
                     <!-- Category Badge + Date on same line (Date on far right) -->
-                    <div class="mb-2 flex items-center justify-between w-full">
+                    <div class="mb-1 flex items-center justify-between w-full">
                         {% if sub_hero.category %}
                         <span class="inline-block text-[#265daa] font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">
                             {{ sub_hero.category.name }}
@@ -504,14 +513,14 @@
                     </div>
 
                     <!-- Title -->
-                    <a href="{% url 'blog_details' sub_hero.slug %}" class="font-semibold text-lg sm:text-xl text-gray-900 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-2 block">
+                    <a href="{% url 'blog_details' sub_hero.slug %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
                         {{ sub_hero.title }}
                     </a>
 
                     <!-- Excerpt -->
                     {% if sub_hero.description %}
-                    <p class="text-xs sm:text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">
-                        {{ sub_hero.description|striptags|truncatewords:50 }}
+                    <p class="text-xs sm:text-[13px] text-gray-600 leading-relaxed line-clamp-2 mb-3">
+                        {{ sub_hero.description|striptags|truncatewords:25 }}
                     </p>
                     {% endif %}
 

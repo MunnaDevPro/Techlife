@@ -1,6 +1,6 @@
 {% load static %}
 
-<section class="max-w-7xl mx-auto px-4 pb-12 font-inter">
+<section class="max-w-5xl mx-auto px-4 pb-12 font-inter w-full">
 
     <!-- Breadcrumb Banner (Light Gray Bar) -->
     <nav class="w-full bg-gray-100 px-4 py-3 my-4 rounded-sm flex items-center gap-1.5 text-xs sm:text-sm font-semibold" aria-label="Breadcrumb">
@@ -10,19 +10,14 @@
             <span>Home</span>
         </a>
         <span class="text-gray-500 font-bold mx-0.5">&rsaquo;</span>
-        <a href="{% url 'blogs' %}" hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-           class="text-gray-900 hover:text-[#265daa] transition-colors shrink-0">
-            <span>News</span>
-        </a>
-        <span class="text-gray-500 font-bold mx-0.5">&rsaquo;</span>
-        <span class="text-[#cc0000] font-bold truncate">World</span>
+        <span class="text-[#cc0000] font-bold truncate">Contact Us</span>
     </nav>
 
     <!-- Main 2-Column Layout -->
-    <div class="flex flex-col lg:flex-row gap-12 mt-8">
+    <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 mt-8 items-start">
 
-        <!-- LEFT COLUMN: Contact Us Form (65% width) -->
-        <div class="w-full lg:w-[65%]">
+        <!-- LEFT COLUMN: Contact Us Form (60% width) -->
+        <div class="w-full lg:w-[60%]">
             <h2 class="text-xl sm:text-2xl font-extrabold text-gray-900 mb-6 tracking-tight">
                 Contact Us
             </h2>
@@ -34,49 +29,46 @@
                 <div class="flex flex-col sm:flex-row gap-6">
                     <div class="w-full sm:w-1/2">
                         <label class="block text-sm font-bold text-gray-900 mb-2">Your name</label>
-                        <input type="text" name="name" required
-                               class="w-full px-3.5 py-2.5 border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#265daa] bg-white">
+                        <input type="text" name="name" required placeholder="Enter your name"
+                               value="{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% endif %}"
+                               class="w-full px-3.5 py-2.5 border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#265daa] bg-white placeholder-gray-400">
                     </div>
                     <div class="w-full sm:w-1/2">
                         <label class="block text-sm font-bold text-gray-900 mb-2">Your email</label>
-                        <input type="email" name="email" required
-                               class="w-full px-3.5 py-2.5 border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#265daa] bg-white">
+                        <input type="email" name="email" required placeholder="Enter your email address"
+                               value="{% if user.is_authenticated %}{{ user.email }}{% endif %}"
+                               class="w-full px-3.5 py-2.5 border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#265daa] bg-white placeholder-gray-400">
                     </div>
                 </div>
 
-                <!-- Row 2: website & Subject -->
-                <div class="flex flex-col sm:flex-row gap-6">
-                    <div class="w-full sm:w-1/2">
-                        <label class="block text-sm font-bold text-gray-900 mb-2">website</label>
-                        <input type="text" name="website"
-                               class="w-full px-3.5 py-2.5 border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#265daa] bg-white">
-                    </div>
-                    <div class="w-full sm:w-1/2">
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Subject</label>
-                        <input type="text" name="subject"
-                               class="w-full px-3.5 py-2.5 border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#265daa] bg-white">
-                    </div>
+                <!-- Row 2: Phone number -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-900 mb-2">Phone number</label>
+                    <input type="text" name="phone" required placeholder="Enter your phone number"
+                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#265daa] bg-white placeholder-gray-400">
                 </div>
 
                 <!-- Row 3: Your message -->
                 <div>
                     <label class="block text-sm font-bold text-gray-900 mb-2">Your message</label>
-                    <textarea name="message" rows="8" required
-                              class="w-full px-3.5 py-2.5 border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#265daa] bg-white resize-y"></textarea>
+                    <textarea name="message" rows="8" required placeholder="Write your message here..."
+                              class="w-full px-3.5 py-2.5 border border-gray-300 rounded-sm text-sm text-gray-800 focus:outline-none focus:border-[#265daa] bg-white resize-y placeholder-gray-400"></textarea>
                 </div>
 
-                <!-- Submit Button (Red Solid Button Aligned Right) -->
+                <!-- Submit Button (Compact Blue Solid Button with Send Icon Aligned Right) -->
                 <div class="flex justify-end pt-1">
                     <button type="submit"
-                            class="px-8 py-3 bg-[#cc0000] hover:bg-[#b30000] text-white text-xs font-extrabold rounded-sm transition-colors uppercase tracking-wider cursor-pointer">
-                        Submit
+                            class="px-6 py-2.5 text-white text-[12px] font-bold rounded-sm transition-all duration-200 uppercase tracking-wider cursor-pointer flex items-center gap-2 shadow-2xs hover:shadow-sm hover:opacity-95 active:scale-[0.98]"
+                            style="background-color: #265daa;">
+                        <i class="fa-solid fa-paper-plane text-[11px]"></i>
+                        <span>Submit</span>
                     </button>
                 </div>
             </form>
         </div>
 
-        <!-- RIGHT COLUMN: Info Location & Find Us (35% width) -->
-        <div class="w-full lg:w-[35%] flex flex-col gap-8">
+        <!-- RIGHT COLUMN: Info Location & Find Us (40% width) -->
+        <div class="w-full lg:w-[40%] flex flex-col gap-8">
 
             <!-- Info Location Section (Dynamic from FooterSettings) -->
             <div>
@@ -88,7 +80,7 @@
                     <!-- Address -->
                     <div class="flex items-start gap-4">
                         <div class="w-10 h-10 border border-gray-200 rounded-sm flex items-center justify-center text-gray-800 shrink-0 bg-gray-50 shadow-xs">
-                            <i class="fa-solid fa-location-dot text-sm text-gray-700"></i>
+                            <i class="fa-solid fa-house text-sm text-gray-700"></i>
                         </div>
                         <span class="pt-1.5 leading-snug font-medium text-gray-800">{% if footer and footer.address %}{{ footer.address }}{% else %}PO Box 16122 Collins Street West Victoria 8007 Australia{% endif %}</span>
                     </div>
@@ -128,32 +120,37 @@
                 <div class="flex items-center gap-2 flex-wrap">
                     <!-- Facebook -->
                     <a href="{% if footer and footer.facebook_url %}{{ footer.facebook_url }}{% else %}https://facebook.com{% endif %}" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
-                       class="w-9 h-9 rounded-sm bg-[#4b66a0] hover:bg-[#3b558f] text-white flex items-center justify-center transition-colors shadow-xs">
-                        <i class="fa-brands fa-facebook-f text-sm"></i>
+                       class="w-9 h-9 rounded-sm text-white flex items-center justify-center transition-opacity shadow-xs hover:opacity-90"
+                       style="background-color: #3b5998;">
+                        <i class="fa-brands fa-facebook-f text-sm text-white"></i>
                     </a>
 
                     <!-- Twitter / X -->
                     <a href="{% if footer and footer.twitter_url %}{{ footer.twitter_url }}{% else %}https://twitter.com{% endif %}" target="_blank" rel="noopener noreferrer" aria-label="Twitter"
-                       class="w-9 h-9 rounded-sm bg-[#5eaade] hover:bg-[#4999cd] text-white flex items-center justify-center transition-colors shadow-xs">
-                        <i class="fa-brands fa-twitter text-sm"></i>
+                       class="w-9 h-9 rounded-sm text-white flex items-center justify-center transition-opacity shadow-xs hover:opacity-90"
+                       style="background-color: #55acee;">
+                        <i class="fa-brands fa-twitter text-sm text-white"></i>
                     </a>
 
                     <!-- WhatsApp -->
                     <a href="{% if footer and footer.whatsapp_number %}https://wa.me/{{ footer.whatsapp_number }}{% else %}https://whatsapp.com{% endif %}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
-                       class="w-9 h-9 rounded-sm bg-[#25d366] hover:bg-[#1ebd59] text-white flex items-center justify-center transition-colors shadow-xs">
-                        <i class="fa-brands fa-whatsapp text-base"></i>
+                       class="w-9 h-9 rounded-sm text-white flex items-center justify-center transition-opacity shadow-xs hover:opacity-90"
+                       style="background-color: #25d366;">
+                        <i class="fa-brands fa-whatsapp text-base text-white"></i>
                     </a>
 
                     <!-- Telegram / Chat -->
                     <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" aria-label="Telegram"
-                       class="w-9 h-9 rounded-sm bg-[#2ca5e0] hover:bg-[#1f93cd] text-white flex items-center justify-center transition-colors shadow-xs">
-                        <i class="fa-brands fa-telegram text-base"></i>
+                       class="w-9 h-9 rounded-sm text-white flex items-center justify-center transition-opacity shadow-xs hover:opacity-90"
+                       style="background-color: #0088cc;">
+                        <i class="fa-brands fa-telegram text-base text-white"></i>
                     </a>
 
                     <!-- LinkedIn -->
                     <a href="{% if footer and footer.linkedin_url %}{{ footer.linkedin_url }}{% else %}https://linkedin.com{% endif %}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
-                       class="w-9 h-9 rounded-sm bg-[#0077b5] hover:bg-[#006297] text-white flex items-center justify-center transition-colors shadow-xs">
-                        <i class="fa-brands fa-linkedin-in text-sm"></i>
+                       class="w-9 h-9 rounded-sm text-white flex items-center justify-center transition-opacity shadow-xs hover:opacity-90"
+                       style="background-color: #0077b5;">
+                        <i class="fa-brands fa-linkedin-in text-sm text-white"></i>
                     </a>
                 </div>
             </div>

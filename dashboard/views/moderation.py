@@ -206,3 +206,45 @@ def user_unblock(request, pk):
     moderation_service.unban_user(pk, request.user)
     messages.success(request, "User unblocked successfully.")
     return redirect("dashboard:mod_blocked")
+
+
+@staff_required
+def contact_messages_list(request):
+    """Display all submitted contact and support messages with search and pagination."""
+    from contact.models import contact_or_support
+    from django.db.models import Q
+    from django.core.paginator import Paginator
+
+    search_query = request.GET.get('q', '').strip()
+    messages_qs = contact_or_support.objects.all().order_by('-created_at')
+
+    if search_query:
+        messages_qs = messages_qs.filter(
+            Q(name__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(phone__icontains=search_query) |
+            Q(message__icontains=search_query)
+        )
+
+    paginator = Paginator(messages_qs, 15)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    ctx = get_dashboard_context(request, "Contact Messages", "Contact Information", "dashboard:contact_messages")
+    ctx.update({
+        "page_obj": page_obj,
+        "total_messages": contact_or_support.objects.count(),
+        "search_query": search_query,
+    })
+    return render(request, "dashboard/moderation/contact_messages.html", ctx)
+
+
+@staff_required
+@require_POST
+def contact_message_delete(request, pk):
+    """Delete a contact/support message."""
+    from contact.models import contact_or_support
+    msg = get_object_or_404(contact_or_support, pk=pk)
+    msg.delete()
+    messages.success(request, "Contact message deleted successfully.")
+    return redirect("dashboard:contact_messages")

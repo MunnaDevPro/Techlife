@@ -171,21 +171,30 @@
 
     <!-- Bottom Copyright & Developer Credit Bar -->
     <div class="py-4 px-4 sm:px-6 text-xs relative z-10" style="background-color: #050A18 !important; color: #94a3b8 !important; border-top: 1px solid rgba(255, 255, 255, 0.08);">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p class="text-center sm:text-left" style="color: #94a3b8;">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
+            <!-- Left: Copyright -->
+            <p class="text-center md:text-left shrink-0" style="color: #94a3b8;">
                 &copy; {% now "Y" %} <span class="font-bold" style="color: #ffffff;">TechLife BD</span>. All Rights Reserved.
-                {% if footer.developer_company_name %}
-                <span class="hidden md:inline border-l ml-2 pl-2" style="border-color: rgba(255, 255, 255, 0.15); color: #94a3b8;">
-                    Developed by <a href="{{ footer.developer_company_url|default:'#' }}" target="_blank" rel="noopener noreferrer" class="font-medium underline transition-colors" style="color: #cbd5e1;">{{ footer.developer_company_name }}</a>
-                </span>
-                {% endif %}
             </p>
-            <div class="flex items-center gap-4 text-[11px] font-medium" style="color: #94a3b8;">
+
+            <!-- Center: Developed By -->
+            {% if footer and footer.developer_company_name %}
+            <p class="text-center shrink-0" style="color: #94a3b8;">
+                Developed by <a href="{{ footer.developer_company_url|default:'#' }}" target="_blank" rel="noopener noreferrer" class="font-medium underline transition-colors" style="color: #cbd5e1;" onmouseover="this.style.color='#ffffff';" onmouseout="this.style.color='#cbd5e1';">{{ footer.developer_company_name }}</a>
+            </p>
+            {% else %}
+            <p class="text-center shrink-0" style="color: #94a3b8;">
+                Developed by <a href="#" target="_blank" rel="noopener noreferrer" class="font-medium underline transition-colors" style="color: #cbd5e1;" onmouseover="this.style.color='#ffffff';" onmouseout="this.style.color='#cbd5e1';">Intelligent Systems &amp; Solution Limited</a>
+            </p>
+            {% endif %}
+
+            <!-- Right: Links -->
+            <div class="flex items-center gap-4 text-[11px] font-medium shrink-0" style="color: #94a3b8;">
                 <a href="#" class="transition-colors" style="color: #94a3b8;" onmouseover="this.style.color='#ffffff';" onmouseout="this.style.color='#94a3b8';">Privacy Policy</a>
                 <span style="color: rgba(255, 255, 255, 0.2);">•</span>
                 <a href="#" class="transition-colors" style="color: #94a3b8;" onmouseover="this.style.color='#ffffff';" onmouseout="this.style.color='#94a3b8';">Terms &amp; Conditions</a>
                 <span style="color: rgba(255, 255, 255, 0.2);">•</span>
-                <a href="{% url 'contact_page' %}" class="hover:text-white transition-colors">Contact Us</a>
+                <a href="{% url 'contact_page' %}" class="transition-colors" style="color: #94a3b8;" onmouseover="this.style.color='#ffffff';" onmouseout="this.style.color='#94a3b8';">Contact Us</a>
             </div>
         </div>
     </div>

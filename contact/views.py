@@ -1,19 +1,7 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.http import HttpResponse
 from .forms import ContactOrSupportForm
-
-# def contact_or_support_view(request):
-#     if request.method == 'POST':
-#         form = ContactOrSupportForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             # if request.user.is_authenticated:
-#             #     contact.user = request.user
-#             # contact.save()
-#             return redirect('home')  
-#     else:
-#         form = ContactOrSupportForm()
-
-#     return render(request, 'include/contact_us_page.html', {'form': form})
 
 def contact_or_support_view(request):
     if request.method == 'POST':
@@ -23,9 +11,14 @@ def contact_or_support_view(request):
             if request.user.is_authenticated:
                 contact.user = request.user
             contact.save()
-            return redirect('homepage')
+            messages.success(request, "Thank you! Your message has been submitted successfully.")
+        else:
+            messages.error(request, "Failed to submit message. Please check the fields and try again.")
 
-    else:
-        form = ContactOrSupportForm()
+        if request.headers.get("HX-Request"):
+            response = HttpResponse(status=204)
+            response["HX-Redirect"] = "/contact/"
+            return response
+        return redirect('contact_page')
 
-    return render(request, 'include/contact_us_page.html', {'form': form})
+    return redirect('contact_page')

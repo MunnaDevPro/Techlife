@@ -62,6 +62,8 @@ urlpatterns = [
     path("mod/comments/", moderation.comment_queue, name="mod_comments"),
     path("mod/blocked/", moderation.blocked_users, name="mod_blocked"),
     path("mod/users/<int:pk>/unblock/", moderation.user_unblock, name="user_unblock"),
+    path("mod/contact-messages/", moderation.contact_messages_list, name="contact_messages"),
+    path("mod/contact-messages/<int:pk>/delete/", moderation.contact_message_delete, name="contact_message_delete"),
     
     # Flags Actions
     path("mod/flags/<int:pk>/approve/<str:queue_type>/", moderation.flag_approve, name="flag_approve"),

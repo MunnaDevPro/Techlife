@@ -380,6 +380,17 @@ Slot (default): page body content
         </a>
       </div>
 
+      {# Contact Information #}
+      <div class="mt-2">
+        <a href="{% url 'dashboard:contact_messages' %}"
+          class="ft-nav-item w-full flex items-center justify-between {% if active_menu == 'Contact Information' or active_menu == 'Contact Info' %}!bg-gray-700 !text-white font-medium{% endif %}">
+          <div class="flex items-center gap-2">
+            <i data-lucide="mail" class="{% if active_menu == 'Contact Information' or active_menu == 'Contact Info' %}!text-white{% endif %}"></i>
+            <span class="{% if active_menu == 'Contact Information' or active_menu == 'Contact Info' %}!text-white{% endif %}">Contact Information</span>
+          </div>
+        </a>
+      </div>
+
     </nav>
 
     {# Bottom user info #}
