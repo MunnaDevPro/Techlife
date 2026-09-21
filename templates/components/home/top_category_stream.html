@@ -13,7 +13,7 @@
     <div class="grid grid-cols-2 gap-3 sm:flex sm:flex-col sm:divide-y sm:divide-gray-100">
         {% for post in second_blogs|slice:"6" %}
         <div class="py-0 sm:py-5 sm:first:pt-0 sm:last:pb-0">
-            <a href="{% url 'blog_details' post.slug %}" class="flex flex-col sm:flex-row gap-2.5 sm:gap-6 group cursor-pointer h-full">
+            <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}" class="flex flex-col sm:flex-row gap-2.5 sm:gap-6 group cursor-pointer h-full">
                 <!-- Post Thumbnail Image -->
                 <div class="w-full sm:w-60 md:w-64 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden bg-gray-100 relative">
                     {% if post.featured_image %}
@@ -60,7 +60,7 @@
         {% empty %}
         {% for post in blogs|slice:"6" %}
         <div class="py-0 sm:py-5 sm:first:pt-0 sm:last:pb-0">
-            <a href="{% url 'blog_details' post.slug %}" class="flex flex-col sm:flex-row gap-2.5 sm:gap-6 group cursor-pointer h-full">
+            <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}" class="flex flex-col sm:flex-row gap-2.5 sm:gap-6 group cursor-pointer h-full">
                 <!-- Post Thumbnail Image -->
                 <div class="w-full sm:w-60 md:w-64 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden bg-gray-100 relative">
                     {% if post.featured_image %}

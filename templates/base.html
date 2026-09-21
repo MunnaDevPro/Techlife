@@ -524,7 +524,7 @@
     {% endblock %}
 
     <!-- Main Content -->
-    <main id="container" hx-boost="true" hx-target="#container" hx-select="#container" hx-swap="innerHTML" class="w-full mx-auto flex-grow min-h-[calc(100vh-128px)] py-4">
+    <main id="container" hx-boost="true" hx-target="#container" hx-swap="innerHTML" class="w-full mx-auto flex-grow min-h-[calc(100vh-128px)] py-4">
         {% block content %}
         {% if action == 'post_create' or action == 'post_edit' %} {% include
         'components/blogs/partial_create_blog_content.html' %}

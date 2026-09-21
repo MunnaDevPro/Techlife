@@ -27,7 +27,7 @@
                      :style="`transform: translateX(-${currentSlide * 100}%);`">
                     {% for hero_post in carousel_blogs %}
                     <div class="w-full h-full shrink-0 relative">
-                        <a href="{% url 'blog_details' hero_post.slug %}" class="block w-full h-full">
+                        <a href="{% if hero_post.is_company %}{% url 'company_details' hero_post.slug %}{% else %}{% url 'blog_details' hero_post.slug %}{% endif %}" class="block w-full h-full">
                             {% if forloop.first %}
                                 {% if hero_post.featured_image %}
                                 <img src="{{ hero_post.featured_image.url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]" style="image-rendering: -webkit-optimize-contrast; filter: contrast(1.03) brightness(1.02);" loading="eager" fetchpriority="high" decoding="async" />
@@ -143,7 +143,7 @@
                     {% if blog %}
                     <div class="flex flex-col">
                         <!-- Top Large Image -->
-                        <a href="{% url 'blog_details' blog.slug %}" class="block relative w-full aspect-[16/9] rounded-[4px] overflow-hidden mb-3 group">
+                        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="block relative w-full aspect-[16/9] rounded-[4px] overflow-hidden mb-3 group">
                             {% if blog.featured_image %}
                             <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
                             {% elif blog.featured_image_url %}
@@ -162,7 +162,7 @@
                         </div>
 
                         <!-- Title -->
-                        <a href="{% url 'blog_details' blog.slug %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
+                        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
                             {{ blog.title }}
                         </a>
 
@@ -179,7 +179,7 @@
                         <div class="space-y-4 pt-2 border-t border-gray-100">
                             {% for mini_blog in blogs|slice:"2:4" %}
                             <div class="flex gap-4 items-start group">
-                                <a href="{% url 'blog_details' mini_blog.slug %}" class="w-24 sm:w-28 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden block">
+                                <a href="{% if mini_blog.is_company %}{% url 'company_details' mini_blog.slug %}{% else %}{% url 'blog_details' mini_blog.slug %}{% endif %}" class="w-24 sm:w-28 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden block">
                                     {% if mini_blog.featured_image %}
                                     <img src="{{ mini_blog.featured_image.url }}" alt="{{ mini_blog.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                                     {% elif mini_blog.featured_image_url %}
@@ -192,7 +192,7 @@
                                     <div class="text-[11px] font-medium mb-1">
                                         <span class="text-gray-400">{{ mini_blog.created_at|date:"F d, Y" }}</span>
                                     </div>
-                                    <a href="{% url 'blog_details' mini_blog.slug %}" class="text-xs sm:text-sm font-semibold text-gray-800 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2">
+                                    <a href="{% if mini_blog.is_company %}{% url 'company_details' mini_blog.slug %}{% else %}{% url 'blog_details' mini_blog.slug %}{% endif %}" class="text-xs sm:text-sm font-semibold text-gray-800 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2">
                                         {{ mini_blog.title }}
                                     </a>
                                 </div>
@@ -209,7 +209,7 @@
                     {% if blog %}
                     <div class="flex flex-col">
                         <!-- Top Large Image -->
-                        <a href="{% url 'blog_details' blog.slug %}" class="block relative w-full aspect-[16/9] rounded-[4px] overflow-hidden mb-3 group">
+                        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="block relative w-full aspect-[16/9] rounded-[4px] overflow-hidden mb-3 group">
                             {% if blog.featured_image %}
                             <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
                             {% elif blog.featured_image_url %}
@@ -228,7 +228,7 @@
                         </div>
 
                         <!-- Title -->
-                        <a href="{% url 'blog_details' blog.slug %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
+                        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
                             {{ blog.title }}
                         </a>
 
@@ -245,7 +245,7 @@
                         <div class="space-y-4 pt-2 border-t border-gray-100">
                             {% for mini_blog in blogs|slice:"4:6" %}
                             <div class="flex gap-4 items-start group">
-                                <a href="{% url 'blog_details' mini_blog.slug %}" class="w-24 sm:w-28 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden block">
+                                <a href="{% if mini_blog.is_company %}{% url 'company_details' mini_blog.slug %}{% else %}{% url 'blog_details' mini_blog.slug %}{% endif %}" class="w-24 sm:w-28 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden block">
                                     {% if mini_blog.featured_image %}
                                     <img src="{{ mini_blog.featured_image.url }}" alt="{{ mini_blog.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                                     {% elif mini_blog.featured_image_url %}
@@ -258,7 +258,7 @@
                                     <div class="text-[11px] font-medium mb-1">
                                         <span class="text-gray-400">{{ mini_blog.created_at|date:"F d, Y" }}</span>
                                     </div>
-                                    <a href="{% url 'blog_details' mini_blog.slug %}" class="text-xs sm:text-sm font-semibold text-gray-800 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2">
+                                    <a href="{% if mini_blog.is_company %}{% url 'company_details' mini_blog.slug %}{% else %}{% url 'blog_details' mini_blog.slug %}{% endif %}" class="text-xs sm:text-sm font-semibold text-gray-800 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2">
                                         {{ mini_blog.title }}
                                     </a>
                                 </div>
@@ -302,7 +302,7 @@
                         <div class="shrink-0 px-2.5 w-full sm:w-1/2 lg:w-1/3"
                              :style="cardWidthPercent ? `flex: 0 0 ${cardWidthPercent}%; max-width: ${cardWidthPercent}%;` : ''">
                             <div class="group flex flex-col h-full bg-white rounded-[4px]">
-                                <a href="{% url 'blog_details' blog.slug %}" class="block relative w-full aspect-[16/9] rounded-[4px] overflow-hidden">
+                                <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="block relative w-full aspect-[16/9] rounded-[4px] overflow-hidden">
                                     {% if blog.featured_image %}
                                     <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
                                     {% elif blog.featured_image_url %}
@@ -320,7 +320,7 @@
                                         {% endif %}
                                         <span class="ml-auto text-xs text-gray-400 font-medium">{{ blog.created_at|date:"F d, Y" }}</span>
                                     </div>
-                                    <a href="{% url 'blog_details' blog.slug %}" class="font-semibold text-sm sm:text-base text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
+                                    <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="font-semibold text-sm sm:text-base text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
                                         {{ blog.title }}
                                     </a>
                                 </div>
@@ -351,7 +351,7 @@
                     {% for post in first_blogs|slice:"2" %}
                     <div class="flex flex-col">
                         <!-- Image -->
-                        <a href="{% url 'blog_details' post.slug %}" class="block relative w-full aspect-[16/9] rounded-[4px] overflow-hidden mb-3 group">
+                        <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}" class="block relative w-full aspect-[16/9] rounded-[4px] overflow-hidden mb-3 group">
                             {% if post.featured_image %}
                             <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
                             {% elif post.featured_image_url %}
@@ -370,7 +370,7 @@
                             <span class="text-xs text-gray-400 font-medium ml-auto">{{ post.created_at|date:"F d, Y" }}</span>
                         </div>
                         <!-- Title -->
-                        <a href="{% url 'blog_details' post.slug %}" class="font-semibold text-lg sm:text-xl text-gray-900 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-2">
+                        <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}" class="font-semibold text-lg sm:text-xl text-gray-900 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-2">
                             {{ post.title }}
                         </a>
                         <!-- Description -->
@@ -384,7 +384,7 @@
                     {% else %}
                     {% for blog in blogs|slice:"6:8" %}
                     <div class="flex flex-col">
-                        <a href="{% url 'blog_details' blog.slug %}" class="block relative h-52 sm:h-60 rounded-[4px] overflow-hidden mb-3 group">
+                        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="block relative h-52 sm:h-60 rounded-[4px] overflow-hidden mb-3 group">
                             {% if blog.featured_image %}
                             <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
                             {% elif blog.featured_image_url %}
@@ -402,7 +402,7 @@
                             {% endif %}
                             <span class="text-xs text-gray-400 font-medium ml-auto">{{ blog.created_at|date:"F d, Y" }}</span>
                         </div>
-                        <a href="{% url 'blog_details' blog.slug %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
+                        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
                             {{ blog.title }}
                         </a>
                         {% if blog.description %}
@@ -421,7 +421,7 @@
                     {% for post in first_blogs|slice:"2:8" %}
                     <div class="group flex items-start gap-3 py-3 border-b border-gray-100">
                         <!-- Thumbnail -->
-                        <a href="{% url 'blog_details' post.slug %}" class="w-20 sm:w-24 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden bg-gray-100 block">
+                        <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}" class="w-20 sm:w-24 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden bg-gray-100 block">
                             {% if post.featured_image %}
                             <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                             {% elif post.featured_image_url %}
@@ -435,7 +435,7 @@
                             <div class="text-[11px] font-medium mb-0.5 flex items-center gap-1.5">
                                 <span class="text-gray-400 text-[10px]">{{ post.created_at|date:"M d, Y" }}</span>
                             </div>
-                            <a href="{% url 'blog_details' post.slug %}" class="text-xs font-bold text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
+                            <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}" class="text-xs font-bold text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
                                 {{ post.title }}
                             </a>
                         </div>
@@ -444,7 +444,7 @@
                     {% else %}
                     {% for blog in blogs|slice:"8:14" %}
                     <div class="group flex items-start gap-3 py-3 border-b border-gray-100">
-                        <a href="{% url 'blog_details' blog.slug %}" class="w-20 sm:w-24 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden bg-gray-100 block">
+                        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="w-20 sm:w-24 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden bg-gray-100 block">
                             {% if blog.featured_image %}
                             <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                             {% elif blog.featured_image_url %}
@@ -457,7 +457,7 @@
                             <div class="text-[11px] font-medium mb-0.5 flex items-center gap-1.5">
                                 <span class="text-gray-400 text-[10px]">{{ blog.created_at|date:"M d, Y" }}</span>
                             </div>
-                            <a href="{% url 'blog_details' blog.slug %}" class="text-xs font-bold text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
+                            <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="text-xs font-bold text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
                                 {{ blog.title }}
                             </a>
                         </div>
@@ -492,7 +492,7 @@
                 {% with sub_hero=carousel_blogs|slice:"1:2"|first %}
                 <div class="flex flex-col">
                     <!-- Top Large Image -->
-                    <a href="{% url 'blog_details' sub_hero.slug %}" class="block relative w-full aspect-[16/9] rounded-[4px] overflow-hidden mb-3 group">
+                    <a href="{% if sub_hero.is_company %}{% url 'company_details' sub_hero.slug %}{% else %}{% url 'blog_details' sub_hero.slug %}{% endif %}" class="block relative w-full aspect-[16/9] rounded-[4px] overflow-hidden mb-3 group">
                         {% if sub_hero.featured_image %}
                         <img src="{{ sub_hero.featured_image.url }}" alt="{{ sub_hero.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
                         {% elif sub_hero.featured_image_url %}
@@ -513,7 +513,7 @@
                     </div>
 
                     <!-- Title -->
-                    <a href="{% url 'blog_details' sub_hero.slug %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
+                    <a href="{% if sub_hero.is_company %}{% url 'company_details' sub_hero.slug %}{% else %}{% url 'blog_details' sub_hero.slug %}{% endif %}" class="font-bold text-base sm:text-lg text-gray-800 hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-1.5 block">
                         {{ sub_hero.title }}
                     </a>
 
@@ -532,7 +532,7 @@
                 <!-- 5 Small List Items (3rd-7th carousel posts) -->
                 <div class="flex flex-col divide-y divide-gray-100">
                     {% for sub_item in carousel_blogs|slice:"2:7" %}
-                    <a href="{% url 'blog_details' sub_item.slug %}" class="flex items-center gap-3 py-2.5 first:pt-0 transition-colors group rounded-[4px]">
+                    <a href="{% if sub_item.is_company %}{% url 'company_details' sub_item.slug %}{% else %}{% url 'blog_details' sub_item.slug %}{% endif %}" class="flex items-center gap-3 py-2.5 first:pt-0 transition-colors group rounded-[4px]">
                         <div class="w-16 sm:w-20 shrink-0 aspect-[16/9] rounded-[4px] overflow-hidden bg-gray-100">
                             {% if sub_item.featured_image %}
                             <img src="{{ sub_item.featured_image.url }}" alt="{{ sub_item.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -629,7 +629,7 @@
                             </div>
 
                             <!-- Title -->
-                            <a href="{% url 'blog_details' item.slug %}" class="font-semibold text-sm text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2 block">
+                            <a href="{% if item.is_company %}{% url 'company_details' item.slug %}{% else %}{% url 'blog_details' item.slug %}{% endif %}" class="font-semibold text-sm text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2 block">
                                 {{ item.title }}
                             </a>
                         </div>
@@ -648,7 +648,7 @@
                             </div>
 
                             <!-- Title -->
-                            <a href="{% url 'blog_details' item.slug %}" class="font-semibold text-sm text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2 block">
+                            <a href="{% if item.is_company %}{% url 'company_details' item.slug %}{% else %}{% url 'blog_details' item.slug %}{% endif %}" class="font-semibold text-sm text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2 block">
                                 {{ item.title }}
                             </a>
                         </div>
@@ -738,7 +738,7 @@
                     <!-- Top #1 Most Viewed Card -->
                     {% for most_blogs in most_viewed_blogs|slice:"1" %}
                     <div class="p-3 bg-gray-50/50">
-                        <a href="{% url 'blog_details' most_blogs.slug %}" class="block group cursor-pointer">
+                        <a href="{% if most_blogs.is_company %}{% url 'company_details' most_blogs.slug %}{% else %}{% url 'blog_details' most_blogs.slug %}{% endif %}" class="block group cursor-pointer">
                             <div class="overflow-hidden mb-2.5" style="aspect-ratio: 16/9; border-radius: 4px;">
                                 {% if most_blogs.featured_image %}
                                 <img src="{{ most_blogs.featured_image.url }}" alt="{{ most_blogs.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" loading="lazy" decoding="async">
@@ -755,7 +755,7 @@
 
                     <!-- Most Viewed Items #2 to #6 -->
                     {% for most_view in most_viewed_blogs|slice:"1:6" %}
-                    <a href="{% url 'blog_details' most_view.slug %}"
+                    <a href="{% if most_view.is_company %}{% url 'company_details' most_view.slug %}{% else %}{% url 'blog_details' most_view.slug %}{% endif %}"
                        class="p-3 flex items-center gap-3 transition-colors group cursor-pointer">
                         <div class="w-16 shrink-0 aspect-[16/9] overflow-hidden" style="border-radius: 4px;">
                             {% if most_view.featured_image %}
@@ -822,7 +822,7 @@
                 <div class="flex flex-col divide-y divide-gray-100">
                     {% for item in recent_news_list|slice:":4" %}
                     <div class="py-3 group flex gap-3 sm:gap-4 items-start">
-                        <a href="{% url 'blog_details' item.slug %}" class="w-24 sm:w-28 shrink-0 aspect-[16/9] overflow-hidden bg-gray-100 block" style="border-radius: 4px;">
+                        <a href="{% if item.is_company %}{% url 'company_details' item.slug %}{% else %}{% url 'blog_details' item.slug %}{% endif %}" class="w-24 sm:w-28 shrink-0 aspect-[16/9] overflow-hidden bg-gray-100 block" style="border-radius: 4px;">
                             {% if item.featured_image %}
                             <img src="{{ item.featured_image.url }}" alt="{{ item.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                             {% elif item.featured_image_url %}
@@ -838,7 +838,7 @@
                                 </span>
                                 <span class="text-gray-400">&middot; {{ item.created_at|date:"M d, Y" }}</span>
                             </div>
-                            <a href="{% url 'blog_details' item.slug %}" class="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
+                            <a href="{% if item.is_company %}{% url 'company_details' item.slug %}{% else %}{% url 'blog_details' item.slug %}{% endif %}" class="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
                                 {{ item.title }}
                             </a>
                         </div>

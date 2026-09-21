@@ -327,7 +327,9 @@ def home(request):
     second_blogs = cat2_blogs
     third_blogs = cat3_blogs
 
-    all_category = Category.objects.all()
+    all_category = Category.objects.prefetch_related('subcategories').annotate(
+        sub_count=Count('subcategories')
+    ).order_by('-sub_count', 'name')
 
     top_users = (
         CustomUserModel.objects
@@ -545,6 +547,8 @@ def all_blog_post_view(request):
     published_posts = published_posts_queryset()
 
     blogs = published_posts.order_by("-created_at")
+    # Always exclude companies from the main blog list
+    blogs = blogs.filter(is_company=False)
     
     # Filter by category if selected
     selected_category_slug = request.GET.get("category")
@@ -558,7 +562,7 @@ def all_blog_post_view(request):
         blogs = blogs.filter(author__email=author_email)
 
     categories = Category.objects.annotate(
-        pub_count=Count('blogpost', filter=Q(blogpost__status='published'))
+        pub_count=Count('blogpost', filter=Q(blogpost__status='published', blogpost__is_company=False))
     ).filter(pub_count__gt=0).order_by('-pub_count')
 
     paginator    = Paginator(blogs, 12)
@@ -567,7 +571,7 @@ def all_blog_post_view(request):
 
     context = {
         "blogs":                  blogs,
-        "categories":             categories,
+        "tab_categories":         categories,
         "selected_category_slug": selected_category_slug,
         "selected_category":      selected_category,
         "filtered_author":        author_email,
@@ -583,7 +587,7 @@ def all_blog_post_view(request):
 def popular_blog_post(request):
     popular_blogs_list = (
         published_posts_queryset()
-        .filter(views__gte=1000)
+        .filter(is_company=False, views__gte=1000)
         .order_by("-views", "-created_at")
         .distinct()
     )
@@ -608,9 +612,11 @@ def popular_blog_post(request):
 
 
 def all_article(request):
-    published_posts = published_posts_queryset()
+    published_posts = published_posts_queryset().filter(is_company=False)
     blogs      = published_posts
-    categories = Category.objects.all()
+    categories = Category.objects.annotate(
+        pub_count=Count('blogpost', filter=Q(blogpost__status='published', blogpost__is_company=False))
+    ).filter(pub_count__gt=0).order_by('-pub_count')
 
     sidebar_blogs  = published_posts.order_by("-created_at")[:10]
     popular_blogs  = published_posts.order_by("-views", "-likes")[:5]
@@ -989,9 +995,18 @@ def write_review_landing(request):
         query = form.cleaned_data['query']
         results = BlogPost.objects.filter(Q(title__icontains=query) | Q(subtitle__icontains=query)).distinct()[:10]
     
-    popular_companies = BlogPost.objects.filter(is_company=True).select_related('category', 'subcategory').order_by('-id')[:8]
+    popular_companies = BlogPost.objects.filter(is_company=True).select_related('category', 'subcategory').order_by('-id')
     if not popular_companies.exists():
-        popular_companies = BlogPost.objects.select_related('category', 'subcategory').order_by('-id')[:8]
+        popular_companies = BlogPost.objects.select_related('category', 'subcategory').order_by('-id')
+        
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(popular_companies, 8)
+    try:
+        popular_companies = paginator.page(page_number)
+    except PageNotAnInteger:
+        popular_companies = paginator.page(1)
+    except EmptyPage:
+        popular_companies = paginator.page(paginator.num_pages)
 
     return render(request, 'blog_post/review/landing.html', {
         'form': form,

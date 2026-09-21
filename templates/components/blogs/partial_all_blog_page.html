@@ -1,7 +1,13 @@
 {% load static %}
 <style>
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
 </style>
 
 <section class="max-w-7xl mx-auto px-4 py-6 font-inter">
@@ -10,7 +16,8 @@
     <div class="mb-6">
         <div class="flex items-center justify-between gap-4 flex-wrap mb-3">
             <div class="flex items-center gap-3">
-                <h1 class="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight font-montserrat flex items-center gap-2">
+                <h1
+                    class="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight font-montserrat flex items-center gap-2">
                     <span>All Articles</span>
                     {% if selected_category %}
                     <span class="text-base sm:text-lg font-bold text-[#265daa]">/ {{ selected_category.name }}</span>
@@ -24,9 +31,14 @@
             </div>
 
             {% if selected_category_slug or filtered_author %}
-            <a href="{% url 'blogs' %}" hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-               class="text-xs font-semibold text-red-500 hover:text-red-700 flex items-center gap-1 bg-red-50 px-2.5 py-1 rounded-md transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <a href="{% url 'blogs' %}" hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true"
+                hx-swap="innerHTML"
+                class="text-xs font-semibold text-red-500 hover:text-red-700 flex items-center gap-1 bg-red-50 px-2.5 py-1 rounded-md transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
                 Clear Filters
             </a>
             {% endif %}
@@ -36,30 +48,37 @@
         <div class="relative flex items-center w-full px-8">
             <!-- Left Arrow Button -->
             <button onclick="document.getElementById('cat-filter-scroll').scrollBy({left: -240, behavior: 'smooth'})"
-                    type="button" aria-label="Scroll Left"
-                    class="absolute left-0 z-10 w-7 h-7 rounded-full bg-white shadow border border-gray-200 flex items-center justify-center text-gray-600 hover:text-white hover:bg-[#265daa] hover:border-[#265daa] transition-all cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                type="button" aria-label="Scroll Left"
+                class="absolute left-0 z-10 w-7 h-7 rounded-full bg-white shadow border border-gray-200 flex items-center justify-center text-gray-600 hover:text-white hover:bg-[#265daa] hover:border-[#265daa] transition-all cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
             </button>
 
             <!-- Scrollable Track without visible scrollbar -->
-            <div id="cat-filter-scroll" class="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth w-full py-1">
+            <div id="cat-filter-scroll"
+                class="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth w-full py-1">
                 <!-- All Filter Button -->
-                <a href="{% url 'blogs' %}" hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-                   class="shrink-0 px-3.5 py-1 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 {% if not selected_category_slug %}text-white shadow-xs{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}"
-                   style="{% if not selected_category_slug %}background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;{% endif %}">
+                <a href="{% url 'blogs' %}" hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true"
+                    hx-swap="innerHTML"
+                    class="shrink-0 px-3.5 py-1 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 {% if not selected_category_slug %}text-white shadow-xs{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}"
+                    style="{% if not selected_category_slug %}background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;{% endif %}">
                     <span>All</span>
                 </a>
 
                 <!-- Category Pills -->
-                {% for cat in categories %}
-                <a href="{% url 'blogs' %}?category={{ cat.slug }}" hx-get="{% url 'blogs' %}?category={{ cat.slug }}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-                   class="shrink-0 px-3.5 py-1 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 {% if selected_category_slug == cat.slug %}text-white shadow-xs{% else %}bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-[#265daa]{% endif %}"
-                   style="{% if selected_category_slug == cat.slug %}background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;{% endif %}">
+                {% for cat in tab_categories %}
+                <a href="{% url 'blogs' %}?category={{ cat.slug }}" hx-get="{% url 'blogs' %}?category={{ cat.slug }}"
+                    hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+                    class="shrink-0 px-3.5 py-1 text-xs font-bold rounded-full transition-all duration-200 flex items-center gap-1.5 {% if selected_category_slug == cat.slug %}text-white shadow-xs{% else %}bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-[#265daa]{% endif %}"
+                    style="{% if selected_category_slug == cat.slug %}background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;{% endif %}">
                     {% if cat.font_awesome_icon %}
                     <i class="{{ cat.font_awesome_icon }} text-[10px]"></i>
                     {% endif %}
                     <span>{{ cat.name }}</span>
-                    <span class="text-[10px] px-1.5 py-0.2 rounded-full {% if selected_category_slug == cat.slug %}bg-white/20 text-white{% else %}bg-gray-200/80 text-gray-600{% endif %}">
+                    <span
+                        class="text-[10px] px-1.5 py-0.2 rounded-full {% if selected_category_slug == cat.slug %}bg-white/20 text-white{% else %}bg-gray-200/80 text-gray-600{% endif %}">
                         {{ cat.pub_count }}
                     </span>
                 </a>
@@ -68,9 +87,12 @@
 
             <!-- Right Arrow Button -->
             <button onclick="document.getElementById('cat-filter-scroll').scrollBy({left: 240, behavior: 'smooth'})"
-                    type="button" aria-label="Scroll Right"
-                    class="absolute right-0 z-10 w-7 h-7 rounded-full bg-white shadow border border-gray-200 flex items-center justify-center text-gray-600 hover:text-white hover:bg-[#265daa] hover:border-[#265daa] transition-all cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                type="button" aria-label="Scroll Right"
+                class="absolute right-0 z-10 w-7 h-7 rounded-full bg-white shadow border border-gray-200 flex items-center justify-center text-gray-600 hover:text-white hover:bg-[#265daa] hover:border-[#265daa] transition-all cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                </svg>
             </button>
         </div>
     </div>
@@ -79,13 +101,13 @@
     <div class="flex items-center gap-2 mb-6 px-4 py-2.5 bg-blue-50 rounded-lg text-sm">
         <span class="text-gray-600">Showing articles by author:</span>
         <span class="font-semibold text-[#265daa]">{{ filtered_author }}</span>
-        <a href="{% url 'blogs' %}" hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-           class="ml-auto text-xs text-gray-500 hover:text-red-500 font-medium">✕ Clear Filter</a>
+        <a href="{% url 'blogs' %}" hx-get="{% url 'blogs' %}" hx-target="#container" hx-push-url="true"
+            hx-swap="innerHTML" class="ml-auto text-xs text-gray-500 hover:text-red-500 font-medium">✕ Clear Filter</a>
     </div>
     {% endif %}
 
     {% if blogs %}
-    
+
     <!-- 2. Hero Section (Left Big Card + Right 3 Horizontal Cards) -->
     {% with first_post=blogs|first hero_list=blogs|slice:"1:4" %}
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-10">
@@ -93,21 +115,30 @@
         <!-- Left Big Featured Lead Card (col-span-7) -->
         {% if first_post %}
         <div class="lg:col-span-7">
-            <a href="{% url 'blog_details' first_post.slug %}"
-               hx-get="{% url 'blog_details' first_post.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-               class="relative rounded-xl overflow-hidden block group cursor-pointer w-full aspect-[16/9] bg-gray-900">
+            <a href="{% if first_post.is_company %}{% url 'company_details' first_post.slug %}{% else %}{% if first_post.is_company %}{% url 'company_details' first_post.slug %}{% else %}{% url 'blog_details' first_post.slug %}{% endif %}{% endif %}"
+                hx-get="{% if first_post.is_company %}{% url 'company_details' first_post.slug %}{% else %}{% if first_post.is_company %}{% url 'company_details' first_post.slug %}{% else %}{% url 'blog_details' first_post.slug %}{% endif %}{% endif %}"
+                hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+                class="relative rounded-xl overflow-hidden block group cursor-pointer w-full aspect-[16/9] bg-gray-900">
                 <div class="absolute inset-0">
                     {% if first_post.featured_image %}
-                    <img src="{{ first_post.featured_image.url }}" alt="{{ first_post.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="eager" fetchpriority="high" />
+                    <img src="{{ first_post.featured_image.url }}" alt="{{ first_post.title }}"
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="eager" fetchpriority="high" />
                     {% elif first_post.featured_image_url %}
-                    <img src="{{ first_post.featured_image_url }}" alt="{{ first_post.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="eager" fetchpriority="high" />
+                    <img src="{{ first_post.featured_image_url }}" alt="{{ first_post.title }}"
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="eager" fetchpriority="high" />
                     {% else %}
-                    <img src="{% static 'image/placeholder-5.png' %}" alt="{{ first_post.title }}" class="w-full h-full object-cover" loading="eager" />
+                    <img src="{% static 'image/placeholder-5.png' %}" alt="{{ first_post.title }}"
+                        class="w-full h-full object-cover" loading="eager" />
                     {% endif %}
-                    <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.15) 100%);"></div>
+                    <div class="absolute inset-0"
+                        style="background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.20) 55%, rgba(0,0,0,0) 100%);">
+                    </div>
                 </div>
                 <div class="absolute bottom-0 left-0 right-0 p-5 sm:p-6 text-white flex flex-col justify-end z-10">
-                    <h2 class="text-lg sm:text-xl font-extrabold leading-snug mb-2 group-hover:text-[#dbeafe] transition-colors font-montserrat line-clamp-2">
+                    <h2
+                        class="text-lg sm:text-xl font-extrabold leading-snug mb-2 group-hover:text-[#dbeafe] transition-colors font-montserrat line-clamp-2">
                         {{ first_post.title }}
                     </h2>
                     <p class="text-xs text-white/80 line-clamp-2 leading-relaxed">
@@ -122,22 +153,29 @@
         {% if hero_list %}
         <div class="lg:col-span-5 flex flex-col justify-between gap-3">
             {% for blog in hero_list %}
-            <a href="{% url 'blog_details' blog.slug %}"
-               hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-               class="flex items-center gap-3 sm:gap-4 group cursor-pointer p-1.5 hover:bg-gray-50/80 rounded-xl transition-all">
+            <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}{% endif %}"
+                hx-get="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}{% endif %}"
+                hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+                class="flex items-center gap-3 sm:gap-4 group cursor-pointer p-1.5 hover:bg-gray-50/80 rounded-xl transition-all">
                 <!-- Thumbnail (Strict 16:9 ratio) -->
                 <div class="w-32 sm:w-44 shrink-0 aspect-[16/9] rounded-lg sm:rounded-xl overflow-hidden bg-gray-100">
                     {% if blog.featured_image %}
-                    <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                    <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy">
                     {% elif blog.featured_image_url %}
-                    <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                    <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy">
                     {% else %}
-                    <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-full object-cover" loading="lazy">
+                    <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}"
+                        class="w-full h-full object-cover" loading="lazy">
                     {% endif %}
                 </div>
                 <!-- Content -->
                 <div class="flex-1 min-w-0">
-                    <h3 class="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug mb-1 font-montserrat line-clamp-2">
+                    <h3
+                        class="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-[#265daa] transition-colors leading-snug mb-1 font-montserrat line-clamp-2">
                         {{ blog.title }}
                     </h3>
                     <div class="text-[10px] sm:text-[11px] text-[#265daa] font-medium mb-1 flex items-center gap-1.5">
@@ -147,7 +185,7 @@
                         <span>{{ blog.category.name }}</span>
                         {% endif %}
                     </div>
-                    <p class="hidden sm:line-clamp-2 text-xs text-gray-500 leading-relaxed">
+                    <p class="max-sm:hidden line-clamp-2 text-xs text-gray-500 leading-relaxed">
                         {{ blog.description|striptags|truncatechars:110 }}
                     </p>
                 </div>
@@ -164,28 +202,34 @@
     {% if remaining_posts %}
     <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 mb-10">
         {% for blog in remaining_posts %}
-        <a href="{% url 'blog_details' blog.slug %}"
-           hx-get="{% url 'blog_details' blog.slug %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-           class="flex flex-col group cursor-pointer">
+        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}{% endif %}"
+            hx-get="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}{% endif %}"
+            hx-target="#container" hx-push-url="true" hx-swap="innerHTML" class="flex flex-col group cursor-pointer">
             <!-- Image -->
             <div class="w-full aspect-[16/9] overflow-hidden rounded-lg sm:rounded-xl bg-gray-100 mb-2 sm:mb-3">
                 {% if blog.featured_image %}
-                <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy">
                 {% elif blog.featured_image_url %}
-                <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                <img src="{{ blog.featured_image_url }}" alt="{{ blog.title }}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy">
                 {% else %}
-                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}" class="w-full h-full object-cover" loading="lazy">
+                <img src="{% static 'image/placeholder-5.png' %}" alt="{{ blog.title }}"
+                    class="w-full h-full object-cover" loading="lazy">
                 {% endif %}
             </div>
             <!-- Card Body -->
             <div class="flex flex-col flex-1">
-                <h3 class="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-[#265daa] transition-colors mb-1 sm:mb-1.5 leading-snug line-clamp-2 font-montserrat">
+                <h3
+                    class="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-[#265daa] transition-colors mb-1 sm:mb-1.5 leading-snug line-clamp-2 font-montserrat">
                     {{ blog.title }}
                 </h3>
                 <div class="text-[10px] sm:text-[11px] text-[#265daa] font-medium mb-1 sm:mb-1.5 line-clamp-1">
                     {{ blog.created_at|date:"M d, Y" }}{% if blog.category %} | {{ blog.category.name }}{% endif %}
                 </div>
-                <p class="hidden sm:block text-xs text-gray-500 line-clamp-2 leading-relaxed flex-1">
+                <p class="max-sm:hidden text-xs text-gray-500 line-clamp-2 leading-relaxed flex-1">
                     {{ blog.description|striptags|truncatechars:120 }}
                 </p>
             </div>
@@ -199,50 +243,58 @@
     {% if blogs.paginator.num_pages > 1 %}
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-100 mt-6">
         <p class="text-xs text-gray-500">
-            Page <span class="font-bold text-gray-800">{{ blogs.number }}</span> of <span class="font-bold text-gray-800">{{ blogs.paginator.num_pages }}</span>
+            Page <span class="font-bold text-gray-800">{{ blogs.number }}</span> of <span
+                class="font-bold text-gray-800">{{ blogs.paginator.num_pages }}</span>
             &nbsp;·&nbsp; <span class="font-bold text-[#265daa]">{{ blogs.paginator.count }}</span> Total Articles
         </p>
 
         <nav class="flex items-center gap-1.5" aria-label="Pagination">
             {% if blogs.has_previous %}
             <a href="{% url 'blogs' %}?page={{ blogs.previous_page_number }}{% if selected_category_slug %}&category={{ selected_category_slug }}{% endif %}"
-               hx-get="{% url 'blogs' %}?page={{ blogs.previous_page_number }}{% if selected_category_slug %}&category={{ selected_category_slug }}{% endif %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-               class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-700 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors flex items-center gap-1">
+                hx-get="{% url 'blogs' %}?page={{ blogs.previous_page_number }}{% if selected_category_slug %}&category={{ selected_category_slug }}{% endif %}"
+                hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+                class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-700 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors flex items-center gap-1">
                 &laquo; Prev
             </a>
             {% endif %}
 
             {% for page_num in blogs.paginator.page_range %}
-                {% if blogs.number == page_num %}
-                <span class="px-3.5 py-1.5 rounded-lg text-white text-xs font-extrabold shadow-2xs"
-                      style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
-                    {{ page_num }}
-                </span>
-                {% elif page_num >= blogs.number|add:"-2" and page_num <= blogs.number|add:"2" %}
-                <a href="{% url 'blogs' %}?page={{ page_num }}{% if selected_category_slug %}&category={{ selected_category_slug }}{% endif %}"
-                   hx-get="{% url 'blogs' %}?page={{ page_num }}{% if selected_category_slug %}&category={{ selected_category_slug }}{% endif %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-                   class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-700 hover:bg-[#265daa] hover:text-[#265daa] hover:border-[#265daa] transition-colors">
-                    {{ page_num }}
+            {% if blogs.number == page_num %}
+            <span class="px-3.5 py-1.5 rounded-lg text-white text-xs font-extrabold shadow-2xs"
+                style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
+                {{ page_num }}
+            </span>
+            {% elif page_num >= blogs.number|add:"-2" and page_num <= blogs.number|add:"2" %} <a
+                href="{% url 'blogs' %}?page={{ page_num }}{% if selected_category_slug %}&category={{ selected_category_slug }}{% endif %}"
+                hx-get="{% url 'blogs' %}?page={{ page_num }}{% if selected_category_slug %}&category={{ selected_category_slug }}{% endif %}"
+                hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+                class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-700 hover:bg-[#265daa] hover:text-[#265daa] hover:border-[#265daa] transition-colors">
+                {{ page_num }}
                 </a>
                 {% endif %}
-            {% endfor %}
+                {% endfor %}
 
-            {% if blogs.has_next %}
-            <a href="{% url 'blogs' %}?page={{ blogs.next_page_number }}{% if selected_category_slug %}&category={{ selected_category_slug }}{% endif %}"
-               hx-get="{% url 'blogs' %}?page={{ blogs.next_page_number }}{% if selected_category_slug %}&category={{ selected_category_slug }}{% endif %}" hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
-               class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-700 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors flex items-center gap-1">
-                Next &raquo;
-            </a>
-            {% endif %}
+                {% if blogs.has_next %}
+                <a href="{% url 'blogs' %}?page={{ blogs.next_page_number }}{% if selected_category_slug %}&category={{ selected_category_slug }}{% endif %}"
+                    hx-get="{% url 'blogs' %}?page={{ blogs.next_page_number }}{% if selected_category_slug %}&category={{ selected_category_slug }}{% endif %}"
+                    hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
+                    class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-700 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors flex items-center gap-1">
+                    Next &raquo;
+                </a>
+                {% endif %}
         </nav>
     </div>
     {% endif %}
 
     {% else %}
     <!-- Empty State -->
-    <div class="py-20 px-4 flex flex-col items-center justify-center text-center bg-white rounded-2xl border border-gray-100 my-6">
+    <div
+        class="py-20 px-4 flex flex-col items-center justify-center text-center bg-white rounded-2xl border border-gray-100 my-6">
         <div class="w-16 h-16 bg-[#265daa]/10 rounded-full flex items-center justify-center mx-auto mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#265daa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="#265daa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+            </svg>
         </div>
         <h2 class="text-[17px] font-extrabold text-gray-800 mb-2">No Articles Found</h2>
         <p class="text-[13px] text-gray-500 max-w-sm mb-6 leading-relaxed">Check back soon for new articles!</p>

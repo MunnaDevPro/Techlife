@@ -1,0 +1,214 @@
+{% extends base_template %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+<div x-data="{
+    showFilterDrawer: false,
+    showDeleteModal: false,
+    confirmDeleteId: null,
+    showBulkDeleteModal: false,
+    selectedCount: 0,
+    showStatusModal: false,
+    statusModalId: null,
+    statusModalCurrent: 'pending',
+    handleStatusModal(e) {
+        this.statusModalId = e.detail.id;
+        this.statusModalCurrent = e.detail.status;
+        this.showStatusModal = true;
+    },
+    updateSelectedCount() {
+        this.selectedCount = document.querySelectorAll('.post-select:checked').length;
+    },
+    selectAll(checked) {
+        document.querySelectorAll('.post-select').forEach(cb => { cb.checked = checked; });
+        this.updateSelectedCount();
+    }
+}" @open-status-modal.window="handleStatusModal($event)"
+    class="!block !space-y-6 !relative !w-full !max-w-full">
+
+    <!-- Page Header & Action Buttons -->
+    <div class="flex items-center justify-between flex-wrap gap-3">
+        <div>
+            <div class="!flex !items-center !gap-3">
+                <h2 class="ft-page-title !mb-0">{{ page_title }}</h2>
+                <span
+                    class="!inline-flex !items-center !justify-center !px-2.5 !py-0.5 !rounded-full !bg-blue-50 !text-blue-700 !text-[12px] !font-bold !border !border-blue-100">
+                    {{ table.paginator.count }} Total
+                </span>
+            </div>
+            <p class="ft-page-subtitle !mt-1">{{ page_subtitle }}</p>
+        </div>
+        <div class="!flex !items-center !gap-2.5">
+            <!-- Filter Button -->
+            <c-ui.button icon="filter" label="Filters" variant="secondary" size="sm" @click="showFilterDrawer = true" />
+        </div>
+    </div>
+    
+    <!-- KPI Grid -->
+    <div class="!grid !grid-cols-1 md:!grid-cols-3 !gap-4">
+        <!-- KPI 1 -->
+        <div class="!block !bg-white !rounded-md !p-5 !transition-all !duration-300 !border !border-gray-100 !flex !flex-col !justify-between scroll-animate !opacity-100">
+            <div class="!flex !items-center !justify-between !mb-3">
+                <span class="!text-[13px] !font-semibold !text-gray-500 !flex !items-center !gap-1.5">
+                    <i data-lucide="star" class="!w-4 !h-4 !text-blue-500"></i> Total Reviews
+                </span>
+            </div>
+            <h3 class="!text-3xl !font-black !text-gray-800">{{ total_reviews }}</h3>
+        </div>
+        <!-- KPI 2 -->
+        <div class="!block !bg-white !rounded-md !p-5 !transition-all !duration-300 !border !border-gray-100 !flex !flex-col !justify-between scroll-animate !opacity-100">
+            <div class="!flex !items-center !justify-between !mb-3">
+                <span class="!text-[13px] !font-semibold !text-gray-500 !flex !items-center !gap-1.5">
+                    <i data-lucide="clock" class="!w-4 !h-4 !text-orange-500"></i> Pending Reviews
+                </span>
+                <span class="!text-[10px] !font-bold !text-orange-600 !bg-orange-50 !px-1.5 !py-0.5 !rounded-md">Action needed</span>
+            </div>
+            <h3 class="!text-3xl !font-black !text-gray-800">{{ pending_reviews }}</h3>
+        </div>
+        <!-- KPI 3 -->
+        <div class="!block !bg-white !rounded-md !p-5 !transition-all !duration-300 !border !border-gray-100 !flex !flex-col !justify-between scroll-animate !opacity-100">
+            <div class="!flex !items-center !justify-between !mb-3">
+                <span class="!text-[13px] !font-semibold !text-gray-500 !flex !items-center !gap-1.5">
+                    <i data-lucide="award" class="!w-4 !h-4 !text-yellow-500"></i> Avg Rating
+                </span>
+                <span class="!text-[10px] !font-bold !text-yellow-600 !bg-yellow-50 !px-1.5 !py-0.5 !rounded-md">Overall</span>
+            </div>
+            <h3 class="!text-3xl !font-black !text-gray-800">{{ avg_rating }}</h3>
+        </div>
+    </div>
+
+    <!-- Slide-over Right Filter Drawer -->
+    <div x-show="showFilterDrawer" x-cloak
+        class="fixed inset-0 !top-[52px] z-[9999] bg-black/20 backdrop-blur-sm flex justify-end !mt-0"
+        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+
+        <div x-show="showFilterDrawer" x-transition:enter="transition ease-out duration-300 transform"
+            x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="translate-x-full" @click.away="showFilterDrawer = false"
+            class="!w-[360px] !h-full !flex !flex-col !bg-white !border-l !border-gray-200 !shadow-2xl">
+
+            <div class="!flex !items-center !justify-between !px-6 !py-5 !border-b !border-gray-100">
+                <div class="!flex !items-center !gap-2.5">
+                    <i data-lucide="filter" class="w-5 h-5 text-blue-600"></i>
+                    <h3 class="!text-base !font-semibold !text-gray-900">Filter Reviews</h3>
+                </div>
+                <button @click="showFilterDrawer = false" type="button"
+                    class="!p-2 !rounded-md !text-gray-400 hover:!text-gray-600 hover:!bg-gray-100 !transition-colors !cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Filter Form -->
+            <form id="filter-drawer-form" hx-get="{% url 'dashboard:company_reviews' %}" hx-target="#table-container"
+                hx-select="#table-container" hx-swap="outerHTML" hx-push-url="true"
+                class="!flex-1 !overflow-y-auto scrollbar-thin !flex !flex-col !gap-6 !p-6">
+
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.input name="search" label="Search" placeholder="Name or content"
+                        value="{{ filter.form.search.value|default:'' }}" icon="search"></c-ui.input>
+                </div>
+
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.select name="status" label="Status" value="{{ filter.form.status.value }}">
+                        {% for val, lbl in filter.form.fields.status.choices %}
+                        <option value="{{ val }}">{{ lbl }}</option>
+                        {% endfor %}
+                    </c-ui.select>
+                </div>
+
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.select name="post" label="Company" value="{{ filter.form.post.value }}">
+                        {% for val, lbl in filter.form.fields.post.choices %}
+                        <option value="{{ val }}">{{ lbl }}</option>
+                        {% endfor %}
+                    </c-ui.select>
+                </div>
+
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.input name="created_after" label="From Date" type="date"
+                        value="{{ filter.form.created_after.value|default:'' }}" icon="calendar"></c-ui.input>
+                </div>
+
+                <div class="!flex !flex-col !gap-1.5">
+                    <c-ui.input name="created_before" label="To Date" type="date"
+                        value="{{ filter.form.created_before.value|default:'' }}" icon="calendar"></c-ui.input>
+                </div>
+
+                <div class="!flex !gap-3 !mt-auto !pt-6 !border-t !border-gray-100">
+                    <a href="{% url 'dashboard:company_reviews' %}"
+                        class="!flex-1 !px-4 !py-2.5 !text-sm !font-medium !text-gray-700 !bg-white !border !border-gray-300 !rounded-md hover:!bg-gray-50 !text-center !transition-colors !cursor-pointer">
+                        Reset
+                    </a>
+                    <button type="submit" @click="showFilterDrawer = false"
+                        class="!flex-1 !px-4 !py-2.5 !text-sm !font-medium !text-white !bg-blue-600 !border !border-transparent !rounded-md hover:!bg-blue-700 !transition-colors !cursor-pointer">
+                        Apply Filters
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table Container -->
+    <div id="table-container" class="!block !w-full !max-w-full" style="overflow: visible !important;">
+        <c-ui.card extra_class="!min-w-0 !w-full !max-w-full" footer="">
+            <!-- Table -->
+            <div class="!w-full !overflow-x-auto !max-w-full">
+                {% render_table table "dashboard/content/custom_table.html" %}
+            </div>
+        </c-ui.card>
+    </div>
+
+    <!-- Single Delete Modal -->
+    <div x-show="showDeleteModal" x-cloak
+        class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+        x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" @click="showDeleteModal = false">
+        <div class="!bg-white !rounded-xl !shadow-xl !max-w-md !w-full !overflow-hidden !border !border-gray-100"
+            @click.stop x-transition:enter="transition ease-out duration-500"
+            x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95">
+            <div class="!flex !items-center !justify-between !px-5 !py-4 !border-b !border-gray-100">
+                <div class="!flex !items-center !gap-2">
+                    <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+                    <h3 class="!text-sm !font-semibold !text-gray-900">Confirm Delete</h3>
+                </div>
+                <button type="button" @click="showDeleteModal = false"
+                    class="!p-1.5 !rounded-md !text-gray-400 hover:!text-gray-500 hover:!bg-gray-100 !transition-colors !cursor-pointer">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div class="!p-5 !text-[13px] !text-gray-600 !leading-relaxed !flex !gap-3.5 !items-start">
+                <div class="!flex-shrink-0 !w-10 !h-10 !rounded-full !bg-red-50 !flex !items-center !justify-center">
+                    <i data-lucide="trash-2" class="w-5 h-5 text-red-600"></i>
+                </div>
+                <div>
+                    <h4 class="!text-sm !font-semibold !text-gray-900">Permanently delete review?</h4>
+                    <p class="!text-[13px] !text-gray-500 !mt-1">Are you sure you want to delete this review? This action
+                        cannot be undone.</p>
+                </div>
+            </div>
+            <div
+                class="!px-5 !py-3.5 !bg-gray-50/50 !border-t !border-gray-100 !flex !items-center !justify-end !gap-2.5">
+                <button @click="showDeleteModal = false" type="button"
+                    class="!inline-flex !items-center !gap-1.5 !px-3.5 !py-2 !rounded-lg !border !border-gray-200 !bg-white !text-[13px] !font-medium !text-gray-700 hover:!bg-gray-50 hover:!text-gray-900 !transition-all !shadow-xs hover:!shadow-sm !cursor-pointer">
+                    Cancel
+                </button>
+                <form :action="'/dashboard/reviews/' + confirmDeleteId + '/delete/'" method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="!inline-flex !items-center !gap-1.5 !px-3.5 !py-2 !rounded-lg !bg-red-600 !text-[13px] !font-medium !text-white hover:!bg-red-700 !transition-all !shadow-sm hover:!shadow-md !cursor-pointer">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

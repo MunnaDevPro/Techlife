@@ -28,7 +28,7 @@
             {% for blog in latest_blogs %}
             <div class="shrink-0 px-2 w-full sm:w-1/2 lg:w-1/3">
                 <div class="overflow-hidden flex flex-col group h-full">
-                    <a href="{% url 'blog_details' blog.slug %}" class="block relative h-48 sm:h-52 overflow-hidden rounded-sm">
+                    <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="block relative h-48 sm:h-52 overflow-hidden rounded-sm">
                         {% if blog.featured_image %}
                         <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
                         {% elif blog.featured_image_url %}
@@ -46,7 +46,7 @@
                             {% endif %}
                             <span class="ml-auto text-[10px] sm:text-[11px] shrink-0">{{ blog.created_at|date:"F d, Y" }}</span>
                         </div>
-                        <a href="{% url 'blog_details' blog.slug %}" class="font-bold text-sm sm:text-base text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="font-bold text-sm sm:text-base text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                             {{ blog.title }}
                         </a>
                     </div>

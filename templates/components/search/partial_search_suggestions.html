@@ -6,8 +6,8 @@
         <span>{{ results|length }} matches</span>
     </div>
     {% for post in results %}
-    <a href="{% url 'blog_details' post.slug %}"
-       hx-get="{% url 'blog_details' post.slug %}"
+    <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}"
+       hx-get="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}"
        hx-target="#container"
        hx-push-url="true"
        hx-swap="innerHTML"

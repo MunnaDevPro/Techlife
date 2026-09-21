@@ -54,7 +54,7 @@
             </p>
             
             <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full">
-                <a href="{% url 'blog_details' post.slug %}" class="w-full sm:w-auto text-white font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-none transition-colors text-sm inline-flex items-center justify-center gap-2 hover:bg-[#1d58a2] shadow-sm" style="background-color: #265daa;">
+                <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}" class="w-full sm:w-auto text-white font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-none transition-colors text-sm inline-flex items-center justify-center gap-2 hover:bg-[#1d58a2] shadow-sm" style="background-color: #265daa;">
                     <span>View Company Profile</span>
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </a>

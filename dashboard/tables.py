@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from blog_post.models import BlogPost
+from blog_post.models import BlogPost, Review
 from django.utils.html import format_html
 
 class BlogPostTable(tables.Table):
@@ -360,4 +360,168 @@ class CompanyTable(tables.Table):
             '  {}'
             '</div>',
             edit_btn, view_btn, delete_btn
+        )
+
+class ReviewTable(tables.Table):
+    selection = tables.CheckBoxColumn(
+        accessor='pk',
+        attrs={
+            "th": {"class": "!py-4 !pl-4 !pr-3.5 !w-6 !text-left"},
+            "th__input": {"class": "!cursor-pointer !rounded !border-gray-300 !text-blue-600 focus:!ring-blue-500", "@change": "selectAll($el.checked)"},
+            "td": {"class": "!py-4 !pl-4 !pr-3.5 !w-6 !align-middle"},
+            "td__input": {"class": "post-select !cursor-pointer !rounded !border-gray-300 !text-blue-600 focus:!ring-blue-500"}
+        },
+        orderable=False
+    )
+    
+    serial_number = tables.Column(
+        empty_values=(),
+        verbose_name='S/N',
+        attrs={
+            "th": {"class": "!py-4 !pl-3.5 !pr-4 !w-8 !text-center !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap"},
+            "td": {"class": "!py-4 !pl-3.5 !pr-4 !w-8 !text-center !align-middle !whitespace-nowrap"}
+        },
+        orderable=False
+    )
+    
+    reviewer = tables.Column(
+        empty_values=(),
+        verbose_name="Reviewer",
+        attrs={
+            "th": {"class": "!p-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap"},
+            "td": {"class": "!p-4 !align-middle !text-[13px] !text-gray-900 !font-semibold !whitespace-nowrap"}
+        }
+    )
+    
+    company = tables.Column(
+        accessor='post.title',
+        verbose_name="Company",
+        attrs={
+            "th": {"class": "!p-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap"},
+            "td": {"class": "!p-4 !align-middle !text-[13px] !text-gray-600 !w-[180px] !max-w-[180px] !truncate"}
+        }
+    )
+    
+    rating = tables.Column(
+        empty_values=(),
+        verbose_name="Rating",
+        attrs={
+            "th": {"class": "!p-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap"},
+            "td": {"class": "!p-4 !align-middle !text-[13px] !text-yellow-600 !font-bold !whitespace-nowrap"}
+        }
+    )
+    
+    status = tables.Column(
+        attrs={
+            "th": {"class": "!p-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap"},
+            "td": {"class": "!p-4 !align-middle !whitespace-nowrap"}
+        }
+    )
+    
+    created_at = tables.DateTimeColumn(
+        format='Y-m-d', 
+        verbose_name="Date",
+        attrs={
+            "th": {"class": "!p-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap"},
+            "td": {"class": "!p-4 !align-middle !text-[13px] !text-gray-400 !whitespace-nowrap"}
+        }
+    )
+    
+    actions = tables.Column(
+        empty_values=(), 
+        orderable=False, 
+        verbose_name="Actions",
+        attrs={
+            "th": {"class": "!p-4 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider !whitespace-nowrap"},
+            "td": {"class": "!p-4 !align-middle !whitespace-nowrap"}
+        }
+    )
+
+    class Meta:
+        model = Review
+        fields = ("selection", "serial_number", "reviewer", "company", "rating", "status", "created_at", "actions")
+        attrs = {
+            "class": "!min-w-full !w-full !table-auto !divide-y !divide-gray-200 !border-collapse",
+            "thead": {"class": "!bg-gray-50/75"},
+            "tbody": {"class": "!divide-y !divide-gray-100 !bg-white"},
+            "th": {"class": "!px-4 !py-3.5 !text-left !text-[11px] !font-bold !text-gray-500 !uppercase !tracking-wider"},
+            "td": {"class": "!px-4 !py-4 !whitespace-nowrap !text-sm !text-gray-500"}
+        }
+
+    def render_reviewer(self, record):
+        name = "Anonymous" if record.is_anonymous else record.reviewer.first_name or record.reviewer.email
+        return format_html(
+            '<div class="!flex !items-center !gap-2">'
+            '  <div class="!w-6 !h-6 !rounded-full !bg-blue-100 !flex !items-center !justify-center !text-blue-700 !text-[10px] !font-bold">{}</div>'
+            '  <span class="!truncate !max-w-[150px]">{}</span>'
+            '</div>',
+            name[0].upper() if name else "?",
+            name
+        )
+
+    def render_rating(self, record):
+        return format_html(
+            '<div class="!flex !items-center !gap-1">'
+            '  <i data-lucide="star" class="!w-4 !h-4 !fill-yellow-400 !text-yellow-400"></i>'
+            '  <span>{}</span>'
+            '</div>',
+            record.overall_rating
+        )
+
+    def render_status(self, record, value):
+        val = str(value).lower()
+        if val == "published":
+            bg_cls = "!bg-green-50 !text-green-700 !border-green-200 hover:!bg-green-100"
+            icon = "check-circle"
+        elif val == "pending":
+            bg_cls = "!bg-yellow-50 !text-yellow-700 !border-yellow-200 hover:!bg-yellow-100"
+            icon = "clock"
+        elif val == "rejected":
+            bg_cls = "!bg-red-50 !text-red-700 !border-red-200 hover:!bg-red-100"
+            icon = "x-circle"
+        else:
+            bg_cls = "!bg-blue-50 !text-blue-700 !border-blue-200 hover:!bg-blue-100"
+            icon = "info"
+            
+        return format_html(
+            '''<button type="button" @click="$dispatch('open-status-modal', {{ id: '{}', status: '{}' }})" '''
+            '''class="!inline-flex !items-center !px-2.5 !py-0.5 !rounded-full !text-[11px] !font-bold !border !transition-colors !cursor-pointer {}" '''
+            '''title="Click to change status">'''
+            '''<i data-lucide="{}" class="!w-3.5 !h-3.5 !mr-1.5"></i>{}'''
+            '''</button>''',
+            record.pk,
+            val,
+            bg_cls,
+            icon,
+            str(value).title()
+        )
+
+    def render_actions(self, record):
+        # We'll use the frontend blog post details for now or a specific view
+        view_url = f"/details/{record.post.slug}/"
+        
+        view_btn = format_html(
+            '''<a href="{}" target="_blank" '''
+            '''   class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-gray-200 !bg-white !text-gray-600 hover:!bg-gray-50 hover:!text-gray-900 hover:!border-gray-300 !transition-all !cursor-pointer" '''
+            '''   title="View Company">'''
+            '''  <i data-lucide="external-link" class="w-4 h-4"></i>'''
+            '''</a>''',
+            view_url
+        )
+
+        delete_btn = format_html(
+            '''<button type="button" @click="confirmDeleteId = {}; showDeleteModal = true" '''
+            '''        class="!inline-flex !items-center !justify-center !w-8 !h-8 !rounded-lg !border !border-red-100 !bg-red-50 !text-red-600 hover:!bg-red-100 hover:!text-red-700 hover:!border-red-200 !transition-all !cursor-pointer" '''
+            '''        title="Delete Review">'''
+            '''  <i data-lucide="trash-2" class="w-4 h-4"></i>'''
+            '''</button>''',
+            record.pk
+        )
+
+        return format_html(
+            '<div class="!flex !items-center !gap-1.5">'
+            '  {}'
+            '  {}'
+            '</div>',
+            view_btn, delete_btn
         )

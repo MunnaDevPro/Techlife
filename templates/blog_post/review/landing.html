@@ -42,10 +42,11 @@
         color: #0f172a;
     }
     .hero-blue-text {
-        color: #265daa;
-        background: linear-gradient(135deg, #265daa 0%, #2563eb 100%);
+        background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
     }
     .hero-badge {
         background-color: #ffffff;
@@ -87,18 +88,18 @@
                 <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                 <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             </div>
-            <span class="text-[11px] font-bold uppercase tracking-wider ml-1 text-slate-700">TRUSTED TECH REVIEWS</span>
+            <span class="text-[11px] font-bold uppercase tracking-wider ml-1 text-slate-700 font-montserrat">TRUSTED TECH REVIEWS</span>
         </div>
         
         <!-- Main Headline -->
-        <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-3 leading-tight text-slate-900">
+        <h1 class="text-3xl sm:text-4xl lg:text-[40px] font-bold tracking-tight mb-3 leading-tight text-slate-700 font-montserrat">
             Share your experience.<br/>
             <span class="hero-blue-text">
                 Help thousands of buyers choose better.
             </span>
         </h1>
         
-        <p class="text-sm sm:text-base mb-9 max-w-xl mx-auto font-medium text-slate-600">
+        <p class="text-sm sm:text-base mb-9 max-w-xl mx-auto font-medium text-slate-600 font-inter">
             Your honest review reaches business leaders & tech buyers worldwide looking for partners they can trust.
         </p>
 
@@ -144,7 +145,7 @@
                        @input.debounce.300ms="fetchResults()"
                        @focus="if(query.trim().length > 0) open = true"
                        placeholder="Search company or software name..." 
-                       class="w-full text-slate-900 placeholder-slate-400 bg-transparent text-sm sm:text-base font-medium focus:outline-none border-none p-0 m-0 leading-normal"
+                       class="w-full text-slate-900 placeholder-slate-400 bg-transparent text-sm sm:text-base font-medium focus:outline-none border-none p-0 m-0 leading-normal font-inter"
                        autocomplete="off" />
 
                 <!-- Loading Spinner -->
@@ -234,22 +235,22 @@
             <div class="step-box p-3.5 rounded-xl flex items-center gap-3">
                 <div class="w-7 h-7 rounded-full text-white font-black flex items-center justify-center text-xs flex-shrink-0 shadow-sm" style="background-color: #265daa;">1</div>
                 <div>
-                    <h5 class="text-xs font-bold text-slate-900">Find your company</h5>
-                    <p class="text-[11px] text-slate-500">Search by name or industry</p>
+                    <h5 class="text-xs font-bold text-slate-900 font-montserrat">Find your company</h5>
+                    <p class="text-[11px] text-slate-500 font-inter">Search by name or industry</p>
                 </div>
             </div>
             <div class="step-box p-3.5 rounded-xl flex items-center gap-3">
                 <div class="w-7 h-7 rounded-full text-slate-700 font-bold flex items-center justify-center text-xs flex-shrink-0 bg-slate-100 border border-slate-200">2</div>
                 <div>
-                    <h5 class="text-xs font-bold text-slate-900">Rate & answer</h5>
-                    <p class="text-[11px] text-slate-500">Takes only 3-5 minutes</p>
+                    <h5 class="text-xs font-bold text-slate-900 font-montserrat">Rate & answer</h5>
+                    <p class="text-[11px] text-slate-500 font-inter">Takes only 3-5 minutes</p>
                 </div>
             </div>
             <div class="step-box p-3.5 rounded-xl flex items-center gap-3">
                 <div class="w-7 h-7 rounded-full text-slate-700 font-bold flex items-center justify-center text-xs flex-shrink-0 bg-slate-100 border border-slate-200">3</div>
                 <div>
-                    <h5 class="text-xs font-bold text-slate-900">Publish review</h5>
-                    <p class="text-[11px] text-slate-500">Verified & shared globally</p>
+                    <h5 class="text-xs font-bold text-slate-900 font-montserrat">Publish review</h5>
+                    <p class="text-[11px] text-slate-500 font-inter">Verified & shared globally</p>
                 </div>
             </div>
         </div>
@@ -261,8 +262,8 @@
 <section class="pt-12 pb-16 border-t border-gray-200" style="background-color: #f8fafc;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="mb-10">
-            <h2 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">Popular Companies Ready for Review</h2>
-            <p class="text-gray-600 text-sm mt-1">Select any company below to start writing your review immediately.</p>
+            <h2 class="text-2xl sm:text-3xl font-bold text-slate-700 tracking-tight font-montserrat">Popular Companies Ready for Review</h2>
+            <p class="text-gray-600 text-sm mt-1 font-inter">Select any company below to start writing your review immediately.</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -270,8 +271,8 @@
                 <div class="company-card-item rounded-2xl p-5 shadow-sm flex flex-col justify-between group">
                     <div>
                         <!-- Logo & Category -->
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-14 h-14 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden p-1">
+                        <div class="flex flex-wrap items-start justify-between mb-4 gap-2">
+                            <div class="w-14 h-14 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden p-1 flex-shrink-0">
                                 {% if company.featured_image %}
                                     <img src="{{ company.featured_image.url }}" alt="{{ company.title }}" class="max-h-full max-w-full object-contain" />
                                 {% elif company.featured_image_url %}
@@ -280,28 +281,30 @@
                                     <span class="font-black text-xl" style="color: #265daa;">{{ company.title|slice:":1"|upper }}</span>
                                 {% endif %}
                             </div>
-                            {% if company.category %}
-                                <span class="bg-gray-100 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded-full border border-gray-200">{{ company.category.name }}</span>
-                            {% elif company.subcategory %}
-                                <span class="bg-gray-100 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded-full border border-gray-200">{{ company.subcategory.name }}</span>
-                            {% endif %}
+                            <div class="flex-1 text-right max-w-full">
+                                {% if company.category %}
+                                    <span class="inline-block bg-gray-100 text-gray-700 text-[11px] font-semibold px-2 py-1 rounded-full border border-gray-200 truncate max-w-full" title="{{ company.category.name }}">{{ company.category.name }}</span>
+                                {% elif company.subcategory %}
+                                    <span class="inline-block bg-gray-100 text-gray-700 text-[11px] font-semibold px-2 py-1 rounded-full border border-gray-200 truncate max-w-full" title="{{ company.subcategory.name }}">{{ company.subcategory.name }}</span>
+                                {% endif %}
+                            </div>
                         </div>
 
                         <!-- Company Title & Tagline -->
-                        <h3 class="font-bold text-gray-900 text-lg group-hover:text-[#265daa] transition-colors line-clamp-1 mb-1">
+                        <h3 class="font-bold text-gray-900 text-lg group-hover:text-[#265daa] transition-colors line-clamp-1 mb-1 font-montserrat">
                             {{ company.title }}
                         </h3>
-                        <p class="text-gray-500 text-xs line-clamp-2 mb-6 min-h-[32px]">
+                        <p class="text-gray-500 text-xs line-clamp-2 mb-6 min-h-[32px] font-inter">
                             {% if company.subtitle %}{{ company.subtitle }}{% else %}Leading company listed on TechLife BD review platform.{% endif %}
                         </p>
                     </div>
 
                     <!-- Action Buttons (Left: Write Review, Right: Details) -->
                     <div class="flex items-center gap-2 pt-2 border-t border-gray-100">
-                        <a href="{% url 'write_review_step1' company.id %}" class="flex-1 py-2 px-2.5 text-white text-xs font-bold rounded-xl text-center transition-all flex items-center justify-center shadow-sm hover:opacity-90" style="background-color: #265daa;">
+                        <a href="{% url 'write_review_step1' company.id %}" class="flex-1 py-2 px-2.5 text-white text-xs font-bold rounded-xl text-center transition-all flex items-center justify-center shadow-sm hover:opacity-90" style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%);">
                             <span>Write Review</span>
                         </a>
-                        <a href="{% url 'blog_details' company.slug %}" class="flex-1 py-2 px-2.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-800 text-xs font-bold rounded-xl text-center transition-all flex items-center justify-center gap-1">
+                        <a href="{% if company.is_company %}{% url 'company_details' company.slug %}{% else %}{% url 'blog_details' company.slug %}{% endif %}" class="flex-1 py-2 px-2.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-800 text-xs font-bold rounded-xl text-center transition-all flex items-center justify-center gap-1">
                             <span>Details</span>
                             <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                         </a>
@@ -309,6 +312,41 @@
                 </div>
             {% endfor %}
         </div>
+
+        <!-- Pagination -->
+        {% if popular_companies.has_other_pages %}
+        <div class="mt-16 pt-6 pb-4 flex justify-center w-full px-2">
+            <nav class="flex flex-wrap justify-center items-center gap-1.5 sm:gap-2" aria-label="Pagination">
+                {% if popular_companies.has_previous %}
+                <a href="?page={{ popular_companies.previous_page_number }}"
+                    class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-700 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors flex items-center gap-1">
+                    &laquo; Prev
+                </a>
+                {% endif %}
+
+                {% for page_num in popular_companies.paginator.page_range %}
+                    {% if popular_companies.number == page_num %}
+                    <span class="px-3.5 py-1.5 rounded-lg text-white text-xs font-extrabold shadow-2xs"
+                        style="background: linear-gradient(135deg, #1d58a2 0%, #0ea5e9 100%); color: #ffffff;">
+                        {{ page_num }}
+                    </span>
+                    {% elif page_num >= popular_companies.number|add:"-2" and page_num <= popular_companies.number|add:"2" %}
+                    <a href="?page={{ page_num }}"
+                        class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-700 hover:bg-[#265daa] hover:text-[#265daa] hover:border-[#265daa] transition-colors">
+                        {{ page_num }}
+                    </a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if popular_companies.has_next %}
+                <a href="?page={{ popular_companies.next_page_number }}"
+                    class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-700 hover:bg-[#265daa] hover:text-white hover:border-[#265daa] transition-colors flex items-center gap-1">
+                    Next &raquo;
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
     </div>
 </section>
 {% endif %}

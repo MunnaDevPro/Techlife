@@ -31,7 +31,7 @@
                     <div
                         class="py-5 first:pt-0 group flex flex-col sm:flex-row gap-4 items-start w-full min-w-0 overflow-hidden">
                         <!-- Post Thumbnail -->
-                        <a href="{% url 'blog_details' post.slug %}"
+                        <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}"
                             class="w-full sm:w-48 md:w-52 h-36 shrink-0 rounded-sm overflow-hidden bg-zinc-100 block relative">
                             {% if post.featured_image %}
                             <img src="{{ post.featured_image.url }}" alt="{{ post.title }}"
@@ -63,7 +63,7 @@
                                 <span class="text-xs text-gray-400 font-medium ml-auto">{{ post.created_at|date:"F d, Y" }}</span>
                             </div>
 
-                            <a href="{% url 'blog_details' post.slug %}"
+                            <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}"
                                 class="font-bold text-[17px] sm:text-[19px] text-zinc-900 hover:text-[#265daa] transition-colors leading-[1.3] !line-clamp-2 mb-1.5 font-montserrat">
                                 {{ post.title }}
                             </a>
@@ -80,7 +80,7 @@
                     {% for blog in blogs|slice:"5" %}
                     <div
                         class="py-5 first:pt-0 group flex flex-col sm:flex-row gap-4 items-start w-full min-w-0 overflow-hidden">
-                        <a href="{% url 'blog_details' blog.slug %}"
+                        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
                             class="w-full sm:w-48 md:w-52 h-36 shrink-0 rounded-sm overflow-hidden bg-zinc-100 block">
                             {% if blog.featured_image %}
                             <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}"
@@ -110,7 +110,7 @@
                                 <span class="text-xs text-gray-400 font-medium ml-auto">{{ blog.created_at|date:"F d, Y" }}</span>
                             </div>
 
-                            <a href="{% url 'blog_details' blog.slug %}"
+                            <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
                                 class="font-bold text-[17px] sm:text-[19px] text-zinc-900 hover:text-[#265daa] transition-colors leading-[1.3] !line-clamp-2 mb-1.5 font-montserrat">
                                 {{ blog.title }}
                             </a>
@@ -169,7 +169,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                     {% for post in second_blogs|slice:"4" %}
                     <div class="overflow-hidden flex flex-col group">
-                        <a href="{% url 'blog_details' post.slug %}"
+                        <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}"
                             class="block relative h-44 overflow-hidden rounded-sm">
                             {% if post.featured_image %}
                             <img src="{{ post.featured_image.url }}" alt="{{ post.title }}"
@@ -185,7 +185,7 @@
                             {% endif %}
                         </a>
                         <div class="pt-3 flex flex-col flex-1">
-                            <a href="{% url 'blog_details' post.slug %}"
+                            <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}"
                                 class="font-bold text-[17px] sm:text-[19px] text-zinc-900 hover:text-[#265daa] transition-colors leading-[1.3] line-clamp-2 mb-2 font-montserrat">
                                 {{ post.title }}
                             </a>
@@ -304,7 +304,7 @@
                             <span>•</span>
                             <span>{{ item.created_at|date:"F d, Y" }}</span>
                         </div>
-                        <a href="{% url 'blog_details' item.slug %}"
+                        <a href="{% if item.is_company %}{% url 'company_details' item.slug %}{% else %}{% url 'blog_details' item.slug %}{% endif %}"
                             class="font-bold text-xs text-zinc-900 hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
                             {{ item.title }}
                         </a>

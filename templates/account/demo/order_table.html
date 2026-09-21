@@ -38,7 +38,7 @@
                                     <i class="far fa-image text-sm"></i>
                                 </div>
                             {% endif %}
-                            <a href="{% url 'blog_details' post.slug %}" class="text-blue-600 hover:text-blue-800 transition-colors line-clamp-2" title="{{ post.title }}">{{ post.title|truncatechars:40 }}</a>
+                            <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}" class="text-blue-600 hover:text-blue-800 transition-colors line-clamp-2" title="{{ post.title }}">{{ post.title|truncatechars:40 }}</a>
                         </div>
                     </td>
                     <td class="py-1.5 px-4 text-gray-600 text-[13px]">{{ post.category.name|default:"General" }}</td>

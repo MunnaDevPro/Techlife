@@ -9,7 +9,7 @@
             {% if carousel_blogs %}
             {% with hero_post=carousel_blogs|first %}
             <div class="relative w-full rounded-sm overflow-hidden shadow-sm group bg-zinc-900 h-[380px] sm:h-[450px] lg:h-[500px]" style="background-color: #1d58a2;">
-                <a href="{% url 'blog_details' hero_post.slug %}" class="block w-full h-full relative">
+                <a href="{% if hero_post.is_company %}{% url 'company_details' hero_post.slug %}{% else %}{% url 'blog_details' hero_post.slug %}{% endif %}" class="block w-full h-full relative">
                     {% if hero_post.featured_image %}
                     <img src="{{ hero_post.featured_image.url }}" alt="{{ hero_post.title }}" class="w-full h-full object-cover" loading="eager" fetchpriority="high" />
                     {% elif hero_post.featured_image_url %}
@@ -52,7 +52,7 @@
             {% if carousel_blogs|length > 1 %}
             {% with sub_hero=carousel_blogs|slice:"1:2"|first %}
             <div class="overflow-hidden flex flex-col group">
-                <a href="{% url 'blog_details' sub_hero.slug %}" class="block relative h-48 overflow-hidden rounded-sm">
+                <a href="{% if sub_hero.is_company %}{% url 'company_details' sub_hero.slug %}{% else %}{% url 'blog_details' sub_hero.slug %}{% endif %}" class="block relative h-48 overflow-hidden rounded-sm">
                     {% if sub_hero.featured_image %}
                     <img src="{{ sub_hero.featured_image.url }}" alt="{{ sub_hero.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
                     {% elif sub_hero.featured_image_url %}
@@ -75,13 +75,13 @@
                         {% endif %}
                         <span>{{ sub_hero.created_at|date:"F d, Y" }}</span>
                     </div>
-                    <a href="{% url 'blog_details' sub_hero.slug %}" class="font-bold text-base text-zinc-900 hover:text-[#265daa] transition-colors leading-snug line-clamp-2 mb-2">
+                    <a href="{% if sub_hero.is_company %}{% url 'company_details' sub_hero.slug %}{% else %}{% url 'blog_details' sub_hero.slug %}{% endif %}" class="font-bold text-base text-zinc-900 hover:text-[#265daa] transition-colors leading-snug line-clamp-2 mb-2">
                         {{ sub_hero.title }}
                     </a>
                     <p class="text-xs text-gray-600 line-clamp-2 leading-relaxed mb-3">
                         {{ sub_hero.description|striptags|truncatewords:18 }}
                     </p>
-                    <a href="{% url 'blog_details' sub_hero.slug %}" class="inline-block text-[11px] font-bold uppercase tracking-wider hover:underline" style="color: #265daa;">
+                    <a href="{% if sub_hero.is_company %}{% url 'company_details' sub_hero.slug %}{% else %}{% url 'blog_details' sub_hero.slug %}{% endif %}" class="inline-block text-[11px] font-bold uppercase tracking-wider hover:underline" style="color: #265daa;">
                         Read More &rarr;
                     </a>
                 </div>
@@ -92,7 +92,7 @@
             <!-- 5 Small Sub Hero List Items -->
             <div class="flex flex-col divide-y divide-gray-100">
                 {% for sub_item in carousel_blogs|slice:"2:7" %}
-                <a href="{% url 'blog_details' sub_item.slug %}" class="flex items-center gap-3.5 py-2.5 transition-colors group rounded-sm">
+                <a href="{% if sub_item.is_company %}{% url 'company_details' sub_item.slug %}{% else %}{% url 'blog_details' sub_item.slug %}{% endif %}" class="flex items-center gap-3.5 py-2.5 transition-colors group rounded-sm">
                     <div class="w-20 h-14 shrink-0 rounded-sm overflow-hidden bg-gray-100">
                         {% if sub_item.featured_image %}
                         <img src="{{ sub_item.featured_image.url }}" alt="{{ sub_item.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />

@@ -37,6 +37,7 @@ urlpatterns = [
     # Companies
     path("company/", content.post_list, {'is_company_view': True}, name="company_list"),
     path("company/create/", content.company_create, name="company_create"),
+    path("company/reviews/", content.review_list, name="company_reviews"),
     path("company/<int:pk>/edit/", content.company_detail_edit, name="company_edit"),
     path("company/<int:pk>/delete/", content.post_delete, name="company_delete"),
     path("company/bulk/", content.post_bulk_action, name="company_bulk"),

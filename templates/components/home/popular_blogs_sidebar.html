@@ -11,7 +11,7 @@
     <ol class="divide-y divide-gray-100 flex-1">
         {% for post in latest_popular_blogs|slice:'3' %}
         <li>
-            <a href="{% url 'blog_details' post.slug %}"
+            <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}"
                 class="flex items-start gap-2.5 px-3 py-2.5 transition-colors group cursor-pointer">
                 <span class="text-[13px] font-bold text-[#265daa] shrink-0 w-5 leading-snug">{{ forloop.counter }}</span>
                 <div class="flex-1 min-w-0">

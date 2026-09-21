@@ -22,7 +22,7 @@
             <ul class="divide-y divide-gray-100">
                 {% for most_view in most_viewed_blogs|slice:"2:7" %}
                 <li>
-                    <a href="{% url 'blog_details' most_view.slug %}"
+                    <a href="{% if most_view.is_company %}{% url 'company_details' most_view.slug %}{% else %}{% url 'blog_details' most_view.slug %}{% endif %}"
                         class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors group cursor-pointer">
                         <div class="w-16 h-12 shrink-0 rounded overflow-hidden bg-gray-100">
                             {% if most_view.featured_image %}
@@ -41,7 +41,7 @@
         <!-- Center: Featured Post -->
         {% for most_blogs in most_viewed_blogs|slice:"1" %}
         <div class="overflow-hidden flex flex-col border border-gray-100 rounded-sm">
-            <a href="{% url 'blog_details' most_blogs.slug %}" class="block group overflow-hidden cursor-pointer">
+            <a href="{% if most_blogs.is_company %}{% url 'company_details' most_blogs.slug %}{% else %}{% url 'blog_details' most_blogs.slug %}{% endif %}" class="block group overflow-hidden cursor-pointer">
                 <div class="overflow-hidden" style="aspect-ratio: 16/9;">
                     {% if most_blogs.featured_image %}
                     <img src="{{ most_blogs.featured_image.url }}" alt="{{ most_blogs.title }}" class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.03]" width="400" height="225" loading="lazy" decoding="async">
@@ -53,7 +53,7 @@
             <div class="p-3 flex-1 flex flex-col">
                 <span class="inline-block text-[10px] font-bold text-[#265daa] uppercase tracking-wide mb-1.5">#1 Most Viewed</span>
                 <h3 class="font-bold text-[14px] text-gray-800 leading-snug mb-2">
-                    <a href="{% url 'blog_details' most_blogs.slug %}" class="hover:text-[#265daa] transition-colors">{{ most_blogs.title }}</a>
+                    <a href="{% if most_blogs.is_company %}{% url 'company_details' most_blogs.slug %}{% else %}{% url 'blog_details' most_blogs.slug %}{% endif %}" class="hover:text-[#265daa] transition-colors">{{ most_blogs.title }}</a>
                 </h3>
                 <p class="text-[11px] text-gray-500 leading-relaxed overflow-hidden"
                 style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
@@ -72,7 +72,7 @@
             <ul class="divide-y divide-gray-100">
                 {% for most_view in most_viewed_blogs|slice:"7:12" %}
                 <li>
-                    <a href="{% url 'blog_details' most_view.slug %}"
+                    <a href="{% if most_view.is_company %}{% url 'company_details' most_view.slug %}{% else %}{% url 'blog_details' most_view.slug %}{% endif %}"
                         class="flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors group cursor-pointer">
                         <div class="w-16 h-12 shrink-0 rounded overflow-hidden bg-gray-100">
                             {% if most_view.featured_image %}

@@ -129,10 +129,16 @@ Slot (default): page body content
         </button>
         <div x-show="activeDropdown === 'company'" x-collapse.duration.500ms class="ft-tree-group py-1 space-y-1">
           <a href="{% url 'dashboard:company_list' %}"
-            class="ft-nav-sub-item {% if active_menu == 'Company' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            class="ft-nav-sub-item {% if active_menu == 'Company' and active_submenu != 'dashboard:company_reviews' %}!bg-gray-700 !text-white font-medium{% endif %}">
             <i data-lucide="building"
-              class="w-3.5 h-3.5 {% if active_menu == 'Company' %}!text-white{% endif %}"></i>
-            <span class="{% if active_menu == 'Company' %}!text-white{% endif %}">All Companies</span>
+              class="w-3.5 h-3.5 {% if active_menu == 'Company' and active_submenu != 'dashboard:company_reviews' %}!text-white{% endif %}"></i>
+            <span class="{% if active_menu == 'Company' and active_submenu != 'dashboard:company_reviews' %}!text-white{% endif %}">All Companies</span>
+          </a>
+          <a href="{% url 'dashboard:company_reviews' %}"
+            class="ft-nav-sub-item {% if active_submenu == 'dashboard:company_reviews' %}!bg-gray-700 !text-white font-medium{% endif %}">
+            <i data-lucide="star"
+              class="w-3.5 h-3.5 {% if active_submenu == 'dashboard:company_reviews' %}!text-white{% endif %}"></i>
+            <span class="{% if active_submenu == 'dashboard:company_reviews' %}!text-white{% endif %}">All Reviews</span>
           </a>
         </div>
       </div>

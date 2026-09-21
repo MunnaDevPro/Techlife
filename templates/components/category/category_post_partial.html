@@ -58,7 +58,7 @@
 
             <!-- SECTION 1 — Hero Featured Post (Side-by-side layout) -->
             {% with featured_post=blogs|first %}
-            <a href="{% url 'blog_details' featured_post.slug %}" hx-get="{% url 'blog_details' featured_post.slug %}"
+            <a href="{% if featured_post.is_company %}{% url 'company_details' featured_post.slug %}{% else %}{% url 'blog_details' featured_post.slug %}{% endif %}" hx-get="{% if featured_post.is_company %}{% url 'company_details' featured_post.slug %}{% else %}{% url 'blog_details' featured_post.slug %}{% endif %}"
                 hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
                 class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 rounded-xl border border-gray-100 bg-white group cursor-pointer hover:border-gray-200 transition-all">
 
@@ -98,7 +98,7 @@
             {% if grid_posts %}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% for blog in grid_posts %}
-                <a href="{% url 'blog_details' blog.slug %}" hx-get="{% url 'blog_details' blog.slug %}"
+                <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" hx-get="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
                     hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
                     class="bg-transparent overflow-hidden group cursor-pointer flex flex-col">
                     <div class="cat-grid-img overflow-hidden rounded-xl bg-gray-100 mb-2">
@@ -153,7 +153,7 @@
                 <!-- Article List (10 posts) -->
                 <div id="article-list-{{ category.slug }}" class="divide-y divide-gray-100">
                     {% for blog in list_posts %}
-                    <a href="{% url 'blog_details' blog.slug %}" hx-get="{% url 'blog_details' blog.slug %}"
+                    <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" hx-get="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
                         hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
                         class="blog-list-item items-center gap-3.5 py-3 hover:bg-gray-50/80 rounded-lg transition-colors group cursor-pointer">
 
@@ -233,7 +233,7 @@
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3">
                     {% for post in sub_blogs %}
-                    <a href="{% url 'blog_details' post.slug %}" hx-get="{% url 'blog_details' post.slug %}"
+                    <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}" hx-get="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}"
                         hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
                         class="bg-transparent overflow-hidden group cursor-pointer flex flex-col">
                         <div class="w-full aspect-[16/9] overflow-hidden rounded-xl bg-gray-100 mb-1.5">
@@ -311,9 +311,9 @@
                 </div>
                 <div class="bg-transparent grid grid-cols-2 gap-2.5">
                     {% for news in most_viewed_blogs|slice:":8" %}
-                    <div hx-get="{% url 'blog_details' news.slug %}" hx-target="#container" hx-swap="innerHTML"
+                    <div hx-get="{% if news.is_company %}{% url 'company_details' news.slug %}{% else %}{% url 'blog_details' news.slug %}{% endif %}" hx-target="#container" hx-swap="innerHTML"
                         hx-push-url="true" class="group cursor-pointer">
-                        <a href="{% url 'blog_details' news.slug %}" class="block">
+                        <a href="{% if news.is_company %}{% url 'company_details' news.slug %}{% else %}{% url 'blog_details' news.slug %}{% endif %}" class="block">
                             <div class="overflow-hidden rounded-lg mb-1.5 bg-gray-100" style="aspect-ratio: 16/9;">
                                 {% if news.featured_image %}
                                 <img class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-[1.06]"
@@ -363,7 +363,7 @@
 
                 <!-- Top 1 Featured Sidebar Post -->
                 {% with pop_first=cat_popular|first %}
-                <a href="{% url 'blog_details' pop_first.slug %}" hx-get="{% url 'blog_details' pop_first.slug %}"
+                <a href="{% if pop_first.is_company %}{% url 'company_details' pop_first.slug %}{% else %}{% url 'blog_details' pop_first.slug %}{% endif %}" hx-get="{% if pop_first.is_company %}{% url 'company_details' pop_first.slug %}{% else %}{% url 'blog_details' pop_first.slug %}{% endif %}"
                     hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
                     class="block group cursor-pointer mb-4">
                     <div class="w-full aspect-[16/9] overflow-hidden rounded-xl bg-gray-100 mb-2">
@@ -387,7 +387,7 @@
                 <!-- Remaining Sidebar Posts (Horizontal Thumbnail List) -->
                 <div class="divide-y divide-gray-100">
                     {% for post in cat_popular|slice:"1:6" %}
-                    <a href="{% url 'blog_details' post.slug %}" hx-get="{% url 'blog_details' post.slug %}"
+                    <a href="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}" hx-get="{% if post.is_company %}{% url 'company_details' post.slug %}{% else %}{% url 'blog_details' post.slug %}{% endif %}"
                         hx-target="#container" hx-push-url="true" hx-swap="innerHTML"
                         class="flex items-center gap-3 py-2.5 hover:bg-gray-50/50 transition-colors group cursor-pointer">
                         <div class="w-20 aspect-[16/9] shrink-0 overflow-hidden rounded-lg bg-gray-100">

@@ -10,10 +10,10 @@ from django.db.models import Count
 
 from dashboard.permissions import staff_required
 from dashboard.views.views import get_dashboard_context
-from dashboard.filters import BlogPostFilter
-from dashboard.tables import BlogPostTable, CompanyTable
+from dashboard.filters import BlogPostFilter, ReviewFilter
+from dashboard.tables import BlogPostTable, CompanyTable, ReviewTable
 from dashboard.services import content_service
-from blog_post.models import BlogPost, Category, SubCategory, HomepageConfig
+from blog_post.models import BlogPost, Category, SubCategory, HomepageConfig, Review
 from tags.models import Tag
 from comments.models import Comment
 from blog_post.forms import BlogPostForm
@@ -493,7 +493,46 @@ def homepage_sections(request):
         "configs": configs,
         "categories": categories,
     })
-    return render(request, "dashboard/content/homepage_sections.html", ctx)
+    if request.htmx:
+        return render(request, "dashboard/content/homepage_sections.html", ctx)
+    return render(request, "dashboard/base.html", {"content_template": "dashboard/content/homepage_sections.html", **ctx})
+
+@staff_required
+def review_list(request):
+    """View to display and filter all reviews."""
+    filter_set = ReviewFilter(request.GET, queryset=Review.objects.select_related('post', 'reviewer').order_by('-created_at'))
+    queryset = filter_set.qs
+    
+    # Calculate statistics based on filtered results
+    total_reviews = queryset.count()
+    pending_reviews = queryset.filter(status='pending').count()
+    avg_rating = sum(r.overall_rating for r in queryset) / total_reviews if total_reviews > 0 else 0
+    
+    table = ReviewTable(queryset, request=request)
+    
+    # Configure pagination with fallback sizes
+    per_page = request.GET.get('per_page', 25)
+    try:
+        per_page = int(per_page)
+    except ValueError:
+        per_page = 25
+        
+    RequestConfig(request, paginate={"per_page": per_page}).configure(table)
+    
+    context = get_dashboard_context(request, "All Reviews", "Company", "dashboard:company_reviews")
+    context.update({
+        'table': table,
+        'filter': filter_set,
+        'total_reviews': total_reviews,
+        'pending_reviews': pending_reviews,
+        'avg_rating': round(avg_rating, 1),
+        'page_subtitle': "Manage and moderate company reviews submitted by users",
+    })
+    
+    if request.htmx:
+        return render(request, "dashboard/content/review_list.html", context)
+        
+    return render(request, "dashboard/content/review_list.html", context)
 
 import json
 from blog_post.forms import CompanyProfileForm

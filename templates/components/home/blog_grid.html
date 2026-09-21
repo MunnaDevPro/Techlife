@@ -17,7 +17,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {% for blog in blogs|slice:"2" %}
         <div class="overflow-hidden flex flex-col group">
-            <a href="{% url 'blog_details' blog.slug %}" class="block relative h-52 sm:h-60 overflow-hidden rounded-sm">
+            <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="block relative h-52 sm:h-60 overflow-hidden rounded-sm">
                 {% if blog.featured_image %}
                 <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" />
                 {% elif blog.featured_image_url %}
@@ -33,14 +33,14 @@
                 {% endif %}
             </a>
             <div class="pt-3 pb-4 flex flex-col flex-1">
-                <a href="{% url 'blog_details' blog.slug %}" class="font-bold text-lg text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-2">
+                <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="font-bold text-lg text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug !line-clamp-2 mb-2">
                     {{ blog.title }}
                 </a>
                 <p class="text-xs text-gray-600 leading-relaxed line-clamp-3 mb-4">
                     {{ blog.description|striptags|truncatewords:25 }}
                 </p>
                 <div class="mt-auto">
-                    <a href="{% url 'blog_details' blog.slug %}" class="inline-block text-white text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-xs transition-colors" style="background-color: #265daa;">
+                    <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="inline-block text-white text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-xs transition-colors" style="background-color: #265daa;">
                         Read More
                     </a>
                 </div>
@@ -68,7 +68,7 @@
                     <span>•</span>
                     <span>{{ blog.created_at|date:"M d, Y" }}</span>
                 </div>
-                <a href="{% url 'blog_details' blog.slug %}" class="text-xs font-bold text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
+                <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}" class="text-xs font-bold text-zinc-900 group-hover:text-[#265daa] transition-colors leading-snug line-clamp-2">
                     {{ blog.title }}
                 </a>
             </div>

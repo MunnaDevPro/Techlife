@@ -13,8 +13,8 @@
     <div class="flex flex-col gap-3">
         <!-- Compact Hero — Post 1 -->
         {% for blog in blogs|slice:":1" %}
-        <a href="{% url 'blog_details' blog.slug %}"
-           hx-get="{% url 'blog_details' blog.slug %}"
+        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
+           hx-get="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
            hx-target="#container"
            hx-push-url="true"
            hx-swap="innerHTML"
@@ -75,8 +75,8 @@
         {% if below_hero %}
         <div class="grid grid-cols-2 gap-3">
             {% for blog in below_hero %}
-            <a href="{% url 'blog_details' blog.slug %}"
-               hx-get="{% url 'blog_details' blog.slug %}"
+            <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
+               hx-get="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
                hx-target="#container"
                hx-push-url="true"
                hx-swap="innerHTML"
@@ -123,8 +123,8 @@
     <!-- Right Column: 2×2 Side Grid — Posts 2–5 -->
     <div class="grid grid-cols-2 gap-3">
         {% for blog in blogs|slice:"1:5" %}
-        <a href="{% url 'blog_details' blog.slug %}"
-           hx-get="{% url 'blog_details' blog.slug %}"
+        <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
+           hx-get="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
            hx-target="#container"
            hx-push-url="true"
            hx-swap="innerHTML"
@@ -175,8 +175,8 @@
 {% if row2 %}
 <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
     {% for blog in row2 %}
-    <a href="{% url 'blog_details' blog.slug %}"
-       hx-get="{% url 'blog_details' blog.slug %}"
+    <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
+       hx-get="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
        hx-target="#container"
        hx-push-url="true"
        hx-swap="innerHTML"
@@ -238,8 +238,8 @@
 {% if row3 %}
 <div class="tl-card rounded-xl overflow-hidden divide-y divide-gray-100 mb-3">
     {% for blog in row3 %}
-    <a href="{% url 'blog_details' blog.slug %}"
-       hx-get="{% url 'blog_details' blog.slug %}"
+    <a href="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
+       hx-get="{% if blog.is_company %}{% url 'company_details' blog.slug %}{% else %}{% url 'blog_details' blog.slug %}{% endif %}"
        hx-target="#container"
        hx-push-url="true"
        hx-swap="innerHTML"
